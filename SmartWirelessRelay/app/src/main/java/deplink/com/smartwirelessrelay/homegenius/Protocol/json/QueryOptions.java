@@ -13,6 +13,15 @@ public class QueryOptions implements Serializable {
     private String ManagePasswd;
     private String AuthPwd;
     private String LimitedTime;
+    private String Result;
+
+    public String getResult() {
+        return Result;
+    }
+
+    public void setResult(String result) {
+        Result = result;
+    }
 
     /**
      * 查询智能设备使用

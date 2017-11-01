@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -35,7 +34,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 
-public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
+public class DevListActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "DevListActivity";
 
     private SSLSocket Client_sslSocket = null;
@@ -47,6 +46,10 @@ public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
     private List<SmartDev> mSmartDev;
     private DevListAdapter devAdapter;
     private SmartDevListAdapter smartDevListAdapter;
+    private Button btn_once_auth;
+    private Button btn_time_limit_auth;
+    private Button btn_forever_auth;
+    private Button btn_open_door;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,56 +66,6 @@ public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
         smartDevListAdapter = new SmartDevListAdapter(this, mSmartDev);
         dev_list.setAdapter(devAdapter);
         smart_dev_list.setAdapter(smartDevListAdapter);
-        smart_dev_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //  Log.i(TAG,"");
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //查询设备
-                        final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
-                        //探测设备
-                        QueryOptions queryCmd = new QueryOptions();
-                        queryCmd.setOP("SET");
-                        queryCmd.setMethod("SmartLock");
-                        String smartuid;
-                        SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                        smartuid = sharedPreference.getString("smartuid");
-                        queryCmd.setSmartUid(smartuid);
-                        queryCmd.setCommand("Once");
-                        // queryCmd.setCommand("Time-limited");
-                        // queryCmd.setCommand("Perpetual");
-                        //queryCmd.setCommand("Open");
-                        queryCmd.setUserID("12345");
-                        queryCmd.setManagePasswd("1");
-
-
-                        queryCmd.setAuthPwd("001");
-                        queryCmd.setLimitedTime("1");
-
-                        Gson gson = new Gson();
-                        String text = gson.toJson(queryCmd);
-                        packet.packSetSmartLockData(null, text.getBytes());
-                        if(Client_sslSocket!=null){
-
-                        }else{
-                            EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
-                            Client_sslSocket= EllESDK.getInstance().getClient_sslSocket();
-                        }
-                       // close = isServerClose(Client_sslSocket);//判断是否断开
-                      //  Log.i(TAG, "onclick tcp判断是否断开=" + close);
-                        EllESDK.getInstance().getOut(packet.data);
-                           // getOut(Client_sslSocket, packet.data);
-                            getIn(Client_sslSocket);
-
-                    }
-                }).start();
-
-
-            }
-        });
 
 
     }
@@ -120,42 +73,24 @@ public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
     private void initViews() {
         dev_list = (ListView) findViewById(R.id.dev_list);
         smart_dev_list = (ListView) findViewById(R.id.smart_dev_list);
-        btn= (Button) findViewById(R.id.click);
+        btn = (Button) findViewById(R.id.click);
+        btn_once_auth = (Button) findViewById(R.id.btn_once_auth);
+        btn_time_limit_auth = (Button) findViewById(R.id.btn_time_limit_auth);
+        btn_forever_auth = (Button) findViewById(R.id.btn_forever_auth);
+        btn_open_door = (Button) findViewById(R.id.btn_open_door);
         // expan_listview = (ExpandableListView) findViewById(R.id.expandablelv);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        //查询设备
-                        GeneralPacket packet = new GeneralPacket(DevListActivity.this);
-                        //探测设备
-                        QueryOptions queryCmd = new QueryOptions();
-                        queryCmd.setOP("QUERY");
-                        queryCmd.setMethod("DevList");
-                        Gson gson = new Gson();
-                        String text = gson.toJson(queryCmd);
-                        packet.packQueryDevListData(null, text.getBytes());
-                        if ( null==Client_sslSocket) {
-                            EllESDK.getInstance().InitEllESDK(DevListActivity.this, null);
-                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
-                        }
-                        Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
-
-                        EllESDK.getInstance().getOut(packet.data);
-                        getIn(Client_sslSocket);
-                    }
-                }).start();
-            }
-        });
+        btn.setOnClickListener(this);
+        btn_once_auth.setOnClickListener(this);
+        btn_time_limit_auth.setOnClickListener(this);
+        btn_forever_auth.setOnClickListener(this);
+        btn_open_door.setOnClickListener(this);
     }
+
     private Button btn;
+
     @Override
     protected void onResume() {
         super.onResume();
-
 
 
     }
@@ -189,42 +124,65 @@ public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
         }
     }
 
+    private static final int MSG_GET_DEVS = 0x01;
+    private static final int MSG_GET_SET_RESULT = 0x02;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             String str = (String) msg.obj;
-            Gson gson = new Gson();
-            DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
-            //mDeviceList=aDeviceList.getDevice();
-            mDeviceList.clear();
-            mDeviceList.addAll(aDeviceList.getDevice());
-            mSmartDev.clear();
-            mSmartDev.addAll(aDeviceList.getSmartDev());
-            if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
-                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                    //uid
-                    String smartuid;
-                    smartuid = mSmartDev.get(i).getDevUid();
-                    SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                    sharedPreference.saveString("smartuid", smartuid);
-                    Log.i(TAG, "sharedPreference save smartuid=" + smartuid);
-                }
-                smartDevListAdapter.notifyDataSetChanged();
+            switch (msg.what) {
+
+                case MSG_GET_DEVS:
+
+                    Gson gson = new Gson();
+                    DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
+                    //mDeviceList=aDeviceList.getDevice();
+                    mDeviceList.clear();
+                    mDeviceList.addAll(aDeviceList.getDevice());
+                    mSmartDev.clear();
+                    mSmartDev.addAll(aDeviceList.getSmartDev());
+                    if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
+                        for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
+                            //uid
+                            String smartuid;
+                            smartuid = mSmartDev.get(i).getDevUid();
+                            SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
+                            sharedPreference.saveString("smartuid", smartuid);
+                            Log.i(TAG, "sharedPreference save smartuid=" + smartuid);
+                        }
+                        smartDevListAdapter.notifyDataSetChanged();
+                    }
+                    devAdapter.notifyDataSetChanged();
+                    Log.i(TAG, "mDeviceList.getDevice().size=" + aDeviceList.getDevice().size());
+                    try {
+                        new AlertDialog
+                                .Builder(DevListActivity.this)
+                                .setTitle("设备")
+                                .setNegativeButton("确定", null)
+                                .setIcon(android.R.drawable.ic_menu_agenda)
+                                .setMessage(str)
+                                .show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case MSG_GET_SET_RESULT:
+                    try {
+                        new AlertDialog
+                                .Builder(DevListActivity.this)
+                                .setTitle("设置结果")
+                                .setNegativeButton("确定", null)
+                                .setIcon(android.R.drawable.ic_menu_agenda)
+                                .setMessage("" + str)
+                                .show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
             }
-            devAdapter.notifyDataSetChanged();
-            Log.i(TAG, "mDeviceList.getDevice().size=" + aDeviceList.getDevice().size());
-            try {
-                new AlertDialog
-                        .Builder(DevListActivity.this)
-                        .setTitle("设备")
-                        .setNegativeButton("确定", null)
-                        .setIcon(android.R.drawable.ic_menu_agenda)
-                        .setMessage(str)
-                        .show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
 
         }
     };
@@ -244,10 +202,22 @@ public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
                     str = new String(buf, 84, length);
                     System.out.println("received:" + str);
                     Message msg = Message.obtain();
-                    msg.obj = str;
-                    if(str.contains("DevList")){
+                    if (str.contains("DevList")) {
+
+                        msg.what = MSG_GET_DEVS;
+                        msg.obj = str;
                         mHandler.sendMessage(msg);
+                    } else {
+                        //
+                        Gson gson = new Gson();
+                        QueryOptions optionResult = gson.fromJson(str, QueryOptions.class);
+                        String resultStr = optionResult.getResult();
+                        msg.what = MSG_GET_SET_RESULT;
+                        msg.obj = resultStr;
+                        mHandler.sendMessage(msg);
+
                     }
+
 
                 }
 
@@ -257,6 +227,185 @@ public class DevListActivity extends Activity  /*implements EllE_Listener*/ {
         }
 
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.click:
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        //查询设备
+                        GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                        //探测设备
+                        QueryOptions queryCmd = new QueryOptions();
+                        queryCmd.setOP("QUERY");
+                        queryCmd.setMethod("DevList");
+                        Gson gson = new Gson();
+                        String text = gson.toJson(queryCmd);
+                        packet.packQueryDevListData(null, text.getBytes());
+                        if (null == Client_sslSocket) {
+                            EllESDK.getInstance().InitEllESDK(DevListActivity.this, null);
+                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                        }
+                        Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+
+                        EllESDK.getInstance().getOut(packet.data);
+                        getIn(Client_sslSocket);
+                    }
+                }).start();
+                break;
+            case R.id.btn_once_auth:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //查询设备
+                        final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                        //探测设备
+                        QueryOptions queryCmd = new QueryOptions();
+                        queryCmd.setOP("SET");
+                        queryCmd.setMethod("SmartLock");
+                        String smartuid;
+                        SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
+                        smartuid = sharedPreference.getString("smartuid");
+                        queryCmd.setSmartUid(smartuid);
+                        queryCmd.setCommand("Once");
+                        queryCmd.setUserID("12345");
+                        queryCmd.setManagePasswd("1");
+                        queryCmd.setAuthPwd("001");
+                        queryCmd.setLimitedTime("1");
+                        Gson gson = new Gson();
+                        String text = gson.toJson(queryCmd);
+                        packet.packSetSmartLockData(null, text.getBytes());
+                        if (Client_sslSocket != null) {
+
+                        } else {
+                            EllESDK.getInstance().InitEllESDK(DevListActivity.this, null);
+                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                        }
+                        EllESDK.getInstance().getOut(packet.data);
+                        getIn(Client_sslSocket);
+
+                    }
+                }).start();
+                break;
+            case R.id.btn_time_limit_auth:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //查询设备
+                        final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                        //探测设备
+                        QueryOptions queryCmd = new QueryOptions();
+                        queryCmd.setOP("SET");
+                        queryCmd.setMethod("SmartLock");
+                        String smartuid;
+                        SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
+                        smartuid = sharedPreference.getString("smartuid");
+                        queryCmd.setSmartUid(smartuid);
+                        queryCmd.setCommand("Time-limited");
+
+                        queryCmd.setUserID("12345");
+                        queryCmd.setManagePasswd("1");
+
+
+                        queryCmd.setAuthPwd("001");
+                        queryCmd.setLimitedTime("1");
+
+                        Gson gson = new Gson();
+                        String text = gson.toJson(queryCmd);
+                        packet.packSetSmartLockData(null, text.getBytes());
+                        if (Client_sslSocket != null) {
+
+                        } else {
+                            EllESDK.getInstance().InitEllESDK(DevListActivity.this, null);
+                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                        }
+                        EllESDK.getInstance().getOut(packet.data);
+                        getIn(Client_sslSocket);
+
+                    }
+                }).start();
+                break;
+            case R.id.btn_forever_auth:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //查询设备
+                        final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                        //探测设备
+                        QueryOptions queryCmd = new QueryOptions();
+                        queryCmd.setOP("SET");
+                        queryCmd.setMethod("SmartLock");
+                        String smartuid;
+                        SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
+                        smartuid = sharedPreference.getString("smartuid");
+                        queryCmd.setSmartUid(smartuid);
+                        queryCmd.setCommand("Perpetual");
+
+                        queryCmd.setUserID("12345");
+                        queryCmd.setManagePasswd("1");
+
+
+                        queryCmd.setAuthPwd("001");
+                        queryCmd.setLimitedTime("1");
+
+                        Gson gson = new Gson();
+                        String text = gson.toJson(queryCmd);
+                        packet.packSetSmartLockData(null, text.getBytes());
+                        if (Client_sslSocket != null) {
+
+                        } else {
+                            EllESDK.getInstance().InitEllESDK(DevListActivity.this, null);
+                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                        }
+                        EllESDK.getInstance().getOut(packet.data);
+                        getIn(Client_sslSocket);
+
+                    }
+                }).start();
+                break;
+            case R.id.btn_open_door:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //查询设备
+                        final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                        //探测设备
+                        QueryOptions queryCmd = new QueryOptions();
+                        queryCmd.setOP("SET");
+                        queryCmd.setMethod("SmartLock");
+                        String smartuid;
+                        SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
+                        smartuid = sharedPreference.getString("smartuid");
+                        queryCmd.setSmartUid(smartuid);
+                        queryCmd.setCommand("Open");
+
+                        queryCmd.setUserID("12345");
+                        queryCmd.setManagePasswd("1");
+
+
+                        queryCmd.setAuthPwd("001");
+                        queryCmd.setLimitedTime("1");
+
+                        Gson gson = new Gson();
+                        String text = gson.toJson(queryCmd);
+                        packet.packSetSmartLockData(null, text.getBytes());
+                        if (Client_sslSocket != null) {
+
+                        } else {
+                            EllESDK.getInstance().InitEllESDK(DevListActivity.this, null);
+                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                        }
+                        EllESDK.getInstance().getOut(packet.data);
+                        getIn(Client_sslSocket);
+
+                    }
+                }).start();
+                break;
+        }
     }
 
   /*  @Override

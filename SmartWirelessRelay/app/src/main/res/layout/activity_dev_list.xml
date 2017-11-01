@@ -40,9 +40,42 @@
         android:layout_height="wrap_content" >
     </ExpandableListView>-->
     <Button
+
         android:layout_alignParentBottom="true"
         android:text="获取设备列表信息"
         android:id="@+id/click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_above="@+id/click"
+        android:layout_width="match_parent"
+        android:background="@android:color/holo_orange_light"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_once_auth"
+            android:text="单次授权  "
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_time_limit_auth"
+            android:text="限时授权"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_forever_auth"
+            android:text="永久授权"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_open_door"
+            android:text="开门"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </RelativeLayout>
