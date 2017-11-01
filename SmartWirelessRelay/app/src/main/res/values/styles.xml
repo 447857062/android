@@ -1,0 +1,44 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light.NoTitleBar">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+
+    <style name="main_bottom_four_testview">
+        <item name="android:textSize">@dimen/main_bottom_four_testview_size</item>
+        <item name="android:textColor">@color/main_bottom_black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:padding">@dimen/main_bottom_four_testview_padding</item>
+    </style>
+
+    <style name="child_dev_firstitem_testview">
+        <item name="android:textSize">@dimen/child_dev_firstitem_testview_size</item>
+        <item name="android:textColor">@color/main_bottom_black</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/child_dev_firstitem_paddingLeft</item>
+        <item name="android:paddingTop">@dimen/child_dev_firstitem_testview_paddingTop</item>
+        <item name="android:paddingBottom">@dimen/child_dev_firstitem_testview_paddingBottom</item>
+    </style>
+
+    <style name="PopupAnimaFade" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/basepopup_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/basepopup_fade_out</item>
+    </style>
+
+
+</resources>

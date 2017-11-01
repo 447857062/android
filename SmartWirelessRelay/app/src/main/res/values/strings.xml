@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">中继器</string>
+    <string name="scene">家庭</string>
+    <string name="device">发现</string>
+    <string name="security">我</string>
+    <string name="myhome">中继器</string>
+    <string name="adddev">添加</string>
+    <string name="wifi_account">WIFI账号</string>
+    <string name="wifi_password">WIFI密码</string>
+    <string name="wifi_hint">请先确保手机连接到您的设备的AP热点</string>
+    <string name="wifi_hint2">请打开WiFi并连接到您的家庭网络</string>
+    <string name="ok">下一步</string>
+    <string name="cancel">取消</string>
+    <string name="add_dev_wifi_hint">当您需要配置设备WIFI的时候使用这种方式\n请确保您的设备已经将手机连接到\n命名为EllE.xxxxxx的设备\n然后点击WIFI配置</string>
+    <string name="add_dev_wifi_btn">WIFI配置</string>
+    <string name="add_dev_qr_hint">如果设备已经配置好网络\n直接扫描改产品的二维码即可添加</string>
+    <string name="add_dev_qr_btn">二维码</string>
+    <string name="add_wifi_select_hint">选择您的WIFI并输入密码</string>
+    <string name="add_wifi_select_btn1">修改密码</string>
+    <string name="add_wifi_select_btn2">配置设备</string>
+    <string name="change">修改</string>
+</resources>
