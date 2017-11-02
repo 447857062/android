@@ -140,7 +140,9 @@ public class EllESDK {//
     }
     //初始化SDK
     public int InitTcpIpConnect(String ipAddress) {
-        this.ipAddress=ipAddress;
+        if(ipAddress!=null){
+            this.ipAddress=ipAddress;
+        }
         initConnectThread();
         initMonitorThread();
         return 0;

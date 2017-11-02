@@ -223,7 +223,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             String text = gson.toJson(queryCmd);
                             packet.packQueryDevListData(null, text.getBytes());
                             if (null == Client_sslSocket) {
-                                EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                               // EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                                EllESDK.getInstance().InitTcpIpConnect(null);
                                 Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
                             }
                             Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
@@ -284,7 +285,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             if (Client_sslSocket != null) {
 
                             } else {
-                                EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                              //  EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                                EllESDK.getInstance().InitTcpIpConnect(null);
                                 Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
@@ -344,7 +346,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
 
                             } else {
                               //  EllESDK.getInstance().InitTcpIpConnection(null);
-                                EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                               // EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                                EllESDK.getInstance().InitTcpIpConnect(null);
                                 Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
@@ -405,7 +408,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
 
                             } else {
                                // EllESDK.getInstance().InitTcpIpConnection(null);
-                                EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                              //  EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                                EllESDK.getInstance().InitTcpIpConnect(null);
                                 Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
@@ -465,7 +469,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
 
                             } else {
                                // EllESDK.getInstance().InitTcpIpConnection(null);
-                                EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                               // EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
+                                EllESDK.getInstance().InitTcpIpConnect(null);
                                 Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
