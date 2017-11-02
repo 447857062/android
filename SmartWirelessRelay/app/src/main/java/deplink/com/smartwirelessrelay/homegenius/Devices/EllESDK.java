@@ -98,17 +98,23 @@ public class EllESDK {//
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             Client_sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(/*AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT*/);
             Client_sslSocket.setKeepAlive(true);
-            SocketAddress address = new InetSocketAddress(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
+            SocketAddress address;
+            if(ipAddress!=null && !ipAddress.equals("")){
+                address  = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
+            }else{
+                address  = new InetSocketAddress(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
+            }
+
+
             Client_sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
-           // getOut(new byte[]{1,2,3});
-            Log.e(TAG, "init_sslSocket success");
+            Log.e(TAG, "init_sslSocket success"+address.toString());
         } catch (Exception e) {
             elleListener.onConnectDeviceFail(AppConstant.SERVER_IP);
             e.printStackTrace();
         }
 
     }
-
+    private String ipAddress;
     private Context mContext;
     private ConnectionMonitor connectionMonitor;
 
@@ -125,14 +131,20 @@ public class EllESDK {//
             devStatus = new DevStatus(context, udpPacket);
             devStatus.open();
         }
-        initConnectThread();
-        initMonitorThread();
+       /* initConnectThread();
+        initMonitorThread();*/
         elleListener = listener;
         if (listener == null)
             Log.e("info", "没有回调 SDK 会出现异常");
         return 0;
     }
-
+    //初始化SDK
+    public int InitTcpIpConnect(String ipAddress) {
+        this.ipAddress=ipAddress;
+        initConnectThread();
+        initMonitorThread();
+        return 0;
+    }
 
     private Thread connectThread;
     private void initConnectThread() {
