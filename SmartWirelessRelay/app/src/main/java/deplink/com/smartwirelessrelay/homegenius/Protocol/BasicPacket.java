@@ -6,6 +6,7 @@ import android.util.Log;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
+import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
@@ -18,8 +19,6 @@ import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 public class BasicPacket {
     public static final String TAG = "BasicPacket";
-
-    public static final int BasicLen_wireless = 84;
     public static final int MaxWiFiDevSendCount = 8;
     public static final int WiFiDevTimeout = 300;
     public static final int PacketWait = 0;
@@ -89,9 +88,9 @@ public class BasicPacket {
     public int packWirelessData(byte[] ip, boolean istcp, byte[] xdata, byte cmdId) {
         int len = 0;
         if (xdata != null)
-            data = new byte[BasicLen_wireless + xdata.length];
+            data = new byte[AppConstant.BASICLEGTH + xdata.length];
         else {
-            data = new byte[BasicLen_wireless];
+            data = new byte[AppConstant.BASICLEGTH];
         }
         //head
         data[len++] = (byte) 0xAA;
@@ -115,8 +114,9 @@ public class BasicPacket {
 
             SharedPreference sharedPreference = new SharedPreference(mContext, "uid");
             uid = sharedPreference.getString("uid");
-            Log.i(TAG,"uid.getBytes().length="+uid.getBytes().length+"uid="+DataExchange.byteArrayToHexString(uid.getBytes()));
-            if (!uid.equals("")) {
+
+            if (uid!=null &&!uid.equals("")) {
+                Log.i(TAG,"uid.getBytes().length="+uid.getBytes().length+"uid="+DataExchange.byteArrayToHexString(uid.getBytes()));
                 //获取到的数据前面乱码，取指定位置的数据
               //  byte[]str=new byte[32];
                // System.arraycopy(uid.getBytes(), 13, str, 0, 32);

@@ -1,11 +1,16 @@
 package deplink.com.smartwirelessrelay.homegenius.Devices;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -16,7 +21,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.UdpNet.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
@@ -92,13 +96,14 @@ public class EllESDK {//
             // Creating an SSLSocketFactory that uses our TrustManager
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-            Client_sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
+            Client_sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(/*AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT*/);
             Client_sslSocket.setKeepAlive(true);
-
-            //  Client_sslSocket.
-            //  Client_sslSocket.setSoTimeout(5000);
-            Log.e("init_sslSocket", "init_sslSocket ");
+            SocketAddress address = new InetSocketAddress(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
+            Client_sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
+           // getOut(new byte[]{1,2,3});
+            Log.e(TAG, "init_sslSocket success");
         } catch (Exception e) {
+            elleListener.onConnectDeviceFail(AppConstant.SERVER_IP);
             e.printStackTrace();
         }
 
@@ -129,25 +134,22 @@ public class EllESDK {//
     }
 
 
-
     private Thread connectThread;
     private void initConnectThread() {
-        if(null==connectThread){
-            connectThread= new Thread(new Runnable() {
+        if (null == connectThread) {
+            connectThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     sslSocket2();
                 }
             });
             connectThread.start();
-        }else{
-            connectThread.run();
         }
 
     }
     private Thread monitorThread;
     private void initMonitorThread() {
-        if ( null==monitorThread) {
+        if (null == monitorThread) {
             monitorThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -156,74 +158,46 @@ public class EllESDK {//
                 }
             });
             monitorThread.start();
-        }else{
-            monitorThread.run();
         }
 
 
     }
-
+    private OutputStream out;
     public int getOut(byte[] message) {
         if (Client_sslSocket == null) {
             Log.i("kelijun", "cannot send tcp ip message");
             return -1;
         }
-      //  if (!connectionMonitor.getServerClose()) {
-            try {
-                OutputStream out;
-                out = Client_sslSocket.getOutputStream();
-                out.write(message);
-                Log.e(TAG, "ELLESDK sent: "+ DataExchange.byteArrayToHexString(message));
-                out.flush();
-                out.close();
-            } catch (IOException e) {
-
-                e.printStackTrace();
-                return -1;
-            }
-      //  }
-
+        try {
+            out = Client_sslSocket.getOutputStream();
+            out.write(message);
+            Log.e(TAG, "getOut() send cuccess: " + DataExchange.byteArrayToHexString(message));
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mHandler.sendEmptyMessage(0);
+            return -1;
+        }
         return 0;
     }
 
-    //  private InputStream input;
- /*   public String getIn() {
-        String str;
-        if (null != Client_sslSocket) {
-            try {
-                InputStream input = Client_sslSocket.getInputStream();
-                byte[] buf = new byte[1024];
-                int len = input.read(buf);
-                if (len != -1) {
-                    str = new String(buf, 0, len);
-                    System.out.println("received:" + str + "length=" + len);
-                    System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
-                    byte[] uid = new byte[32];
-                    System.arraycopy(buf, 7, uid, 0, 32);
-                    str = new String(uid);
-                    Message msg = Message.obtain();
-                    msg.obj = str;
-                    input.close();
-                    //  mHandler.sendMessage(msg);
-                    return str;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Toast.makeText(mContext, "与服务器的连接断开了", Toast.LENGTH_SHORT).show();
         }
-        return null;
-    }*/
+    };
+
     public void setElleListener(EllE_Listener elleListener) {
         EllESDK.elleListener = elleListener;
     }
 
 
-    public static void getNewPacket(BasicPacket packet) {
-        elleListener.onRecvEllEPacket(packet);
-    }
-
-    public static void getIp(byte[] ip) {
-        //  elleListener.onRecvEllEPacket(packet);
+    public  static void getIp(byte[] ip) {
+        Log.i(TAG,"EllESDK 已接收到UDP返回数据 中继器ip地址："+DataExchange.byteArrayToHexString(ip));
+        elleListener.onRecvDeviceIp(ip);
     }
 
 }

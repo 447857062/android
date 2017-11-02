@@ -20,8 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 public class UdpComm {
 
     public static final String TAG = "UdpComm";
-    private int port = 8999;
-    //  private int port = 5880;
+    private int port = AppConstant.UDP_CONNECT_PORT;
     private DatagramSocket udp = null;
     private OnRecvListener listener = null;
     private RecvThread recvThread = null;
@@ -52,9 +51,9 @@ public class UdpComm {
         if (udp == null)
             return false;
         try {
-            Log.e(TAG, "sendData:" + packet.getAddress().getHostAddress() + ":" + packet.getPort());
+            Log.e(TAG, "udp sendData:" + packet.getAddress().getHostAddress() + ":" + packet.getPort());
             byte[] temp = packet.getData();
-            Log.e(TAG, "sendData:" + DataExchange.byteArrayToHexString(temp));
+            Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp));
             udp.send(packet);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -144,14 +143,13 @@ public class UdpComm {
                         byte[] result = new byte[len];
                         System.arraycopy(data, 0, result, 0, len);
                         BasicPacket basicPacket = new BasicPacket(mContext, packet.getAddress(), packet.getPort());
-                        Log.i(TAG, "接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
+                        Log.i(TAG, "udp 接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
                         //  basicPacket.unpackPacketWithData(result, result.length);
                         //不需要解析数据,只要停止探测线程
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
                         //basicPacket.unpackPacketWithWirelessData(result);
                         listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
                         stopServer();
-
                     }
                 } catch (IOException e) {
                     // TODO Auto-generated catch block

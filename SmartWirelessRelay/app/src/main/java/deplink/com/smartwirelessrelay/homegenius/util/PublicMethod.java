@@ -60,7 +60,6 @@ public class PublicMethod {
         if (info == null || !mConnectivity.getBackgroundDataSetting()) {
             return -1;
         }
-
     /* 判断网络连接类型,只有在3G 或 wifi 里进行一些数据更新。 */
         int netType = info.getType();
         int netSubtype = info.getSubtype();

@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 /**
@@ -24,6 +25,7 @@ public class ConnectionMonitor {
 
     public ConnectionMonitor( Context context) {
         this.mContext = context;
+         packet = new GeneralPacket(mContext);
     }
 
     public void startTimer() {
@@ -35,19 +37,16 @@ public class ConnectionMonitor {
                 @Override
                 public void run() {
                     SharedPreference sharedPreference = new SharedPreference(mContext, "heathswitch");
-                    String open = sharedPreference.getString("sharedPreference");
-                    Log.i(TAG,"发送心跳包开关 ");
-                    if (open != null && open.equals("open")) {
-                        checkConnectionHealth();
-                    }else{
-
-                    }
-
+                    String open = sharedPreference.getString("heathswitch");
+                        Log.i(TAG,"发送心跳包开关 open="+open);
+                        if (open!=null && open.equals("open")) {
+                            checkConnectionHealth();
+                        }
                 }
             };
         }
         if (monitorTimer != null) {
-            monitorTimer.schedule(monitorTask, 1000, 5000);
+            monitorTimer.schedule(monitorTask, 1000, AppConstant.SERVER_HEARTH_BREATH);
         }
         Log.d(TAG, "===>monitor started");
     }
@@ -80,12 +79,10 @@ public class ConnectionMonitor {
         if (isNetworkAvailable(mContext)) {
            isServerClose= isServerClose();
             Log.i(TAG, "===>check connect isServerClose="+isServerClose);
-        }else{
-           // Toast.makeText()
         }
 
     }
-
+    private GeneralPacket packet;
     /**
      * 判断是否断开连接，断开返回true,没有返回false
      *
@@ -93,7 +90,6 @@ public class ConnectionMonitor {
      */
     public Boolean isServerClose() {
         try {
-            GeneralPacket packet = new GeneralPacket(mContext);
             packet.packHeathPacket();
            int clientStatus= EllESDK.getInstance().getOut(packet.data);
             //  socket.sendUrgentData(0);//发送1个字节的紧急数据，默认情况下，服务器端没有开启紧急数据处理，不影响正常通信

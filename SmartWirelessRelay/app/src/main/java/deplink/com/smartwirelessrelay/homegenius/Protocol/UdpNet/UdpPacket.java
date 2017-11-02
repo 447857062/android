@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import deplink.com.smartwirelessrelay.homegenius.Devices.EllESDK;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.OnRecvListener;
+import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 
 import static deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket.PacketTimeout;
@@ -19,15 +20,11 @@ import static deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket.Pac
 public class UdpPacket implements OnRecvListener {
 
     public static final String TAG = "UdpPacket";
-
-
-    UdpComm netUdp;
+    private UdpComm netUdp;
     private OnRecvListener listener;
-
     //发送网络包队列
     public static ArrayList<BasicPacket> sendNetPakcetList;
-
-    UdpPacketThread udpPacketThread;
+    private UdpPacketThread udpPacketThread;
     private Context mContext;
 
     public UdpPacket(Context context) {
@@ -63,7 +60,7 @@ public class UdpPacket implements OnRecvListener {
 
     public void start() {
         stop();
-        netUdp = new UdpComm(mContext, 8999, this);
+        netUdp = new UdpComm(mContext, AppConstant.UDP_CONNECT_PORT, this);
         netUdp.startServer();
         udpPacketThread = new UdpPacketThread();
         udpPacketThread.start();
@@ -103,13 +100,10 @@ public class UdpPacket implements OnRecvListener {
     public void OnRecvData(BasicPacket packet) {
         //接收线程的数据回调
         dealListener(packet);
-        EllESDK.getNewPacket(packet);
     }
 
     @Override
     public void OnRecvIp(byte[] ip) {
-       // dealListener(ip);
-
         EllESDK.getIp(ip);
     }
 
@@ -150,8 +144,7 @@ public class UdpPacket implements OnRecvListener {
                         if (tmp.isLocal) {
                             try {
                                 tmp.ip = InetAddress.getByName("255.255.255.255");
-                                tmp.port = 8999;
-                                Log.i(TAG, "udppacket 187");
+                                tmp.port = AppConstant.UDP_CONNECT_PORT;
                                 netUdp.sendData(tmp.getUdpData(tmp.ip, tmp.port));
                             } catch (UnknownHostException e) {
                                 e.printStackTrace();
@@ -162,11 +155,6 @@ public class UdpPacket implements OnRecvListener {
                             delOneSendPacket(sendNetPakcetList, tmp);
                         }
                     }
-                }
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }
