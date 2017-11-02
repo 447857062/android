@@ -82,7 +82,8 @@ public class LockHistory extends Activity {
                         if (Client_sslSocket != null) {
                         } else {
                            // EllESDK.getInstance().InitTcpIpConnection(null);
-                            EllESDK.getInstance().InitEllESDK(LockHistory.this,null);
+                          //  EllESDK.getInstance().InitEllESDK(LockHistory.this,null);
+                            EllESDK.getInstance().InitTcpIpConnect(null);
                             Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
                         }
                         EllESDK.getInstance().getOut(packet.data);
@@ -150,7 +151,8 @@ public class LockHistory extends Activity {
         String str;
         if (null == Client_sslSocket) {
             //EllESDK.getInstance().InitTcpIpConnection(null);
-            EllESDK.getInstance().InitEllESDK(LockHistory.this,null);
+           // EllESDK.getInstance().InitEllESDK(LockHistory.this,null);
+            EllESDK.getInstance().InitTcpIpConnect(null);
             Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
         }
         try {

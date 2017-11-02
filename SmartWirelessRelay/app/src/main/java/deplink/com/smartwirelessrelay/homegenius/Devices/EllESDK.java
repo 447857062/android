@@ -131,16 +131,16 @@ public class EllESDK {//
             devStatus = new DevStatus(context, udpPacket);
             devStatus.open();
         }
-       /* initConnectThread();
-        initMonitorThread();*/
         elleListener = listener;
         if (listener == null)
             Log.e("info", "没有回调 SDK 会出现异常");
         return 0;
     }
-    //初始化SDK
+    //初始化tcp/ip连接，和设备的连接
     public int InitTcpIpConnect(String ipAddress) {
-        this.ipAddress=ipAddress;
+        if(ipAddress!=null){
+            this.ipAddress=ipAddress;
+        }
         initConnectThread();
         initMonitorThread();
         return 0;
