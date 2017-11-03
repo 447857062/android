@@ -37,6 +37,7 @@ public class ConnectManager {//
     private UdpPacket udpPacket;
     private static ConnectManager instance;
     private SSLSocket Client_sslSocket = null;
+
     private ConnectManager() {
     }
 
@@ -56,10 +57,10 @@ public class ConnectManager {//
     }
 
     public void sslSocket2() {
-        if (null != Client_sslSocket) {
+       /* if (null != Client_sslSocket) {
             Log.i(TAG, "ssl socket already exists");
             return;
-        }
+        }*/
         SocketAddress address = null;
         try {
             // Loading CAs from an InputStream
@@ -97,19 +98,20 @@ public class ConnectManager {//
             Client_sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(/*AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT*/);
             Client_sslSocket.setKeepAlive(true);
 
-            if(ipAddress!=null && !ipAddress.equals("")){
-                address  = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
-            }else{
-                address  = new InetSocketAddress(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
+            if (ipAddress != null && !ipAddress.equals("")) {
+                address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
+            } else {
+                address = new InetSocketAddress(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
             }
             Client_sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
-            Log.e(TAG, "init_sslSocket success 创建socket"+address.toString());
+            Log.e(TAG, "init_sslSocket success 创建socket" + address.toString());
         } catch (Exception e) {
             elleListener.onConnectDeviceFail(address.toString());
             e.printStackTrace();
         }
 
     }
+
     private String ipAddress;
     private Context mContext;
     private ConnectionMonitor connectionMonitor;
@@ -118,7 +120,7 @@ public class ConnectManager {//
     public int InitEllESDK(Context context, SDK_Data_Listener listener) {
         this.mContext = context;
         this.elleListener = listener;
-        if (listener == null){
+        if (listener == null) {
             Log.e(TAG, "没有回调 SDK 会出现异常");
         }
 
@@ -135,10 +137,11 @@ public class ConnectManager {//
 
         return 0;
     }
+
     //初始化tcp/ip连接，和设备的连接
     public int InitTcpIpConnect(String ipAddress) {
-        if(ipAddress!=null){
-            this.ipAddress=ipAddress;
+        if (ipAddress != null) {
+            this.ipAddress = ipAddress;
         }
         initConnectThread();
         initMonitorThread();
@@ -146,19 +149,22 @@ public class ConnectManager {//
     }
 
     private Thread connectThread;
+
     private void initConnectThread() {
         //if (null == connectThread) {
-            connectThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    sslSocket2();
-                }
-            });
-            connectThread.start();
-      //  }
+        connectThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sslSocket2();
+            }
+        });
+        connectThread.start();
+        //  }
 
     }
+
     private Thread monitorThread;
+
     private void initMonitorThread() {
         if (null == monitorThread) {
             monitorThread = new Thread(new Runnable() {
@@ -169,11 +175,13 @@ public class ConnectManager {//
                 }
             });
             monitorThread.start();
-       }
+        }
 
 
     }
+
     private OutputStream out;
+
     public int getOut(byte[] message) {
         if (Client_sslSocket == null) {
             Log.i("kelijun", "cannot send tcp ip message");
@@ -198,21 +206,36 @@ public class ConnectManager {//
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            try {
-                Client_sslSocket.close();
-                Client_sslSocket=null;//重置socket
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            udpPacket=null;
+
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    try {
+                        if(Client_sslSocket!=null){
+                            Client_sslSocket.close();
+                            Client_sslSocket = null;//重置socket
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    udpPacket = null;
+                }
+            }.start();
+
+
             Toast.makeText(mContext, "与服务器的连接断开了,重新连接", Toast.LENGTH_SHORT).show();
         }
     };
+
     public void setElleListener(SDK_Data_Listener elleListener) {
         ConnectManager.elleListener = elleListener;
     }
-    public   void getIp(byte[] ip) {
-        Log.i(TAG,"EllESDK 已接收到UDP返回数据 中继器ip地址："+DataExchange.byteArrayToHexString(ip));
+
+    public void getIp(byte[] ip) {
+        Log.i(TAG, "EllESDK 已接收到UDP返回数据 中继器ip地址：" + DataExchange.byteArrayToHexString(ip));
         try {
             elleListener.onRecvDeviceIp(ip);
         } catch (Exception e) {

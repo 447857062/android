@@ -36,9 +36,6 @@ public class BasicPacket {
     private long idleTimeout = 800;
     //设定重发次数
     private long resendTimes = 8;
-
-    //当前发送次数
-    private long sendCount;
     //当前发送时间
     private long sendTime;
     public byte[] xdata;
@@ -49,12 +46,10 @@ public class BasicPacket {
     public boolean isLocal;
     public long mac;
     public boolean isFinish;
-    public boolean isSetIp;
 
     public BasicPacket(Context context) {
         this.mContext = context;
         isFinish = false;
-        isSetIp = false;
         this.createTime = PublicMethod.getTimeMs();
     }
 
@@ -62,7 +57,6 @@ public class BasicPacket {
     public BasicPacket(Context context, InetAddress ip, int port) {
         this.mContext = context;
         isFinish = false;
-        isSetIp = true;
         this.ip = ip;
         this.port = port;
         this.createTime = PublicMethod.getTimeMs();
@@ -174,33 +168,8 @@ public class BasicPacket {
         Log.i(TAG, "解析设备ip=" + DataExchange.byteArrayToHexString(ipaddress) + "trans2IpV4Str=" + IPV4Util.trans2IpV4Str(ipaddress));
         return ipaddress;
     }
-    /**
-     * 当前包是否可以发送
-     *
-     * @return
-     */
-    public int isPacketCouldSend(long time) {
-        if (sendCount > MaxWiFiDevSendCount)
-            return PacketTimeout;
-        if (Math.abs(time - sendTime) > WiFiDevTimeout) {
-            sendTime = time;
-            return PacketSend;
-        }
-        return PacketWait;
-    }
 
-    /**
-     * 判断包是否超时
-     *
-     * @return
-     */
-    public boolean isTimeout() {
-        if (sendCount >= resendTimes) {
-            if (Math.abs(PublicMethod.getTimeMs() - sendTime) > idleTimeout)
-                return true;
-        }
-        return false;
-    }
+
 
 
     /**

@@ -10,10 +10,6 @@ import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
-
-import static deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket.PacketTimeout;
-import static deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket.PacketWait;
 
 
 public class UdpPacket implements OnRecvListener {
@@ -22,7 +18,7 @@ public class UdpPacket implements OnRecvListener {
     private UdpComm netUdp;
     private OnRecvListener listener;
     //发送网络包队列
-    public static ArrayList<BasicPacket> sendNetPakcetList;
+    public  ArrayList<BasicPacket> sendNetPakcetList;
     private UdpPacketThread udpPacketThread;
     private Context mContext;
 
@@ -82,8 +78,6 @@ public class UdpPacket implements OnRecvListener {
 
     public void dealListener(BasicPacket packet) {
         int size = sendNetPakcetList.size();
-        if (packet.xdata != null && packet.xdata.length > 0 && packet.xdata[0] == 0x04) {
-        }
         for (int i = 0; i < size; i++) {
             BasicPacket tmp = sendNetPakcetList.get(i);
             if (tmp.seq == packet.seq && tmp.mac == packet.mac && tmp.listener != null) {
@@ -124,22 +118,10 @@ public class UdpPacket implements OnRecvListener {
                         delOneSendPacket(sendNetPakcetList, tmp);
                         continue;
                     }
-                    if (tmp.ip != null && tmp.isSetIp) {
-                      //  Log.i(TAG, "udppacket 141 tmp data=" + tmp.toString());
+                    if (tmp.ip != null ) {
                         netUdp.sendData(tmp.getUdpData());
                         delOneSendPacket(sendNetPakcetList, tmp);
                     } else {
-                        int result = tmp.isPacketCouldSend(PublicMethod.getTimeMs());
-                        if (result == PacketWait) {
-                            continue;
-                        }
-                        if (result == PacketTimeout) {
-                            if (tmp.listener != null) {
-                                delOneSendPacket(sendNetPakcetList, tmp);
-                            }
-                            i--;
-                        }
-
                         if (tmp.isLocal) {
                             try {
                                 tmp.ip = InetAddress.getByName("255.255.255.255");
