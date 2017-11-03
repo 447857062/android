@@ -22,21 +22,6 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 public class PublicMethod {
 
-    public static int seq;
-
-    /**
-     * 取得SEQ值
-     *
-     * @return
-     */
-    public static int getSeq() {
-        seq++;
-        if (seq != 0)
-            return seq;
-        else
-            return (seq + 1);
-    }
-
     public static long getTimeMs() {
         return System.currentTimeMillis();
     }
@@ -70,13 +55,8 @@ public class PublicMethod {
         } else {
             return 0;
         }
-        if (netType == 1 && getSSID(ctx).equals("EllE.")) {
-            return 3;
 
-        } else if (netType == 1) {
-            return 1;
-        }
-        return -1;
+        return 1;
 
     }
 
@@ -98,10 +78,8 @@ public class PublicMethod {
         WifiInfo info = wifiMan.getConnectionInfo();
         String mac = info.getMacAddress();// 获得本机的MAC地址
         String ssid = info.getSSID();// 获得本机所链接的WIFI名称
-
         int ipAddress = info.getIpAddress();
         String ipString = "";// 本机在WIFI状态下路由分配给的IP地址
-
         if (ipAddress != 0) {
             return ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
                     + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));

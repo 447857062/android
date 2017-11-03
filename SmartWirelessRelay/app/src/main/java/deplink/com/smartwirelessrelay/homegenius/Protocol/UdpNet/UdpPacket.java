@@ -1,20 +1,19 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.UdpNet;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import deplink.com.smartwirelessrelay.homegenius.Devices.EllESDK;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.OnRecvListener;
+import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 
-import static deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket.PacketTimeout;
-import static deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket.PacketWait;
+import static deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket.PacketTimeout;
+import static deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket.PacketWait;
 
 
 public class UdpPacket implements OnRecvListener {
@@ -104,7 +103,7 @@ public class UdpPacket implements OnRecvListener {
 
     @Override
     public void OnRecvIp(byte[] ip) {
-        EllESDK.getIp(ip);
+        ConnectManager.getInstance().getIp(ip);
     }
 
     private class UdpPacketThread extends Thread {
@@ -126,7 +125,7 @@ public class UdpPacket implements OnRecvListener {
                         continue;
                     }
                     if (tmp.ip != null && tmp.isSetIp) {
-                        Log.i(TAG, "udppacket 141 tmp data=" + tmp.toString());
+                      //  Log.i(TAG, "udppacket 141 tmp data=" + tmp.toString());
                         netUdp.sendData(tmp.getUdpData());
                         delOneSendPacket(sendNetPakcetList, tmp);
                     } else {

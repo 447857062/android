@@ -30,23 +30,19 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
  * Created by benond on 2017/2/7.
  */
 
-public class EllESDK {//
+public class ConnectManager {//
     private static final String TAG = "EllESDK";
-    private static EllE_Listener elleListener;
-
+    private static SDK_Data_Listener elleListener;
     private DevStatus devStatus;
-
     private UdpPacket udpPacket;
-
-    private static EllESDK instance;
+    private static ConnectManager instance;
     private SSLSocket Client_sslSocket = null;
-
-    private EllESDK() {
+    private ConnectManager() {
     }
 
-    public static synchronized EllESDK getInstance() {
+    public static synchronized ConnectManager getInstance() {
         if (instance == null) {
-            instance = new EllESDK();
+            instance = new ConnectManager();
         }
         return instance;
     }
@@ -61,12 +57,13 @@ public class EllESDK {//
 
     public void sslSocket2() {
         if (null != Client_sslSocket) {
-            Log.d("init_sslSocket", "ssl socket already exists");
+            Log.i(TAG, "ssl socket already exists");
             return;
         }
+        SocketAddress address = null;
         try {
             // Loading CAs from an InputStream
-            CertificateFactory cf = null;
+            CertificateFactory cf;
             cf = CertificateFactory.getInstance("X.509");
 
             final X509Certificate server_ca;
@@ -96,20 +93,19 @@ public class EllESDK {//
             // Creating an SSLSocketFactory that uses our TrustManager
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
             Client_sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(/*AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT*/);
             Client_sslSocket.setKeepAlive(true);
-            SocketAddress address;
+
             if(ipAddress!=null && !ipAddress.equals("")){
                 address  = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
             }else{
                 address  = new InetSocketAddress(AppConstant.SERVER_IP, AppConstant.TCP_CONNECT_PORT);
             }
-
-
             Client_sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
-            Log.e(TAG, "init_sslSocket success"+address.toString());
+            Log.e(TAG, "init_sslSocket success 创建socket"+address.toString());
         } catch (Exception e) {
-            elleListener.onConnectDeviceFail(AppConstant.SERVER_IP);
+            elleListener.onConnectDeviceFail(address.toString());
             e.printStackTrace();
         }
 
@@ -119,8 +115,13 @@ public class EllESDK {//
     private ConnectionMonitor connectionMonitor;
 
     //初始化SDK
-    public int InitEllESDK(Context context, EllE_Listener listener) {
+    public int InitEllESDK(Context context, SDK_Data_Listener listener) {
         this.mContext = context;
+        this.elleListener = listener;
+        if (listener == null){
+            Log.e(TAG, "没有回调 SDK 会出现异常");
+        }
+
         //发送任务队列
         if (udpPacket == null) {
             udpPacket = new UdpPacket(context);
@@ -131,9 +132,7 @@ public class EllESDK {//
             devStatus = new DevStatus(context, udpPacket);
             devStatus.open();
         }
-        elleListener = listener;
-        if (listener == null)
-            Log.e("info", "没有回调 SDK 会出现异常");
+
         return 0;
     }
     //初始化tcp/ip连接，和设备的连接
@@ -148,7 +147,7 @@ public class EllESDK {//
 
     private Thread connectThread;
     private void initConnectThread() {
-        if (null == connectThread) {
+        //if (null == connectThread) {
             connectThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -156,7 +155,7 @@ public class EllESDK {//
                 }
             });
             connectThread.start();
-        }
+      //  }
 
     }
     private Thread monitorThread;
@@ -170,7 +169,7 @@ public class EllESDK {//
                 }
             });
             monitorThread.start();
-        }
+       }
 
 
     }
@@ -181,6 +180,7 @@ public class EllESDK {//
             return -1;
         }
         try {
+            Log.e(TAG, "getOut() send start: ");
             out = Client_sslSocket.getOutputStream();
             out.write(message);
             Log.e(TAG, "getOut() send cuccess: " + DataExchange.byteArrayToHexString(message));
@@ -198,18 +198,26 @@ public class EllESDK {//
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Toast.makeText(mContext, "与服务器的连接断开了", Toast.LENGTH_SHORT).show();
+            try {
+                Client_sslSocket.close();
+                Client_sslSocket=null;//重置socket
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            udpPacket=null;
+            Toast.makeText(mContext, "与服务器的连接断开了,重新连接", Toast.LENGTH_SHORT).show();
         }
     };
-
-    public void setElleListener(EllE_Listener elleListener) {
-        EllESDK.elleListener = elleListener;
+    public void setElleListener(SDK_Data_Listener elleListener) {
+        ConnectManager.elleListener = elleListener;
     }
-
-
-    public  static void getIp(byte[] ip) {
+    public   void getIp(byte[] ip) {
         Log.i(TAG,"EllESDK 已接收到UDP返回数据 中继器ip地址："+DataExchange.byteArrayToHexString(ip));
-        elleListener.onRecvDeviceIp(ip);
+        try {
+            elleListener.onRecvDeviceIp(ip);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

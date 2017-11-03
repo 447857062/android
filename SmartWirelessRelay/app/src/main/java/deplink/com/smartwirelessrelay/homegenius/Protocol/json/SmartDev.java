@@ -10,6 +10,15 @@ public class SmartDev implements Serializable{
     private String CtrUid;
     private String Type;
     private String Status;
+    private String Org;
+
+    public String getOrg() {
+        return Org;
+    }
+
+    public void setOrg(String org) {
+        Org = org;
+    }
 
     public String getDevUid() {
         return DevUid;

@@ -21,9 +21,9 @@ import java.util.List;
 
 import javax.net.ssl.SSLSocket;
 
-import deplink.com.smartwirelessrelay.homegenius.Devices.EllESDK;
+import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
@@ -38,7 +38,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.WifiConnected;
 
 public class DevListActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "DevListActivity";
-    private SSLSocket Client_sslSocket = null;
+    private SSLSocket Client_sslSocket;
     private ListView dev_list;
     private List<Device> mDeviceList;
     private ListView smart_dev_list;
@@ -49,8 +49,12 @@ public class DevListActivity extends Activity implements View.OnClickListener {
     private Button btn_time_limit_auth;
     private Button btn_forever_auth;
     private Button btn_open_door;
-    private EditText edittext_manager_password;
-    private EditText edittext_auth_time;
+
+
+    private EditText edittext_AuthPwd;
+    private EditText edittext_UserID;
+    private EditText edittext_ManagePasswd;
+    private EditText edittext_LimitedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +88,10 @@ public class DevListActivity extends Activity implements View.OnClickListener {
         btn_time_limit_auth.setOnClickListener(this);
         btn_forever_auth.setOnClickListener(this);
         btn_open_door.setOnClickListener(this);
-        edittext_manager_password = (EditText) findViewById(R.id.edittext_manager_password);
-        edittext_auth_time = (EditText) findViewById(R.id.edittext_auth_time);
+        edittext_AuthPwd = (EditText) findViewById(R.id.edittext_AuthPwd);
+        edittext_UserID = (EditText) findViewById(R.id.edittext_UserID);
+        edittext_ManagePasswd = (EditText) findViewById(R.id.edittext_ManagePasswd);
+        edittext_LimitedTime = (EditText) findViewById(R.id.edittext_LimitedTime);
     }
 
     private Button btn;
@@ -102,7 +108,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
             switch (msg.what) {
 
                 case MSG_GET_DEVS:
-
+                    Log.i(TAG, "mHandler MSG_GET_DEVS");
                     Gson gson = new Gson();
                     DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
                     //mDeviceList=aDeviceList.getDevice();
@@ -167,7 +173,11 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 InputStream input = socket.getInputStream();
                 byte[] buf = new byte[1024];
                 int len = input.read(buf);
-                System.out.println("received:" + "len=" + len);
+                Log.i(TAG, "received:" + "len=" + len);
+                if (len == -1) {
+                    isReceiverOptionsSet = true;
+                    isReceiverDevList = true;
+                }
                 if (len != -1 && len > AppConstant.BASICLEGTH) {
                     byte[] lengthByte = new byte[2];
                     System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
@@ -180,6 +190,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                         isReceiverDevList = true;
                         msg.what = MSG_GET_DEVS;
                         msg.obj = str;
+                        System.out.println("mHandler.sendMessage(isReceiverDevList)");
                         mHandler.sendMessage(msg);
                     } else {
                         //
@@ -201,8 +212,10 @@ public class DevListActivity extends Activity implements View.OnClickListener {
 
     }
 
-    private String managerPassword;
-    private String authTime;
+    private String AuthPwd;
+    private String UserID;
+    private String ManagePasswd;
+    private String LimitedTime;
 
     @Override
     public void onClick(View v) {
@@ -212,7 +225,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
 
                     @Override
                     public void run() {
-                        if (WifiConnected.isNetworkAvailable(DevListActivity.this)) {
+                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
                             GeneralPacket packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -223,13 +236,13 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             String text = gson.toJson(queryCmd);
                             packet.packQueryDevListData(null, text.getBytes());
                             if (null == Client_sslSocket) {
-                               // EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
-                                EllESDK.getInstance().InitTcpIpConnect(null);
-                                Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+
                             }
-                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             isReceiverDevList = false;
-                            EllESDK.getInstance().getOut(packet.data);
+                            ConnectManager.getInstance().getOut(packet.data);
                             while (!isReceiverDevList) {
                                 getIn(Client_sslSocket);
                             }
@@ -249,7 +262,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isNetworkAvailable(DevListActivity.this)) {
+                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
                             final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -261,36 +274,43 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             smartuid = sharedPreference.getString("smartuid");
                             queryCmd.setSmartUid(smartuid);
                             queryCmd.setCommand("Once");
-
-                            queryCmd.setAuthPwd("1111111");
-                            queryCmd.setUserID("003");
-                            queryCmd.setManagePasswd("123456");
-                            managerPassword = edittext_manager_password.getText().toString();
-                            authTime = edittext_auth_time.getText().toString();
-                            Log.i(TAG, "managerPassword=" + managerPassword + "authTime=" + authTime);
-                            if (!managerPassword.equals("") && !authTime.equals("")) {
-                                queryCmd.setAuthPwd(managerPassword);
-                                queryCmd.setLimitedTime(authTime);
-                            } else {
+                            AuthPwd = edittext_AuthPwd.getText().toString();
+                            UserID = edittext_UserID.getText().toString();
+                            ManagePasswd = edittext_ManagePasswd.getText().toString();
+                            LimitedTime = edittext_LimitedTime.getText().toString();
+                            if (AuthPwd.equals("")) {
                                 queryCmd.setAuthPwd("001");
-                                queryCmd.setLimitedTime("1");
-                                Message msg = Message.obtain();
-                                msg.what = MSG_TOAST;
-                                msg.obj = "请输入管理密码，授权时间";
-                                mHandler.sendMessage(msg);
+                            } else {
+                                queryCmd.setAuthPwd(AuthPwd);
                             }
+                            if (UserID.equals("")) {
+                                queryCmd.setUserID("003");
+                            } else {
+                                queryCmd.setUserID(UserID);
+                            }
+                            if (ManagePasswd.equals("")) {
+                                queryCmd.setManagePasswd("123456");
+                            } else {
+                                queryCmd.setManagePasswd(ManagePasswd);
+                            }
+                            if (LimitedTime.equals("")) {
+                                queryCmd.setLimitedTime("30");
+                            } else {
+                                queryCmd.setLimitedTime(LimitedTime);
+                            }
+
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
                             if (Client_sslSocket != null) {
 
                             } else {
-                              //  EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
-                                EllESDK.getInstance().InitTcpIpConnect(null);
-                                Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+
+                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
-                            EllESDK.getInstance().getOut(packet.data);
+                            ConnectManager.getInstance().getOut(packet.data);
                             while (!isReceiverOptionsSet) {
                                 getIn(Client_sslSocket);
                             }
@@ -311,7 +331,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isNetworkAvailable(DevListActivity.this)) {
+                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
 //查询设备
                             final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -323,35 +343,39 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             smartuid = sharedPreference.getString("smartuid");
                             queryCmd.setSmartUid(smartuid);
                             queryCmd.setCommand("Time-limited");
-                            queryCmd.setUserID("003");
-                            queryCmd.setManagePasswd("123456");
-                            managerPassword = edittext_manager_password.getText().toString();
-                            authTime = edittext_auth_time.getText().toString();
-                            if (!managerPassword.equals("") && !authTime.equals("")) {
-                                queryCmd.setAuthPwd(managerPassword);
-                                queryCmd.setLimitedTime(authTime);
+                            AuthPwd = edittext_AuthPwd.getText().toString();
+                            UserID = edittext_UserID.getText().toString();
+                            ManagePasswd = edittext_ManagePasswd.getText().toString();
+                            LimitedTime = edittext_LimitedTime.getText().toString();
+                            if (AuthPwd.equals("")) {
+                                queryCmd.setAuthPwd("001");
                             } else {
-                                queryCmd.setAuthPwd("023456");
-                                queryCmd.setLimitedTime("1");
-                                Message msg = Message.obtain();
-
-                                msg.obj = "请输入管理密码，授权时间";
-                                msg.what = MSG_TOAST;
-                                mHandler.sendMessage(msg);
+                                queryCmd.setAuthPwd(AuthPwd);
+                            }
+                            if (UserID.equals("")) {
+                                queryCmd.setUserID("003");
+                            } else {
+                                queryCmd.setUserID(UserID);
+                            }
+                            if (ManagePasswd.equals("")) {
+                                queryCmd.setManagePasswd("123456");
+                            } else {
+                                queryCmd.setManagePasswd(ManagePasswd);
+                            }
+                            if (LimitedTime.equals("")) {
+                                queryCmd.setLimitedTime("30");
+                            } else {
+                                queryCmd.setLimitedTime(LimitedTime);
                             }
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (Client_sslSocket != null) {
-
-                            } else {
-                              //  EllESDK.getInstance().InitTcpIpConnection(null);
-                               // EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
-                                EllESDK.getInstance().InitTcpIpConnect(null);
-                                Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                            if (null == Client_sslSocket) {
+                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
-                            EllESDK.getInstance().getOut(packet.data);
+                            ConnectManager.getInstance().getOut(packet.data);
                             while (!isReceiverOptionsSet) {
                                 getIn(Client_sslSocket);
                             }
@@ -371,7 +395,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isNetworkAvailable(DevListActivity.this)) {
+                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
                             final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -384,36 +408,39 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             queryCmd.setSmartUid(smartuid);
                             queryCmd.setCommand("Perpetual");
 
-                            queryCmd.setUserID("003");
-                            queryCmd.setManagePasswd("123456");
-
-                            queryCmd.setAuthPwd("002301");
-                            managerPassword = edittext_manager_password.getText().toString();
-                            authTime = edittext_auth_time.getText().toString();
-                            if (!managerPassword.equals("") && !authTime.equals("")) {
-                                queryCmd.setAuthPwd(managerPassword);
-                                queryCmd.setLimitedTime(authTime);
-                            } else {
+                            AuthPwd = edittext_AuthPwd.getText().toString();
+                            UserID = edittext_UserID.getText().toString();
+                            ManagePasswd = edittext_ManagePasswd.getText().toString();
+                            LimitedTime = edittext_LimitedTime.getText().toString();
+                            if (AuthPwd.equals("")) {
                                 queryCmd.setAuthPwd("001");
-                                queryCmd.setLimitedTime("1");
-                                Message msg = Message.obtain();
-                                msg.what = MSG_TOAST;
-                                msg.obj = "请输入管理密码，授权时间";
-                                mHandler.sendMessage(msg);
+                            } else {
+                                queryCmd.setAuthPwd(AuthPwd);
+                            }
+                            if (UserID.equals("")) {
+                                queryCmd.setUserID("003");
+                            } else {
+                                queryCmd.setUserID(UserID);
+                            }
+                            if (ManagePasswd.equals("")) {
+                                queryCmd.setManagePasswd("123456");
+                            } else {
+                                queryCmd.setManagePasswd(ManagePasswd);
+                            }
+                            if (LimitedTime.equals("")) {
+                                queryCmd.setLimitedTime("30");
+                            } else {
+                                queryCmd.setLimitedTime(LimitedTime);
                             }
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (Client_sslSocket != null) {
-
-                            } else {
-                               // EllESDK.getInstance().InitTcpIpConnection(null);
-                              //  EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
-                                EllESDK.getInstance().InitTcpIpConnect(null);
-                                Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                            if (null == Client_sslSocket) {
+                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
-                            EllESDK.getInstance().getOut(packet.data);
+                            ConnectManager.getInstance().getOut(packet.data);
                             while (!isReceiverOptionsSet) {
                                 getIn(Client_sslSocket);
                             }
@@ -433,7 +460,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isNetworkAvailable(DevListActivity.this)) {
+                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
                             final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -445,36 +472,39 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             smartuid = sharedPreference.getString("smartuid");
                             queryCmd.setSmartUid(smartuid);
                             queryCmd.setCommand("Open");
-                            queryCmd.setUserID("003");
-                            queryCmd.setManagePasswd("123456");
-                            queryCmd.setAuthPwd("001");
-                            managerPassword = edittext_manager_password.getText().toString();
-                            authTime = edittext_auth_time.getText().toString();
-                            Log.i(TAG, "managerPassword=" + managerPassword + "authTime=" + authTime);
-                            if (!managerPassword.equals("") && !authTime.equals("")) {
-                                queryCmd.setAuthPwd(managerPassword);
-                                queryCmd.setLimitedTime(authTime);
-                            } else {
+                            AuthPwd = edittext_AuthPwd.getText().toString();
+                            UserID = edittext_UserID.getText().toString();
+                            ManagePasswd = edittext_ManagePasswd.getText().toString();
+                            LimitedTime = edittext_LimitedTime.getText().toString();
+                            if (AuthPwd.equals("")) {
                                 queryCmd.setAuthPwd("001");
-                                queryCmd.setLimitedTime("1");
-                                Message msg = Message.obtain();
-                                msg.what = MSG_TOAST;
-                                msg.obj = "请输入管理密码，授权时间";
-                                mHandler.sendMessage(msg);
+                            } else {
+                                queryCmd.setAuthPwd(AuthPwd);
+                            }
+                            if (UserID.equals("")) {
+                                queryCmd.setUserID("003");
+                            } else {
+                                queryCmd.setUserID(UserID);
+                            }
+                            if (ManagePasswd.equals("")) {
+                                queryCmd.setManagePasswd("123456");
+                            } else {
+                                queryCmd.setManagePasswd(ManagePasswd);
+                            }
+                            if (LimitedTime.equals("")) {
+                                queryCmd.setLimitedTime("30");
+                            } else {
+                                queryCmd.setLimitedTime(LimitedTime);
                             }
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (Client_sslSocket != null) {
-
-                            } else {
-                               // EllESDK.getInstance().InitTcpIpConnection(null);
-                               // EllESDK.getInstance().InitEllESDK(DevListActivity.this,null);
-                                EllESDK.getInstance().InitTcpIpConnect(null);
-                                Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                            if (null == Client_sslSocket) {
+                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
-                            EllESDK.getInstance().getOut(packet.data);
+                            ConnectManager.getInstance().getOut(packet.data);
                             while (!isReceiverOptionsSet) {
                                 getIn(Client_sslSocket);
                             }
@@ -483,7 +513,6 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             msg.what = MSG_TOAST;
                             msg.obj = "wifi未连接";
                             mHandler.sendMessage(msg);
-                            Log.i(TAG, "wifi未连接");
                         }
 
 

@@ -8,8 +8,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.BasicPacket;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.OnRecvListener;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
@@ -56,22 +56,10 @@ public class UdpComm {
             Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp));
             udp.send(packet);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return true;
     }
-
-
-    /**
-     * 返回端口
-     *
-     * @return
-     */
-    public int returnPort() {
-        return port;
-    }
-
     /**
      * 启动服务
      */
@@ -101,12 +89,13 @@ public class UdpComm {
      */
 
     public int stopServer() {
+        Log.i(TAG, "停止udp探测包 isRun=" + isRun);
         if (isRun) {
-            if (recvThread != null)
-                recvThread.stopThis();
-            recvThread = null;
             isRun = false;
-
+            if (recvThread != null){
+                recvThread.stopThis();
+                recvThread = null;
+            }
             if (udp != null) {
                 Log.d(TAG, "set udp null");
                 udp.close();
@@ -129,7 +118,6 @@ public class UdpComm {
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             super.run();
             byte[] data = new byte[10240];
             isRun = true;
@@ -144,8 +132,6 @@ public class UdpComm {
                         System.arraycopy(data, 0, result, 0, len);
                         BasicPacket basicPacket = new BasicPacket(mContext, packet.getAddress(), packet.getPort());
                         Log.i(TAG, "udp 接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
-                        //  basicPacket.unpackPacketWithData(result, result.length);
-                        //不需要解析数据,只要停止探测线程
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
                         //basicPacket.unpackPacketWithWirelessData(result);
                         listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
@@ -159,6 +145,4 @@ public class UdpComm {
             udp = null;
         }
     }
-
-
 }

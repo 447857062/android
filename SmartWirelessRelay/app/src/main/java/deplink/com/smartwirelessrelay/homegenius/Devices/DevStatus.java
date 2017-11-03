@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
@@ -30,7 +30,6 @@ public class DevStatus {
 
     private static final String TAG = "DevStatus";
     static Timer timer;
-    static InetAddress regServerIP;
 
     public static List<String> ssids;
     int curNetWork;
@@ -70,8 +69,8 @@ public class DevStatus {
         //更新下本地的网络状态和IP地址
         PublicMethod.getLocalIP(mContext);
         switch (net) {
-            case 1:         //WiFi模式
-            case 3:         //WiFi模式
+            case 1:
+                //WiFi模式
                 //调试,不打开探测
                 wifiCheckHandler();
                 break;
@@ -114,7 +113,6 @@ public class DevStatus {
     public void open() {
         curNetWork = PublicMethod.checkConnectionState(mContext);
         ssids = new ArrayList<>();
-        regServerIP = null;
         timer = new Timer();
         timer.schedule(new timerTimeoutTask(),1000, 5000);
 

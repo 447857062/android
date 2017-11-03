@@ -17,12 +17,12 @@ import java.util.List;
 
 import javax.net.ssl.SSLSocket;
 
-import deplink.com.smartwirelessrelay.homegenius.Devices.EllESDK;
+import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistorys;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Record;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.RecordListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
@@ -79,14 +79,11 @@ public class LockHistory extends Activity {
                         Gson gson = new Gson();
                         String text = gson.toJson(queryCmd);
                         packet.packQueryRecordListData(null, text.getBytes());
-                        if (Client_sslSocket != null) {
-                        } else {
-                           // EllESDK.getInstance().InitTcpIpConnection(null);
-                          //  EllESDK.getInstance().InitEllESDK(LockHistory.this,null);
-                            EllESDK.getInstance().InitTcpIpConnect(null);
-                            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+                        if (null==Client_sslSocket) {
+                            ConnectManager.getInstance().InitEllESDK(LockHistory.this, null);
+                            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                         }
-                        EllESDK.getInstance().getOut(packet.data);
+                        ConnectManager.getInstance().getOut(packet.data);
                         isReceiverHistoryRecord = false;
                         while (!isReceiverHistoryRecord) {
                             getIn(Client_sslSocket);
@@ -150,10 +147,8 @@ public class LockHistory extends Activity {
     public void getIn(SSLSocket socket) {
         String str;
         if (null == Client_sslSocket) {
-            //EllESDK.getInstance().InitTcpIpConnection(null);
-           // EllESDK.getInstance().InitEllESDK(LockHistory.this,null);
-            EllESDK.getInstance().InitTcpIpConnect(null);
-            Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+            ConnectManager.getInstance().InitTcpIpConnect(null);
+            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
         }
         try {
             input = socket.getInputStream();
@@ -165,7 +160,6 @@ public class LockHistory extends Activity {
                     System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                     int length = DataExchange.bytesToInt(lengthByte, 0, 2);
                     System.out.println("received:" + DataExchange.byteArrayToHexString(buf) + "length=" + length);
-                    System.out.println("received:" + "length=" + length);
                     str = new String(buf, AppConstant.BASICLEGTH, length);
                     System.out.println("received:" + str);
                     Message msg = Message.obtain();

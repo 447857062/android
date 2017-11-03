@@ -1,8 +1,10 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.packet;
 
 import android.content.Context;
 
 import java.net.InetAddress;
+
+import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
 
 /**
  * Created by benond on 2017/2/6.
@@ -56,7 +58,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packCheckPacketWithUID( OnRecvListener listener,byte[]xdata) {
+    public int packCheckPacketWithUID(OnRecvListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
@@ -124,6 +126,21 @@ public class GeneralPacket extends BasicPacket {
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
         return packWirelessData( ip,false,xdata,(byte)0x02);
+    }
+    /**
+     * 发送广播包,查询设备
+     * ip 255.255.255.255
+     * @param listener
+     * @return
+     */
+    public int packSendSmartDevsData(OnRecvListener listener, byte[]xdata) {
+        this.listener = listener;
+        byte[]ip = new byte[4];
+        ip[0]=(byte) 0xFF;
+        ip[1]=(byte)0xFF;
+        ip[2]=(byte) 0xFF;
+        ip[3]=(byte) 0xFF;
+        return packWirelessData( ip,false,xdata,(byte)0x11);
     }
 
 }

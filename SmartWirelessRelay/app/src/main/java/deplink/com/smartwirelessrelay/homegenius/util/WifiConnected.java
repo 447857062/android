@@ -10,7 +10,7 @@ import android.os.Build;
  * Created by Administrator on 2017/11/2.
  */
 public class WifiConnected {
-    public static boolean isNetworkAvailable(Context context) {
+    public static boolean isWifiAvailable(Context context) {
         boolean available = false;
         //获取手机的连接服务管理器，这里是连接管理器类
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

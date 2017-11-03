@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
@@ -23,9 +23,9 @@ public class ConnectionMonitor {
     private TimerTask monitorTask = null;
     private Context mContext;
 
-    public ConnectionMonitor( Context context) {
+    public ConnectionMonitor(Context context) {
         this.mContext = context;
-         packet = new GeneralPacket(mContext);
+        packet = new GeneralPacket(mContext);
     }
 
     public void startTimer() {
@@ -38,10 +38,10 @@ public class ConnectionMonitor {
                 public void run() {
                     SharedPreference sharedPreference = new SharedPreference(mContext, "heathswitch");
                     String open = sharedPreference.getString("heathswitch");
-                        Log.i(TAG,"发送心跳包开关 open="+open);
-                        if (open!=null && open.equals("open")) {
-                            checkConnectionHealth();
-                        }
+                    Log.i(TAG, "发送心跳包开关 open=" + open);
+                    if (open != null && open.equals("open")) {
+                        checkConnectionHealth();
+                    }
                 }
             };
         }
@@ -62,13 +62,15 @@ public class ConnectionMonitor {
         }
         Log.d(TAG, "===>monitor stopped");
     }
+
     private boolean isServerClose;
 
     public void setServerClose(boolean serverClose) {
         isServerClose = serverClose;
     }
+
     public boolean getServerClose() {
-       return isServerClose;
+        return isServerClose;
     }
 
     /**
@@ -77,12 +79,14 @@ public class ConnectionMonitor {
     public void checkConnectionHealth() {
         Log.i(TAG, "checkConnectionHealth" + isNetworkAvailable(mContext));
         if (isNetworkAvailable(mContext)) {
-           isServerClose= isServerClose();
-            Log.i(TAG, "===>check connect isServerClose="+isServerClose);
+            isServerClose = isServerClose();
+            Log.i(TAG, "===>check connect isServerClose=" + isServerClose);
         }
 
     }
+
     private GeneralPacket packet;
+
     /**
      * 判断是否断开连接，断开返回true,没有返回false
      *
@@ -91,15 +95,21 @@ public class ConnectionMonitor {
     public Boolean isServerClose() {
         try {
             packet.packHeathPacket();
-           int clientStatus= EllESDK.getInstance().getOut(packet.data);
+            int clientStatus = ConnectManager.getInstance().getOut(packet.data);
             //  socket.sendUrgentData(0);//发送1个字节的紧急数据，默认情况下，服务器端没有开启紧急数据处理，不影响正常通信
-            Log.i(TAG,"clientStatus="+clientStatus);
-            if(clientStatus==-1){
+            Log.i(TAG, "clientStatus=" + clientStatus);
+            if (clientStatus == -1) {
+                // EllESDK.getInstance().InitEllESDK(mContext, null);
+                //  Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
+               /* EllESDK.getInstance().setConnectThread(null);
+                EllESDK.getInstance().setMonitorThread(null);*/
+               // ConnectManager.getInstance().setClient_sslSocket(null);
+               // ConnectManager.getInstance().InitTcpIpConnect(null);
                 return true;
             }
             return false;
         } catch (Exception se) {
-            Log.i(TAG,"断开连接");
+            Log.i(TAG, "断开连接");
             return true;
         }
     }

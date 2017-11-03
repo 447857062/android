@@ -50,7 +50,8 @@
             </intent-filter>
         </activity>
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.DevListActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.LockHistory"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.LockHistory" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SendSmartDevListActivity"></activity>
     </application>
 
 </manifest>

@@ -36,11 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textview_smartdevice_list"></ListView>
-    <!-- <ExpandableListView
-         android:id="@+id/expandablelv"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content" >
-     </ExpandableListView>-->
+
     <Button
 
         android:id="@+id/click"
@@ -86,18 +82,39 @@
             android:layout_weight="1"
             android:text="开门" />
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/edittext_manager_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/edittext_auth_time"
-        android:hint="请输入管理密码" />
-
-    <EditText
-        android:id="@+id/edittext_auth_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_above="@+id/layout_options"
-        android:hint="请输入授权时限" />
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <EditText
+
+            android:id="@+id/edittext_AuthPwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/layout_options"
+            android:hint="请输入AuthPwd(默认值001)" />
+
+        <EditText
+            android:id="@+id/edittext_UserID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/edittext_AuthPwd"
+            android:hint="请输入UserID(默认值003)" />
+        <EditText
+            android:id="@+id/edittext_ManagePasswd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/edittext_UserID"
+            android:hint="请输入ManagePasswd(默认值123456)" />
+        <EditText
+            android:id="@+id/edittext_LimitedTime"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/edittext_ManagePasswd"
+            android:hint="请输入LimitedTime(默认值30)" />
+    </LinearLayout>
+
+
 </RelativeLayout>

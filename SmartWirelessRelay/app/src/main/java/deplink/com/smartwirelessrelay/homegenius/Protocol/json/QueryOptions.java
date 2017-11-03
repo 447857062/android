@@ -1,6 +1,7 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.json;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -14,9 +15,17 @@ public class QueryOptions implements Serializable {
     private String AuthPwd;
     private String LimitedTime;
     private String Result;
-
+    private List<SmartDev>SmartDev;
     public String getResult() {
         return Result;
+    }
+
+    public List<SmartDev> getSmartDev() {
+        return SmartDev;
+    }
+
+    public void setSmartDev(List<SmartDev> smartDev) {
+        SmartDev = smartDev;
     }
 
     public void setResult(String result) {

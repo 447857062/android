@@ -35,10 +35,7 @@
         <item name="android:paddingBottom">@dimen/child_dev_firstitem_testview_paddingBottom</item>
     </style>
 
-    <style name="PopupAnimaFade" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/basepopup_fade_in</item>
-        <item name="android:windowExitAnimation">@anim/basepopup_fade_out</item>
-    </style>
+
 
 
 </resources>

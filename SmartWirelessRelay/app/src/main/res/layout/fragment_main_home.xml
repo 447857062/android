@@ -43,9 +43,15 @@
         android:text="查询开锁记录" />
 
     <Button
-        android:id="@+id/button_heath_switch"
+        android:id="@+id/button_send_smart_dev"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_query_lock_history"
+        android:text="下发智能设备列表" />
+    <Button
+        android:id="@+id/button_heath_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_send_smart_dev"
         android:text="心跳开关" />
 </RelativeLayout>
