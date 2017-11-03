@@ -236,7 +236,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             String text = gson.toJson(queryCmd);
                             packet.packQueryDevListData(null, text.getBytes());
                             if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                ConnectManager.getInstance().InitTcpIpConnect(null);
+                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
                                 Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
 
                             }
@@ -305,8 +306,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             if (Client_sslSocket != null) {
 
                             } else {
-
-                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                ConnectManager.getInstance().InitTcpIpConnect(null);
+                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
                                 Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
@@ -371,7 +372,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
                             if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                ConnectManager.getInstance().InitTcpIpConnect(null);
+                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
                                 Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
@@ -436,7 +438,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
                             if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                ConnectManager.getInstance().InitTcpIpConnect(null);
+                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
                                 Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
@@ -500,7 +503,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
                             if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
+                                ConnectManager.getInstance().InitTcpIpConnect(null);
+                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
                                 Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             }
                             isReceiverOptionsSet = false;
