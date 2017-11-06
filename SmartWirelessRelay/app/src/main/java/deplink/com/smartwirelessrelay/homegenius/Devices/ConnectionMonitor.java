@@ -22,7 +22,8 @@ public class ConnectionMonitor {
     private Timer monitorTimer = null;
     private TimerTask monitorTask = null;
     private Context mContext;
-
+    private GeneralPacket packet;
+    private boolean isServerClose;
     public ConnectionMonitor(Context context) {
         this.mContext = context;
         packet = new GeneralPacket(mContext);
@@ -63,15 +64,7 @@ public class ConnectionMonitor {
         Log.d(TAG, "===>monitor stopped");
     }
 
-    private boolean isServerClose;
 
-    public void setServerClose(boolean serverClose) {
-        isServerClose = serverClose;
-    }
-
-    public boolean getServerClose() {
-        return isServerClose;
-    }
 
     /**
      * 检查
@@ -85,7 +78,7 @@ public class ConnectionMonitor {
 
     }
 
-    private GeneralPacket packet;
+
 
     /**
      * 判断是否断开连接，断开返回true,没有返回false
@@ -99,12 +92,6 @@ public class ConnectionMonitor {
             //  socket.sendUrgentData(0);//发送1个字节的紧急数据，默认情况下，服务器端没有开启紧急数据处理，不影响正常通信
             Log.i(TAG, "clientStatus=" + clientStatus);
             if (clientStatus == -1) {
-                // EllESDK.getInstance().InitEllESDK(mContext, null);
-                //  Client_sslSocket = EllESDK.getInstance().getClient_sslSocket();
-               /* EllESDK.getInstance().setConnectThread(null);
-                EllESDK.getInstance().setMonitorThread(null);*/
-               // ConnectManager.getInstance().setClient_sslSocket(null);
-               // ConnectManager.getInstance().InitTcpIpConnect(null);
                 return true;
             }
             return false;

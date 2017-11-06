@@ -30,14 +30,11 @@ public class DevStatus {
 
     private static final String TAG = "DevStatus";
     static Timer timer;
-
     public static List<String> ssids;
     int curNetWork;
     public DatagramSocket dataSocket;
-    public String RegServer = "devreg1.elletechnology.com";
     public Context mContext;
     private UdpPacket udp;
-
     public DevStatus(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
@@ -47,10 +44,6 @@ public class DevStatus {
             e.printStackTrace();
         }
     }
-
-
-
-
 
     class timerTimeoutTask extends TimerTask {
 
@@ -79,7 +72,6 @@ public class DevStatus {
         }
     }
     public void wifiCheckHandler() {
-        Log.i(TAG, "wifiCheckHandler send udp packet");
         GeneralPacket packet = null;
         try {
             //发送一个局域网查询包
@@ -99,6 +91,7 @@ public class DevStatus {
         SharedPreference sharedPreference = new SharedPreference(mContext, "uid");
         String uid = sharedPreference.getString("uid");
         //已收到uid
+        Log.i(TAG, "wifiCheckHandler send udp packet");
         if(uid!=null && !uid.equals("")){
             byte[]temp=uid.getBytes();
             Log.i(TAG,"uid="+uid+"长度="+temp.length);
@@ -107,9 +100,6 @@ public class DevStatus {
             udp.writeNet(packet);
         }
     }
-
-
-
     public void open() {
         curNetWork = PublicMethod.checkConnectionState(mContext);
         ssids = new ArrayList<>();

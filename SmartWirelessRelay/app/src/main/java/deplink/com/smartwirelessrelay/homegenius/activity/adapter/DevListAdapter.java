@@ -66,7 +66,5 @@ public class DevListAdapter extends BaseAdapter{
     private static class ViewHolder{
         TextView device_uid;
         TextView device_statu;
-        TextView device_smart;
-
     }
 }

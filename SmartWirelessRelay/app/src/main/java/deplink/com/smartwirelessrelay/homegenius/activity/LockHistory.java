@@ -80,13 +80,13 @@ public class LockHistory extends Activity {
                         String text = gson.toJson(queryCmd);
                         packet.packQueryRecordListData(null, text.getBytes());
                         if (null==Client_sslSocket) {
-                            ConnectManager.getInstance().InitEllESDK(LockHistory.this, null);
-                            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                            ConnectManager.getInstance().InitConnectManager(LockHistory.this, null);
+                            Client_sslSocket = ConnectManager.getInstance().getSslSocket();
                         }
                         ConnectManager.getInstance().getOut(packet.data);
                         isReceiverHistoryRecord = false;
                         while (!isReceiverHistoryRecord) {
-                            getIn(Client_sslSocket);
+                            getIn();
                         }
 
                     }
@@ -144,14 +144,14 @@ public class LockHistory extends Activity {
     private InputStream input;
     private boolean isReceiverHistoryRecord;
 
-    public void getIn(SSLSocket socket) {
+    public void getIn() {
         String str;
         if (null == Client_sslSocket) {
             ConnectManager.getInstance().InitTcpIpConnect(null);
-            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+            Client_sslSocket = ConnectManager.getInstance().getSslSocket();
         }
         try {
-            input = socket.getInputStream();
+            input = Client_sslSocket.getInputStream();
             if (input != null) {
                 byte[] buf = new byte[1024];
                 int len = input.read(buf);

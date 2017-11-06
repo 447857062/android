@@ -64,11 +64,11 @@ public class SendSmartDevListActivity extends Activity implements View.OnClickLi
                         String text = gson.toJson(queryCmd);
                         packet.packSendSmartDevsData(null, text.getBytes());
                         if (null == Client_sslSocket) {
-                            ConnectManager.getInstance().InitEllESDK(SendSmartDevListActivity.this, null);
-                            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                            ConnectManager.getInstance().InitConnectManager(SendSmartDevListActivity.this, null);
+                            Client_sslSocket = ConnectManager.getInstance().getSslSocket();
 
                         }
-                        Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                        Client_sslSocket = ConnectManager.getInstance().getSslSocket();
                         ConnectManager.getInstance().getOut(packet.data);
                         isReceiverSendSmartDev = false;
                        while (!isReceiverSendSmartDev) {
@@ -92,7 +92,7 @@ public class SendSmartDevListActivity extends Activity implements View.OnClickLi
         String str;
         if (null == Client_sslSocket) {
             ConnectManager.getInstance().InitTcpIpConnect(null);
-            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+            Client_sslSocket = ConnectManager.getInstance().getSslSocket();
         }
         try {
             input = socket.getInputStream();

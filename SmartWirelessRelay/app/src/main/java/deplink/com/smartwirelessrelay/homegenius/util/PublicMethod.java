@@ -55,9 +55,7 @@ public class PublicMethod {
         } else {
             return 0;
         }
-
         return 1;
-
     }
 
     public static boolean isNetworkOnline() {
@@ -99,7 +97,6 @@ public class PublicMethod {
 
     public static String getImei(Context context) {
         TelephonyManager mTm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-
         return mTm.getDeviceId();
     }
 
@@ -123,7 +120,6 @@ public class PublicMethod {
                 tmp[i] = p_md5Data[i];
             }
         }
-
         return tmp;
     }
 

@@ -56,25 +56,6 @@ public class RecordListAdapter extends BaseAdapter{
         }
         vh.device_uid.setText("time:"+deviceName);
         vh.device_statu.setText("useid："+mDatas.get(position).getUserid());
-        //  vh.device_mac.setText(String.format(mContext.getResources().getString(R.string.device_mac),mListData.get(position).getMac()));
-      /*  switch (position%4){
-            case 0:
-                vh.device_type.setImageResource(R.drawable.unbind_device_blue);
-                break;
-            case 1:
-                vh.device_type.setImageResource(R.drawable.unbind_device_green);
-                break;
-            case 2:
-                vh.device_type.setImageResource(R.drawable.unbind_device_origon);
-                break;
-            case 3:
-                vh.device_type.setImageResource(R.drawable.unbind_device_red);
-                break;
-        }*/
-
-        // vh.device_key.setText(String.format(mContext.getResources().getString(R.string.device_key),mListData.get(position).getDevice_key()));
-        // vh.device_manufacturer.setText(String.format(mContext.getResources().getString(R.string.device_manufacturer),mListData.get(position).getManufacturer()));
-        // vh.device_product.setText(String.format(mContext.getResources().getString(R.string.device_product),mListData.get(position).getProduct()));
         return convertView;
     }
 

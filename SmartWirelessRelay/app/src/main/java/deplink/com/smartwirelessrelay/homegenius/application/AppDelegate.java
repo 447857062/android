@@ -30,12 +30,6 @@ public class AppDelegate extends Application {
         super.onCreate();
 
     }
-
-
-
-
-
-
     @Override
     public void onTerminate() {
         android.os.Process.killProcess(android.os.Process.myPid());

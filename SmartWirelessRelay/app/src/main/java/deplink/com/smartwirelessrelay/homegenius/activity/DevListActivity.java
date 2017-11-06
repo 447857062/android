@@ -19,15 +19,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.SSLSocket;
-
 import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.DevListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.SmartDevListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
@@ -38,7 +36,6 @@ import deplink.com.smartwirelessrelay.homegenius.util.WifiConnected;
 
 public class DevListActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "DevListActivity";
-    private SSLSocket Client_sslSocket;
     private ListView dev_list;
     private List<Device> mDeviceList;
     private ListView smart_dev_list;
@@ -55,6 +52,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
     private EditText edittext_UserID;
     private EditText edittext_ManagePasswd;
     private EditText edittext_LimitedTime;
+    private ConnectManager mConnectManager;
+    GeneralPacket packet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
         smartDevListAdapter = new SmartDevListAdapter(this, mSmartDev);
         dev_list.setAdapter(devAdapter);
         smart_dev_list.setAdapter(smartDevListAdapter);
-
+        mConnectManager = ConnectManager.getInstance();
 
     }
 
@@ -166,47 +165,46 @@ public class DevListActivity extends Activity implements View.OnClickListener {
     private boolean isReceiverDevList;
     private boolean isReceiverOptionsSet;
 
-    public void getIn(SSLSocket socket) {
+    public void getIn() {
         String str;
-        if (null != Client_sslSocket) {
-            try {
-                InputStream input = socket.getInputStream();
-                byte[] buf = new byte[1024];
-                int len = input.read(buf);
-                Log.i(TAG, "received:" + "len=" + len);
-                if (len == -1) {
-                    isReceiverOptionsSet = true;
-                    isReceiverDevList = true;
-                }
-                if (len != -1 && len > AppConstant.BASICLEGTH) {
-                    byte[] lengthByte = new byte[2];
-                    System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                    int length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                    System.out.println("received:" + "length=" + length);
-                    str = new String(buf, AppConstant.BASICLEGTH, length);
-                    System.out.println("received:" + str);
-                    Message msg = Message.obtain();
-                    if (str.contains("DevList")) {
-                        isReceiverDevList = true;
-                        msg.what = MSG_GET_DEVS;
-                        msg.obj = str;
-                        System.out.println("mHandler.sendMessage(isReceiverDevList)");
-                        mHandler.sendMessage(msg);
-                    } else {
-                        //
-                        isReceiverOptionsSet = true;
-                        Gson gson = new Gson();
-                        QueryOptions optionResult = gson.fromJson(str, QueryOptions.class);
-                        String resultStr = optionResult.getResult();
-                        msg.what = MSG_GET_SET_RESULT;
-                        msg.obj = resultStr;
-                        mHandler.sendMessage(msg);
 
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            InputStream input = mConnectManager.getSslSocket().getInputStream();
+            byte[] buf = new byte[1024];
+            int len = input.read(buf);
+            Log.i(TAG, "received:" + "len=" + len);
+            if (len == -1) {
+                isReceiverOptionsSet = true;
+                isReceiverDevList = true;
             }
+            if (len != -1 && len > AppConstant.BASICLEGTH) {
+                byte[] lengthByte = new byte[2];
+                System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                int length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                System.out.println("received:" + "length=" + length);
+                str = new String(buf, AppConstant.BASICLEGTH, length);
+                System.out.println("received:" + str);
+                Message msg = Message.obtain();
+                if (str.contains("DevList")) {
+                    isReceiverDevList = true;
+                    msg.what = MSG_GET_DEVS;
+                    msg.obj = str;
+                    System.out.println("mHandler.sendMessage(isReceiverDevList)");
+                    mHandler.sendMessage(msg);
+                } else {
+                    //
+                    isReceiverOptionsSet = true;
+                    Gson gson = new Gson();
+                    QueryOptions optionResult = gson.fromJson(str, QueryOptions.class);
+                    String resultStr = optionResult.getResult();
+                    msg.what = MSG_GET_SET_RESULT;
+                    msg.obj = resultStr;
+                    mHandler.sendMessage(msg);
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
@@ -227,7 +225,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
-                            GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                            packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
                             QueryOptions queryCmd = new QueryOptions();
                             queryCmd.setOP("QUERY");
@@ -235,17 +233,13 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packQueryDevListData(null, text.getBytes());
-                            if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitTcpIpConnect(null);
-                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
-                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
-
+                            if (null == mConnectManager.getSslSocket()) {
+                                mConnectManager.InitTcpIpConnect(null);
                             }
-                            Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
                             isReceiverDevList = false;
-                            ConnectManager.getInstance().getOut(packet.data);
+                            mConnectManager.getOut(packet.data);
                             while (!isReceiverDevList) {
-                                getIn(Client_sslSocket);
+                                getIn();
                             }
 
                         } else {
@@ -253,7 +247,6 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             msg.what = MSG_TOAST;
                             msg.obj = "wifi未连接";
                             mHandler.sendMessage(msg);
-                            Log.i(TAG, "wifi未连接");
                         }
 
                     }
@@ -265,7 +258,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
-                            final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                            packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
                             QueryOptions queryCmd = new QueryOptions();
                             queryCmd.setOP("SET");
@@ -303,17 +296,13 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (Client_sslSocket != null) {
-
-                            } else {
-                                ConnectManager.getInstance().InitTcpIpConnect(null);
-                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
-                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                            if (mConnectManager.getSslSocket() == null) {
+                                mConnectManager.InitTcpIpConnect(null);
                             }
                             isReceiverOptionsSet = false;
-                            ConnectManager.getInstance().getOut(packet.data);
+                            mConnectManager.getOut(packet.data);
                             while (!isReceiverOptionsSet) {
-                                getIn(Client_sslSocket);
+                                getIn();
                             }
 
                         } else {
@@ -334,7 +323,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
 //查询设备
-                            final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                            packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
                             QueryOptions queryCmd = new QueryOptions();
                             queryCmd.setOP("SET");
@@ -371,22 +360,19 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitTcpIpConnect(null);
-                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
-                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                            if (null == mConnectManager.getSslSocket()) {
+                                mConnectManager.InitTcpIpConnect(null);
                             }
                             isReceiverOptionsSet = false;
-                            ConnectManager.getInstance().getOut(packet.data);
+                            mConnectManager.getOut(packet.data);
                             while (!isReceiverOptionsSet) {
-                                getIn(Client_sslSocket);
+                                getIn();
                             }
                         } else {
                             Message msg = Message.obtain();
                             msg.what = MSG_TOAST;
                             msg.obj = "wifi未连接";
                             mHandler.sendMessage(msg);
-                            Log.i(TAG, "wifi未连接");
                         }
 
 
@@ -399,7 +385,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
-                            final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                            packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
                             QueryOptions queryCmd = new QueryOptions();
                             queryCmd.setOP("SET");
@@ -437,15 +423,13 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitTcpIpConnect(null);
-                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
-                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                            if (null == mConnectManager.getSslSocket()) {
+                                mConnectManager.InitTcpIpConnect(null);
                             }
                             isReceiverOptionsSet = false;
-                            ConnectManager.getInstance().getOut(packet.data);
+                            mConnectManager.getOut(packet.data);
                             while (!isReceiverOptionsSet) {
-                                getIn(Client_sslSocket);
+                                getIn();
                             }
                         } else {
                             Message msg = Message.obtain();
@@ -465,7 +449,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                     public void run() {
                         if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
                             //查询设备
-                            final GeneralPacket packet = new GeneralPacket(DevListActivity.this);
+                            packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
                             QueryOptions queryCmd = new QueryOptions();
                             queryCmd.setOP("SET");
@@ -502,15 +486,13 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (null == Client_sslSocket) {
-                                ConnectManager.getInstance().InitTcpIpConnect(null);
-                              //  ConnectManager.getInstance().InitEllESDK(DevListActivity.this, null);
-                                Client_sslSocket = ConnectManager.getInstance().getClient_sslSocket();
+                            if (null == mConnectManager.getSslSocket()) {
+                                mConnectManager.InitTcpIpConnect(null);
                             }
                             isReceiverOptionsSet = false;
-                            ConnectManager.getInstance().getOut(packet.data);
+                            mConnectManager.getOut(packet.data);
                             while (!isReceiverOptionsSet) {
-                                getIn(Client_sslSocket);
+                                getIn();
                             }
                         } else {
                             Message msg = Message.obtain();
