@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
@@ -21,21 +22,30 @@ import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
  * Created by benond on 2017/2/6.
  */
 
-public class DevStatus {
+public class DevStatus implements NetStatuChangeReceiver.onNetStatuschangeListener{
 
     private static final String TAG = "DevStatus";
      Timer timer;
     public DatagramSocket dataSocket;
     public Context mContext;
     private UdpPacket udp;
+    private int currentNetStatu;
+    private NetStatuChangeReceiver mNetStatuChangeReceiver;
     public DevStatus(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
+        mNetStatuChangeReceiver=new NetStatuChangeReceiver();
+        mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
         try {
             dataSocket = new DatagramSocket();
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onNetStatuChange(int netStatu) {
+        currentNetStatu=netStatu;
     }
 
     class timerTimeoutTask extends TimerTask {
@@ -50,17 +60,16 @@ public class DevStatus {
         //NSLog(@"设备状体定时器运行正常");
         //先判断当前的网络状态，没有网络则不执行设备的检查
         //当前如果是WiFi的话，则优先执行本地查找，确定本地没有设备后再执行远程查找
-        //当前如果是流量模式的话，则只执行远程查询
         int net = PublicMethod.checkConnectionState(mContext);
         //更新下本地的网络状态和IP地址
         PublicMethod.getLocalIP(mContext);
-        switch (net) {
-            case 1:
+        switch (currentNetStatu) {
+            case NetStatuChangeReceiver.NET_TYPE_WIFI:
                 //WiFi模式
                 //调试,不打开探测
                 wifiCheckHandler();
                 break;
-            default:
+            default:s
                 break;
         }
     }
