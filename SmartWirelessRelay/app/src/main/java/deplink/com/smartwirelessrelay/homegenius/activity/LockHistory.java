@@ -24,7 +24,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Record;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.RecordListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 

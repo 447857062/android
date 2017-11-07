@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.net.InetAddress;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 
 /**
  * Created by benond on 2017/2/6.
@@ -58,7 +58,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packCheckPacketWithUID(OnRecvListener listener, byte[]xdata) {
+    public int packCheckPacketWithUID(OnRecvLocalConnectIpListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
@@ -73,7 +73,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packQueryData(OnRecvListener listener, byte[]xdata) {
+    public int packQueryData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
@@ -88,7 +88,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packQueryDevListData(OnRecvListener listener, byte[]xdata) {
+    public int packQueryDevListData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
@@ -103,7 +103,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packSetSmartLockData(OnRecvListener listener, byte[]xdata) {
+    public int packSetSmartLockData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
@@ -118,7 +118,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packQueryRecordListData(OnRecvListener listener, byte[]xdata) {
+    public int packQueryRecordListData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
@@ -133,7 +133,7 @@ public class GeneralPacket extends BasicPacket {
      * @param listener
      * @return
      */
-    public int packSendSmartDevsData(OnRecvListener listener, byte[]xdata) {
+    public int packSendSmartDevsData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
         this.listener = listener;
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;

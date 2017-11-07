@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.UdpNet;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,8 +9,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
 
@@ -20,25 +20,15 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 public class UdpComm {
 
     public static final String TAG = "UdpComm";
-    private int port = AppConstant.UDP_CONNECT_PORT;
     private DatagramSocket udp = null;
-    private OnRecvListener listener = null;
+    private OnRecvLocalConnectIpListener listener = null;
     private RecvThread recvThread = null;
     private Context mContext;
     private boolean isRun = false;
 
-    public UdpComm(Context context, int port, OnRecvListener listener) {
+    public UdpComm(Context context, OnRecvLocalConnectIpListener listener) {
         this.mContext = context;
-        this.port = port;
         this.listener = listener;
-    }
-
-    public UdpComm(OnRecvListener listener) {
-        this.listener = listener;
-    }
-
-    public DatagramSocket getUdp() {
-        return udp;
     }
 
     /**
@@ -60,6 +50,7 @@ public class UdpComm {
         }
         return true;
     }
+
     /**
      * 启动服务
      */
@@ -69,14 +60,12 @@ public class UdpComm {
         if (udp == null) {
             try {
                 udp = new DatagramSocket();
-                port = udp.getLocalPort();
                 recvThread = new RecvThread();
                 recvThread.setPriority(Thread.NORM_PRIORITY);
                 recvThread.start();
                 isRun = true;
                 return 1;
             } catch (SocketException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 return -1;
             }
@@ -92,12 +81,11 @@ public class UdpComm {
         Log.i(TAG, "停止udp探测包 isRun=" + isRun);
         if (isRun) {
             isRun = false;
-            if (recvThread != null){
+            if (recvThread != null) {
                 recvThread.stopThis();
                 recvThread = null;
             }
             if (udp != null) {
-                Log.d(TAG, "set udp null");
                 udp.close();
                 udp = null;
             }
@@ -131,14 +119,14 @@ public class UdpComm {
                         byte[] result = new byte[len];
                         System.arraycopy(data, 0, result, 0, len);
                         BasicPacket basicPacket = new BasicPacket(mContext, packet.getAddress(), packet.getPort());
-                        Log.i(TAG, "udp 接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
+                        Log.i(TAG, "udp RecvThread 接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
                         //basicPacket.unpackPacketWithWirelessData(result);
                         listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
+                        //停止探测ip地址
                         stopServer();
                     }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

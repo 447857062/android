@@ -28,10 +28,10 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.DevListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.SmartDevListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
-import deplink.com.smartwirelessrelay.homegenius.util.WifiConnected;
+import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 
 
 public class DevListActivity extends Activity implements View.OnClickListener {
@@ -223,7 +223,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
 
                     @Override
                     public void run() {
-                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
+                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
                             //查询设备
                             packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -256,7 +256,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
+                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
                             //查询设备
                             packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -321,7 +321,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
+                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
 //查询设备
                             packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -383,7 +383,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
+                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
                             //查询设备
                             packet = new GeneralPacket(DevListActivity.this);
                             //探测设备
@@ -447,7 +447,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (WifiConnected.isWifiAvailable(DevListActivity.this)) {
+                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
                             //查询设备
                             packet = new GeneralPacket(DevListActivity.this);
                             //探测设备

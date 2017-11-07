@@ -6,8 +6,8 @@ import android.util.Log;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.interfaces.OnRecvListener;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
@@ -30,7 +30,7 @@ public class BasicPacket {
     //seq编号，方便返回的时候回掉到界面
     public int seq;
     //回调调用者
-    public OnRecvListener listener;
+    public OnRecvLocalConnectIpListener listener;
 
     //设定超时时间
     private long idleTimeout = 800;
@@ -43,7 +43,6 @@ public class BasicPacket {
     public int port;
     //该条消息的建立时间
     public long createTime;
-    public boolean isLocal;
     public long mac;
     public boolean isFinish;
 
@@ -165,13 +164,9 @@ public class BasicPacket {
         byte[] ipaddress = new byte[4];
         System.arraycopy(data, 40, ipaddress, 0, 4);
         //探测设备回应的IP地址
-        Log.i(TAG, "解析设备ip=" + DataExchange.byteArrayToHexString(ipaddress) + "trans2IpV4Str=" + IPV4Util.trans2IpV4Str(ipaddress));
+        Log.i(TAG, "BasicPacket 解析设备ip（byte格式）=" + DataExchange.byteArrayToHexString(ipaddress) + "ip(String格式)=" + IPV4Util.trans2IpV4Str(ipaddress));
         return ipaddress;
     }
-
-
-
-
     /**
      * 得到需要发送的UDP包
      *

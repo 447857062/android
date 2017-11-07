@@ -23,8 +23,9 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.UdpNet.UdpPacket;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
 
@@ -32,7 +33,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
  * Created by benond on 2017/2/7.
  */
 
-public class ConnectManager {//
+public class ConnectManager implements OnGetIpListener{//
     private static final String TAG = "ConnectManager";
     private SDK_Data_Listener dataListener;
     private DevStatus devStatus;
@@ -145,7 +146,7 @@ public class ConnectManager {//
 
         //发送任务队列
         if (udpPacket == null) {
-            udpPacket = new UdpPacket(context);
+            udpPacket = new UdpPacket(context,this);
             udpPacket.start();
         }
         //启动状态查询任务
@@ -254,13 +255,14 @@ public class ConnectManager {//
         this.dataListener = elleListener;
     }
 
-    public void getIp(byte[] ip) {
-        Log.i(TAG, "SDK 已接收到UDP返回数据 中继器ip地址：" + DataExchange.byteArrayToHexString(ip));
+
+    @Override
+    public void onRecvLocalConnectIp(byte[] packet) {
+        Log.i(TAG, "SDK 已接收到UDP返回数据 中继器ip地址：" + DataExchange.byteArrayToHexString(packet));
         try {
-            dataListener.onRecvDeviceIp(ip);
+            dataListener.onRecvDeviceIp(packet);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

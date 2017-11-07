@@ -20,7 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
 public class SendSmartDevListActivity extends Activity implements View.OnClickListener{

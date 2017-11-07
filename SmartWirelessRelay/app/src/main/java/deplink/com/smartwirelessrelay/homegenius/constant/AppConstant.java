@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.util;
+package deplink.com.smartwirelessrelay.homegenius.constant;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -23,5 +23,9 @@ public class AppConstant {
     public static final String SERVER_IP = "192.168.68.1";//TCP连接IP
     // public static final  String SERVER_IP="192.168.2.210";//TCP连接IP
     public static final int SERVER_CONNECT_TIMEOUT = 15000;//TCP连接超时设置
-    public static final int SERVER_HEARTH_BREATH = 5000;//心跳包时间间隔
+    public static final int SERVER_HEARTH_BREATH = 4000;//心跳包时间间隔
+    /**
+     * 本地连接socket 输入输出流的超时
+     */
+    public static final int LOCAL_SERVER_SOCKET_TIMEOUT = 5000;
 }

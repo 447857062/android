@@ -3,23 +3,18 @@ package deplink.com.smartwirelessrelay.homegenius.Devices;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
-import deplink.com.smartwirelessrelay.homegenius.util.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.UdpNet.UdpPacket;
 
 
 /**
@@ -29,9 +24,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.UdpNet.UdpPacket;
 public class DevStatus {
 
     private static final String TAG = "DevStatus";
-    static Timer timer;
-    public static List<String> ssids;
-    int curNetWork;
+     Timer timer;
     public DatagramSocket dataSocket;
     public Context mContext;
     private UdpPacket udp;
@@ -79,12 +72,6 @@ public class DevStatus {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        //探测设备
-        QueryOptions queryCmd=new QueryOptions();
-        queryCmd.setOP("QUERY");
-        queryCmd.setMethod("DevList");
-        Gson gson=new Gson();
-        String text = gson.toJson(queryCmd);
         //查询设备，探测设备区别(这里探测设备就不需要发送查询的gson数据了)
         packet.packCheckPacketWithUID( null,null);
         //uid
@@ -101,10 +88,7 @@ public class DevStatus {
         }
     }
     public void open() {
-        curNetWork = PublicMethod.checkConnectionState(mContext);
-        ssids = new ArrayList<>();
         timer = new Timer();
         timer.schedule(new timerTimeoutTask(),1000, 5000);
-
     }
 }
