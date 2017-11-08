@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -17,7 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
  */
 public class NetStatuChangeReceiver extends BroadcastReceiver{
     private static  final String TAG="NetStatuChangeReceiver";
-    public static final int NET_TYPE_WIFI=0;
+    public static final int NET_TYPE_WIFI_CONNECTED =0;
     public static final int NET_TYPE_PHONE=1;
     /**
      * 不考虑这种情况，同时开启wifi，手机数据流量，会默认关闭手机流量.
@@ -27,6 +28,10 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
      * 无连接
      */
     public static final int NET_TYPE_NONE=3;
+    /**
+     * WIFI不可用
+     */
+    public static final int NET_TYPE_WIFI_DISCONNECTED=4;
     /**
      * 当前的网络情况
      */
@@ -55,19 +60,29 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG,"net status change on receive ");
-        //只监听了网络状态的广播，就不用过滤acton了
-        Log.i(TAG,"wifi连接操作 wifi开关="+ NetStatusUtil.isWiFiActive(context)+"手机卡网络="+NetStatusUtil.isNetTypePhoneAvailable(context));
-        if(NetStatusUtil.isWiFiActive(context)){
-           currentNetStatu=NET_TYPE_WIFI;
-        }else {
-            if(NetStatusUtil.isNetTypePhoneAvailable(context)){
-                currentNetStatu=NET_TYPE_PHONE;
-            }else{
-                currentNetStatu=NET_TYPE_NONE;
-            }
-        }
-        if(this.mOnNetStatuschangeListener!=null){
-            this.mOnNetStatuschangeListener.onNetStatuChange(currentNetStatu);
-        }
+        String action=intent.getAction();
+       if(action.equals("android.net.conn.CONNECTIVITY_CHANGE")){
+           //只监听了网络状态的广播，就不用过滤acton了
+           Log.i(TAG,"wifi连接操作 wifi开关="+ NetStatusUtil.isWiFiActive(context)+"手机卡网络="+NetStatusUtil.isNetTypePhoneAvailable(context));
+           if(NetStatusUtil.isWiFiActive(context)){
+                if(PublicMethod.isNetworkOnline()){
+               currentNetStatu= NET_TYPE_WIFI_CONNECTED;
+                 }else{
+                     currentNetStatu= NET_TYPE_WIFI_DISCONNECTED;
+                 }
+           }else {
+               if(NetStatusUtil.isNetTypePhoneAvailable(context)){
+                   currentNetStatu=NET_TYPE_PHONE;
+               }else{
+                   currentNetStatu=NET_TYPE_NONE;
+               }
+           }
+
+           if(this.mOnNetStatuschangeListener!=null){
+               Log.i(TAG, String.valueOf(PublicMethod.isNetworkOnline()));
+               this.mOnNetStatuschangeListener.onNetStatuChange(currentNetStatu);
+           }
+       }
+
     }
 }

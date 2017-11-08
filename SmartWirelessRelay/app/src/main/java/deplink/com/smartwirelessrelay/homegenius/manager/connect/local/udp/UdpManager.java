@@ -15,9 +15,9 @@ import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
  * 获取本地连接的ip地址
  * 使用：
  * UdpManager manager=UdpManager.getInstance();
-   manager.InitUdpConnect(this);
+ * manager.InitUdpConnect(this);
  */
-public class UdpManager implements OnGetIpListener{
+public class UdpManager implements OnGetIpListener {
     private static final String TAG = "UdpManager";
     /**
      * 这个类设计成单例
@@ -26,8 +26,9 @@ public class UdpManager implements OnGetIpListener{
     //private Context mContext;
     private UdpPacket udpPacket;
     private DevStatus devStatus;
-  //  private String ipAddress;
+    //  private String ipAddress;
     private UdpManagerGetIPLintener mUdpManagerGetIPLintener;
+
     private UdpManager() {
     }
 
@@ -37,33 +38,36 @@ public class UdpManager implements OnGetIpListener{
         }
         return instance;
     }
+
     /**
      * 初始化本地连接管理器
      */
     public int InitUdpConnect(Context context, UdpManagerGetIPLintener listener) {
-    //    this.mContext = context;
-        this.mUdpManagerGetIPLintener=listener;
+        //    this.mContext = context;
+        this.mUdpManagerGetIPLintener = listener;
         if (listener == null) {
             Log.e(TAG, "InitUdpConnect 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
         }
         //发送任务队列
         if (udpPacket == null) {
-            udpPacket = new UdpPacket(context,this);
-            udpPacket.start();
+            udpPacket = new UdpPacket(context, this);
         }
+        udpPacket.start();
+
         //启动状态查询任务
         if (devStatus == null) {
             devStatus = new DevStatus(context, udpPacket);
-            devStatus.open();
         }
+        devStatus.open();
         return 0;
     }
 
     @Override
     public void onRecvLocalConnectIp(byte[] packet) {
         //TODO
-        Log.i(TAG,"onRecvLocalConnectIp ip="+ IPV4Util.trans2IpV4Str(packet));
-      //  ipAddress=IPV4Util.trans2IpV4Str(packet);
+        Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
+        udpPacket.stop();
+        //  ipAddress=IPV4Util.trans2IpV4Str(packet);
         mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet));
     }
 }

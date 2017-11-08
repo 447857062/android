@@ -20,6 +20,7 @@ public class NetStatusUtil {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
             if (info != null) {
                 for (int i = 0; i < info.length; i++) {
+                    Log.i(TAG,"获取wifi info="+info[i].toString());
                     if (info[i].getTypeName().equalsIgnoreCase("WIFI") && info[i].isConnected()) {
                         return true;
                     }

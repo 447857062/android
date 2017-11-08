@@ -10,25 +10,20 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.SSLSocket;
-
-import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistorys;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Record;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.RecordListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
-public class LockHistory extends Activity {
+public class LockHistory extends Activity implements LocalConnecteListener{
     private static final String TAG = "LockHistory";
     private ListView dev_list;
     private List<Record> mRecordList;
@@ -60,6 +55,8 @@ public class LockHistory extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        localConnectmanager=LocalConnectmanager.getInstance();
+        localConnectmanager.InitLocalConnectManager(this, this);
         queryThread =
                 new Thread(new Runnable() {
 
@@ -79,22 +76,12 @@ public class LockHistory extends Activity {
                         Gson gson = new Gson();
                         String text = gson.toJson(queryCmd);
                         packet.packQueryRecordListData(null, text.getBytes());
-                        if (null==Client_sslSocket) {
-                            ConnectManager.getInstance().InitConnectManager(LockHistory.this, null);
-                            Client_sslSocket = ConnectManager.getInstance().getSslSocket();
-                        }
-                        ConnectManager.getInstance().getOut(packet.data);
-                        isReceiverHistoryRecord = false;
-                        while (!isReceiverHistoryRecord) {
-                            getIn();
-                        }
-
+                       localConnectmanager.getOut(packet.data);
                     }
                 });
         queryThread.start();
     }
-
-    private SSLSocket Client_sslSocket = null;
+    private LocalConnectmanager localConnectmanager;
     private static final int MSG_GET_HISTORYRECORD = 0x01;
     private static final int MSG_RETURN_ERROR = 0x02;
     private Handler mHandler = new Handler() {
@@ -141,42 +128,52 @@ public class LockHistory extends Activity {
 
         }
     };
-    private InputStream input;
-    private boolean isReceiverHistoryRecord;
 
-    public void getIn() {
-        String str;
-        if (null == Client_sslSocket) {
-            ConnectManager.getInstance().InitTcpIpConnect(null);
-            Client_sslSocket = ConnectManager.getInstance().getSslSocket();
-        }
-        try {
-            input = Client_sslSocket.getInputStream();
-            if (input != null) {
-                byte[] buf = new byte[1024];
-                int len = input.read(buf);
-                if (len != -1 && len > AppConstant.BASICLEGTH) {
-                    byte[] lengthByte = new byte[AppConstant.PACKET_DATA_LENGTHS_TAKES];
-                    System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                    int length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                    System.out.println("received:" + DataExchange.byteArrayToHexString(buf) + "length=" + length);
-                    str = new String(buf, AppConstant.BASICLEGTH, length);
-                    System.out.println("received:" + str);
-                    Message msg = Message.obtain();
-                    msg.obj = str;
-                    isReceiverHistoryRecord = true;
-                    if (str.contains("SmartLock-HisRecord")) {
-                        msg.what = MSG_GET_HISTORYRECORD;
-                    } else if (str.contains("Result")) {
-                        msg.what = MSG_RETURN_ERROR;
-                    }
-                    mHandler.sendMessage(msg);
-                }
 
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onReciveLocalConnectePacket(byte[] packet) {
+
     }
 
+    @Override
+    public void handshakeCompleted() {
+
+    }
+
+    @Override
+    public void createSocketFailed(String msg) {
+
+    }
+
+    @Override
+    public void OnFailedgetLocalGW(String msg) {
+
+    }
+
+    @Override
+    public void OnGetUid(String uid) {
+
+    }
+
+    @Override
+    public void OnGetQueryresult(String devList) {
+        Message msg = Message.obtain();
+        msg.obj = devList;
+        if (devList.contains("SmartLock-HisRecord")) {
+            msg.what = MSG_GET_HISTORYRECORD;
+        } else if (devList.contains("Result")) {
+            msg.what = MSG_RETURN_ERROR;
+        }
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void OnGetSetresult(String setResult) {
+
+    }
+
+    @Override
+    public void wifiConnectUnReachable() {
+
+    }
 }

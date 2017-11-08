@@ -14,12 +14,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
@@ -28,13 +25,13 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.DevListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.SmartDevListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
-import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 
-public class DevListActivity extends Activity implements View.OnClickListener {
+public class DevListActivity extends Activity implements View.OnClickListener, LocalConnecteListener {
     private static final String TAG = "DevListActivity";
     private ListView dev_list;
     private List<Device> mDeviceList;
@@ -52,8 +49,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
     private EditText edittext_UserID;
     private EditText edittext_ManagePasswd;
     private EditText edittext_LimitedTime;
-    private ConnectManager mConnectManager;
     GeneralPacket packet;
+    private LocalConnectmanager localConnectmanager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +67,8 @@ public class DevListActivity extends Activity implements View.OnClickListener {
         smartDevListAdapter = new SmartDevListAdapter(this, mSmartDev);
         dev_list.setAdapter(devAdapter);
         smart_dev_list.setAdapter(smartDevListAdapter);
-        mConnectManager = ConnectManager.getInstance();
-
+        localConnectmanager=LocalConnectmanager.getInstance();
+        localConnectmanager.InitLocalConnectManager(this, this);
     }
 
     private void initViews() {
@@ -165,50 +162,6 @@ public class DevListActivity extends Activity implements View.OnClickListener {
     private boolean isReceiverDevList;
     private boolean isReceiverOptionsSet;
 
-    public void getIn() {
-        String str;
-
-        try {
-            InputStream input = mConnectManager.getSslSocket().getInputStream();
-            byte[] buf = new byte[1024];
-            int len = input.read(buf);
-            Log.i(TAG, "received:" + "len=" + len);
-            if (len == -1) {
-                isReceiverOptionsSet = true;
-                isReceiverDevList = true;
-            }
-            if (len != -1 && len > AppConstant.BASICLEGTH) {
-                byte[] lengthByte = new byte[2];
-                System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                int length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                System.out.println("received:" + "length=" + length);
-                str = new String(buf, AppConstant.BASICLEGTH, length);
-                System.out.println("received:" + str);
-                Message msg = Message.obtain();
-                if (str.contains("DevList")) {
-                    isReceiverDevList = true;
-                    msg.what = MSG_GET_DEVS;
-                    msg.obj = str;
-                    System.out.println("mHandler.sendMessage(isReceiverDevList)");
-                    mHandler.sendMessage(msg);
-                } else {
-                    //
-                    isReceiverOptionsSet = true;
-                    Gson gson = new Gson();
-                    QueryOptions optionResult = gson.fromJson(str, QueryOptions.class);
-                    String resultStr = optionResult.getResult();
-                    msg.what = MSG_GET_SET_RESULT;
-                    msg.obj = resultStr;
-                    mHandler.sendMessage(msg);
-
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     private String AuthPwd;
     private String UserID;
@@ -233,14 +186,9 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packQueryDevListData(null, text.getBytes());
-                            if (null == mConnectManager.getSslSocket()) {
-                                mConnectManager.InitTcpIpConnect(null);
-                            }
+
                             isReceiverDevList = false;
-                            mConnectManager.getOut(packet.data);
-                            while (!isReceiverDevList) {
-                                getIn();
-                            }
+                            localConnectmanager.getOut(packet.data);
 
                         } else {
                             Message msg = Message.obtain();
@@ -296,15 +244,11 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (mConnectManager.getSslSocket() == null) {
-                                mConnectManager.InitTcpIpConnect(null);
-                            }
-                            isReceiverOptionsSet = false;
-                            mConnectManager.getOut(packet.data);
-                            while (!isReceiverOptionsSet) {
+                            localConnectmanager.getOut(packet.data);
+                           /* while (!isReceiverOptionsSet) {
                                 getIn();
                             }
-
+*/
                         } else {
                             Message msg = Message.obtain();
                             msg.what = MSG_TOAST;
@@ -360,14 +304,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (null == mConnectManager.getSslSocket()) {
-                                mConnectManager.InitTcpIpConnect(null);
-                            }
-                            isReceiverOptionsSet = false;
-                            mConnectManager.getOut(packet.data);
-                            while (!isReceiverOptionsSet) {
-                                getIn();
-                            }
+                            localConnectmanager.getOut(packet.data);
                         } else {
                             Message msg = Message.obtain();
                             msg.what = MSG_TOAST;
@@ -423,14 +360,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (null == mConnectManager.getSslSocket()) {
-                                mConnectManager.InitTcpIpConnect(null);
-                            }
-                            isReceiverOptionsSet = false;
-                            mConnectManager.getOut(packet.data);
-                            while (!isReceiverOptionsSet) {
-                                getIn();
-                            }
+                            localConnectmanager.getOut(packet.data);
                         } else {
                             Message msg = Message.obtain();
                             msg.what = MSG_TOAST;
@@ -486,14 +416,7 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                             Gson gson = new Gson();
                             String text = gson.toJson(queryCmd);
                             packet.packSetSmartLockData(null, text.getBytes());
-                            if (null == mConnectManager.getSslSocket()) {
-                                mConnectManager.InitTcpIpConnect(null);
-                            }
-                            isReceiverOptionsSet = false;
-                            mConnectManager.getOut(packet.data);
-                            while (!isReceiverOptionsSet) {
-                                getIn();
-                            }
+                            localConnectmanager.getOut(packet.data);
                         } else {
                             Message msg = Message.obtain();
                             msg.what = MSG_TOAST;
@@ -506,5 +429,61 @@ public class DevListActivity extends Activity implements View.OnClickListener {
                 }).start();
                 break;
         }
+    }
+
+
+    @Override
+    public void onReciveLocalConnectePacket(byte[] packet) {
+
+    }
+
+    @Override
+    public void handshakeCompleted() {
+
+    }
+
+    @Override
+    public void createSocketFailed(String msg) {
+
+    }
+
+    @Override
+    public void OnFailedgetLocalGW(String msg) {
+
+    }
+
+    @Override
+    public void OnGetUid(String uid) {
+
+    }
+
+    @Override
+    public void OnGetQueryresult(String devList) {
+        if(devList.contains("DevList")){
+            Message msg = Message.obtain();
+            msg.what = MSG_GET_DEVS;
+            msg.obj = devList;
+            System.out.println("mHandler.sendMessage(isReceiverDevList)");
+            mHandler.sendMessage(msg);
+        }
+
+    }
+
+    @Override
+    public void OnGetSetresult(String setResult) {
+        Message msg = Message.obtain();
+        msg.what = MSG_GET_SET_RESULT;
+        msg.obj = setResult;
+        mHandler.sendMessage(msg);
+    }
+
+
+
+    @Override
+    public void wifiConnectUnReachable() {
+        Message msg = Message.obtain();
+        msg.what = MSG_GET_SET_RESULT;
+        msg.obj = "WiFi连接不可用";
+        mHandler.sendMessage(msg);
     }
 }

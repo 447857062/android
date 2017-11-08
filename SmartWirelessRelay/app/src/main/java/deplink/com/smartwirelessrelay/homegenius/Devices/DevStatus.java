@@ -39,11 +39,7 @@ public class DevStatus  {
             e.printStackTrace();
         }
     }
-
-
-
     class timerTimeoutTask extends TimerTask {
-
         @Override
         public void run() {
             timerTimeout();
@@ -58,7 +54,7 @@ public class DevStatus  {
         //更新下本地的网络状态和IP地址
         PublicMethod.getLocalIP(mContext);
         switch (currentNetStatu) {
-            case NetStatuChangeReceiver.NET_TYPE_WIFI:
+            case NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED:
                 //WiFi模式
                 //调试,不打开探测
                 wifiCheckHandler();

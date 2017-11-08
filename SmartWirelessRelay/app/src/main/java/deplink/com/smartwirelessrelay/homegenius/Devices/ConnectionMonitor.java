@@ -90,7 +90,6 @@ public class ConnectionMonitor {
     public Boolean isServerClose() {
         try {
             packet.packHeathPacket();
-          //  int clientStatus = ConnectManager.getInstance().getOut(packet.data);
             int clientStatus=LocalConnectmanager.getInstance().getOut(packet.data);
             Log.i(TAG, "clientStatus=" + clientStatus);
             if (clientStatus == -1) {
