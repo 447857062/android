@@ -12,6 +12,7 @@ import java.util.TimerTask;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 /**
@@ -25,6 +26,7 @@ public class ConnectionMonitor {
     private GeneralPacket packet;
     private boolean isServerClose;
     public ConnectionMonitor(Context context) {
+        Log.i(TAG,"ConnectionMonitor create");
         this.mContext = context;
         packet = new GeneralPacket(mContext);
     }
@@ -88,7 +90,8 @@ public class ConnectionMonitor {
     public Boolean isServerClose() {
         try {
             packet.packHeathPacket();
-            int clientStatus = ConnectManager.getInstance().getOut(packet.data);
+          //  int clientStatus = ConnectManager.getInstance().getOut(packet.data);
+            int clientStatus=LocalConnectmanager.getInstance().getOut(packet.data);
             Log.i(TAG, "clientStatus=" + clientStatus);
             if (clientStatus == -1) {
                 return true;

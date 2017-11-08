@@ -22,7 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
  * Created by benond on 2017/2/6.
  */
 
-public class DevStatus implements NetStatuChangeReceiver.onNetStatuschangeListener{
+public class DevStatus  {
 
     private static final String TAG = "DevStatus";
      Timer timer;
@@ -30,12 +30,9 @@ public class DevStatus implements NetStatuChangeReceiver.onNetStatuschangeListen
     public Context mContext;
     private UdpPacket udp;
     private int currentNetStatu;
-    private NetStatuChangeReceiver mNetStatuChangeReceiver;
     public DevStatus(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
-        mNetStatuChangeReceiver=new NetStatuChangeReceiver();
-        mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
         try {
             dataSocket = new DatagramSocket();
         } catch (SocketException e) {
@@ -43,10 +40,7 @@ public class DevStatus implements NetStatuChangeReceiver.onNetStatuschangeListen
         }
     }
 
-    @Override
-    public void onNetStatuChange(int netStatu) {
-        currentNetStatu=netStatu;
-    }
+
 
     class timerTimeoutTask extends TimerTask {
 
@@ -69,7 +63,7 @@ public class DevStatus implements NetStatuChangeReceiver.onNetStatuschangeListen
                 //调试,不打开探测
                 wifiCheckHandler();
                 break;
-            default:s
+            default:
                 break;
         }
     }

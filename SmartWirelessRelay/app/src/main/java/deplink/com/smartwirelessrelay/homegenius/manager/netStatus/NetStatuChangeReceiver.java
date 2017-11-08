@@ -12,7 +12,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
  * 处理网络情况变化的广播,静态广播，程序启动后一直监听.
  * 把网络状态转发出去
  * 使用：
- *
+ *只能动态注册，静态广播是没法处理回调的
  * 新建接口onNetStatuschangeListener，或者实现onNetStatuschangeListener接口，然后设置监听.
  */
 public class NetStatuChangeReceiver extends BroadcastReceiver{
@@ -40,8 +40,10 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
         return mOnNetStatuschangeListener;
     }
 
-    public void setmOnNetStatuschangeListener(onNetStatuschangeListener mOnNetStatuschangeListener) {
-        this.mOnNetStatuschangeListener = mOnNetStatuschangeListener;
+    public void setmOnNetStatuschangeListener(onNetStatuschangeListener listener) {
+        this.mOnNetStatuschangeListener = listener;
+        Log.i(TAG,"localconnectmanager set net connect change listener mOnNetStatuschangeListener!=null"
+                +(mOnNetStatuschangeListener!=null));
     }
     /**
      * 网络状态监听接口
@@ -49,6 +51,7 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
     public interface onNetStatuschangeListener {
          void onNetStatuChange(int netStatu);
     }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG,"net status change on receive ");
@@ -63,8 +66,8 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
                 currentNetStatu=NET_TYPE_NONE;
             }
         }
-        if(mOnNetStatuschangeListener!=null){
-            mOnNetStatuschangeListener.onNetStatuChange(currentNetStatu);
+        if(this.mOnNetStatuschangeListener!=null){
+            this.mOnNetStatuschangeListener.onNetStatuChange(currentNetStatu);
         }
     }
 }

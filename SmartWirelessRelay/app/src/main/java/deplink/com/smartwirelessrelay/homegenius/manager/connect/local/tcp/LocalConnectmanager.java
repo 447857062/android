@@ -1,10 +1,13 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -19,7 +22,11 @@ import javax.net.ssl.TrustManagerFactory;
 import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectionMonitor;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
+import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -28,14 +35,14 @@ import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChang
  * 2.建立长连接后需要启动模拟心跳的线程.
  * 3.本地连接需要在udp广播后获取到连接ip地址后才能运行
  */
-public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatuschangeListener {
+public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatuschangeListener, UdpManagerGetIPLintener {
 
     private static final String TAG = "LocalConnectmanager";
     /**
      * 这个类设计成单例
      */
     private static LocalConnectmanager instance;
-    private LocalConnecteDataListener mLocalConnecteDataListener;
+    private LocalConnecteListener mLocalConnecteListener;
     private Context mContext;
     /**
      * 连接线程
@@ -53,6 +60,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * sslsocket套接字
      */
     private SSLSocket sslSocket;
+    private UdpManager mUdpmanager;
+    private InetSocketAddress address;
+    private NetStatuChangeReceiver mNetStatuChangeReceiver;
 
     private LocalConnectmanager() {
     }
@@ -67,13 +77,30 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     /**
      * 初始化本地连接管理器
      */
-    public int InitLocalConnectManager(Context context, LocalConnecteDataListener listener) {
+    public int InitLocalConnectManager(Context context, LocalConnecteListener listener) {
         this.mContext = context;
-        this.mLocalConnecteDataListener = listener;
+        this.mLocalConnecteListener = listener;
+        initRegisterNetChangeReceive();
+        mUdpmanager = UdpManager.getInstance();
+        mUdpmanager.InitUdpConnect(context, this);
         if (listener == null) {
-            Log.e(TAG, "没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
+            Log.e(TAG, "LocalConnectManager 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
         }
-        initConnectThread();
+        return 0;
+    }
+
+    private void initRegisterNetChangeReceive() {
+        mNetStatuChangeReceiver = new NetStatuChangeReceiver();
+        mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
+        IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        mContext.registerReceiver(mNetStatuChangeReceiver, filter);
+    }
+
+    /**
+     * 初始化本地连接管理器
+     */
+    public int InitConnect(String ipAddress) {
+        initConnectThread(ipAddress);
         initMonitorThread();
         return 0;
     }
@@ -81,14 +108,14 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     /**
      * 初始化sslsocket连接线程
      */
-    private void initConnectThread() {
+    private void initConnectThread(final String ipAddress) {
         if (connectThread != null) {
             connectThread.run();
         } else {
             connectThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    sslSocket();
+                    sslSocket(ipAddress);
                 }
             });
             connectThread.start();
@@ -119,7 +146,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     /**
      * 初始化sslsocket
      */
-    public void sslSocket() {
+    public void sslSocket(String ipAddress) {
         if (sslSocket != null) {
             try {
                 sslSocket.close();
@@ -168,27 +195,115 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 @Override
                 public void handshakeCompleted(HandshakeCompletedEvent event) {
                     Log.i(TAG, "ssl握手成功回调");
-                    mLocalConnecteDataListener.handshakeCompleted();
+                    handshakeCompleted = true;
+                    mLocalConnecteListener.handshakeCompleted();
+
                 }
             });
-           //TODO 获取连接的ip地址，进行本地连接
-           /* if (ipAddress != null && !ipAddress.equals("")) {
-                address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
-            }
+            address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
-            Log.e(TAG, "创建sslsocket success" + address.toString());*/
+
+            Log.e(TAG, "创建sslsocket success" + address.toString());
+           /* GeneralPacket packet = new GeneralPacket(mContext);
+            packet.packHeathPacket();
+            getOut(packet.data);*/
+            while (true){
+                getIn();
+            }
         } catch (Exception e) {
             //TODO 获取连接异常的ip地址
-            // Log.i(TAG,"创建socket失败, ip="+ipAddress);
+            handshakeCompleted = false;
+            mLocalConnecteListener.createSocketFailed(e.getMessage());
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * 已连接网关
+     */
+    private boolean handshakeCompleted;
+    private OutputStream out;
+
+    /**
+     * tcp发送数据
+     *
+     * @param message
+     * @return
+     */
+    public int getOut(byte[] message) {
+        if (sslSocket == null) {
+            Log.i(TAG, "socket==null cannot send tcp ip message");
+            mLocalConnecteListener.OnFailedgetLocalGW("未连接本地网关");
+            return -1;
+        }
+        Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted);
+        /*if (!handshakeCompleted) {
+            return -1;
+        }*/
+        try {
+            Log.e(TAG, "getOut() send start: ");
+            out = sslSocket.getOutputStream();
+            out.write(message);
+            Log.e(TAG, "getOut() send cuccess: " + DataExchange.byteArrayToHexString(message));
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 0;
+    }
+
+    /**
+     * 获取tcp/ip连接的数据
+     */
+    public String getIn() {
+        if (sslSocket == null) {
+            Log.i(TAG, "getIn() socket==null cannot receive message");
+            mLocalConnecteListener.OnFailedgetLocalGW("未连接本地网关");
+        }
+        String str = null;
+        try {
+            InputStream input = sslSocket.getInputStream();
+            byte[] buf = new byte[1024];
+            int len = input.read(buf);
+            if (len != -1) {
+                //读取cmd参数
+                int cmd = DataExchange.bytesToInt(buf, 6, 1);
+
+                str = new String(buf, 0, len);
+                Log.i(TAG, "cmd=" + cmd);
+                System.out.println("received:" + str + "length=" + len);
+                System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
+                switch (cmd) {
+                    case ComandID.CMD_BIND_RESPONSE:
+                        byte[] uid = new byte[32];
+                        System.arraycopy(buf, 7, uid, 0, 32);
+                        str = new String(uid);
+                        mLocalConnecteListener.OnGetUid(str);
+                        break;
+                }
+                //获取到数据
+                //TODO
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    //接收回调数据区域
     @Override
     public void onNetStatuChange(int netStatu) {
         //TODO
         //wifi没有连接的时候断开socket
         //wifi连接的时候重新连接socket
+        Log.i(TAG, "Net status cahnge new Statu=" + netStatu);
+    }
+
+    @Override
+    public void onGetLocalConnectIp(String ipAddress) {
+        InitConnect(ipAddress);
     }
 }

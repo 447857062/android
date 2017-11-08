@@ -9,8 +9,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
 
@@ -43,8 +43,8 @@ public class UdpComm {
         try {
             Log.e(TAG, "udp sendData:" + packet.getAddress().getHostAddress() + ":" + packet.getPort());
             byte[] temp = packet.getData();
-            Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp));
             udp.send(packet);
+            Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp));
         } catch (IOException e) {
             e.printStackTrace();
         }
