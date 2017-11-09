@@ -20,18 +20,15 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.DevListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.SmartDevListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
-import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 
-public class DevListActivity extends Activity implements View.OnClickListener, LocalConnecteListener {
+public class DevListActivity extends Activity implements View.OnClickListener, SmartLockListener {
     private static final String TAG = "DevListActivity";
     private ListView dev_list;
     private List<Device> mDeviceList;
@@ -49,8 +46,6 @@ public class DevListActivity extends Activity implements View.OnClickListener, L
     private EditText edittext_UserID;
     private EditText edittext_ManagePasswd;
     private EditText edittext_LimitedTime;
-    GeneralPacket packet;
-    private LocalConnectmanager localConnectmanager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +55,8 @@ public class DevListActivity extends Activity implements View.OnClickListener, L
         initData();
     }
 
+    private SmartLockManager mSmartLockManager;
+
     private void initData() {
         mDeviceList = new ArrayList<>();
         mSmartDev = new ArrayList<>();
@@ -67,8 +64,8 @@ public class DevListActivity extends Activity implements View.OnClickListener, L
         smartDevListAdapter = new SmartDevListAdapter(this, mSmartDev);
         dev_list.setAdapter(devAdapter);
         smart_dev_list.setAdapter(smartDevListAdapter);
-        localConnectmanager=LocalConnectmanager.getInstance();
-        localConnectmanager.InitLocalConnectManager(this, this);
+        mSmartLockManager = SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this, this);
     }
 
     private void initViews() {
@@ -107,20 +104,11 @@ public class DevListActivity extends Activity implements View.OnClickListener, L
                     Log.i(TAG, "mHandler MSG_GET_DEVS");
                     Gson gson = new Gson();
                     DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
-                    //mDeviceList=aDeviceList.getDevice();
                     mDeviceList.clear();
                     mDeviceList.addAll(aDeviceList.getDevice());
                     mSmartDev.clear();
                     mSmartDev.addAll(aDeviceList.getSmartDev());
                     if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
-                        for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                            //uid
-                            String smartuid;
-                            smartuid = mSmartDev.get(i).getDevUid();
-                            SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                            sharedPreference.saveString("smartuid", smartuid);
-                            Log.i(TAG, "sharedPreference save smartuid=" + smartuid);
-                        }
                         smartDevListAdapter.notifyDataSetChanged();
                     }
                     devAdapter.notifyDataSetChanged();
@@ -159,8 +147,6 @@ public class DevListActivity extends Activity implements View.OnClickListener, L
 
         }
     };
-    private boolean isReceiverDevList;
-    private boolean isReceiverOptionsSet;
 
 
     private String AuthPwd;
@@ -172,318 +158,148 @@ public class DevListActivity extends Activity implements View.OnClickListener, L
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.click:
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
-                            //查询设备
-                            packet = new GeneralPacket(DevListActivity.this);
-                            //探测设备
-                            QueryOptions queryCmd = new QueryOptions();
-                            queryCmd.setOP("QUERY");
-                            queryCmd.setMethod("DevList");
-                            Gson gson = new Gson();
-                            String text = gson.toJson(queryCmd);
-                            packet.packQueryDevListData(null, text.getBytes());
-
-                            isReceiverDevList = false;
-                            localConnectmanager.getOut(packet.data);
-
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_TOAST;
-                            msg.obj = "wifi未连接";
-                            mHandler.sendMessage(msg);
-                        }
-
-                    }
-                }).start();
+                mSmartLockManager.queryDeviceList();
                 break;
             case R.id.btn_once_auth:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
-                            //查询设备
-                            packet = new GeneralPacket(DevListActivity.this);
-                            //探测设备
-                            QueryOptions queryCmd = new QueryOptions();
-                            queryCmd.setOP("SET");
-                            queryCmd.setMethod("SmartLock");
-                            String smartuid;
-                            SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                            smartuid = sharedPreference.getString("smartuid");
-                            queryCmd.setSmartUid(smartuid);
-                            queryCmd.setCommand("Once");
-                            AuthPwd = edittext_AuthPwd.getText().toString();
-                            UserID = edittext_UserID.getText().toString();
-                            ManagePasswd = edittext_ManagePasswd.getText().toString();
-                            LimitedTime = edittext_LimitedTime.getText().toString();
-                            if (AuthPwd.equals("")) {
-                                queryCmd.setAuthPwd("001");
-                            } else {
-                                queryCmd.setAuthPwd(AuthPwd);
-                            }
-                            if (UserID.equals("")) {
-                                queryCmd.setUserID("003");
-                            } else {
-                                queryCmd.setUserID(UserID);
-                            }
-                            if (ManagePasswd.equals("")) {
-                                queryCmd.setManagePasswd("123456");
-                            } else {
-                                queryCmd.setManagePasswd(ManagePasswd);
-                            }
-                            if (LimitedTime.equals("")) {
-                                queryCmd.setLimitedTime("30");
-                            } else {
-                                queryCmd.setLimitedTime(LimitedTime);
-                            }
-
-                            Gson gson = new Gson();
-                            String text = gson.toJson(queryCmd);
-                            packet.packSetSmartLockData(null, text.getBytes());
-                            localConnectmanager.getOut(packet.data);
-                           /* while (!isReceiverOptionsSet) {
-                                getIn();
-                            }
-*/
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_TOAST;
-                            msg.obj = "wifi未连接";
-                            mHandler.sendMessage(msg);
-                            Log.i(TAG, "wifi未连接");
-                        }
-
-
+                if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
+                    //查询设备
+                    AuthPwd = edittext_AuthPwd.getText().toString();
+                    UserID = edittext_UserID.getText().toString();
+                    ManagePasswd = edittext_ManagePasswd.getText().toString();
+                    LimitedTime = edittext_LimitedTime.getText().toString();
+                    if (AuthPwd.equals("")) {
+                        AuthPwd = "001";
                     }
-                }).start();
+                    if (UserID.equals("")) {
+                        UserID = "003";
+                    }
+                    if (ManagePasswd.equals("")) {
+                        ManagePasswd = "123456";
+                    }
+                    if (LimitedTime.equals("")) {
+                        LimitedTime = "30";
+                    }
+                    mSmartLockManager.setSmaertLockParmars("Once", UserID, ManagePasswd, AuthPwd, LimitedTime);
+
+
+                } else {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_TOAST;
+                    msg.obj = "wifi未连接";
+                    mHandler.sendMessage(msg);
+                    Log.i(TAG, "wifi未连接");
+                }
                 break;
             case R.id.btn_time_limit_auth:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
+                if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
 //查询设备
-                            packet = new GeneralPacket(DevListActivity.this);
-                            //探测设备
-                            QueryOptions queryCmd = new QueryOptions();
-                            queryCmd.setOP("SET");
-                            queryCmd.setMethod("SmartLock");
-                            String smartuid;
-                            SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                            smartuid = sharedPreference.getString("smartuid");
-                            queryCmd.setSmartUid(smartuid);
-                            queryCmd.setCommand("Time-limited");
-                            AuthPwd = edittext_AuthPwd.getText().toString();
-                            UserID = edittext_UserID.getText().toString();
-                            ManagePasswd = edittext_ManagePasswd.getText().toString();
-                            LimitedTime = edittext_LimitedTime.getText().toString();
-                            if (AuthPwd.equals("")) {
-                                queryCmd.setAuthPwd("001");
-                            } else {
-                                queryCmd.setAuthPwd(AuthPwd);
-                            }
-                            if (UserID.equals("")) {
-                                queryCmd.setUserID("003");
-                            } else {
-                                queryCmd.setUserID(UserID);
-                            }
-                            if (ManagePasswd.equals("")) {
-                                queryCmd.setManagePasswd("123456");
-                            } else {
-                                queryCmd.setManagePasswd(ManagePasswd);
-                            }
-                            if (LimitedTime.equals("")) {
-                                queryCmd.setLimitedTime("30");
-                            } else {
-                                queryCmd.setLimitedTime(LimitedTime);
-                            }
-                            Gson gson = new Gson();
-                            String text = gson.toJson(queryCmd);
-                            packet.packSetSmartLockData(null, text.getBytes());
-                            localConnectmanager.getOut(packet.data);
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_TOAST;
-                            msg.obj = "wifi未连接";
-                            mHandler.sendMessage(msg);
-                        }
 
 
+                    AuthPwd = edittext_AuthPwd.getText().toString();
+                    UserID = edittext_UserID.getText().toString();
+                    ManagePasswd = edittext_ManagePasswd.getText().toString();
+                    LimitedTime = edittext_LimitedTime.getText().toString();
+                    if (AuthPwd.equals("")) {
+                        AuthPwd = ("001");
                     }
-                }).start();
+                    if (UserID.equals("")) {
+                        UserID = ("003");
+                    }
+                    if (ManagePasswd.equals("")) {
+                        ManagePasswd = ("123456");
+                    }
+                    if (LimitedTime.equals("")) {
+                        LimitedTime = ("30");
+                    }
+
+                    mSmartLockManager.setSmaertLockParmars("Time-limited", UserID, ManagePasswd, AuthPwd, LimitedTime);
+                } else {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_TOAST;
+                    msg.obj = "wifi未连接";
+                    mHandler.sendMessage(msg);
+                }
                 break;
             case R.id.btn_forever_auth:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
-                            //查询设备
-                            packet = new GeneralPacket(DevListActivity.this);
-                            //探测设备
-                            QueryOptions queryCmd = new QueryOptions();
-                            queryCmd.setOP("SET");
-                            queryCmd.setMethod("SmartLock");
-                            String smartuid;
-                            SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                            smartuid = sharedPreference.getString("smartuid");
-                            queryCmd.setSmartUid(smartuid);
-                            queryCmd.setCommand("Perpetual");
-
-                            AuthPwd = edittext_AuthPwd.getText().toString();
-                            UserID = edittext_UserID.getText().toString();
-                            ManagePasswd = edittext_ManagePasswd.getText().toString();
-                            LimitedTime = edittext_LimitedTime.getText().toString();
-                            if (AuthPwd.equals("")) {
-                                queryCmd.setAuthPwd("001");
-                            } else {
-                                queryCmd.setAuthPwd(AuthPwd);
-                            }
-                            if (UserID.equals("")) {
-                                queryCmd.setUserID("003");
-                            } else {
-                                queryCmd.setUserID(UserID);
-                            }
-                            if (ManagePasswd.equals("")) {
-                                queryCmd.setManagePasswd("123456");
-                            } else {
-                                queryCmd.setManagePasswd(ManagePasswd);
-                            }
-                            if (LimitedTime.equals("")) {
-                                queryCmd.setLimitedTime("30");
-                            } else {
-                                queryCmd.setLimitedTime(LimitedTime);
-                            }
-                            Gson gson = new Gson();
-                            String text = gson.toJson(queryCmd);
-                            packet.packSetSmartLockData(null, text.getBytes());
-                            localConnectmanager.getOut(packet.data);
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_TOAST;
-                            msg.obj = "wifi未连接";
-                            mHandler.sendMessage(msg);
-                            Log.i(TAG, "wifi未连接");
-                        }
+                if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
 
 
+                    AuthPwd = edittext_AuthPwd.getText().toString();
+                    UserID = edittext_UserID.getText().toString();
+                    ManagePasswd = edittext_ManagePasswd.getText().toString();
+                    LimitedTime = edittext_LimitedTime.getText().toString();
+                    if (AuthPwd.equals("")) {
+                        AuthPwd = ("001");
                     }
-                }).start();
+                    if (UserID.equals("")) {
+                        UserID = ("003");
+                    }
+                    if (ManagePasswd.equals("")) {
+                        ManagePasswd = ("123456");
+                    }
+                    if (LimitedTime.equals("")) {
+                        LimitedTime = ("30");
+                    }
+                    mSmartLockManager.setSmaertLockParmars("Perpetual", UserID, ManagePasswd, AuthPwd, LimitedTime);
+                } else {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_TOAST;
+                    msg.obj = "wifi未连接";
+                    mHandler.sendMessage(msg);
+                    Log.i(TAG, "wifi未连接");
+                }
                 break;
             case R.id.btn_open_door:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
-                            //查询设备
-                            packet = new GeneralPacket(DevListActivity.this);
-                            //探测设备
-                            QueryOptions queryCmd = new QueryOptions();
-                            queryCmd.setOP("SET");
-                            queryCmd.setMethod("SmartLock");
-                            String smartuid;
-                            SharedPreference sharedPreference = new SharedPreference(DevListActivity.this, "smartuid");
-                            smartuid = sharedPreference.getString("smartuid");
-                            queryCmd.setSmartUid(smartuid);
-                            queryCmd.setCommand("Open");
-                            AuthPwd = edittext_AuthPwd.getText().toString();
-                            UserID = edittext_UserID.getText().toString();
-                            ManagePasswd = edittext_ManagePasswd.getText().toString();
-                            LimitedTime = edittext_LimitedTime.getText().toString();
-                            if (AuthPwd.equals("")) {
-                                queryCmd.setAuthPwd("001");
-                            } else {
-                                queryCmd.setAuthPwd(AuthPwd);
-                            }
-                            if (UserID.equals("")) {
-                                queryCmd.setUserID("003");
-                            } else {
-                                queryCmd.setUserID(UserID);
-                            }
-                            if (ManagePasswd.equals("")) {
-                                queryCmd.setManagePasswd("123456");
-                            } else {
-                                queryCmd.setManagePasswd(ManagePasswd);
-                            }
-                            if (LimitedTime.equals("")) {
-                                queryCmd.setLimitedTime("30");
-                            } else {
-                                queryCmd.setLimitedTime(LimitedTime);
-                            }
-                            Gson gson = new Gson();
-                            String text = gson.toJson(queryCmd);
-                            packet.packSetSmartLockData(null, text.getBytes());
-                            localConnectmanager.getOut(packet.data);
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_TOAST;
-                            msg.obj = "wifi未连接";
-                            mHandler.sendMessage(msg);
-                        }
+                if (NetStatusUtil.isWiFiActive(DevListActivity.this)) {
 
-
+                    AuthPwd = edittext_AuthPwd.getText().toString();
+                    UserID = edittext_UserID.getText().toString();
+                    ManagePasswd = edittext_ManagePasswd.getText().toString();
+                    LimitedTime = edittext_LimitedTime.getText().toString();
+                    if (AuthPwd.equals("")) {
+                        AuthPwd = ("001");
                     }
-                }).start();
+                    if (UserID.equals("")) {
+                        UserID = ("003");
+                    }
+                    if (ManagePasswd.equals("")) {
+                        ManagePasswd = ("123456");
+                    }
+                    if (LimitedTime.equals("")) {
+                        LimitedTime = ("30");
+                    }
+                    mSmartLockManager.setSmaertLockParmars("Open", UserID, ManagePasswd, AuthPwd, LimitedTime);
+                } else {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_TOAST;
+                    msg.obj = "wifi未连接";
+                    mHandler.sendMessage(msg);
+                }
                 break;
         }
     }
 
 
     @Override
-    public void onReciveLocalConnectePacket(byte[] packet) {
-
-    }
-
-    @Override
-    public void handshakeCompleted() {
-
-    }
-
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
-
-    @Override
-    public void OnGetUid(String uid) {
-
-    }
-
-    @Override
-    public void OnGetQueryresult(String devList) {
-        if(devList.contains("DevList")){
+    public void responseQueryResult(String result) {
+        if (result.contains("DevList")) {
             Message msg = Message.obtain();
             msg.what = MSG_GET_DEVS;
-            msg.obj = devList;
-            System.out.println("mHandler.sendMessage(isReceiverDevList)");
+            msg.obj = result;
             mHandler.sendMessage(msg);
         }
-
     }
 
     @Override
-    public void OnGetSetresult(String setResult) {
+    public void responseSetResult(String result) {
         Message msg = Message.obtain();
         msg.what = MSG_GET_SET_RESULT;
-        msg.obj = setResult;
+        msg.obj = result;
         mHandler.sendMessage(msg);
     }
 
-
-
     @Override
-    public void wifiConnectUnReachable() {
-        Message msg = Message.obtain();
-        msg.what = MSG_GET_SET_RESULT;
-        msg.obj = "WiFi连接不可用";
-        mHandler.sendMessage(msg);
+    public void responseBind(String result) {
+
     }
 }

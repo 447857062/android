@@ -20,24 +20,10 @@ import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 public class BasicPacket {
     public static final String TAG = "BasicPacket";
-    public static final int MaxWiFiDevSendCount = 8;
-    public static final int WiFiDevTimeout = 300;
-    public static final int PacketWait = 0;
-    public static final int PacketSend = 1;
-    public static final int PacketTimeout = -1;
     //最终要发送的数据
     public byte[] data;
-    //seq编号，方便返回的时候回掉到界面
-    public int seq;
     //回调调用者
     public OnRecvLocalConnectIpListener listener;
-
-    //设定超时时间
-    private long idleTimeout = 800;
-    //设定重发次数
-    private long resendTimes = 8;
-    //当前发送时间
-    private long sendTime;
     public byte[] xdata;
     public InetAddress ip = null;
     public int port;
@@ -45,14 +31,12 @@ public class BasicPacket {
     public long createTime;
     public long mac;
     public boolean isFinish;
-
+    private Context mContext;
     public BasicPacket(Context context) {
         this.mContext = context;
         isFinish = false;
         this.createTime = PublicMethod.getTimeMs();
     }
-
-
     public BasicPacket(Context context, InetAddress ip, int port) {
         this.mContext = context;
         isFinish = false;
@@ -60,8 +44,6 @@ public class BasicPacket {
         this.port = port;
         this.createTime = PublicMethod.getTimeMs();
     }
-
-
     /**
      * 中继器
      * 基础打包函数
@@ -151,7 +133,7 @@ public class BasicPacket {
         return data.length;
     }
 
-    private Context mContext;
+
 
 
     /**

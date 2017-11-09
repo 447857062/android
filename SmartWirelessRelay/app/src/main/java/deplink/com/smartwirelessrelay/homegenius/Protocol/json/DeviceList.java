@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class DeviceList implements Serializable {
+public class DeviceList   implements Serializable {
     private String OP;
     private String Method;
     private List<Device> Device;

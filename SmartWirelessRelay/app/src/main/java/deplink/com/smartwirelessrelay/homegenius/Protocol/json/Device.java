@@ -1,15 +1,18 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.json;
 
+import org.litepal.annotation.Column;
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class Device implements Serializable{
+public class Device extends DataSupport implements Serializable{
+    @Column(unique = true,nullable = false)
     private String Uid;
     private String Ip;
     private String Status;
-    private String index;
 
     public String getUid() {
         return Uid;
@@ -35,13 +38,6 @@ public class Device implements Serializable{
         Status = status;
     }
 
-    public String getIndex() {
-        return index;
-    }
-
-    public void setIndex(String index) {
-        this.index = index;
-    }
 
     @Override
     public String toString() {
@@ -49,7 +45,6 @@ public class Device implements Serializable{
                 "Uid='" + Uid + '\'' +
                 ", Ip='" + Ip + '\'' +
                 ", Status='" + Status + '\'' +
-                ", index='" + index + '\'' +
                 '}';
     }
 }

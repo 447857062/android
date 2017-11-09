@@ -1,11 +1,15 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.json;
 
+import org.litepal.annotation.Column;
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class SmartDev implements Serializable{
+public class SmartDev extends DataSupport implements Serializable{
+    @Column(unique = true,nullable = false)
     private String DevUid;
     private String CtrUid;
     private String Type;

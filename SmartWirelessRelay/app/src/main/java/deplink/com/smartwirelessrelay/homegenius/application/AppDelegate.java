@@ -2,12 +2,14 @@ package deplink.com.smartwirelessrelay.homegenius.application;
 
 import android.app.Application;
 
+import org.litepal.LitePalApplication;
+
 
 /**
  * Created by luoxiaoha on 2017/2/6.
  */
 
-public class AppDelegate extends Application {
+public class AppDelegate extends LitePalApplication {
 
     @Override
     public void onCreate() {

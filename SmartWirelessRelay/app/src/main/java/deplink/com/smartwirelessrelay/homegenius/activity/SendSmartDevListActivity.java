@@ -5,20 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.net.ssl.SSLSocket;
-
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
-public class SendSmartDevListActivity extends Activity implements View.OnClickListener{
+public class SendSmartDevListActivity extends Activity implements View.OnClickListener,SmartLockListener {
     private Button button_send_smart_dev;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,41 +20,19 @@ public class SendSmartDevListActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
-        button_send_smart_dev= (Button) findViewById(R.id.button_send_smart_dev);
+        button_send_smart_dev = (Button) findViewById(R.id.button_send_smart_dev);
         button_send_smart_dev.setOnClickListener(this);
-        packet=new GeneralPacket(this);
     }
-    private GeneralPacket packet;
-    private SSLSocket Client_sslSocket;
-    private boolean isReceiverSendSmartDev;
+
+    private SmartLockManager mSmartLockManager;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button_send_smart_dev:
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        //查询设备
-                        //探测设备
-                        QueryOptions queryCmd = new QueryOptions();
-                        queryCmd.setOP("SET");
-                        queryCmd.setMethod("SmartDev-List");
-                        List<SmartDev>devs=new ArrayList<>();
-                        SmartDev dev=new SmartDev();
-                        dev.setDevUid("00-12-4b-00-0b-26-c2-15");
-                        dev.setOrg("ismart");
-                        devs.add(dev);
-                        queryCmd.setSmartDev(devs);
-
-                        Gson gson = new Gson();
-                        String text = gson.toJson(queryCmd);
-                        packet.packSendSmartDevsData(null, text.getBytes());
-
-
-
-                    }
-                }).start();
+                mSmartLockManager = SmartLockManager.getInstance();
+                mSmartLockManager.InitSmartLockManager(this, this);
+                mSmartLockManager.sendSmartDevList();
                 break;
         }
     }
@@ -72,4 +43,18 @@ public class SendSmartDevListActivity extends Activity implements View.OnClickLi
 
     }
 
+    @Override
+    public void responseQueryResult(String result) {
+
+    }
+
+    @Override
+    public void responseSetResult(String result) {
+
+    }
+
+    @Override
+    public void responseBind(String result) {
+
+    }
 }

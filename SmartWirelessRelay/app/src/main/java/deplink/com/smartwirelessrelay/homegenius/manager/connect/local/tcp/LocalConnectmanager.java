@@ -63,7 +63,10 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     private UdpManager mUdpmanager;
     private InetSocketAddress address;
     private NetStatuChangeReceiver mNetStatuChangeReceiver;
-
+    /**
+     * sslsocket握手成功
+     */
+    private boolean handshakeCompleted;
     private LocalConnectmanager() {
     }
 
@@ -198,9 +201,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
 
             Log.e(TAG, "创建sslsocket success" + address.toString());
-           /* GeneralPacket packet = new GeneralPacket(mContext);
-            packet.packHeathPacket();
-            getOut(packet.data);*/
             while (currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
                 getIn();
             }
@@ -213,10 +213,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
 
     }
 
-    /**
-     * sslsocket握手成功
-     */
-    private boolean handshakeCompleted;
+
 
     /**
      * tcp发送数据
@@ -231,9 +228,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             return -1;
         }
         Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted);
-        /*if (!handshakeCompleted) {
-            return -1;
-        }*/
         try {
             Log.e(TAG, "getOut() send start: ");
             OutputStream out = sslSocket.getOutputStream();

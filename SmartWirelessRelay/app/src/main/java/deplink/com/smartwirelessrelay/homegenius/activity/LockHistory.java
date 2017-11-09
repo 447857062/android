@@ -15,15 +15,12 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistorys;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Record;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.activity.adapter.RecordListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
-import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
-public class LockHistory extends Activity implements LocalConnecteListener{
+public class LockHistory extends Activity implements SmartLockListener {
     private static final String TAG = "LockHistory";
     private ListView dev_list;
     private List<Record> mRecordList;
@@ -41,7 +38,7 @@ public class LockHistory extends Activity implements LocalConnecteListener{
         mRecordList = new ArrayList<>();
         recordAdapter = new RecordListAdapter(this, mRecordList);
         dev_list.setAdapter(recordAdapter);
-        packet = new GeneralPacket(LockHistory.this);
+
     }
 
     private void initViews() {
@@ -49,39 +46,18 @@ public class LockHistory extends Activity implements LocalConnecteListener{
 
     }
 
-    private GeneralPacket packet;
+
     private Thread queryThread;
+    private SmartLockManager mSmartLockManager;
 
     @Override
     protected void onResume() {
         super.onResume();
-        localConnectmanager=LocalConnectmanager.getInstance();
-        localConnectmanager.InitLocalConnectManager(this, this);
-        queryThread =
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        //查询设备
-                        //探测设备
-                        QueryOptions queryCmd = new QueryOptions();
-                        queryCmd.setOP("QUERY");
-                        queryCmd.setMethod("SmartLock-HisRecord");
-                        String DevUid;
-                        SharedPreference sharedPreference = new SharedPreference(LockHistory.this, "smartuid");
-                        DevUid = sharedPreference.getString("smartuid");
-                        if (DevUid != null && !DevUid.equals("")) {
-                            queryCmd.setSmartUid(DevUid);
-                        }
-                        Gson gson = new Gson();
-                        String text = gson.toJson(queryCmd);
-                        packet.packQueryRecordListData(null, text.getBytes());
-                       localConnectmanager.getOut(packet.data);
-                    }
-                });
-        queryThread.start();
+        mSmartLockManager=SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this,this);
+        mSmartLockManager.queryLockHistory();
     }
-    private LocalConnectmanager localConnectmanager;
+
     private static final int MSG_GET_HISTORYRECORD = 0x01;
     private static final int MSG_RETURN_ERROR = 0x02;
     private Handler mHandler = new Handler() {
@@ -131,49 +107,24 @@ public class LockHistory extends Activity implements LocalConnecteListener{
 
 
     @Override
-    public void onReciveLocalConnectePacket(byte[] packet) {
-
-    }
-
-    @Override
-    public void handshakeCompleted() {
-
-    }
-
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
-
-    @Override
-    public void OnGetUid(String uid) {
-
-    }
-
-    @Override
-    public void OnGetQueryresult(String devList) {
+    public void responseQueryResult(String result) {
         Message msg = Message.obtain();
-        msg.obj = devList;
-        if (devList.contains("SmartLock-HisRecord")) {
+        msg.obj = result;
+        if (result.contains("SmartLock-HisRecord")) {
             msg.what = MSG_GET_HISTORYRECORD;
-        } else if (devList.contains("Result")) {
+        } else if (result.contains("Result")) {
             msg.what = MSG_RETURN_ERROR;
         }
         mHandler.sendMessage(msg);
     }
 
     @Override
-    public void OnGetSetresult(String setResult) {
+    public void responseSetResult(String result) {
 
     }
 
     @Override
-    public void wifiConnectUnReachable() {
+    public void responseBind(String result) {
 
     }
 }

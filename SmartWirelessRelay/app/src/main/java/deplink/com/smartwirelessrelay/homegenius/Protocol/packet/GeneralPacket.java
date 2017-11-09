@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.net.InetAddress;
 
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
+import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
 
 /**
  * Created by benond on 2017/2/6.
@@ -21,126 +21,84 @@ public class GeneralPacket extends BasicPacket {
         super(context);
     }
 
-    //tcp/ip连接获取uuid,IP地址目前是固定的,测试使用
-    public int packWirelessPacket() {
-        byte[]ip = new byte[4];
-        ip[0]=(byte)0xC0;
-        ip[1]=(byte)0xA8;
-        ip[2]=(byte) 0x44;
-        ip[3]=(byte) 0xCD;
-        return packWirelessData(  ip,true,null,(byte) 0x0);
-
-    }
-    //tcp/ip连接获取uuid,IP地址目前是固定的,测试使用
+    /**
+     * 绑定设备
+     * @return
+     */
     public int packBindPacket() {
         byte[]ip = new byte[4];
         ip[0]=(byte)0xC0;
         ip[1]=(byte)0xA8;
         ip[2]=(byte) 0x44;
         ip[3]=(byte) 0xCD;
-        return packWirelessData(  ip,true,null,(byte) 0x7);
+        return packWirelessData(  ip,true,null,ComandID.CMD_BIND);
 
     }
-    //tcp/ip连接获取uuid,IP地址目前是固定的,测试使用
+
+    /**
+     * 打包心跳包
+     * @return
+     */
     public int packHeathPacket() {
         byte[]ip = new byte[4];
         ip[0]=(byte)0xC0;
         ip[1]=(byte)0xA8;
         ip[2]=(byte) 0x44;
         ip[3]=(byte) 0xCD;
-        return packWirelessData(  ip,true,null,(byte) 0x9);
+        return packWirelessData(  ip,true,null, ComandID.HEARTBEAT);
 
     }
 
     /**
      * 发送广播包,探测设备
      * ip 255.255.255.255
-     * @param listener
      * @return
      */
-    public int packCheckPacketWithUID(OnRecvLocalConnectIpListener listener, byte[]xdata) {
-        this.listener = listener;
+    public int packCheckPacketWithUID() {
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,/*xdata*/null,(byte)0x0);
+        return packWirelessData( ip,false,null,ComandID.DETEC_DEV);
+    }
+
+    /**
+     * 查询设备列表
+     * @return
+     */
+    public int packQueryDevListData(byte[]xdata) {
+        byte[]ip = new byte[4];
+        ip[0]=(byte) 0xFF;
+        ip[1]=(byte)0xFF;
+        ip[2]=(byte) 0xFF;
+        ip[3]=(byte) 0xFF;
+        return packWirelessData( ip,false,xdata,ComandID.QUERY_DEV);
     }
     /**
-     * 发送广播包,查询设备
-     * ip 255.255.255.255
-     * @param listener
+     *设置智能设备参数
      * @return
      */
-    public int packQueryData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
-        this.listener = listener;
+    public int packSetSmartLockData( byte[]xdata) {
+
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,(byte)0x0);
+        return packWirelessData( ip,false,xdata,ComandID.SET_CMD);
     }
     /**
-     * 发送广播包,查询设备
-     * ip 255.255.255.255
-     * @param listener
+     *智能设备列表下发
      * @return
      */
-    public int packQueryDevListData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
-        this.listener = listener;
+    public int packSendSmartDevsData( byte[]xdata) {
         byte[]ip = new byte[4];
         ip[0]=(byte) 0xFF;
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,(byte)0x02);
-    }
-    /**
-     * 发送广播包,查询设备
-     * ip 255.255.255.255
-     * @param listener
-     * @return
-     */
-    public int packSetSmartLockData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
-        this.listener = listener;
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,(byte)0x04);
-    }
-    /**
-     * 发送广播包,查询设备
-     * ip 255.255.255.255
-     * @param listener
-     * @return
-     */
-    public int packQueryRecordListData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
-        this.listener = listener;
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,(byte)0x02);
-    }
-    /**
-     * 发送广播包,查询设备
-     * ip 255.255.255.255
-     * @param listener
-     * @return
-     */
-    public int packSendSmartDevsData(OnRecvLocalConnectIpListener listener, byte[]xdata) {
-        this.listener = listener;
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,(byte)0x11);
+        return packWirelessData( ip,false,xdata,ComandID.CMD_SEND_SMART_DEV);
     }
 
 }

@@ -14,6 +14,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
+import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
@@ -47,10 +48,10 @@ public class DevStatus  {
     }
 
     public void timerTimeout() {
-        //NSLog(@"设备状体定时器运行正常");
+        //"设备状体定时器运行正常";
         //先判断当前的网络状态，没有网络则不执行设备的检查
         //当前如果是WiFi的话，则优先执行本地查找，确定本地没有设备后再执行远程查找
-        int net = PublicMethod.checkConnectionState(mContext);
+        int net = NetStatusUtil.checkConnectionState(mContext);
         //更新下本地的网络状态和IP地址
         PublicMethod.getLocalIP(mContext);
         switch (currentNetStatu) {
@@ -72,7 +73,7 @@ public class DevStatus  {
             e.printStackTrace();
         }
         //查询设备，探测设备区别(这里探测设备就不需要发送查询的gson数据了)
-        packet.packCheckPacketWithUID( null,null);
+        packet.packCheckPacketWithUID();
         //uid
         SharedPreference sharedPreference = new SharedPreference(mContext, "uid");
         String uid = sharedPreference.getString("uid");

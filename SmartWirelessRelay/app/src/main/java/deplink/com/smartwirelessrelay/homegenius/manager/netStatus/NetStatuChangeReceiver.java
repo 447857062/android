@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
-import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -65,7 +64,7 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
            //只监听了网络状态的广播，就不用过滤acton了
            Log.i(TAG,"wifi连接操作 wifi开关="+ NetStatusUtil.isWiFiActive(context)+"手机卡网络="+NetStatusUtil.isNetTypePhoneAvailable(context));
            if(NetStatusUtil.isWiFiActive(context)){
-                if(PublicMethod.isNetworkOnline()){
+                if(NetStatusUtil.isNetworkOnline()){
                currentNetStatu= NET_TYPE_WIFI_CONNECTED;
                  }else{
                      currentNetStatu= NET_TYPE_WIFI_DISCONNECTED;
@@ -79,7 +78,7 @@ public class NetStatuChangeReceiver extends BroadcastReceiver{
            }
 
            if(this.mOnNetStatuschangeListener!=null){
-               Log.i(TAG, String.valueOf(PublicMethod.isNetworkOnline()));
+               Log.i(TAG, String.valueOf(NetStatusUtil.isNetworkOnline()));
                this.mOnNetStatuschangeListener.onNetStatuChange(currentNetStatu);
            }
        }
