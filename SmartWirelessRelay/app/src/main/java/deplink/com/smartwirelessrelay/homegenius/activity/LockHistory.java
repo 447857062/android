@@ -2,11 +2,15 @@ package deplink.com.smartwirelessrelay.homegenius.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -15,16 +19,23 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistorys;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Record;
-import deplink.com.smartwirelessrelay.homegenius.activity.adapter.RecordListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.adapter.LockHistoryAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
-public class LockHistory extends Activity implements SmartLockListener {
+/**
+ * 开锁记录界面
+ */
+public class LockHistory extends Activity implements SmartLockListener,View.OnClickListener{
     private static final String TAG = "LockHistory";
     private ListView dev_list;
-    private List<Record> mRecordList;
-    private RecordListAdapter recordAdapter;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistory> mRecordList;
+    private LockHistoryAdapter recordAdapter;
+
+    private SmartLockManager mSmartLockManager;
+
+    private ImageView imageview_back;
+    private TextView textview_update_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,29 +43,33 @@ public class LockHistory extends Activity implements SmartLockListener {
         setContentView(R.layout.activity_lock_history);
         initViews();
         initData();
+        initEvents();
+    }
+
+    private void initEvents() {
+        dev_list.setAdapter(recordAdapter);
+        textview_update_id.setOnClickListener(this);
+        imageview_back.setOnClickListener(this);
     }
 
     private void initData() {
         mRecordList = new ArrayList<>();
-        recordAdapter = new RecordListAdapter(this, mRecordList);
-        dev_list.setAdapter(recordAdapter);
-
+        recordAdapter = new LockHistoryAdapter(this, mRecordList);
     }
 
     private void initViews() {
         dev_list = (ListView) findViewById(R.id.list_lock_histroy);
+        imageview_back = (ImageView) findViewById(R.id.imageview_back);
+        textview_update_id = (TextView) findViewById(R.id.textview_update_id);
 
     }
 
 
-    private Thread queryThread;
-    private SmartLockManager mSmartLockManager;
-
     @Override
     protected void onResume() {
         super.onResume();
-        mSmartLockManager=SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this,this);
+        mSmartLockManager = SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this, this);
         mSmartLockManager.queryLockHistory();
     }
 
@@ -126,5 +141,17 @@ public class LockHistory extends Activity implements SmartLockListener {
     @Override
     public void responseBind(String result) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.imageview_back:
+                onBackPressed();
+                break;
+            case R.id.textview_update_id:
+                startActivity(new Intent(LockHistory.this,UpdateSmartLockUserIdActivity.class));
+                break;
+        }
     }
 }

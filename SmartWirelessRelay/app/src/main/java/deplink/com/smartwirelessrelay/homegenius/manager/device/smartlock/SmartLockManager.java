@@ -79,7 +79,10 @@ public class SmartLockManager implements LocalConnecteListener {
 
         List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
         //当前只有一个智能锁
-        smartUid = smartDevs.get(0).getDevUid();
+        if(smartDevs.size()>0){
+            smartUid = smartDevs.get(0).getDevUid();
+        }
+
 
         List<Device> devices = DataSupport.findAll(Device.class);
         if (devices != null && devices.size() > 0) {
@@ -96,6 +99,7 @@ public class SmartLockManager implements LocalConnecteListener {
      * 查询设备列表
      */
     public void queryDeviceList() {
+        Log.i(TAG,"查询设备列表");
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("QUERY");
         queryCmd.setMethod("DevList");
@@ -171,17 +175,15 @@ public class SmartLockManager implements LocalConnecteListener {
      * 设置SamrtLock参数
      *
      * @param cmd
-     * @param userId
-     * @param managePasswd
-     * @param authPwd
-     * @param limitedTime
+     * @param userId 注册app,服务器统一分配一个userid
+     * @param managePasswd 管理密码，第一次由用户自己输入
+     * @param authPwd 授权密码
+     * @param limitedTime 授权时限
      */
     public void setSmaertLockParmars(String cmd, String userId, String managePasswd, String authPwd, String limitedTime) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("SmartLock");
-
-
         queryCmd.setSmartUid(smartUid);
         queryCmd.setCommand(cmd);
         queryCmd.setAuthPwd(authPwd);
@@ -236,22 +238,33 @@ public class SmartLockManager implements LocalConnecteListener {
                         //查询数据库
                         List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
                         //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
-                        for (int devindex = 0; devindex < smartDevs.size(); devindex++) {
-                            if (!smartDevs.get(devindex).getDevUid().equals(aDeviceList.getSmartDev().get(i).getDevUid())) {
-                                SmartDev dev = new SmartDev();
-                                smartUid = aDeviceList.getSmartDev().get(i).getDevUid();
-
-                                dev.setDevUid(smartUid);
-                                dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
-                                dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
-                                dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
-                                boolean success = dev.save();
-                              
-                                Log.i(TAG, "保存智能锁设备=" + success);
+                        if(smartDevs!=null && smartDevs.size()>0){
+                            for (int devindex = 0; devindex < smartDevs.size(); devindex++) {
+                                if (!smartDevs.get(devindex).getDevUid().equals(aDeviceList.getSmartDev().get(i).getDevUid())) {
+                                    SmartDev dev = new SmartDev();
+                                    smartUid = aDeviceList.getSmartDev().get(i).getDevUid();
+                                    dev.setDevUid(smartUid);
+                                    dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
+                                    dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
+                                    dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
+                                    dev.setType(aDeviceList.getSmartDev().get(i).getType());
+                                    boolean success = dev.save();
+                                    Log.i(TAG, "保存智能锁设备=" + success);
+                                }
                             }
+                        }else{
+                            //如果表没有数据也要保存
+                            SmartDev dev = new SmartDev();
+                            smartUid = aDeviceList.getSmartDev().get(i).getDevUid();
+                            dev.setDevUid(smartUid);
+                            dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
+                            dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
+                            dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
+                            dev.setType(aDeviceList.getSmartDev().get(i).getType());
+                            boolean success = dev.save();
+                            Log.i(TAG, "保存智能锁设备=" + success);
                         }
                     }
-
                 }
             }
 
@@ -260,29 +273,28 @@ public class SmartLockManager implements LocalConnecteListener {
                 for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
                     //查询数据库
                     List<Device> devices = DataSupport.findAll(Device.class);
-                    if (devices != null && devices.size() > 0) {
-                        Log.i(TAG, "devices=" + devices.get(0).getUid());
-                    }else{
-                        Log.i(TAG, "devices==null" );
+                    if (devices.size() == 0) {
                         Device dev = new Device();
                         dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
                         dev.setIp(aDeviceList.getDevice().get(i).getIp());
                         dev.setUid(aDeviceList.getDevice().get(i).getUid());
                         boolean success = dev.save();
                         Log.i(TAG, "保存设备=" + success);
+                    }else{
+                        for (int devindex = 0; devindex < devices.size(); devindex++) {
+                            if (!devices.get(devindex).getUid().equals(aDeviceList.getDevice().get(i).getUid())) {
+                                Device dev = new Device();
+                                dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
+                                dev.setIp(aDeviceList.getDevice().get(i).getIp());
+                                dev.setUid(aDeviceList.getDevice().get(i).getUid());
+                                boolean success = dev.save();
+                                Log.i(TAG, "保存设备=" + success);
+                            }
+                        }
                     }
                     //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
 
-                    for (int devindex = 0; devindex < devices.size(); devindex++) {
-                        if (!devices.get(devindex).getUid().equals(aDeviceList.getDevice().get(i).getUid())) {
-                            Device dev = new Device();
-                            dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
-                            dev.setIp(aDeviceList.getDevice().get(i).getIp());
-                            dev.setUid(aDeviceList.getDevice().get(i).getUid());
-                            boolean success = dev.save();
-                            Log.i(TAG, "保存设备=" + success);
-                        }
-                    }
+
                 }
             }
         }

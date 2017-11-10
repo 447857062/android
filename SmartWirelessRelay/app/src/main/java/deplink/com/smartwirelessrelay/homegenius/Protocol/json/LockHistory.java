@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class Record implements Serializable{
+public class LockHistory implements Serializable{
     private String time;
     private String userid;
 
@@ -27,7 +27,7 @@ public class Record implements Serializable{
 
     @Override
     public String toString() {
-        return "Record{" +
+        return "LockHistory{" +
                 "time='" + time + '\'' +
                 ", userid='" + userid + '\'' +
                 '}';

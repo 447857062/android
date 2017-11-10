@@ -42,9 +42,9 @@ public class ConnectionMonitor {
                     SharedPreference sharedPreference = new SharedPreference(mContext, "heathswitch");
                     String open = sharedPreference.getString("heathswitch");
                     Log.i(TAG, "发送心跳包开关 open=" + open);
-                    if (open != null && open.equals("open")) {
+                  //  if (open != null && open.equals("open")) {
                         checkConnectionHealth();
-                    }
+                  //  }
                 }
             };
         }

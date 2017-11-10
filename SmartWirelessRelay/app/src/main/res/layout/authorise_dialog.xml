@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.DevListActivity">
+
+
+    <ImageView
+        android:id="@+id/iamgeview_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iamgeview_delete"
+        android:layout_centerHorizontal="true"
+        android:text="请输入新的授权密码" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_title">
+        <!--第一部分-->
+        <RelativeLayout
+            android:id="@+id/layout_content_one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:id="@+id/linelayout_select_auth_type"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray">
+
+                </View>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/textview_select_auth_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="选择授权方式" />
+
+                    <TextView
+                        android:id="@+id/textview_current_auth_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toLeftOf="@+id/imageview_arror"
+                        android:text=""
+                        android:textColor="@android:color/holo_blue_light" />
+
+                    <ImageView
+                        android:id="@+id/imageview_arror"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray"></View>
+            </LinearLayout>
+
+
+            <deplink.com.smartwirelessrelay.homegenius.view.dialog.custom.widget.SecurityPasswordEditText
+                android:id="@+id/edt_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="90dp" />
+
+        </RelativeLayout>
+        <!---->
+        <!--第二部分-->
+        <RelativeLayout
+            android:id="@+id/layout_content_two"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:id="@+id/linelayout_auth_type_once"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray">
+
+                </View>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/textview_auth_type_once"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="单次授权" />
+
+
+                    <ImageView
+                        android:id="@+id/imageview_auth_once_arror"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray"></View>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:id="@+id/linelayout_auth_type_permanent"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="top|center_horizontal"
+                android:layout_below="@+id/linelayout_auth_type_once"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/textview_auth_type_permanent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="永久授权" />
+                    <ImageView
+                        android:id="@+id/imageview_auth_permanent"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="2dp"
+                    android:background="@color/gray">
+
+                </View>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linelayout_auth_type_time_limit"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="top|center_horizontal"
+                android:layout_below="@+id/linelayout_auth_type_permanent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textview_auth_type_time_limit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="期限授权" />
+
+                    <ImageView
+                        android:id="@+id/imageview_auth_time_limit"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray">
+
+                </View>
+            </LinearLayout>
+
+        </RelativeLayout>
+       <!---->
+    </FrameLayout>
+
+
+</RelativeLayout>
