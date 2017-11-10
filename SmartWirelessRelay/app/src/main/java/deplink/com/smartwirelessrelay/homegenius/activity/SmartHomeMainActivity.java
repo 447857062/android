@@ -42,7 +42,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.layout_home_page:
-                startActivity(new Intent(this,HomePageActivity.class));
+
                 break;
             case R.id.layout_devices:
                 startActivity(new Intent(this,DevicesActivity.class));
