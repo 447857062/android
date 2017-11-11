@@ -224,7 +224,7 @@ public class DragGridView extends GridView{
 
 	/**
 	 * 是否点击在GridView的item上面
-	 * @param itemView
+	 * @param dragView
 	 * @param x
 	 * @param y
 	 * @return
@@ -303,8 +303,8 @@ public class DragGridView extends GridView{
 
 	/**
 	 * 拖动item，在里面实现了item镜像的位置更新，item的相互交换以及GridView的自行滚动
-	 * @param x
-	 * @param y
+	 * @param moveX
+	 * @param moveY
 	 */
 	private void onDragItem(int moveX, int moveY){
 		mWindowLayoutParams.x = moveX - mPoint2ItemLeft + mOffset2Left;

@@ -25,6 +25,7 @@
     <list>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device"></mapping>
+        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.ManagerPassword"></mapping>
     </list>
 
     <!--

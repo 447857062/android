@@ -57,7 +57,8 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.RoomActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartLockActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.UpdateSmartLockUserIdActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.UpdateSmartLockUserIdActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.view.keyboard.SetLockPwdActivity"></activity>
     </application>
 
 </manifest>

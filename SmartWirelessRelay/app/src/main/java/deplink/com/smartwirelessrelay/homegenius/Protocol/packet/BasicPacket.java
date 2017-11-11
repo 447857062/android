@@ -106,7 +106,6 @@ public class BasicPacket {
         //数据长度，命令内容长度 (2)debug-0x0,0x0
         byte[] temp;
         if (xdata != null) {
-
             temp = DataExchange.intToTwoByte(xdata.length);
             Log.i(TAG, "temp[0]" + temp[0]);
             Log.i(TAG, "temp[1]" + temp[1]);

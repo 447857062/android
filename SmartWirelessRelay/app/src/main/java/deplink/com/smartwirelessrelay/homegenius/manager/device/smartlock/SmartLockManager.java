@@ -70,8 +70,10 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            mLocalConnectmanager.InitLocalConnectManager(mContext, this);
+            mLocalConnectmanager.InitLocalConnectManager(mContext);
+
         }
+        mLocalConnectmanager.addLocalConnectListener(this);
         //生成数据库
         if (db == null) {
             db = Connector.getDatabase();
@@ -94,7 +96,9 @@ public class SmartLockManager implements LocalConnecteListener {
         cachedThreadPool = Executors.newCachedThreadPool();
     }
 
-
+    public  void releaswSmartManager(){
+        mLocalConnectmanager.removeLocalConnectListener(this);
+    }
     /**
      * 查询设备列表
      */
@@ -109,6 +113,7 @@ public class SmartLockManager implements LocalConnecteListener {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG,"cachedThreadPool execute queryDeviceList");
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
@@ -186,10 +191,20 @@ public class SmartLockManager implements LocalConnecteListener {
         queryCmd.setMethod("SmartLock");
         queryCmd.setSmartUid(smartUid);
         queryCmd.setCommand(cmd);
-        queryCmd.setAuthPwd(authPwd);
+        if(authPwd!=null){
+            queryCmd.setAuthPwd(authPwd);
+        }else{
+            queryCmd.setAuthPwd("0");
+        }
+
         queryCmd.setUserID(userId);
         queryCmd.setManagePasswd(managePasswd);
-        queryCmd.setLimitedTime(limitedTime);
+        if(limitedTime!=null){
+            queryCmd.setLimitedTime(limitedTime);
+        }else{
+            queryCmd.setLimitedTime("0");
+        }
+
 
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
@@ -226,6 +241,8 @@ public class SmartLockManager implements LocalConnecteListener {
 
     @Override
     public void OnGetQueryresult(String result) {
+        //返回查询结果：开锁记录，设备列表
+        Log.i(TAG,"回调设备列表数据 result="+result);
         //保存智能锁设备的DevUid
         if (result.contains("DevList")) {
             Gson gson = new Gson();
@@ -238,7 +255,8 @@ public class SmartLockManager implements LocalConnecteListener {
                         //查询数据库
                         List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
                         //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
-                        if(smartDevs!=null && smartDevs.size()>0){
+                        Log.i(TAG, "查询智能设备smartDevs=" + smartDevs.size());
+                        if(smartDevs.size()>0){
                             for (int devindex = 0; devindex < smartDevs.size(); devindex++) {
                                 if (!smartDevs.get(devindex).getDevUid().equals(aDeviceList.getSmartDev().get(i).getDevUid())) {
                                     SmartDev dev = new SmartDev();
@@ -298,7 +316,7 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
             }
         }
-        //返回查询结果：开锁记录，设备列表
+
         mSmartLockListener.responseQueryResult(result);
     }
 

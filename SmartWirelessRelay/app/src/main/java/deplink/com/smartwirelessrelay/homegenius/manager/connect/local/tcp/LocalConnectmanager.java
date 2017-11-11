@@ -11,6 +11,8 @@ import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
@@ -42,7 +44,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * 这个类设计成单例
      */
     private static LocalConnectmanager instance;
-    private LocalConnecteListener mLocalConnecteListener;
+    private List<LocalConnecteListener> mLocalConnecteListener;
     private Context mContext;
     /**
      * 连接线程
@@ -67,6 +69,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * sslsocket握手成功
      */
     private boolean handshakeCompleted;
+
     private LocalConnectmanager() {
     }
 
@@ -80,18 +83,26 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     /**
      * 初始化本地连接管理器
      */
-    public int InitLocalConnectManager(Context context, LocalConnecteListener listener) {
+    public int InitLocalConnectManager(Context context) {
         this.mContext = context;
-        this.mLocalConnecteListener = listener;
-        if (listener == null) {
-            Log.e(TAG, "LocalConnectManager 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
-        }
+
+        this.mLocalConnecteListener = new ArrayList<>();
+
         initRegisterNetChangeReceive();
         if (mUdpmanager == null) {
             mUdpmanager = UdpManager.getInstance();
             mUdpmanager.InitUdpConnect(context, this);
         }
         return 0;
+    }
+
+    public void removeLocalConnectListener(LocalConnecteListener listener) {
+        this.mLocalConnecteListener.remove(listener);
+    }
+    public void addLocalConnectListener(LocalConnecteListener listener) {
+        if (listener != null && !mLocalConnecteListener.contains(listener)) {
+            this.mLocalConnecteListener.add(listener);
+        }
     }
 
     private void initRegisterNetChangeReceive() {
@@ -193,7 +204,10 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 public void handshakeCompleted(HandshakeCompletedEvent event) {
                     Log.i(TAG, "ssl握手成功回调");
                     handshakeCompleted = true;
-                    mLocalConnecteListener.handshakeCompleted();
+                    for(int i=0;i<mLocalConnecteListener.size();i++){
+                        mLocalConnecteListener.get(i).handshakeCompleted();
+                    }
+
 
                 }
             });
@@ -207,12 +221,13 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         } catch (Exception e) {
             //TODO 获取连接异常的ip地址
             handshakeCompleted = false;
-            mLocalConnecteListener.createSocketFailed("连接网关:创建到" + ipAddress + "的连接失败");
+            for(int i=0;i<mLocalConnecteListener.size();i++){
+                mLocalConnecteListener.get(i).createSocketFailed("连接网关:创建到" + ipAddress + "的连接失败");
+            }
             e.printStackTrace();
         }
 
     }
-
 
 
     /**
@@ -224,10 +239,13 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     public int getOut(byte[] message) {
         if (sslSocket == null) {
             Log.i(TAG, "socket==null cannot send tcp ip message");
-            mLocalConnecteListener.OnFailedgetLocalGW("未连接本地网关");
+            for(int i=0;i<mLocalConnecteListener.size();i++){
+                mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
+            }
+
             return -1;
         }
-        Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted);
+        Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted + "message=" + DataExchange.byteArrayToHexString(message));
         try {
             Log.e(TAG, "getOut() send start: ");
             OutputStream out = sslSocket.getOutputStream();
@@ -248,7 +266,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     public String getIn() {
         if (sslSocket == null) {
             Log.i(TAG, "getIn() socket==null cannot receive message");
-            mLocalConnecteListener.OnFailedgetLocalGW("未连接本地网关");
+            for(int i=0;i<mLocalConnecteListener.size();i++){
+                mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
+            }
             return "";
         }
         if (sslSocket.isClosed()) {
@@ -277,15 +297,20 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         byte[] uid = new byte[32];
                         System.arraycopy(buf, 7, uid, 0, 32);
                         str = new String(uid);
-                        mLocalConnecteListener.OnGetUid(str);
+                        for(int i=0;i<mLocalConnecteListener.size();i++){
+                            mLocalConnecteListener.get(i).OnGetUid(str);
+                        }
                         break;
                     case ComandID.QUERY_DEV_RESPONSE:
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                        System.out.println("received:" + "length=" + length);
+                        System.out.println("received:" + "length=" + length+"received devlist:" + str);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
-                        System.out.println("received devlist:" + str);
-                        mLocalConnecteListener.OnGetQueryresult(str);
+
+                        for(int i=0;i<mLocalConnecteListener.size();i++){
+                            Log.i(TAG,"mLocalConnecteListener="+mLocalConnecteListener.get(i).toString());
+                            mLocalConnecteListener.get(i).OnGetQueryresult(str);
+                        }
                         break;
                     case ComandID.SET_CMD_RESPONSE:
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
@@ -293,7 +318,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         System.out.println("received:" + "length=" + length);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("received devlist:" + str);
-                        mLocalConnecteListener.OnGetSetresult(str);
+                        for(int i=0;i<mLocalConnecteListener.size();i++){
+                            mLocalConnecteListener.get(i).OnGetSetresult(str);
+                        }
                         break;
 
                 }
@@ -319,7 +346,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         currentNetStatu = netStatu;
         if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
             //TODO wifi连接不可用
-            mLocalConnecteListener.wifiConnectUnReachable();
+            for(int i=0;i<mLocalConnecteListener.size();i++){
+                mLocalConnecteListener.get(i).wifiConnectUnReachable();
+            }
             if (mUdpmanager != null) {
                 mUdpmanager = null;
             }
@@ -338,22 +367,21 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     }
 
 
-
     private void resetSslSocket() {
 
-              new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (sslSocket != null) {
-                        try {
-                            sslSocket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        sslSocket = null;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (sslSocket != null) {
+                    try {
+                        sslSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                    sslSocket = null;
                 }
-            }).start();
+            }
+        }).start();
     }
 
     @Override

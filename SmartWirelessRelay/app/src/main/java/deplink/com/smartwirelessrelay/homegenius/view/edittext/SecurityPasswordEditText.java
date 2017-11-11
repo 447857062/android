@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view.dialog.custom.widget;
+package deplink.com.smartwirelessrelay.homegenius.view.edittext;
 
 
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.custom.utils.KeyBoardUtils;
+import deplink.com.smartwirelessrelay.homegenius.util.KeyBoardUtils;
 
 
 /** 

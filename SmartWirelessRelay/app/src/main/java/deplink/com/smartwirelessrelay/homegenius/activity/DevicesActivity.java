@@ -57,11 +57,29 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         initDatas();
         initEvents();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mSmartLockManager.queryDeviceList();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSmartLockManager.releaswSmartManager();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+      //  mSmartLockManager.releaswSmartManager();
+    }
     private SQLiteDatabase db;
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this, this);
-        mSmartLockManager.queryDeviceList();
 
         datasTop=new ArrayList<>();
         datasBottom=new ArrayList<>();
@@ -76,7 +94,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         }
 
         datasBottom= DataSupport.findAll(SmartDev.class);
-        if(datasTop.size()>0){
+        if(datasBottom.size()>0){
             Log.i(TAG,"设备界面查询智能设备"+datasBottom.get(0).getStatus());
             Log.i(TAG,"备设备界面查询智能设"+datasBottom.get(0).getType());
         }else{

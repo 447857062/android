@@ -67,8 +67,8 @@
                         android:id="@+id/textview_current_auth_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
                         android:layout_alignParentRight="true"
+                        android:layout_marginRight="30dp"
                         android:layout_toLeftOf="@+id/imageview_arror"
                         android:text=""
                         android:textColor="@android:color/holo_blue_light" />
@@ -89,7 +89,7 @@
             </LinearLayout>
 
 
-            <deplink.com.smartwirelessrelay.homegenius.view.dialog.custom.widget.SecurityPasswordEditText
+            <deplink.com.smartwirelessrelay.homegenius.view.edittext.SecurityPasswordEditText
                 android:id="@+id/edt_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,22 +147,25 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
                 android:id="@+id/linelayout_auth_type_permanent"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="top|center_horizontal"
+                android:layout_height="50dp"
                 android:layout_below="@+id/linelayout_auth_type_once"
+                android:layout_marginTop="10dp"
+                android:gravity="top|center_horizontal"
                 android:orientation="vertical">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:id="@+id/textview_auth_type_permanent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:text="永久授权" />
+
                     <ImageView
                         android:id="@+id/imageview_auth_permanent"
                         android:layout_width="20dp"
@@ -170,21 +173,24 @@
                         android:layout_alignParentRight="true"
                         android:src="@mipmap/ic_launcher" />
                 </RelativeLayout>
+
                 <View
                     android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
                     android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
                     android:background="@color/gray">
 
                 </View>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linelayout_auth_type_time_limit"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="top|center_horizontal"
+                android:layout_height="50dp"
                 android:layout_below="@+id/linelayout_auth_type_permanent"
+                android:gravity="top|center_horizontal"
                 android:orientation="vertical">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -214,7 +220,149 @@
             </LinearLayout>
 
         </RelativeLayout>
-       <!---->
+        <!---->
+
+        <!--第三部分-->
+        <RelativeLayout
+            android:id="@+id/layout_content_three"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:id="@+id/linelayout_time_limit_2_hours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray">
+
+                </View>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/textview_time_limit_2_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="2小时"
+                        android:textColor="@android:color/holo_blue_light" />
+
+
+                    <ImageView
+                        android:id="@+id/imageview_time_limit_2_hours_arror"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray"></View>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linelayout_time_limit_12_hours"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/linelayout_time_limit_2_hours"
+                android:layout_marginTop="10dp"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textview_time_limit_12_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="12小时"
+                        android:textColor="@android:color/holo_blue_light" />
+
+                    <ImageView
+                        android:id="@+id/imageview_time_limit_12_hours"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray">
+
+                </View>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linelayout_time_limit_custom"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/linelayout_time_limit_12_hours"
+                android:gravity="top|center_horizontal"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/edittext_time_limit_custom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:background="@null"
+                        android:hint="自定义"
+                        android:imeActionLabel="完成"
+                        android:inputType="numberDecimal"
+                        android:textSize="15dp"
+                        android:singleLine="true"
+                        android:textColor="@android:color/holo_blue_light"
+                        android:textColorHint="@android:color/darker_gray" />
+
+                    <TextView
+                        android:text="小时"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="30dp" />
+
+                    <ImageView
+                        android:id="@+id/imageview_time_limit_custom"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_launcher" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/gray">
+
+                </View>
+            </LinearLayout>
+
+        </RelativeLayout>
+        <!---->
     </FrameLayout>
 
 
