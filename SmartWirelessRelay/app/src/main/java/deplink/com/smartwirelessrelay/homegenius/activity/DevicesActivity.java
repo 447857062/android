@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -49,6 +50,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
      * 下面半部分列表的数据
      * */
     private List<SmartDev> datasBottom;
+
+    private ImageView imageview_add_device;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +128,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
+        imageview_add_device.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -133,6 +137,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         layout_rooms= (LinearLayout) findViewById(R.id.layout_rooms);
         layout_personal_center= (LinearLayout) findViewById(R.id.layout_personal_center);
         listview_devies= (ListView) findViewById(R.id.listview_devies);
+        imageview_add_device= (ImageView) findViewById(R.id.imageview_add_device);
         //TODO 初始化设备列表
 
     }
@@ -151,6 +156,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
                 break;
             case R.id.layout_personal_center:
                 startActivity(new Intent(this,PersonalCenterActivity.class));
+                break;
+            case R.id.imageview_add_device:
+                startActivity(new Intent(this,AddDeviceActivity.class));
                 break;
         }
     }

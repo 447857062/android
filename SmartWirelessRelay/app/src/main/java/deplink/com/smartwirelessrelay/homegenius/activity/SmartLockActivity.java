@@ -48,13 +48,20 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         if (db == null) {
             db = Connector.getDatabase();
         }
-        ManagerPassword managerPassword= DataSupport.findFirst(ManagerPassword.class);
-        if(!managerPassword.isRemenbEnable()){
-            saveManagetPassword=false;
-        }else{
-            savedManagePassword=managerPassword.getManagerPassword();
-            saveManagetPassword=true;
+        //TODO
+        ManagerPassword managerPassword= null;
+        try {
+            managerPassword = DataSupport.findFirst(ManagerPassword.class);
+            if(!managerPassword.isRemenbEnable()){
+                saveManagetPassword=false;
+            }else{
+                savedManagePassword=managerPassword.getManagerPassword();
+                saveManagetPassword=true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void initEvents() {

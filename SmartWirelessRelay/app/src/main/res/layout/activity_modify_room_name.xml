@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.ModifyRoomNameActivity">
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/holo_blue_light">
+
+        <ImageView
+            android:id="@+id/image_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textview_title_room_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="修改房间名称"
+            android:layout_centerVertical="true"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/textview_title_complement"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="完成"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+    </RelativeLayout>
+
+    <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        android:layout_below="@+id/layout_title"
+        android:id="@+id/clear"
+        android:paddingLeft="10dp"
+        android:hint="客厅"
+        android:background="@color/gray"
+
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+</RelativeLayout>

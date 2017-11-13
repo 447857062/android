@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,10 +23,11 @@ import android.widget.ImageView;
  */
 @SuppressLint("NewApi")
 public class DragGridView extends GridView{
+	private static final String TAG="DragGridView";
 	/**
 	 * DragGridView的item长按响应的时间， 默认是1000毫秒，也可以自行设置
 	 */
-	private long dragResponseMS = 1000;
+	private long dragResponseMS = 200;
 	
 	/**
 	 * 是否可以拖拽，默认不可以
@@ -165,16 +167,19 @@ public class DragGridView extends GridView{
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		switch(ev.getAction()){
 		case MotionEvent.ACTION_DOWN:
-			//使用Handler延迟dragResponseMS执行mLongClickRunnable
-			mHandler.postDelayed(mLongClickRunnable, dragResponseMS);
-			
 			mDownX = (int) ev.getX();
 			mDownY = (int) ev.getY();
 
 			//根据按下的X,Y坐标获取所点击item的position
 			mDragPosition = pointToPosition(mDownX, mDownY);
-			
-			if(mDragPosition == AdapterView.INVALID_POSITION){
+			//使用Handler延迟dragResponseMS执行mLongClickRunnable
+			//最后一个不能交换,添加按钮
+			if( mDragPosition==getAdapter().getCount()-1){
+				mStartDragItemView = getChildAt(mDragPosition - getFirstVisiblePosition());
+				return super.dispatchTouchEvent(ev);
+			}
+			mHandler.postDelayed(mLongClickRunnable, dragResponseMS);
+			if(mDragPosition == AdapterView.INVALID_POSITION ){
 				return super.dispatchTouchEvent(ev);
 			}
 
@@ -348,7 +353,7 @@ public class DragGridView extends GridView{
 		}
 	};
 
-
+	private int mLastHiddenItem;
 	/**
 	 * 交换item,并且控制item之间的显示与隐藏效果
 	 * @param moveX
@@ -358,11 +363,25 @@ public class DragGridView extends GridView{
 		//获取我们手指移动到的那个item的position
 		int tempPosition = pointToPosition(moveX, moveY);
 
-		//假如tempPosition 改变了并且tempPosition不等于-1,则进行交换
-		if(tempPosition != mDragPosition && tempPosition != AdapterView.INVALID_POSITION){
+		//假如tempPosition 改变了并且tempPosition不等于-1,不等于最后一个位置,则进行交换
+		if(tempPosition != mDragPosition && tempPosition != AdapterView.INVALID_POSITION && tempPosition!=getAdapter().getCount()-1){
+			Log.i(TAG,"进行交换 影藏="+(tempPosition - getFirstVisiblePosition())+"显示="+(mDragPosition - getFirstVisiblePosition()));
+
 			getChildAt(tempPosition - getFirstVisiblePosition()).setVisibility(View.INVISIBLE);//拖动到了新的item,新的item隐藏掉
 			getChildAt(mDragPosition - getFirstVisiblePosition()).setVisibility(View.VISIBLE);//之前的item显示出来
-			
+			Log.i(TAG,"进行交换 显示的结果="+getChildAt(mDragPosition - getFirstVisiblePosition()).getVisibility());
+		//	if(mLastHiddenItem==0){
+				getChildAt(0).setVisibility(View.VISIBLE);
+			//}
+			mLastHiddenItem=tempPosition - getFirstVisiblePosition();
+
+			//getChildAt(0).setVisibility(View.VISIBLE);
+			/*for(int i=0;i<getAdapter().getCount()-1;i++){
+			//	Log.i(TAG,"进行交换后每一项的显示情况(可见0.不可见4) i="+i+"可见性:"+getChildAt(i).getVisibility());
+				*//*if(getChildAt(i).getVisibility()==View.INVISIBLE){
+					getChildAt(i).setVisibility(View.VISIBLE);
+				}*//*
+			}*/
 			if(onChanageListener != null){
 				onChanageListener.onChange(mDragPosition, tempPosition);
 			}
