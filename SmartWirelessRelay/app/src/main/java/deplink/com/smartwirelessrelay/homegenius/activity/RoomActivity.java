@@ -9,10 +9,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
@@ -26,9 +23,6 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-
-    private List<HashMap<String, Object>> dataSourceList = new ArrayList<HashMap<String, Object>>();
-    //   private List<String>mRooms=new ArrayList<>();
     private DragGridView mDragGridView;
 
     @Override
@@ -47,7 +41,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.InitRoomManager();
+        mRoomManager.initRoomManager();
         mRoomManager.getDatabaseRooms();
         //TODO 使用数据库中的数据
         mRoomsAdapter = new GridViewAdapter(this, RoomManager.getInstance().getmRooms());
@@ -78,10 +72,17 @@ public class RoomActivity extends Activity implements View.OnClickListener {
                     }
                 }
                 RoomManager.getInstance().getmRooms().set(to, temp);
-                int fromindex=RoomManager.getInstance().getmRooms().get(from).getRoomOrdinalNumber();
-                int toindex=RoomManager.getInstance().getmRooms().get(to).getRoomOrdinalNumber();
-                RoomManager.getInstance().sortRooms(fromindex,toindex);
                 mRoomsAdapter.notifyDataSetChanged();
+                //TODO 重新赋值下标
+                int fronIndex=RoomManager.getInstance().getmRooms().get(from).getRoomOrdinalNumber();
+                int toIndex=RoomManager.getInstance().getmRooms().get(to).getRoomOrdinalNumber();
+
+                RoomManager.getInstance().getmRooms().get(from).setRoomOrdinalNumber(toIndex);
+                RoomManager.getInstance().getmRooms().get(from).save();
+
+                RoomManager.getInstance().getmRooms().get(to).setRoomOrdinalNumber(fronIndex);
+                RoomManager.getInstance().getmRooms().get(to).save();
+
             }
         });
         mDragGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

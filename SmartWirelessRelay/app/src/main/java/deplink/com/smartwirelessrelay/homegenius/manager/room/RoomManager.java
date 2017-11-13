@@ -25,11 +25,19 @@ public class RoomManager {
     private List<Room> mRooms;
 
     /**
-     * 获取按照排序号的房间列表
+     * 获取房间列表
      *
      * @return
      */
     public List<Room> getmRooms() {
+
+        return mRooms;
+    }
+
+    /**
+     * 按照序号排序
+     */
+    public void sortRooms() {
         Collections.sort(mRooms, new Comparator<Room>() {
             @Override
             public int compare(Room o1, Room o2) {
@@ -46,31 +54,12 @@ public class RoomManager {
                 return 0;
             }
         });
-        return mRooms;
+        for(int i=0;i<mRooms.size();i++){
+            Log.i(TAG,"房间"+i+"是："+mRooms.get(i).toString());
+        }
+
     }
 
-    /**
-     * 拖拽排序后更新房间的排序下标
-     *
-     * @param from
-     * @param to
-     * @return
-     */
-    public boolean sortRooms(int from, int to) {
-        Room temp1 = DataSupport.find(Room.class, from);
-        Room temp2 = DataSupport.find(Room.class, to);
-        //先删除，再交换
-        int deleteTo=DataSupport.delete(Room.class, to);
-        temp1.setRoomOrdinalNumber(to);
-        // rowsAffected
-        boolean saveFrom=temp1.save();
-        temp2.setRoomOrdinalNumber(from);
-        boolean saveTo=temp2.save();
-        Log.i(TAG,"deleteTo="+deleteTo+"saveFrom="+saveFrom+"saveTo="+saveTo);
-        getmRooms();
-        //TODO 返回值
-        return false;
-    }
 
     private RoomManager() {
     }
@@ -81,11 +70,16 @@ public class RoomManager {
         }
         return instance;
     }
-
+   /* *//**
+     * 初始化本地连接管理器
+     *//*
+    public void updateRooms() {
+        DataSupport.updateAll(Room.class,mRooms.size());
+    }*/
     /**
      * 初始化本地连接管理器
      */
-    public void InitRoomManager() {
+    public void initRoomManager() {
         //生成数据库
         if (db == null) {
             db = Connector.getDatabase();
@@ -97,6 +91,8 @@ public class RoomManager {
      * 查询数据库获取房间列表
      */
     public void getDatabaseRooms() {
+
+
         mRooms = DataSupport.findAll(Room.class);
         if (mRooms.size() == 0) {
             Room temp = new Room();
@@ -117,16 +113,26 @@ public class RoomManager {
             temp.save();
             mRooms.add(temp);
         }
+        sortRooms();
     }
 
     /**
      * 根据房间排序号查询房间
+     *
      * @param roomIndex
      * @return
      */
-    public Room findRoom(int  roomIndex) {
-      return DataSupport.find(Room.class,roomIndex);
+    public Room findRoom(int roomIndex) {
+        Room room=DataSupport.find(Room.class, roomIndex);
+        if(room!=null){
+            Log.i(TAG,"查找房间 :"+room.toString());
+        }else{
+            Log.i(TAG,"查找房间 : 未找到");
+        }
+
+        return room;
     }
+
     /**
      * 根据房间名称
      * 删除房间

@@ -11,15 +11,17 @@ import java.util.List;
  * 房间管理
  */
 public class Room extends DataSupport implements Serializable{
+
+    @Column(unique = true,nullable = false)
     /**
      * 房间名称
      */
-    @Column(unique = true,nullable = false)
     private String roomName;
+
+    @Column(nullable = false)
     /**
      * 房间序号（用于显示的时候排序）
      */
-    @Column(unique = true,nullable = false)
     private int roomOrdinalNumber;
 
     private List<SmartDev>mDevices;
@@ -46,5 +48,14 @@ public class Room extends DataSupport implements Serializable{
 
     public void setmDevices(List<SmartDev> mDevices) {
         this.mDevices = mDevices;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomName='" + roomName + '\'' +
+                ", roomOrdinalNumber=" + roomOrdinalNumber +
+                ", mDevices=" + mDevices +
+                '}';
     }
 }
