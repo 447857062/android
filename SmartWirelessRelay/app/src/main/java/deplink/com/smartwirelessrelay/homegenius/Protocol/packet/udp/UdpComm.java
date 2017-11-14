@@ -118,10 +118,12 @@ public class UdpComm {
                     if (len > 0) {
                         byte[] result = new byte[len];
                         System.arraycopy(data, 0, result, 0, len);
+                        Log.i(TAG,"udp RecvThread 接收数据="+DataExchange.byteArrayToIntString(result));
                         BasicPacket basicPacket = new BasicPacket(mContext, packet.getAddress(), packet.getPort());
                         Log.i(TAG, "udp RecvThread 接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
                         //basicPacket.unpackPacketWithWirelessData(result);
+                       // listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
                         listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
                         //停止探测ip地址
                         stopServer();

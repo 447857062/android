@@ -9,7 +9,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
@@ -23,7 +25,12 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
+
     private DragGridView mDragGridView;
+    private GridViewAdapter mRoomsAdapter;
+
+    private RoomManager mRoomManager;
+    private List<Room> mRooms = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +41,26 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         initEvents();
     }
 
-    private GridViewAdapter mRoomsAdapter;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRoomManager.updateRoomsOrdinalNumber();
+    }
 
-    //TODO 初始化数据库
-    private RoomManager mRoomManager;
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
-        mRoomManager.getDatabaseRooms();
-        //TODO 使用数据库中的数据
-        mRoomsAdapter = new GridViewAdapter(this, RoomManager.getInstance().getmRooms());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRooms = mRoomManager.getDatabaseRooms();
+        mRoomsAdapter = new GridViewAdapter(this, mRooms);
+        //房间适配器
+        mDragGridView.setAdapter(mRoomsAdapter);
     }
 
     private void initEvents() {
@@ -52,37 +68,23 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
-
-        //房间适配器
-        mDragGridView.setAdapter(mRoomsAdapter);
-
         mDragGridView.setOnChangeListener(new DragGridView.OnChanageListener() {
 
             @Override
             public void onChange(int from, int to) {
-                Room temp = RoomManager.getInstance().getmRooms().get(from);
+                Room temp = mRooms.get(from);
                 //这里的处理需要注意下
                 if (from < to) {
                     for (int i = from; i < to; i++) {
-                        Collections.swap(RoomManager.getInstance().getmRooms(), i, i + 1);
+                        Collections.swap(mRooms, i, i + 1);
                     }
                 } else if (from > to) {
                     for (int i = from; i > to; i--) {
-                        Collections.swap(RoomManager.getInstance().getmRooms(), i, i - 1);
+                        Collections.swap(mRooms, i, i - 1);
                     }
                 }
-                RoomManager.getInstance().getmRooms().set(to, temp);
+                mRooms.set(to, temp);
                 mRoomsAdapter.notifyDataSetChanged();
-                //TODO 重新赋值下标
-                int fronIndex=RoomManager.getInstance().getmRooms().get(from).getRoomOrdinalNumber();
-                int toIndex=RoomManager.getInstance().getmRooms().get(to).getRoomOrdinalNumber();
-
-                RoomManager.getInstance().getmRooms().get(from).setRoomOrdinalNumber(toIndex);
-                RoomManager.getInstance().getmRooms().get(from).save();
-
-                RoomManager.getInstance().getmRooms().get(to).setRoomOrdinalNumber(fronIndex);
-                RoomManager.getInstance().getmRooms().get(to).save();
-
             }
         });
         mDragGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

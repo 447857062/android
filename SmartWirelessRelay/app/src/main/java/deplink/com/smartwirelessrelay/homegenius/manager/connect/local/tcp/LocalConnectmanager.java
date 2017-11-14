@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +25,9 @@ import javax.net.ssl.TrustManagerFactory;
 
 import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectionMonitor;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecord;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecordReal;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
@@ -36,6 +41,10 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
  * 1.监听网络状态NetStatuChangeReceiver.onNetStatuschangeListener,只有wifi状态才能建立连接
  * 2.建立长连接后需要启动模拟心跳的线程.
  * 3.本地连接需要在udp广播后获取到连接ip地址后才能运行
+ * 使用：
+ mLocalConnectmanager=LocalConnectmanager.getInstance();
+ mLocalConnectmanager.InitLocalConnectManager(this);
+ mLocalConnectmanager.addLocalConnectListener(this);
  */
 public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatuschangeListener, UdpManagerGetIPLintener {
 
@@ -293,6 +302,16 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 //数据长度int表示
                 int length;
                 switch (cmd) {
+                    case ComandID.HEARTBEAT_RESPONSE:
+                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                        if(length>0){
+                            str = new String(buf, AppConstant.BASICLEGTH, length);
+                            Log.i(TAG,"心跳数据="+str);
+                            decodeAlarmRecord(str);
+                        }
+
+                        break;
                     case ComandID.CMD_BIND_RESPONSE:
                         byte[] uid = new byte[32];
                         System.arraycopy(buf, 7, uid, 0, 32);
@@ -332,6 +351,24 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             e.printStackTrace();
         }
         return str;
+    }
+
+    /**
+     * 解析报警记录
+     * @param str
+     */
+    private void decodeAlarmRecord(String str) {
+        Gson gson=new Gson();
+        ReportAlertRecord record=gson.fromJson(str, ReportAlertRecord.class);
+        if(record!=null){
+            String recode= record.getALARM_INFO().get(0).getINFO();
+            Log.i(TAG,"recode="+recode);
+            ReportAlertRecordReal mAlertRecordReal=gson.fromJson(recode, ReportAlertRecordReal.class);
+            List<LOCK_ALARM>alermList=mAlertRecordReal.getLOCK_ALARM();
+            for(int i=0;i<mLocalConnecteListener.size();i++){
+                mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
+            }
+        }
     }
 
     private int currentNetStatu;

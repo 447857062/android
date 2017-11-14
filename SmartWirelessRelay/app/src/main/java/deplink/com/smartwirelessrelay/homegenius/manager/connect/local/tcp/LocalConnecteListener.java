@@ -1,5 +1,9 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp;
 
+import java.util.List;
+
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
+
 /**
  * Created by Administrator on 2017/11/7.
  */
@@ -34,4 +38,8 @@ public interface LocalConnecteListener {
      * WiFi连接不可用
      */
     void wifiConnectUnReachable();
+    /**
+     * 获取报警记录
+     */
+    void onGetalarmRecord(List<LOCK_ALARM> alarmList);
 }

@@ -9,11 +9,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
-public class ManageRoomActivity extends Activity implements View.OnClickListener{
-    private static final String TAG="ManageRoomActivity";
+public class ManageRoomActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "ManageRoomActivity";
     private ImageView image_back;
     private Button button_delete_room;
     private TextView textview_device_number;
@@ -24,6 +26,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private RelativeLayout layout_device_number;
     private RelativeLayout layout_getway;
     private int roomOrdinalNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +38,14 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     }
 
     private void initDatas() {
-        mBundle=getIntent().getExtras();
-        Log.i(TAG,"mBundle!=null "+(mBundle!=null));
-        if(mBundle!=null){
-            mRoomName=mBundle.getString("roomName");
-            Log.i(TAG,"当前编辑的房间名称= "+mRoomName);
+        mBundle = getIntent().getExtras();
+        Log.i(TAG, "mBundle!=null " + (mBundle != null));
+        if (mBundle != null) {
+            mRoomName = mBundle.getString("roomName");
+            Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
             textview_room_name.setText(mRoomName);
         }
+        mRoomManager = RoomManager.getInstance();
     }
 
     private void initEvents() {
@@ -53,37 +57,53 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     }
 
     private void initViews() {
-        image_back= (ImageView) findViewById(R.id.image_back);
-        button_delete_room= (Button) findViewById(R.id.button_delete_room);
-        textview_room_name= (TextView) findViewById(R.id.textview_room_name);
-        textview_device_number= (TextView) findViewById(R.id.textview_device_number);
-        layout_room_name= (RelativeLayout) findViewById(R.id.layout_room_name);
-        layout_device_number= (RelativeLayout) findViewById(R.id.layout_device_number);
-        layout_getway= (RelativeLayout) findViewById(R.id.layout_getway);
+        image_back = (ImageView) findViewById(R.id.image_back);
+        button_delete_room = (Button) findViewById(R.id.button_delete_room);
+        textview_room_name = (TextView) findViewById(R.id.textview_room_name);
+        textview_device_number = (TextView) findViewById(R.id.textview_device_number);
+        layout_room_name = (RelativeLayout) findViewById(R.id.layout_room_name);
+        layout_device_number = (RelativeLayout) findViewById(R.id.layout_device_number);
+        layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
     }
-    public static final int REQUEST_MODIFY_ROOM_NAME=100;
+
+    public static final int REQUEST_MODIFY_ROOM_NAME = 100;
+
+    private RoomManager mRoomManager;
+
     @Override
     public void onClick(View v) {
         Intent intent;
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_delete_room:
-               //TODO 删除房间
+                //TODO 删除房间
+                if (mRoomName != null) {
+                    int column = mRoomManager.deleteRoom(mRoomName);
+                    Log.i(TAG, "删除房间，影响的行数=" + column);
+                    if (column == 1) {
+                        finish();
+                    } else {
+                        Toast.makeText(this, "删除房间失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
                 break;
             case R.id.layout_room_name:
-                 intent=new Intent(this,ModifyRoomNameActivity.class);
+                intent = new Intent(this, ModifyRoomNameActivity.class);
+                intent.putExtra("roomname", mRoomName);
                 //创建一个Bundle，用来在Activity间传递数据
-                startActivityForResult(intent,REQUEST_MODIFY_ROOM_NAME);
+                startActivityForResult(intent, REQUEST_MODIFY_ROOM_NAME);
                 break;
             case R.id.layout_device_number:
-                 intent=new Intent(this,DeviceNumberActivity.class);
+                intent = new Intent(this, DeviceNumberActivity.class);
                 //创建一个Bundle，用来在Activity间传递数据
+                intent.putExtra("roomname", mRoomName);
                 startActivity(intent);
                 break;
             case R.id.layout_getway:
-                 intent=new Intent(this,SmartGetwayActivity.class);
+                intent = new Intent(this, SmartGetwayActivity.class);
                 //创建一个Bundle，用来在Activity间传递数据
                 startActivity(intent);
                 break;
@@ -93,9 +113,9 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK && requestCode==REQUEST_MODIFY_ROOM_NAME){
-            mRoomName=data.getStringExtra("roomName");
-            Log.i(TAG,"onActivityResult mRoomName="+mRoomName);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_MODIFY_ROOM_NAME) {
+            mRoomName = data.getStringExtra("roomName");
+            Log.i(TAG, "onActivityResult mRoomName=" + mRoomName);
             textview_room_name.setText(mRoomName);
         }
     }

@@ -19,7 +19,13 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_room_name);
         initViews();
+        initDatas();
         initEvents();
+    }
+
+    private void initDatas() {
+        String hintRoomName=getIntent().getStringExtra("roomname");
+        clearEditText.setHint(hintRoomName);
     }
 
     private void initEvents() {

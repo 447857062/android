@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock;
 
 import java.io.Serializable;
 

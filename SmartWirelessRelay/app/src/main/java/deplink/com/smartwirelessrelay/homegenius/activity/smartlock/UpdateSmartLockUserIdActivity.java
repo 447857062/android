@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity;
+package deplink.com.smartwirelessrelay.homegenius.activity.smartlock;
 
 import android.app.Activity;
 import android.os.Bundle;

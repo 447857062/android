@@ -3,7 +3,6 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp;
 import android.content.Context;
 import android.util.Log;
 
-import deplink.com.smartwirelessrelay.homegenius.Devices.DevStatus;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
@@ -24,7 +23,7 @@ public class UdpManager implements OnGetIpListener {
      */
     private static UdpManager instance;
     private UdpPacket udpPacket;
-    private DevStatus devStatus;
+    private UdpThread devStatus;
     private UdpManagerGetIPLintener mUdpManagerGetIPLintener;
 
     private UdpManager() {
@@ -53,7 +52,7 @@ public class UdpManager implements OnGetIpListener {
 
         //启动状态查询任务
         if (devStatus == null) {
-            devStatus = new DevStatus(context, udpPacket);
+            devStatus = new UdpThread(context, udpPacket);
         }
         devStatus.open();
         return 0;
