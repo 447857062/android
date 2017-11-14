@@ -18,6 +18,8 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SmartLock;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
@@ -46,7 +48,8 @@ public class SmartLockManager implements LocalConnecteListener {
      * 这个类设计成单例
      */
     private static SmartLockManager instance;
-
+    private SmartLock mSmartLock;
+    private SQLiteDatabase db;
     private SmartLockManager() {
     }
 
@@ -57,7 +60,7 @@ public class SmartLockManager implements LocalConnecteListener {
         return instance;
     }
 
-    private SQLiteDatabase db;
+
 
     /**
      * 初始化本地连接管理器
@@ -78,7 +81,9 @@ public class SmartLockManager implements LocalConnecteListener {
         if (db == null) {
             db = Connector.getDatabase();
         }
-
+        if(mSmartLock==null){
+            mSmartLock=DataSupport.findFirst(SmartLock.class,true);
+        }
         List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
         //当前只有一个智能锁
         if(smartDevs.size()>0){
@@ -190,6 +195,9 @@ public class SmartLockManager implements LocalConnecteListener {
         queryCmd.setOP("SET");
         queryCmd.setMethod("SmartLock");
         queryCmd.setSmartUid(smartUid);
+
+
+
         queryCmd.setCommand(cmd);
         if(authPwd!=null){
             queryCmd.setAuthPwd(authPwd);
@@ -261,6 +269,10 @@ public class SmartLockManager implements LocalConnecteListener {
                                 if (!smartDevs.get(devindex).getDevUid().equals(aDeviceList.getSmartDev().get(i).getDevUid())) {
                                     SmartDev dev = new SmartDev();
                                     smartUid = aDeviceList.getSmartDev().get(i).getDevUid();
+                                    //TODO
+                                    mSmartLock.setDevUid(smartUid);
+                                    mSmartLock.save();
+
                                     dev.setDevUid(smartUid);
                                     dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
                                     dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
@@ -274,6 +286,10 @@ public class SmartLockManager implements LocalConnecteListener {
                             //如果表没有数据也要保存
                             SmartDev dev = new SmartDev();
                             smartUid = aDeviceList.getSmartDev().get(i).getDevUid();
+                            //TODO
+                            mSmartLock.setDevUid(smartUid);
+                            mSmartLock.save();
+
                             dev.setDevUid(smartUid);
                             dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
                             dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
@@ -328,5 +344,40 @@ public class SmartLockManager implements LocalConnecteListener {
     @Override
     public void wifiConnectUnReachable() {
 
+    }
+
+    /**
+     * 获取报警记录
+     *
+     * @param alarmList
+     */
+    @Override
+    public void onGetalarmRecord(List<LOCK_ALARM> alarmList) {
+        //TODO 这里还要写入devuid，不然会报错，因为这个devuid是不为空的
+        mSmartLock=DataSupport.findFirst(SmartLock.class);
+       for(int i=0;i<alarmList.size();i++){
+           LOCK_ALARM alarm;
+           alarm=alarmList.get(i);
+           alarm.save();
+
+           mSmartLock.getAlarmList().add(alarm);
+       }
+        mSmartLock.save();
+        //TODO
+    }
+
+    /**
+     * 报警记录设备上报，没有查询接口，所以保存在数据库中，需要去数据库获取
+     * @return
+     */
+    public List<LOCK_ALARM> getAlarmRecord(String devUid){
+       /* List<LOCK_ALARM> mSmartLock =   DataSupport.findAll(LOCK_ALARM.class);
+        Log.i(TAG,"获取报警记录"+mSmartLock.get(0).toString());
+        if(mSmartLock==null){
+            return new ArrayList<LOCK_ALARM>();
+        }*/
+        List<LOCK_ALARM> newsList = DataSupport.where("DevUid = ?", smartUid).findFirst(SmartLock.class,true).getAlarmList();
+       // return mSmartLock;
+        return newsList;
     }
 }

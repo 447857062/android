@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Devices;
+package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp;
 
 import android.content.Context;
 import android.util.Log;
@@ -23,15 +23,15 @@ import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
  * Created by benond on 2017/2/6.
  */
 
-public class DevStatus  {
+public class UdpThread {
 
-    private static final String TAG = "DevStatus";
+    private static final String TAG = "UdpThread";
      Timer timer;
     public DatagramSocket dataSocket;
     public Context mContext;
     private UdpPacket udp;
     private int currentNetStatu;
-    public DevStatus(Context context, UdpPacket udpPacket) {
+    public UdpThread(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
         try {

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity;
+package deplink.com.smartwirelessrelay.homegenius.activity.smartlock.lockhistory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,22 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistorys;
-import deplink.com.smartwirelessrelay.homegenius.activity.adapter.LockHistoryAdapter;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.LockHistorys;
+import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.UpdateSmartLockUserIdActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
 /**
  * 开锁记录界面
  */
-public class LockHistory extends Activity implements SmartLockListener,View.OnClickListener{
+public class LockHistoryActivity extends Activity implements SmartLockListener,View.OnClickListener{
     private static final String TAG = "LockHistory";
     private ListView dev_list;
-    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistory> mRecordList;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.LockHistory> mRecordList;
     private LockHistoryAdapter recordAdapter;
-
     private SmartLockManager mSmartLockManager;
-
     private ImageView imageview_back;
     private TextView textview_update_id;
 
@@ -92,7 +90,7 @@ public class LockHistory extends Activity implements SmartLockListener,View.OnCl
                     Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
                     try {
                         new AlertDialog
-                                .Builder(LockHistory.this)
+                                .Builder(LockHistoryActivity.this)
                                 .setTitle("设备")
                                 .setNegativeButton("确定", null)
                                 .setIcon(android.R.drawable.ic_menu_agenda)
@@ -105,7 +103,7 @@ public class LockHistory extends Activity implements SmartLockListener,View.OnCl
                 case MSG_RETURN_ERROR:
                     try {
                         new AlertDialog
-                                .Builder(LockHistory.this)
+                                .Builder(LockHistoryActivity.this)
                                 .setTitle("错误")
                                 .setNegativeButton("确定", null)
                                 .setIcon(android.R.drawable.ic_menu_agenda)
@@ -150,7 +148,7 @@ public class LockHistory extends Activity implements SmartLockListener,View.OnCl
                 onBackPressed();
                 break;
             case R.id.textview_update_id:
-                startActivity(new Intent(LockHistory.this,UpdateSmartLockUserIdActivity.class));
+                startActivity(new Intent(LockHistoryActivity.this,UpdateSmartLockUserIdActivity.class));
                 break;
         }
     }

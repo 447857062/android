@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.List;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 
@@ -107,6 +110,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     @Override
     public void wifiConnectUnReachable() {
+
+    }
+
+    @Override
+    public void onGetalarmRecord(List<LOCK_ALARM> alarmList) {
 
     }
 }

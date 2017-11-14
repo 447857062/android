@@ -49,22 +49,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.DevListActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.LockHistory" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.lockhistory.LockHistoryActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SendSmartDevListActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.MainActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.DevicesActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.RoomActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartLockActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.UpdateSmartLockUserIdActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.UpdateSmartLockUserIdActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.view.keyboard.SetLockPwdActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.AddDeviceActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.AddRommActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.ManageRoomActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.ModifyRoomNameActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.DeviceNumberActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.DeviceNumberActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.alarmhistory.AlarmHistoryActivity"></activity>
     </application>
 
 </manifest>

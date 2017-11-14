@@ -6,11 +6,13 @@ import android.util.Log;
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
 
 /**
  * Created by Administrator on 2017/11/13.
@@ -37,7 +39,7 @@ public class RoomManager {
     /**
      * 按照序号排序
      */
-    public void sortRooms() {
+    public List<Room> sortRooms() {
         Collections.sort(mRooms, new Comparator<Room>() {
             @Override
             public int compare(Room o1, Room o2) {
@@ -54,10 +56,10 @@ public class RoomManager {
                 return 0;
             }
         });
-        for(int i=0;i<mRooms.size();i++){
-            Log.i(TAG,"房间"+i+"是："+mRooms.get(i).toString());
+        for (int i = 0; i < mRooms.size(); i++) {
+            Log.i(TAG, "房间" + i + "是：" + mRooms.get(i).toString());
         }
-
+        return mRooms;
     }
 
 
@@ -70,12 +72,19 @@ public class RoomManager {
         }
         return instance;
     }
-   /* *//**
-     * 初始化本地连接管理器
-     *//*
-    public void updateRooms() {
-        DataSupport.updateAll(Room.class,mRooms.size());
-    }*/
+
+    /**
+     * 更新房间的排列顺序
+     */
+    public void updateRoomsOrdinalNumber() {
+       long time=System.currentTimeMillis();
+        for (int i = 0; i < mRooms.size(); i++) {
+            mRooms.get(i).setRoomOrdinalNumber(i);
+            mRooms.get(i).save();
+        };
+        Log.i(TAG,"耗时="+(System.currentTimeMillis()-time));
+    }
+
     /**
      * 初始化本地连接管理器
      */
@@ -90,30 +99,43 @@ public class RoomManager {
     /**
      * 查询数据库获取房间列表
      */
-    public void getDatabaseRooms() {
-
-
+    public List<Room> getDatabaseRooms() {
         mRooms = DataSupport.findAll(Room.class);
         if (mRooms.size() == 0) {
             Room temp = new Room();
             temp.setRoomName("客厅");
+            temp.setRoomOrdinalNumber(0);
+            List<SmartDev>devices=new ArrayList<>();
+           /* SmartDev dev=new SmartDev();
+            dev.setType("mensuo");
+            dev.setDevUid("1234567890klj");
+            dev.save();
+            devices.add(dev);
+            dev.setType("woshikelijun");
+            dev.setDevUid("1234567890klj");
+            dev.save();
+            devices.add(dev);
+            dev.setType("1114");
+            dev.setDevUid("1234567890klj");
+            dev.save();
+            devices.add(dev);*/
+           /* temp.setmDevices(devices);
+            temp.save();*/
+            mRooms.add(temp);
+
+            temp = new Room();
+            temp.setRoomName("卧室");
             temp.setRoomOrdinalNumber(1);
             temp.save();
             mRooms.add(temp);
 
             temp = new Room();
-            temp.setRoomName("卧室");
+            temp.setRoomName("厨房");
             temp.setRoomOrdinalNumber(2);
             temp.save();
             mRooms.add(temp);
-
-            temp = new Room();
-            temp.setRoomName("厨房");
-            temp.setRoomOrdinalNumber(3);
-            temp.save();
-            mRooms.add(temp);
         }
-        sortRooms();
+        return sortRooms();
     }
 
     /**
@@ -123,16 +145,34 @@ public class RoomManager {
      * @return
      */
     public Room findRoom(int roomIndex) {
-        Room room=DataSupport.find(Room.class, roomIndex);
-        if(room!=null){
-            Log.i(TAG,"查找房间 :"+room.toString());
-        }else{
-            Log.i(TAG,"查找房间 : 未找到");
+        Room room = DataSupport.find(Room.class, roomIndex);
+        if (room != null) {
+            Log.i(TAG, "查找房间 :" + room.toString());
+        } else {
+            Log.i(TAG, "查找房间 : 未找到");
         }
 
         return room;
     }
 
+    /**
+     * 按照房间名字插叙房间
+     * 关联表中数据是无法查到的，因为LitePal默认的模式就是懒查询，当然这也是推荐的查询方式。
+     * 那么，如果你真的非常想要一次性将关联表中的数据也一起查询出来，当然也是可以的，
+     * LitePal中也支持激进查询的
+     * @param roomName
+     * @param  queryRelativeTable
+     * @return
+     */
+    public Room findRoom(String roomName,boolean queryRelativeTable) {
+        Room room = null;
+
+             room =DataSupport.where("roomName = ?", roomName).find(Room.class,queryRelativeTable).get(0);
+
+
+        Log.i(TAG,"根据名字查询房间,查到房间"+room.toString());
+        return room;
+    }
     /**
      * 根据房间名称
      * 删除房间
@@ -169,9 +209,9 @@ public class RoomManager {
         temp.setRoomName(roomName);
 
         temp.setRoomOrdinalNumber(mRooms.size() + 1);
-        temp.save();
         boolean optionResult;
-        optionResult = mRooms.add(temp);
+        optionResult =  temp.save();
+        mRooms.add(temp);
         return optionResult;
     }
 }

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.adapter;
+package deplink.com.smartwirelessrelay.homegenius.activity.smartlock.lockhistory;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.LockHistory;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.LockHistory;
 import deplink.com.smartwirelessrelay.homegenius.util.DateUtil;
 
 /**
