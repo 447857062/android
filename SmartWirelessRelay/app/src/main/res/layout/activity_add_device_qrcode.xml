@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_top_area"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:background="@android:color/holo_blue_light">
+
+        <RelativeLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true">
+
+            <ImageView
+                android:id="@+id/image_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/textview_add_device"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="设备添加"
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
+        </RelativeLayout>
+
+        <deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView
+            android:id="@+id/imageview_scan_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher"
+            app:border_color="@color/white"
+            app:border_width="0dp" />
+
+        <TextView
+            android:id="@+id/textview_scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageview_scan_device"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="扫一扫" />
+
+        <TextView
+            android:id="@+id/textview_scan_extra_explan_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_scan"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="设备，外包装或说明书上的二维码" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gridview_add_device_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_top_area"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:gravity="center"
+        android:horizontalSpacing="10dip"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dip"/>
+</RelativeLayout>

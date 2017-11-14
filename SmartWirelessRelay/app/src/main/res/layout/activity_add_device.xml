@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.AddDeviceActivity">
+
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"
@@ -15,6 +16,7 @@
             android:id="@+id/image_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_centerVertical="true"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
@@ -28,4 +30,28 @@
             android:textSize="15dp" />
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/textview_show_select_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title"
+        android:text="请选择设备所在的房间" />
+
+    <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
+        android:id="@+id/dragGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textview_show_select_room"
+        android:cacheColorHint="@android:color/transparent"
+        android:gravity="center"
+        android:horizontalSpacing="10dip"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:verticalSpacing="10dip"/>
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity;
+package deplink.com.smartwirelessrelay.homegenius.activity.room;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.activity.adapter.RoomDevicesListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.RoomDevicesListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {

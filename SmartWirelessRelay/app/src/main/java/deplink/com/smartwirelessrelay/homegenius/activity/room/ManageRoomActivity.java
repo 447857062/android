@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity;
+package deplink.com.smartwirelessrelay.homegenius.activity.room;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,10 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 public class ManageRoomActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ManageRoomActivity";
+    public static final int REQUEST_MODIFY_ROOM_NAME = 100;
     private ImageView image_back;
     private Button button_delete_room;
     private TextView textview_device_number;
@@ -26,6 +28,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private RelativeLayout layout_device_number;
     private RelativeLayout layout_getway;
     private int roomOrdinalNumber;
+    private RoomManager mRoomManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +69,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
     }
 
-    public static final int REQUEST_MODIFY_ROOM_NAME = 100;
-
-    private RoomManager mRoomManager;
 
     @Override
     public void onClick(View v) {

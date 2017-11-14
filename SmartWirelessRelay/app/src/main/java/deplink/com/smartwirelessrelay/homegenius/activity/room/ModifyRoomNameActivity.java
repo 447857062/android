@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity;
+package deplink.com.smartwirelessrelay.homegenius.activity.room;
 
 import android.app.Activity;
 import android.content.Intent;

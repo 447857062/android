@@ -1,9 +1,8 @@
-package deplink.com.smartwirelessrelay.homegenius.activity;
+package deplink.com.smartwirelessrelay.homegenius.activity.device;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
-import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,10 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.activity.adapter.DeviceListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -78,9 +79,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
     @Override
     protected void onPause() {
         super.onPause();
-      //  mSmartLockManager.releaswSmartManager();
     }
-    private SQLiteDatabase db;
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this, this);
@@ -88,7 +87,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         datasTop=new ArrayList<>();
         datasBottom=new ArrayList<>();
         //使用数据库中的数据
-         db = Connector.getDatabase();
         datasTop= DataSupport.findAll(Device.class);
         if(datasTop.size()>0){
             Log.i(TAG,"设备界面查询设备"+datasTop.get(0).getStatus());

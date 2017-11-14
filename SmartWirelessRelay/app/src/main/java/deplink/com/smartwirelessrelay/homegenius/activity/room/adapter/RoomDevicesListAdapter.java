@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.adapter;
+package deplink.com.smartwirelessrelay.homegenius.activity.room.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
