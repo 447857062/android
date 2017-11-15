@@ -17,11 +17,11 @@ public class AppConstant {
      */
     public static final int PACKET_DATA_LENGTHS_TAKES = 2;
 
- /*   public static final int UDP_CONNECT_PORT = 9999;
-    public static final int TCP_CONNECT_PORT = 9999;*/
+   public static final int UDP_CONNECT_PORT = 9999;
+    public static final int TCP_CONNECT_PORT = 9988;
 
-    public static final int UDP_CONNECT_PORT = 17999;
-    public static final int TCP_CONNECT_PORT = 19999;
+  /*  public static final int UDP_CONNECT_PORT = 17999;
+    public static final int TCP_CONNECT_PORT = 19999;*/
 
     public static final String PASSWORD_FOR_PKCS12 = "1234567890";
     public static final String SERVER_IP = "192.168.68.1";//TCP连接IP

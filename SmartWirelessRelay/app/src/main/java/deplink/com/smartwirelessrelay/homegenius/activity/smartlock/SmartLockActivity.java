@@ -2,7 +2,6 @@ package deplink.com.smartwirelessrelay.homegenius.activity.smartlock;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
-import org.litepal.tablemanager.Connector;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
@@ -32,6 +30,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private Button button_open;
 
     private SmartLockManager mSmartLockManager;
+    private AuthoriseDialog mAuthoriseDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,29 +41,47 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         initEvents();
     }
 
+    /**
+     * 测试管理密码，使用密码开门，如果返回成功，就是正确的管理密码
+     */
     private boolean saveManagetPassword;
     private String savedManagePassword;
 
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this, this);
-        if (db == null) {
-            db = Connector.getDatabase();
-        }
-        //TODO
-        ManagerPassword managerPassword = null;
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        querySavePassword();
+    }
+
+    /**
+     * 查询记住密码开关，记住的密码字符
+     */
+    private void querySavePassword() {
+        ManagerPassword managerPassword;
         try {
             managerPassword = DataSupport.findFirst(ManagerPassword.class);
             if (!managerPassword.isRemenbEnable()) {
                 saveManagetPassword = false;
+                savedManagePassword="";
             } else {
                 savedManagePassword = managerPassword.getManagerPassword();
+                if(savedManagePassword==null){
+                    savedManagePassword="";
+                }
+                Log.i(TAG,"保存的管理密码="+savedManagePassword);
                 saveManagetPassword = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        Log.i(TAG,"保存密码="+saveManagetPassword+"密码="+savedManagePassword);
     }
 
     private void initEvents() {
@@ -83,8 +100,6 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         button_open = (Button) findViewById(R.id.button_open);
     }
 
-    private AuthoriseDialog mAuthoriseDialog;
-    private SQLiteDatabase db;
 
     @Override
     public void onClick(View v) {
@@ -96,6 +111,11 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 startActivity(new Intent(SmartLockActivity.this, LockHistoryActivity.class));
                 break;
             case R.id.button_no_save_password:
+                ManagerPassword temp = DataSupport.findFirst(ManagerPassword.class);
+                temp.setToDefault("remenbEnable");
+                temp.setToDefault("managerPassword");
+                int affectColumn=temp.updateAll();
+                Log.i(TAG,"密码不保存影响的行数="+affectColumn);
                 break;
             case R.id.button_authorise:
                 mAuthoriseDialog = new AuthoriseDialog(this);
@@ -103,14 +123,13 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 mAuthoriseDialog.show();
                 break;
             case R.id.button_open:
-
                 //TODO
-                //  if(saveManagetPassword){
-                savedManagePassword = "123456";
-                mSmartLockManager.setSmaertLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
-                // }else{
-                //   startActivity(new Intent(this, SetLockPwdActivity.class));
-                // }
+                if (saveManagetPassword && !savedManagePassword.equals("")) {
+                    savedManagePassword = "123456";
+                    mSmartLockManager.setSmaertLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
+                } else {
+                    startActivity(new Intent(this, SetLockPwdActivity.class));
+                }
                 break;
         }
     }
@@ -122,7 +141,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void responseSetResult(String result) {
-        mHandler.sendEmptyMessage(MSG_SHOW_TOAST);
+        Message msg=Message.obtain();
+        msg.what=MSG_SHOW_TOAST;
+        msg.obj=result;
+        mHandler.sendMessage(msg);
     }
 
     @Override
@@ -137,7 +159,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_SHOW_TOAST:
-                    Toast.makeText(SmartLockActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SmartLockActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
                     break;
             }
         }

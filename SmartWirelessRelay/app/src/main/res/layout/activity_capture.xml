@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <SurfaceView
+        android:id="@+id/preview_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center" />
+
+    <com.deplink.smarthome.qrcode.ViewfinderView
+        android:id="@+id/viewfinder_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textview_show_scan_explan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="160dp"
+        android:text="将二维码/条码放入框内，即可自动扫描"
+        android:textColor="@color/text_color_3A3A3A"
+        android:textSize="@dimen/text_size_xhdpi_15" />
+
+    <Button
+        android:id="@+id/button_edit_sn"
+        android:layout_width="@dimen/button_sure_width"
+        android:layout_height="@dimen/button_register_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="115dp"
+        android:background="@drawable/connect_button"
+        android:text="输入序列号绑定"
+        android:textColor="@color/black_3a3a3a"
+        android:textSize="@dimen/text_size_xhdpi_15"></Button>
+
+    <View
+        android:id="@+id/view_input_sn_mask"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <include
+        android:id="@+id/include1"
+        layout="@layout/activity_title"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>
+

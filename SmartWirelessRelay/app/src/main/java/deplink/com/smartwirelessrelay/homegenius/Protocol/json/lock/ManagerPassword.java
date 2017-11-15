@@ -1,6 +1,5 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock;
 
-import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -13,9 +12,7 @@ public class ManagerPassword extends DataSupport implements Serializable{
     /**
      * 记住管理密码
      */
-    @Column(unique = true,nullable = false)
     private boolean remenbEnable=true;
-    @Column(unique = true)
     private String managerPassword;
 
     public boolean isRemenbEnable() {

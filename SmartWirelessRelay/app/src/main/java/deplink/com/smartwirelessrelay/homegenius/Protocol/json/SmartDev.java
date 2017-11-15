@@ -15,6 +15,7 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Type;
     private String Status;
     private String Org;
+    private String Ver;
 
     public String getOrg() {
         return Org;
@@ -56,6 +57,13 @@ public class SmartDev extends DataSupport implements Serializable{
         Status = status;
     }
 
+    public String getVer() {
+        return Ver;
+    }
+
+    public void setVer(String ver) {
+        Ver = ver;
+    }
 
     @Override
     public String toString() {
@@ -64,6 +72,8 @@ public class SmartDev extends DataSupport implements Serializable{
                 ", CtrUid='" + CtrUid + '\'' +
                 ", Type='" + Type + '\'' +
                 ", Status='" + Status + '\'' +
+                ", Org='" + Org + '\'' +
+                ", Ver='" + Ver + '\'' +
                 '}';
     }
 }

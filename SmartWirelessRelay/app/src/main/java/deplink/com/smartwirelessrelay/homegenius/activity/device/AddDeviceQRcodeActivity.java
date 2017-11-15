@@ -12,6 +12,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
@@ -24,6 +25,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private RoomManager mRoomManager;
     private GridView mGridView;
     private AddDeviceTypeSelectAdapter mAdapter;
+    private SmartLockManager mSmartLockManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     }
     private List<String>mDeviceTypes;
     private void initDatas() {
+        mSmartLockManager = SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this, null);
         mBundle = getIntent().getExtras();
         Log.i(TAG, "mBundle!=null " + (mBundle != null));
         if (mBundle != null) {
@@ -45,6 +49,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         }
         mRoomManager = RoomManager.getInstance();
         mDeviceTypes=new ArrayList<>();
+        mDeviceTypes.add("智能网关");
+        mDeviceTypes.add("路由器");
         mDeviceTypes.add("智能门锁");
         mDeviceTypes.add("红外万能遥控");
         mDeviceTypes.add("智能开关");
@@ -60,5 +66,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.i(TAG,"onItemClick "+mDeviceTypes.get(position));
+       // if(mDeviceTypes.get(position).equals("智能网关")){
+            mSmartLockManager.bindDevList();
+       // }
     }
 }

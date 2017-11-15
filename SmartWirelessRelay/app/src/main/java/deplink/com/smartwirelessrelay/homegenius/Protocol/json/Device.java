@@ -11,7 +11,6 @@ import java.io.Serializable;
 public class Device extends DataSupport implements Serializable{
     @Column(unique = true,nullable = false)
     private String Uid;
-    private String Ip;
     private String Status;
 
     public String getUid() {
@@ -22,13 +21,6 @@ public class Device extends DataSupport implements Serializable{
         Uid = uid;
     }
 
-    public String getIp() {
-        return Ip;
-    }
-
-    public void setIp(String ip) {
-        Ip = ip;
-    }
 
     public String getStatus() {
         return Status;
@@ -43,7 +35,6 @@ public class Device extends DataSupport implements Serializable{
     public String toString() {
         return "Device{" +
                 "Uid='" + Uid + '\'' +
-                ", Ip='" + Ip + '\'' +
                 ", Status='" + Status + '\'' +
                 '}';
     }

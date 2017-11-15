@@ -12,6 +12,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
+import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
 
 
 /**
@@ -124,7 +125,8 @@ public class UdpComm {
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
                         //basicPacket.unpackPacketWithWirelessData(result);
                        // listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
-                        listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
+                        Log.i(TAG,""+DataExchange.byteArrayToHexString(IPV4Util.getIpV4Bytes(packet.getAddress().getHostName())));
+                        listener.OnRecvIp(IPV4Util.getIpV4Bytes(packet.getAddress().getHostName()));
                         //停止探测ip地址
                         stopServer();
                     }

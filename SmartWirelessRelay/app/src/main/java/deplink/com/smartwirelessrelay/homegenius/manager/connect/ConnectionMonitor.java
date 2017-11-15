@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Devices;
+package deplink.com.smartwirelessrelay.homegenius.manager.connect;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

@@ -55,6 +55,10 @@
     </style>
 
 
-
+    <style name="title_text_style">
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/page_title_text_color</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+    </style>
 
 </resources>

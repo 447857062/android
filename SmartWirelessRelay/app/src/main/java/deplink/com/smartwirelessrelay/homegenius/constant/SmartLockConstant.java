@@ -24,5 +24,25 @@ public  class SmartLockConstant {
      *开锁
      */
     public static final String OPEN_LOCK = "Open";
+    public interface AUTH{
+        int TIMEOUT =- 1;
+        int SUCCESS = 1;
+        int FAIL = 2;
+        int FORBADE = 3;
+        int PASSWORDERROR = 4;
+    }
+    public interface OPENLOCK{
+        int TIMEOUT =- 1;
+        int SUCCESS = 1;
+        int PASSWORDERROR = 2;
+        int FAIL = 3;
 
+    }
+    public interface CMD{
+        int OPEN = 3;
+        int ONCE = 4;
+        int PERMANENT = 5;
+        int TIMELIMIT = 6;
+
+    }
 }

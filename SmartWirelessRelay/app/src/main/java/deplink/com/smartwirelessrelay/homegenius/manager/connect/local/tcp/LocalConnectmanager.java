@@ -23,7 +23,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
-import deplink.com.smartwirelessrelay.homegenius.Devices.ConnectionMonitor;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.ConnectionMonitor;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecord;
@@ -224,6 +225,11 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
 
             Log.e(TAG, "创建sslsocket success" + address.toString());
+            //TODO
+            GeneralPacket packet=new GeneralPacket(mContext);
+            packet.packBindUnbindAppPacket( "77685180654101946200316696479445",ComandID.CMD_BIND);
+            getOut(packet.data);
+
             while (currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
                 getIn();
             }
@@ -353,6 +359,29 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         return str;
     }
 
+
+  /*  *//**
+     *
+     * 第一次绑定app
+     * 封装好uid的数据包
+     *//*
+    public void bindApp(byte[]data) {
+        GeneralPacket packet=new GeneralPacket(mContext);
+        packet.packBindUnbindAppPacket( uid, ComandID.CMD_BIND);
+       getOut(data);
+    }
+    *//**
+     * 解除绑定设备
+     *//*
+    public void unBindApp(String uid) {
+        packet.packBindUnbindAppPacket( uid, ComandID.CMD_BIND);
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }*/
     /**
      * 解析报警记录
      * @param str

@@ -25,13 +25,13 @@ public class GeneralPacket extends BasicPacket {
      * 绑定设备
      * @return
      */
-    public int packBindPacket() {
+    public int packBindUnbindAppPacket(String uid, byte cmdID) {
         byte[]ip = new byte[4];
         ip[0]=(byte)0xC0;
         ip[1]=(byte)0xA8;
         ip[2]=(byte) 0x44;
         ip[3]=(byte) 0xCD;
-        return packWirelessData(  ip,true,null,ComandID.CMD_BIND);
+        return packBindData(ip,uid,cmdID);
 
     }
 

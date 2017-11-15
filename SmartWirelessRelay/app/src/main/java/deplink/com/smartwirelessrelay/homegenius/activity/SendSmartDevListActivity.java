@@ -32,7 +32,7 @@ public class SendSmartDevListActivity extends Activity implements View.OnClickLi
             case R.id.button_send_smart_dev:
                 mSmartLockManager = SmartLockManager.getInstance();
                 mSmartLockManager.InitSmartLockManager(this, this);
-                mSmartLockManager.sendSmartDevList();
+                mSmartLockManager.bindSmartDevList();
                 break;
         }
     }

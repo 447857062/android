@@ -47,6 +47,12 @@ public class DeviceListAdapter extends BaseAdapter {
 		TopCount = listTop.size();
 	}
 
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		Log.i(TAG,"头部列表="+listTop.size());
+	}
+
 	/**
 	 * 设置Item显示的数据集合
 	 * 
@@ -95,7 +101,6 @@ public class DeviceListAdapter extends BaseAdapter {
 	/** 该方法返回多少个不同的布局 */
 	@Override
 	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
 		return TYPE_COUNT;
 	}
 

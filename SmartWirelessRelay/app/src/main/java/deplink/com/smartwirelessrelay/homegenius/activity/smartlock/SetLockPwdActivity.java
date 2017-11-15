@@ -1,6 +1,7 @@
-package deplink.com.smartwirelessrelay.homegenius.view.keyboard;
+package deplink.com.smartwirelessrelay.homegenius.activity.smartlock;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -15,26 +16,31 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.google.gson.Gson;
+
+import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
-import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.view.keyboard.KeyboardUtil;
 
-public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelListener,CompoundButton.OnCheckedChangeListener,SmartLockListener{
-    private static final String TAG="SetLockPwdActivity";
+public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelListener, CompoundButton.OnCheckedChangeListener, SmartLockListener {
+    private static final String TAG = "SetLockPwdActivity";
     private View backView;
     private EditText etPwdOne, etPwdTwo, etPwdThree, etPwdFour, etPwdText;
-    private EditText etPwdFive_setLockPwd,etPwdSix_setLockPwd;
+    private EditText etPwdFive_setLockPwd, etPwdSix_setLockPwd;
     private KeyboardUtil kbUtil;
     public String strLockPwdOne;
     private Handler mHandler;
     private Switch switch_remond_managerpassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +96,9 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         });
         switch_remond_managerpassword.setOnCheckedChangeListener(this);
     }
+
     private SQLiteDatabase db;
+
     void initData() {
         //生成数据库
         if (db == null) {
@@ -116,14 +124,19 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdFive_setLockPwd.setInputType(InputType.TYPE_NULL);
         etPwdSix_setLockPwd.setInputType(InputType.TYPE_NULL);
         MyHandle();
+        boolean checked = DataSupport.findFirst(ManagerPassword.class).isRemenbEnable();
+        switch_remond_managerpassword.setChecked(checked);
     }
 
     void backToActivity() {
         Intent mIntent = new Intent(SetLockPwdActivity.this, SmartLockActivity.class);
         startActivity(mIntent);
     }
+
     private SmartLockManager mSmartLockManager;
-    private static final int MSG_TOAST=1;
+    private static final int MSG_TOAST = 1;
+    private String currentPassword;
+
     public void MyHandle() {
         mHandler = new Handler() {
             @Override
@@ -133,21 +146,10 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                     case MSG_TOAST:
                         if (etPwdFour.getText() != null
                                 && etPwdFour.getText().toString().length() >= 1) {
-
-
-                                String strReapt = etPwdText.getText().toString();
+                            String strReapt = etPwdText.getText().toString();
                             //TODO 查询管理密码 ，就是使用输入的密码开门，如果返回密码错误，就是错误
+                            currentPassword = strReapt;
                             mSmartLockManager.setSmaertLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
-                               /* if (strReapt.equals(strLockPwdOne)) {
-                                    Toast.makeText(SetLockPwdActivity.this,
-                                            "解锁密码设置成功",Toast.LENGTH_SHORT).show();
-                                    backToActivity();
-                                } else {
-                                    Toast.makeText(SetLockPwdActivity.this,
-                                            "解锁密码设置失败",Toast.LENGTH_SHORT).show();
-
-                                }
-*/
                             etPwdOne.setText("");
                             etPwdTwo.setText("");
                             etPwdThree.setText("");
@@ -170,16 +172,10 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        ManagerPassword managerPassword=new ManagerPassword();
+        ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
         managerPassword.setRemenbEnable(isChecked);
-       /* if(isChecked){
-            //TODO 密码对才能记住密码
-
-            return;
-        }*/
-
-       boolean saveResult= managerPassword.save();
-        Log.i(TAG,"saveResult记住密码="+saveResult);
+        int updateAll = managerPassword.updateAll();
+        Log.i(TAG, "saveResult记住密码=" + updateAll);
     }
 
     @Override
@@ -189,7 +185,22 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     @Override
     public void responseSetResult(String result) {
-
+        Log.i(TAG, "设置管理密码=" + result);
+        if (DataSupport.findAll(ManagerPassword.class).size() == 0) {
+            ManagerPassword managerPassword = new ManagerPassword();
+            managerPassword.save();
+        }
+        //密码正确才能保存，消失界面显示
+        // TODO 保存密码
+        Gson gson = new Gson();
+        OpResult opResult = gson.fromJson(result, OpResult.class);
+        if (opResult.getResult() == SmartLockConstant.OPENLOCK.SUCCESS && opResult.getCmd()== SmartLockConstant.CMD.OPEN) {
+            ContentValues values = new ContentValues();
+            values.put("managerPassword", currentPassword);
+            int affectColumn = DataSupport.updateAll(ManagerPassword.class, values);
+            Log.i(TAG, "保存密码影响的行数=" + affectColumn);
+            SetLockPwdActivity.this.finish();
+        }
     }
 
     @Override

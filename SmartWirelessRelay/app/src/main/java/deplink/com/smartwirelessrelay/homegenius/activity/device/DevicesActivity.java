@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -27,8 +26,8 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -88,26 +87,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         datasBottom=new ArrayList<>();
         //使用数据库中的数据
         datasTop= DataSupport.findAll(Device.class);
-        if(datasTop.size()>0){
-            Log.i(TAG,"设备界面查询设备"+datasTop.get(0).getStatus());
-            Log.i(TAG,"设备界面查询设备"+datasTop.get(0).getUid());
-        }else{
-            Log.i(TAG,"设备界面查询设备 datasTop size ==0");
-        }
-
         datasBottom= DataSupport.findAll(SmartDev.class);
-        if(datasBottom.size()>0){
-            Log.i(TAG,"设备界面查询智能设备"+datasBottom.get(0).getStatus());
-            Log.i(TAG,"备设备界面查询智能设"+datasBottom.get(0).getType());
-        }else{
-            Log.i(TAG,"设备界面查询智能设备 datasBottom size ==0");
-        }
+
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
         listview_devies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(DevicesActivity.this,"设备列表点击position="+position,Toast.LENGTH_SHORT).show();
                     if(datasTop.size()<(position+1)){
                         //智能设备
                        String deviceType= datasBottom.get(position - datasTop.size()).getType();
@@ -179,16 +165,23 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
             switch (msg.what) {
 
                 case MSG_GET_DEVS:
-                    Log.i(TAG, "mHandler MSG_GET_DEVS");
                     Gson gson = new Gson();
                     DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
-                    datasTop.clear();
-                    datasTop.addAll(aDeviceList.getDevice());
-                    datasBottom.clear();
-                    datasBottom.addAll(aDeviceList.getSmartDev());
 
-                    mDeviceAdapter.notifyDataSetChanged();
-                    Log.i(TAG, "mDeviceList.getDevice().size=" + aDeviceList.getDevice().size());
+                    try {
+                        datasTop.clear();
+                        datasTop.addAll(aDeviceList.getDevice());
+                        datasBottom.clear();
+                        datasBottom.addAll(aDeviceList.getSmartDev());
+                        mDeviceAdapter.setTopList(datasTop);
+                        mDeviceAdapter.setBottomList(datasBottom);
+                        mDeviceAdapter.notifyDataSetChanged();
+                        Log.i(TAG, "mDeviceList.getDevice().size=" + aDeviceList.getDevice().size());
+                    } catch (Exception e) {
+                        //TODO
+                        e.printStackTrace();
+                    }
+
                     try {
                         new AlertDialog
                                 .Builder(DevicesActivity.this)

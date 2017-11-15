@@ -16,16 +16,26 @@ public class QueryOptions implements Serializable {
     private String LimitedTime;
     private String Result;
     private List<SmartDev>SmartDev;
+    private List<Device> Device;
     public String getResult() {
         return Result;
     }
 
-    public List<SmartDev> getSmartDev() {
+
+    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev> getSmartDev() {
         return SmartDev;
     }
 
-    public void setSmartDev(List<SmartDev> smartDev) {
+    public void setSmartDev(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev> smartDev) {
         SmartDev = smartDev;
+    }
+
+    public List<Device> getDevice() {
+        return Device;
+    }
+
+    public void setDevice(List<Device> device) {
+        Device = device;
     }
 
     public void setResult(String result) {

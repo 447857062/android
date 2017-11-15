@@ -14,4 +14,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+
+    <dimen name="title_text_size">18dp</dimen>
+    <dimen name="text_size_xhdpi_15">15dp</dimen>
+    <dimen name="button_sure_width">131dp</dimen>
+    <dimen name="button_register_height">36dp</dimen>
 </resources>
