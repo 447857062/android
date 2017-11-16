@@ -8,11 +8,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
@@ -30,6 +34,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;
     private CircleImageView imageview_scan_device;
+
+    private DeviceManager mDeviceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +58,9 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
 
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this, null);
+        mSmartLockManager.InitSmartLockManager(this);
+        mDeviceManager=DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this,null);
         mBundle = getIntent().getExtras();
         Log.i(TAG, "mBundle!=null " + (mBundle != null));
         if (mBundle != null) {
@@ -111,9 +119,13 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         String snCode = data.getStringExtra("deviceSN");
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_DEVICE_SN) {
             if(snCode.contains("SMART_LOCK")){
-                mSmartLockManager.bindSmartDevList();
+                Gson gson=new Gson();
+                QrcodeSmartDevice device=gson.fromJson(snCode,QrcodeSmartDevice.class);
+                mDeviceManager.bindSmartDevList(device);
+              //  mSmartLockManager.bindSmartDevList();
             }else{
-                mSmartLockManager.bindDevList();
+                mDeviceManager.bindDevList();
+              //  mSmartLockManager.bindDevList();
             }
 
         }

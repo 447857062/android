@@ -73,7 +73,15 @@ public class GeneralPacket extends BasicPacket {
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packData( ip,false,xdata,ComandID.QUERY_DEV);
+        return packData( ip,false,xdata,ComandID.QUERY_OPTION);
+    }
+    /**
+     * 查询开锁记录
+     * @return
+     */
+    public int packOpenLockListData(byte[]xdata) {
+
+        return packData( null,false,xdata,ComandID.QUERY_OPTION);
     }
     /**
      *设置智能设备参数

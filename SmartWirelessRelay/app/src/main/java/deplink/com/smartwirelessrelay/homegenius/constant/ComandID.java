@@ -13,9 +13,9 @@ public  class ComandID {
      */
     public static final byte DETEC_DEV_RESPONSE = (byte) 0x1;
     /**
-     * 查询设备
+     * 查询
      */
-    public static final byte QUERY_DEV = (byte) 0x2;
+    public static final byte QUERY_OPTION = (byte) 0x2;
     /**
      * 查询设备回应
      */

@@ -44,6 +44,12 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
         initEvents();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSmartLockManager.removeSmartLockListener(this);
+    }
+
     private void initEvents() {
         dev_list.setAdapter(recordAdapter);
         textview_update_id.setOnClickListener(this);
@@ -67,7 +73,8 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
     protected void onResume() {
         super.onResume();
         mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this, this);
+        mSmartLockManager.InitSmartLockManager(this);
+        mSmartLockManager.addSmartLockListener(this);
         mSmartLockManager.queryLockHistory();
     }
 
@@ -84,10 +91,11 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
                     LockHistorys aDeviceList = gson.fromJson(str, LockHistorys.class);
                     mRecordList.clear();
                     if (aDeviceList.getRecord() != null) {
+                        Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
                         mRecordList.addAll(aDeviceList.getRecord());
                         recordAdapter.notifyDataSetChanged();
                     }
-                    Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
+
                     try {
                         new AlertDialog
                                 .Builder(LockHistoryActivity.this)

@@ -54,7 +54,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * 这个类设计成单例
      */
     private static LocalConnectmanager instance;
-    private List<LocalConnecteListener> mLocalConnecteListener;
+    private  List<LocalConnecteListener> mLocalConnecteListener;
     private Context mContext;
     /**
      * 连接线程
@@ -107,10 +107,15 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     }
 
     public void removeLocalConnectListener(LocalConnecteListener listener) {
-        this.mLocalConnecteListener.remove(listener);
+        if (listener != null && mLocalConnecteListener.contains(listener)) {
+            this.mLocalConnecteListener.remove(listener);
+        }
+
     }
     public void addLocalConnectListener(LocalConnecteListener listener) {
+
         if (listener != null && !mLocalConnecteListener.contains(listener)) {
+            Log.i(TAG,"addLocalConnectListener="+listener.toString());
             this.mLocalConnecteListener.add(listener);
         }
     }
@@ -300,8 +305,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 int cmd = DataExchange.bytesToInt(buf, 6, 1);
 
                 str = new String(buf, 0, len);
-                Log.i(TAG, "cmd=" + cmd);
-                System.out.println("received:" + str + "length=" + len);
+                Log.i(TAG, "cmd=" + cmd+"length="+len);
                 System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
                 //数据长度,如果携带数据，数据的长度占2byte
                 byte[] lengthByte = new byte[2];
@@ -340,9 +344,8 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                     case ComandID.SET_CMD_RESPONSE:
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                        System.out.println("received:" + "length=" + length);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
-                        System.out.println("received devlist:" + str);
+                        Log.i(TAG,"received 设置结果:" + str + "length=" + length);
                         for(int i=0;i<mLocalConnecteListener.size();i++){
                             mLocalConnecteListener.get(i).OnGetSetresult(str);
                         }

@@ -4,7 +4,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.litepal.crud.DataSupport;
-import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,9 +89,9 @@ public class RoomManager {
      */
     public void initRoomManager() {
         //生成数据库
-        if (db == null) {
+      /*  if (db == null) {
             db = Connector.getDatabase();
-        }
+        }*/
 
     }
 

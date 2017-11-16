@@ -58,7 +58,7 @@ public class SmartDevListAdapter extends BaseAdapter{
             deviceName="未知";
         }
         vh.textview_device_uid.setText("ctrluid:"+deviceName);
-        vh.textview_device_statu.setText("devuid："+mSmartDev.get(position).getDevUid());
+        vh.textview_device_statu.setText("devuid："+mSmartDev.get(position).getUid());
         vh.textview_smart_dev.setText("智能设备statu："+mSmartDev.get(position).getStatus());
         vh.textview_smart_dev_statu.setText("智能设备type："+mSmartDev.get(position).getType());
 

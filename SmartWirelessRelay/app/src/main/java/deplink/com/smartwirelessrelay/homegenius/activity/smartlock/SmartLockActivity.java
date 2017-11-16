@@ -49,15 +49,21 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this, this);
+        mSmartLockManager.InitSmartLockManager(this);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        mSmartLockManager.addSmartLockListener(this);
         querySavePassword();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSmartLockManager.removeSmartLockListener(this);
     }
 
     /**
@@ -126,7 +132,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 //TODO
                 if (saveManagetPassword && !savedManagePassword.equals("")) {
                     savedManagePassword = "123456";
-                    mSmartLockManager.setSmaertLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
                 } else {
                     startActivity(new Intent(this, SetLockPwdActivity.class));
                 }
@@ -141,6 +147,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void responseSetResult(String result) {
+        Log.i(TAG,"设置结果="+result);
         Message msg=Message.obtain();
         msg.what=MSG_SHOW_TOAST;
         msg.obj=result;
@@ -170,16 +177,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         Log.i(TAG, "authType=" + authType);
         switch (authType) {
             case SmartLockConstant.AUTH_TYPE_ONCE:
-                mSmartLockManager.setSmaertLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, "003", "123456", password, null);
+                mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, "003", "123456", password, null);
                 break;
             case SmartLockConstant.AUTH_TYPE_PERPETUAL:
-                mSmartLockManager.setSmaertLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", "123456", password, null);
+                mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", "123456", password, null);
                 break;
             case SmartLockConstant.AUTH_TYPE_TIME_LIMIT:
                 long hour = Long.valueOf(limitTime);
                 limitTime = String.valueOf(hour * 60 * 1000);
                 Log.i(TAG, "hour=" + hour + "limittime=" + limitTime);
-                mSmartLockManager.setSmaertLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", "123456", password, limitTime);
+                mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", "123456", password, limitTime);
                 //TODO
                 break;
         }

@@ -29,8 +29,7 @@ public class AlarmHistoryActivity extends Activity   {
     protected void onResume() {
         super.onResume();
 
-        mSmartLockManager.InitSmartLockManager(this, null);
-
+        mSmartLockManager.InitSmartLockManager(this);
         mLockHistory.clear();
         mLockHistory.addAll(mSmartLockManager.getAlarmRecord(""));
         mAlarmHistoryAdapter.notifyDataSetChanged();

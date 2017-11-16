@@ -8,11 +8,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
-import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
 
 
 /**
@@ -119,14 +117,13 @@ public class UdpComm {
                     if (len > 0) {
                         byte[] result = new byte[len];
                         System.arraycopy(data, 0, result, 0, len);
-                        Log.i(TAG,"udp RecvThread 接收数据="+DataExchange.byteArrayToIntString(result));
-                        BasicPacket basicPacket = new BasicPacket(mContext, packet.getAddress(), packet.getPort());
-                        Log.i(TAG, "udp RecvThread 接收数据 ip=" + packet.getAddress().toString() + ":" + packet.getPort());
+                        Log.i(TAG, "udp RecvThread 接收数据=" + DataExchange.byteArrayToIntString(result));
+                        Log.i(TAG, "udp RecvThread 接收数据 ip=" + packet.getAddress().getAddress().toString() + ":" + packet.getPort());
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
                         //basicPacket.unpackPacketWithWirelessData(result);
-                       // listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
-                        Log.i(TAG,""+DataExchange.byteArrayToHexString(IPV4Util.getIpV4Bytes(packet.getAddress().getHostName())));
-                        listener.OnRecvIp(IPV4Util.getIpV4Bytes(packet.getAddress().getHostName()));
+                        // listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
+                        Log.i(TAG, "" + DataExchange.byteArrayToHexString(packet.getAddress().getAddress()));
+                        listener.OnRecvIp(packet.getAddress().getAddress());
                         //停止探测ip地址
                         stopServer();
                     }
