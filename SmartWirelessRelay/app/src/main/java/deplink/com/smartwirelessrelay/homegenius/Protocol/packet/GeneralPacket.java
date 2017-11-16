@@ -45,7 +45,7 @@ public class GeneralPacket extends BasicPacket {
         ip[1]=(byte)0xA8;
         ip[2]=(byte) 0x44;
         ip[3]=(byte) 0xCD;
-        return packWirelessData(  ip,true,null, ComandID.HEARTBEAT);
+        return packData(  ip,true,null, ComandID.HEARTBEAT);
 
     }
 
@@ -60,7 +60,7 @@ public class GeneralPacket extends BasicPacket {
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,null,ComandID.DETEC_DEV);
+        return packData( ip,false,null,ComandID.DETEC_DEV);
     }
 
     /**
@@ -73,7 +73,7 @@ public class GeneralPacket extends BasicPacket {
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,ComandID.QUERY_DEV);
+        return packData( ip,false,xdata,ComandID.QUERY_DEV);
     }
     /**
      *设置智能设备参数
@@ -86,19 +86,21 @@ public class GeneralPacket extends BasicPacket {
         ip[1]=(byte)0xFF;
         ip[2]=(byte) 0xFF;
         ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,ComandID.SET_CMD);
+        return packData( ip,false,xdata,ComandID.SET_CMD);
     }
     /**
      *智能设备列表下发
      * @return
      */
     public int packSendSmartDevsData( byte[]xdata) {
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packWirelessData( ip,false,xdata,ComandID.CMD_SEND_SMART_DEV);
+        return packData( null,false,xdata,ComandID.CMD_SEND_SMART_DEV);
+    }
+    /**
+     *设备列表下发
+     * @return
+     */
+    public int packSendDevsData( byte[]xdata) {
+        return packData( null,false,xdata,ComandID.CMD_SEND_SMART_DEV);
     }
 
 }

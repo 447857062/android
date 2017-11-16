@@ -6,7 +6,6 @@ import android.util.Log;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
@@ -22,14 +21,11 @@ public class BasicPacket {
     public static final String TAG = "BasicPacket";
     //最终要发送的数据
     public byte[] data;
-    //回调调用者
-    public OnRecvLocalConnectIpListener listener;
     public byte[] xdata;
     public InetAddress ip = null;
     public int port;
     //该条消息的建立时间
     public long createTime;
-    public long mac;
     public boolean isFinish;
     private Context mContext;
 
@@ -51,7 +47,7 @@ public class BasicPacket {
      * 中继器
      * 基础打包函数
      **/
-    public int packWirelessData(byte[] ip, boolean istcp, byte[] xdata, byte cmdId) {
+    public int packData(byte[] ip, boolean istcp, byte[] xdata, byte cmdId) {
         int len = 0;
         if (xdata != null)
             data = new byte[AppConstant.BASICLEGTH + xdata.length];
@@ -98,7 +94,11 @@ public class BasicPacket {
         len += 32;
         data[len++] = 0x0;//
         //设备ip（网络字节序），响应数据必填
-        System.arraycopy(ip, 0, data, len, 4);
+        if(ip!=null){
+            System.arraycopy(ip, 0, data, len, 4);
+        }else{
+            System.arraycopy(new byte[4], 0, data, len, 4);
+        }
         len += 4;
         //设备类型 0x0：中继器  0x1：app
         data[len++] = 0x01;

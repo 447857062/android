@@ -318,7 +318,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         }
 
                         break;
-                    case ComandID.CMD_BIND_RESPONSE:
+                    case ComandID.CMD_BIND_APP_RESPONSE:
                         byte[] uid = new byte[32];
                         System.arraycopy(buf, 7, uid, 0, 32);
                         str = new String(uid);
@@ -346,6 +346,16 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         for(int i=0;i<mLocalConnecteListener.size();i++){
                             mLocalConnecteListener.get(i).OnGetSetresult(str);
                         }
+                        break;
+                    case ComandID.CMD_SEND_SMART_DEV_RESPONSE:
+                        // 绑定网关（中继器） 回应:{ "OP": "REPORT", "Method": "SetDevList", "Result": 0 }
+                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                        str = new String(buf, AppConstant.BASICLEGTH, length);
+                        System.out.println("绑定智能回应:" + str);
+                       /* for(int i=0;i<mLocalConnecteListener.size();i++){
+                            mLocalConnecteListener.get(i).OnGetSetresult(str);
+                        }*/
                         break;
 
                 }

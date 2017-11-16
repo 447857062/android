@@ -1,6 +1,7 @@
 package deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -12,7 +13,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.CameraManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.CaptureActivityHandler;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.InactivityTimer;
@@ -31,9 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.qrcode.ViewfinderView;
 public class CaptureActivity extends Activity implements SurfaceHolder.Callback, View.OnClickListener {
     private static final String TAG = "CaptureActivity";
 
-    public static final int CAPTURE_TYPE_ROUTER_MAC = 1;
-    public static final int CAPTURE_TYPE_ROUTER_SN = 2;
-    public static final int CAPTURE_TYPE_ROUTER_DEVICE = 3;
+    public static final int CAPTURE_TYPE_ROUTER_SN = 1;
 
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
@@ -48,14 +47,11 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     private boolean vibrate = true;
     private int type = 0;
     private TextView textview_title;
-    private View view_input_sn_mask;
-    private Button button_edit_sn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
-        // CameraManager.init(getApplication());
         CameraManager.init(this);
         viewInit();
         if (getIntent() != null) {
@@ -75,9 +71,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         tvBack.setOnClickListener(this);
         textview_title = (TextView) findViewById(R.id.textview_title);
         textview_title.setOnClickListener(this);
-        view_input_sn_mask = findViewById(R.id.view_input_sn_mask);
-        button_edit_sn = (Button) findViewById(R.id.button_edit_sn);
-        button_edit_sn.setOnClickListener(this);
     }
 
 
@@ -100,11 +93,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             playBeep = false;
         }
         initBeepSound();
-
-        if(view_input_sn_mask.getVisibility()!= View.GONE){
-            view_input_sn_mask.setVisibility(View.GONE);
-        }
-
     }
 
     @Override
@@ -202,11 +190,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             case R.id.textview_title:
                 onBackPressed();
                 break;
-            case R.id.button_edit_sn:
-                view_input_sn_mask.setVisibility(View.VISIBLE);
-
-
-                break;
         }
     }
 
@@ -229,27 +212,21 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
      * @param barcode
      */
     public void handleDecode(Result obj, Bitmap barcode) {
-      /*  inactivityTimer.onActivity();
+     inactivityTimer.onActivity();
         viewfinderView.drawResultBitmap(barcode);
         playBeepSoundAndVibrate();
         String deviceSn = obj.getText();
-        Log.i(TAG, "qrcode: " + deviceSn);
-        Intent intent = new Intent(CaptureActivity.this, StatusActivity.class);
+        Log.i(TAG, "扫描设备二维码返回: " + deviceSn);
+        Intent intent = new Intent(CaptureActivity.this, AddDeviceQRcodeActivity.class);
         switch (type) {
-            case CAPTURE_TYPE_ROUTER_MAC:
             case CAPTURE_TYPE_ROUTER_SN:
                 intent.putExtra("deviceSN", deviceSn);
-                this.setResult(RESULT_OK, intent);
-                finish();
-                break;
-            case CAPTURE_TYPE_ROUTER_DEVICE:
-                intent.putExtra("deviceQrCode", deviceSn);
                 this.setResult(RESULT_OK, intent);
                 finish();
                 break;
 
             default:
                 break;
-        }*/
+        }
     }
 }

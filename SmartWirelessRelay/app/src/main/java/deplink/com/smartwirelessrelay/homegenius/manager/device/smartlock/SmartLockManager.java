@@ -143,18 +143,19 @@ public class SmartLockManager implements LocalConnecteListener {
 
     /**
      * 绑定智能设备列表
+     * {"org":"ismart","tp":"SMART_LOCK","ad":"00-12-4b-00-0b-26-c2-15","ver":"1"}
      */
-    public void bindSmartDevList() {
+    public void bindSmartDevList(String devUid,String org,String type,String ver) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
-        queryCmd.setMethod("SetDevList");
+        queryCmd.setMethod("DevList");
         List<SmartDev> devs = new ArrayList<>();
         //设备赋值
         SmartDev dev = new SmartDev();
         dev.setDevUid("00-12-4b-00-0b-26-c2-15");
         dev.setOrg("ismart");
-        dev.setType("");
-        dev.setVer("");
+        dev.setType("SMART_LOCK");
+        dev.setVer("1");
 
         devs.add(dev);
         queryCmd.setSmartDev(devs);
@@ -175,7 +176,7 @@ public class SmartLockManager implements LocalConnecteListener {
     public void bindDevList() {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
-        queryCmd.setMethod("SetDevList");
+        queryCmd.setMethod("DevList");
         List<Device> devs = new ArrayList<>();
         //设备赋值
         Device dev = new Device();
@@ -187,7 +188,7 @@ public class SmartLockManager implements LocalConnecteListener {
         queryCmd.setDevice(devs);
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packSendSmartDevsData(text.getBytes());
+        packet.packSendDevsData(text.getBytes());
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -195,6 +196,8 @@ public class SmartLockManager implements LocalConnecteListener {
             }
         });
     }
+
+
     /**
      * 查询开锁记录
      */

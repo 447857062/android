@@ -37,9 +37,9 @@ public  class ComandID {
      */
     public static final byte CMD_BIND = (byte) 0x7;
     /**
-     * 绑定回应
+     * 绑定APP回应
      */
-    public static final byte CMD_BIND_RESPONSE = (byte) 0x8;
+    public static final byte CMD_BIND_APP_RESPONSE = (byte) 0x8;
     /**
      * 心跳
      */
