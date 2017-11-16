@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="deplink.com.smartwirelessrelay.homegenius.EllESDK">
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
@@ -43,29 +44,66 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity">
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.lockhistory.LockHistoryActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.UpdateSmartLockUserIdActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SetLockPwdActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.ModifyRoomNameActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.alarmhistory.AlarmHistoryActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity"></activity>
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity"></activity>
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.lockhistory.LockHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.UpdateSmartLockUserIdActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SetLockPwdActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.ModifyRoomNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.smartlock.alarmhistory.AlarmHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.ConfigWifiGetwayActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

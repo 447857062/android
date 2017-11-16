@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -17,8 +18,9 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewAdapter;
+import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView;
 
@@ -65,8 +67,25 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);
     }
-
+    /**
+     * 再按一次退出应用
+     */
+    private long exitTime = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                AppManager.getAppManager().finishAllActivity();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     private void initEvents() {
+        AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);

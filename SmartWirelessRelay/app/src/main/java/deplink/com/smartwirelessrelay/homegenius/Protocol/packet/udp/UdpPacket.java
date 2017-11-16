@@ -1,5 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -14,14 +15,13 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.inter
  * 负责发送udp广播
  */
 public class UdpPacket  implements OnRecvLocalConnectIpListener {
-
     public static final String TAG = "UdpPacket";
     private UdpComm netUdp;
     //发送网络包队列
     public  ArrayList<BasicPacket> sendNetPakcetList;
     private UdpPacketThread udpPacketThread;
     private OnGetIpListener mOnGetIpListener;
-    public UdpPacket(OnGetIpListener listener) {
+    public UdpPacket(Context context,OnGetIpListener listener) {
         this.mOnGetIpListener=listener;
         if (sendNetPakcetList == null) {
             sendNetPakcetList = new ArrayList<>();
@@ -35,7 +35,6 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
      * @return
      */
     public synchronized int writeNet(BasicPacket packet) {
-        Log.i(TAG,"添加一个udp发送数据包");
         sendNetPakcetList.add(packet);
         return 0;
     }

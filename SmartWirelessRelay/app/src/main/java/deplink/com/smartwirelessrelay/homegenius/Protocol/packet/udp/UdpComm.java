@@ -23,7 +23,7 @@ public class UdpComm {
     private RecvThread recvThread = null;
     private boolean isRun = false;
 
-    public UdpComm( OnRecvLocalConnectIpListener listener) {
+    public UdpComm(OnRecvLocalConnectIpListener listener) {
         this.listener = listener;
     }
 
@@ -36,11 +36,11 @@ public class UdpComm {
     public boolean sendData(DatagramPacket packet) {
         if (udp == null)
             return false;
+        byte[] temp = packet.getData();
         try {
-            Log.e(TAG, "udp sendData:" + packet.getAddress().getHostAddress() + ":" + packet.getPort());
-            byte[] temp = packet.getData();
             udp.send(packet);
-            Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp));
+            Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp)
+                    + packet.getAddress().getHostAddress() + ":" + packet.getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -10,10 +10,9 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
 import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
@@ -26,11 +25,13 @@ import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 public class UdpThread {
 
     private static final String TAG = "UdpThread";
-     Timer timer;
+    Timer timer;
     public DatagramSocket dataSocket;
     public Context mContext;
     private UdpPacket udp;
-    private int currentNetStatu;
+
+
+    //TODO UID要不要传
     public UdpThread(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
@@ -40,6 +41,7 @@ public class UdpThread {
             e.printStackTrace();
         }
     }
+
     class timerTimeoutTask extends TimerTask {
         @Override
         public void run() {
@@ -51,19 +53,14 @@ public class UdpThread {
         //"设备状体定时器运行正常";
         //先判断当前的网络状态，没有网络则不执行设备的检查
         //当前如果是WiFi的话，则优先执行本地查找，确定本地没有设备后再执行远程查找
-        int net = NetStatusUtil.checkConnectionState(mContext);
+        boolean net = NetStatusUtil.isWiFiActive(mContext);
         //更新下本地的网络状态和IP地址
         PublicMethod.getLocalIP(mContext);
-        switch (currentNetStatu) {
-            case NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED:
-                //WiFi模式
-                //调试,不打开探测
-                wifiCheckHandler();
-                break;
-            default:
-                break;
+        if(net){
+            wifiCheckHandler();
         }
     }
+
     public void wifiCheckHandler() {
         GeneralPacket packet = null;
         try {
@@ -79,16 +76,15 @@ public class UdpThread {
         String uid = sharedPreference.getString("uid");
         //已收到uid
         Log.i(TAG, "wifiCheckHandler send udp packet");
-        if(uid!=null && !uid.equals("")){
-            byte[]temp=uid.getBytes();
-            Log.i(TAG,"uid="+uid+"长度="+temp.length);
-            udp.writeNet(packet);
-        }else{
-            udp.writeNet(packet);
-        }
+        udp.writeNet(packet);
+
     }
+
     public void open() {
         timer = new Timer();
-        timer.schedule(new timerTimeoutTask(),1000, 5000);
+        timer.schedule(new timerTimeoutTask(), 1000, 5000);
+    }
+    public void cancel() {
+        timer.cancel();
     }
 }

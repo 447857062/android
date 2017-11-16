@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -13,6 +15,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
+import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 
@@ -44,6 +47,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     private void initEvents() {
+        AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
@@ -63,6 +67,23 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mLocalConnectmanager.removeLocalConnectListener(this);
     }
 
+    /**
+     * 再按一次退出应用
+     */
+    private long exitTime = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                AppManager.getAppManager().finishAllActivity();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){

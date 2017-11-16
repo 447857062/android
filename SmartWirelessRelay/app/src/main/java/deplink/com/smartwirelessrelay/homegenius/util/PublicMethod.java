@@ -45,7 +45,7 @@ public class PublicMethod {
 
 
     public static String getLocalIP(Context ctx) {
-        if (NetStatusUtil.checkConnectionState(ctx) == 1) {
+        if (NetStatusUtil.isWiFiActive(ctx)) {
 
             return PublicMethod.getIPAddress(ctx);
         }

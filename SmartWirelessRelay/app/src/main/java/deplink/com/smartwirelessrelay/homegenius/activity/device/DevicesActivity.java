@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -29,8 +31,9 @@ import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class DevicesActivity extends Activity implements View.OnClickListener,DeviceListener{
@@ -77,10 +80,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
         mDeviceManager.removeDeviceListener(this);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
+
     private void initDatas() {
         mSmartLockManager=SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
@@ -112,13 +112,30 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
     }
 
     private void initEvents() {
+        AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
     }
-
+    /**
+     * 再按一次退出应用
+     */
+    private long exitTime = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                AppManager.getAppManager().finishAllActivity();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     private void initViews() {
         layout_home_page= (LinearLayout) findViewById(R.id.layout_home_page);
         layout_devices= (LinearLayout) findViewById(R.id.layout_devices);

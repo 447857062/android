@@ -26,12 +26,8 @@ public class GeneralPacket extends BasicPacket {
      * @return
      */
     public int packBindUnbindAppPacket(String uid, byte cmdID) {
-        byte[]ip = new byte[4];
-        ip[0]=(byte)0xC0;
-        ip[1]=(byte)0xA8;
-        ip[2]=(byte) 0x44;
-        ip[3]=(byte) 0xCD;
-        return packBindData(ip,uid,cmdID);
+
+        return packBindData(uid,cmdID);
 
     }
 
@@ -40,12 +36,8 @@ public class GeneralPacket extends BasicPacket {
      * @return
      */
     public int packHeathPacket() {
-        byte[]ip = new byte[4];
-        ip[0]=(byte)0xC0;
-        ip[1]=(byte)0xA8;
-        ip[2]=(byte) 0x44;
-        ip[3]=(byte) 0xCD;
-        return packData(  ip,true,null, ComandID.HEARTBEAT);
+
+        return packData( null, ComandID.HEARTBEAT);
 
     }
 
@@ -55,12 +47,8 @@ public class GeneralPacket extends BasicPacket {
      * @return
      */
     public int packCheckPacketWithUID() {
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packData( ip,false,null,ComandID.DETEC_DEV);
+
+        return packUdpDetectData(ComandID.DETEC_DEV);
     }
 
     /**
@@ -68,12 +56,8 @@ public class GeneralPacket extends BasicPacket {
      * @return
      */
     public int packQueryDevListData(byte[]xdata) {
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packData( ip,false,xdata,ComandID.QUERY_OPTION);
+
+        return packData( xdata,ComandID.QUERY_OPTION);
     }
     /**
      * 查询开锁记录
@@ -81,7 +65,7 @@ public class GeneralPacket extends BasicPacket {
      */
     public int packOpenLockListData(byte[]xdata) {
 
-        return packData( null,false,xdata,ComandID.QUERY_OPTION);
+        return packData(xdata,ComandID.QUERY_OPTION);
     }
     /**
      *设置智能设备参数
@@ -89,26 +73,22 @@ public class GeneralPacket extends BasicPacket {
      */
     public int packSetSmartLockData( byte[]xdata) {
 
-        byte[]ip = new byte[4];
-        ip[0]=(byte) 0xFF;
-        ip[1]=(byte)0xFF;
-        ip[2]=(byte) 0xFF;
-        ip[3]=(byte) 0xFF;
-        return packData( ip,false,xdata,ComandID.SET_CMD);
+
+        return packData(xdata,ComandID.SET_CMD);
     }
     /**
      *智能设备列表下发
      * @return
      */
     public int packSendSmartDevsData( byte[]xdata) {
-        return packData( null,false,xdata,ComandID.CMD_SEND_SMART_DEV);
+        return packData(xdata,ComandID.CMD_SEND_SMART_DEV);
     }
     /**
      *设备列表下发
      * @return
      */
     public int packSendDevsData( byte[]xdata) {
-        return packData( null,false,xdata,ComandID.CMD_SEND_SMART_DEV);
+        return packData( xdata,ComandID.CMD_SEND_SMART_DEV);
     }
 
 }

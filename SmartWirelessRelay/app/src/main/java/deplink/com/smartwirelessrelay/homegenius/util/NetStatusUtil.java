@@ -5,12 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.io.IOException;
-
-import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created by Administrator on 2017/11/2.
@@ -95,28 +92,5 @@ public class NetStatusUtil {
         return false;
     }
 
-    /**
-     * 检查网络状态
-     */
-    public static int checkConnectionState(Context ctx) {
-        ConnectivityManager mConnectivity = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        TelephonyManager mTelephony = (TelephonyManager) ctx.getSystemService(TELEPHONY_SERVICE);
 
-    /* 检查有没有网络 */
-        NetworkInfo info = mConnectivity.getActiveNetworkInfo();
-        if (info == null || !mConnectivity.getBackgroundDataSetting()) {
-            return -1;
-        }
-    /* 判断网络连接类型,只有在3G 或 wifi 里进行一些数据更新。 */
-        int netType = info.getType();
-        int netSubtype = info.getSubtype();
-        if (netType == ConnectivityManager.TYPE_WIFI) {
-            netType = 1;
-        } else if (netType == ConnectivityManager.TYPE_MOBILE && netSubtype == TelephonyManager.NETWORK_TYPE_UMTS && !mTelephony.isNetworkRoaming()) {
-            return 2;
-        } else {
-            return 0;
-        }
-        return 1;
-    }
 }
