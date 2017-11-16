@@ -56,6 +56,22 @@ public  class ComandID {
      * 智能设备列表回应
      */
     public static final byte CMD_SEND_SMART_DEV_RESPONSE = (byte) 0xc;
+    /**
+     * 扫描wifi列表
+     */
+    public static final byte CMD_DEV_SCAN_WIFI = (byte) 0xd;
+    /**
+     * 扫描wifi列表回应
+     */
+    public static final byte CMD_DEV_SCAN_WIFI_ACK = (byte) 0xe;
+    /**
+     * 设置wifi中继
+     */
+    public static final byte CMD_DEV_SET_WIFI = (byte) 0xf;
+    /**
+     * 设置wifi中继回应
+     */
+    public static final byte CMD_DEV_SET_WIFI_ACK = (byte) 0x10;
 
 
 }

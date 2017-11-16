@@ -1,6 +1,5 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -22,11 +21,9 @@ public class UdpComm {
     private DatagramSocket udp = null;
     private OnRecvLocalConnectIpListener listener = null;
     private RecvThread recvThread = null;
-    private Context mContext;
     private boolean isRun = false;
 
-    public UdpComm(Context context, OnRecvLocalConnectIpListener listener) {
-        this.mContext = context;
+    public UdpComm( OnRecvLocalConnectIpListener listener) {
         this.listener = listener;
     }
 

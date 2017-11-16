@@ -24,10 +24,10 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
 
 /**
  * Created by Administrator on 2017/11/9.
- *   使用：
-  private DeviceManager mDeviceManager;
- mDeviceManager = DeviceManager.getInstance();
- mDeviceManager.InitDeviceManager(this, null);
+ * 使用：
+ * private DeviceManager mDeviceManager;
+ * mDeviceManager = DeviceManager.getInstance();
+ * mDeviceManager.InitDeviceManager(this, null);
  */
 public class DeviceManager implements LocalConnecteListener {
     private static final String TAG = "DeviceManager";
@@ -42,18 +42,30 @@ public class DeviceManager implements LocalConnecteListener {
     private LocalConnectmanager mLocalConnectmanager;
     private GeneralPacket packet;
     private Context mContext;
-    private DeviceListener mDeviceListener;
     /**
      * 智能设备识别码DevUid
      */
     private String deviceUid;
+
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
             instance = new DeviceManager();
         }
         return instance;
     }
+    private  List<DeviceListener> mDeviceListenerList;
+    public void addDeviceListener(DeviceListener listener) {
+        if (listener != null && !mDeviceListenerList.contains(listener)) {
+            Log.i(TAG,"addDeviceListener="+listener.toString());
+            this.mDeviceListenerList.add(listener);
+        }
+    }
+    public void removeDeviceListener(DeviceListener listener) {
+        if (listener != null && mDeviceListenerList.contains(listener)) {
+            this.mDeviceListenerList.remove(listener);
+        }
 
+    }
     /**
      * 查询设备列表
      */
@@ -73,15 +85,15 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 初始化本地连接管理器
      */
     public void InitDeviceManager(Context context, DeviceListener listener) {
         this.mContext = context;
-        this.mDeviceListener = listener;
-        if (mDeviceListener == null) {
-            Log.i(TAG, "未给设备管理器设置数据结果监听");
-        }
+        this.mDeviceListenerList=new ArrayList<>();
+
+
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
             mLocalConnectmanager.InitLocalConnectManager(mContext);
@@ -90,6 +102,7 @@ public class DeviceManager implements LocalConnecteListener {
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         cachedThreadPool = Executors.newCachedThreadPool();
+        addDeviceListener(listener);
         //TODO
        /* List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
         //当前只有一个智能锁
@@ -108,9 +121,11 @@ public class DeviceManager implements LocalConnecteListener {
         */
 
     }
+
     /**
      * 绑定智能设备列表
      * {"org":"ismart","tp":"SMART_LOCK","ad":"00-12-4b-00-0b-26-c2-15","ver":"1"}
+     *
      * @param smartDevice
      */
     public void bindSmartDevList(QrcodeSmartDevice smartDevice) {
@@ -137,10 +152,11 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 绑定网关，中继器
      */
-    public void bindDevList() {
+    public void bindDevice() {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
@@ -187,7 +203,7 @@ public class DeviceManager implements LocalConnecteListener {
     @Override
     public void OnGetQueryresult(String result) {
         //返回查询结果：开锁记录，设备列表
-        Log.i(TAG, "回调设备列表数据 result=" + result);
+        Log.i(TAG, "返回查询结果：开锁记录，设备列表=" + result);
         //保存智能锁设备的DevUid
         if (result.contains("DevList")) {
             Gson gson = new Gson();
@@ -199,10 +215,13 @@ public class DeviceManager implements LocalConnecteListener {
             if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
                 handleNormalDeviceList(aDeviceList);
             }
-            mDeviceListener.responseQueryResult(result);
+            for(int i=0;i<mDeviceListenerList.size();i++){
+                mDeviceListenerList.get(i).responseQueryResult(result);
+            }
         }
 
     }
+
     /**
      * 处理智能设备列表
      *
@@ -239,6 +258,7 @@ public class DeviceManager implements LocalConnecteListener {
 
         }
     }
+
     private void handleNormalDeviceList(DeviceList aDeviceList) {
         for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
             //查询数据库
@@ -267,7 +287,6 @@ public class DeviceManager implements LocalConnecteListener {
     }
 
 
-
     private void saveSmartDeviceToSqlite(DeviceList aDeviceList, int i) {
         SmartDev dev = new SmartDev();
         dev.setUid(deviceUid);
@@ -278,6 +297,7 @@ public class DeviceManager implements LocalConnecteListener {
         boolean success = dev.save();
         Log.i(TAG, "保存智能锁设备=" + success);
     }
+
     @Override
     public void OnGetSetresult(String setResult) {
 

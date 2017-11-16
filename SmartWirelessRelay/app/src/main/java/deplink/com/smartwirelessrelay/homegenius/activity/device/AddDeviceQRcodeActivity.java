@@ -87,9 +87,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.i(TAG, "onItemClick " + mDeviceTypes.get(position));
         switch (mDeviceTypes.get(position)) {
-           /* case "智能网关":
-                mSmartLockManager.bindDevList();
-                break;*/
+            case "智能网关":
+                break;
         }
         Intent intentQrcodeSn = new Intent();
         intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, CaptureActivity.class);
@@ -116,16 +115,15 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String snCode = data.getStringExtra("deviceSN");
+
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_DEVICE_SN) {
+            String snCode = data.getStringExtra("deviceSN");
             if(snCode.contains("SMART_LOCK")){
                 Gson gson=new Gson();
                 QrcodeSmartDevice device=gson.fromJson(snCode,QrcodeSmartDevice.class);
                 mDeviceManager.bindSmartDevList(device);
-              //  mSmartLockManager.bindSmartDevList();
             }else{
-                mDeviceManager.bindDevList();
-              //  mSmartLockManager.bindDevList();
+                mDeviceManager.bindDevice();
             }
 
         }

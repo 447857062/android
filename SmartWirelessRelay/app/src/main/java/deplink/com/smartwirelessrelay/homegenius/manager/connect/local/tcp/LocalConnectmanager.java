@@ -79,7 +79,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * sslsocket握手成功
      */
     private boolean handshakeCompleted;
-
+    private int currentNetStatu;
     private LocalConnectmanager() {
     }
 
@@ -113,20 +113,27 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
 
     }
     public void addLocalConnectListener(LocalConnecteListener listener) {
-
         if (listener != null && !mLocalConnecteListener.contains(listener)) {
             Log.i(TAG,"addLocalConnectListener="+listener.toString());
             this.mLocalConnecteListener.add(listener);
         }
     }
 
+    /**
+     * 初始化网络连接广播
+     */
     private void initRegisterNetChangeReceive() {
-        mNetStatuChangeReceiver = new NetStatuChangeReceiver();
-        mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
-        IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        mContext.registerReceiver(mNetStatuChangeReceiver, filter);
-    }
+        if(mNetStatuChangeReceiver==null){
+            mNetStatuChangeReceiver = new NetStatuChangeReceiver();
+            mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
+            IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+            mContext.registerReceiver(mNetStatuChangeReceiver, filter);
+        }
 
+    }
+    private void unRegisterNetChangeReceive(){
+        mContext.unregisterReceiver(mNetStatuChangeReceiver);
+    }
     /**
      * 初始化本地连接管理器
      */
@@ -228,7 +235,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             });
             address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
-
             Log.e(TAG, "创建sslsocket success" + address.toString());
             //TODO
             GeneralPacket packet=new GeneralPacket(mContext);
@@ -262,7 +268,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             for(int i=0;i<mLocalConnecteListener.size();i++){
                 mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
             }
-
             return -1;
         }
         Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted + "message=" + DataExchange.byteArrayToHexString(message));
@@ -368,6 +373,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             input.close();
         } catch (Exception e) {
             e.printStackTrace();
+            //TODO 连接断开
         }
         return str;
     }
@@ -413,7 +419,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
     }
 
-    private int currentNetStatu;
+
 
     //接收回调数据区域
     @Override
@@ -445,7 +451,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
     }
 
-
+    /**
+     * 重置sslsocket连接
+     */
     private void resetSslSocket() {
 
         new Thread(new Runnable() {

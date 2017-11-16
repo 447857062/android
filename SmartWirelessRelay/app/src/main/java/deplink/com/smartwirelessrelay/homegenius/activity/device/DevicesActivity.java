@@ -74,6 +74,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mDeviceManager.removeDeviceListener(this);
     }
 
     @Override

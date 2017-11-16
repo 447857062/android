@@ -72,7 +72,6 @@ public class SmartLockManager implements LocalConnecteListener {
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
             mLocalConnectmanager.InitLocalConnectManager(mContext);
-
         }
         mLocalConnectmanager.addLocalConnectListener(this);
 
@@ -304,7 +303,13 @@ public class SmartLockManager implements LocalConnecteListener {
      * @return
      */
     public List<LOCK_ALARM> getAlarmRecord(String devUid) {
-        List<LOCK_ALARM> newsList = DataSupport.where("DevUid = ?", smartUid).findFirst(SmartLock.class, true).getAlarmList();
-        return newsList;
+        //TODO
+        smartUid = "00-12-4b-00-0b-26-c2-15";
+        List<SmartLock> mSmartDevices=DataSupport.where("Uid = ?", smartUid).find(SmartLock.class, true);
+        if(mSmartDevices.size()>0){
+            List<LOCK_ALARM> newsList =mSmartDevices.get(0).getAlarmList();
+        }
+
+        return null;
     }
 }

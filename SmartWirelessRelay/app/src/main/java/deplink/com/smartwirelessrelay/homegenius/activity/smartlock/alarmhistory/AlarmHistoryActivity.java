@@ -31,7 +31,10 @@ public class AlarmHistoryActivity extends Activity   {
 
         mSmartLockManager.InitSmartLockManager(this);
         mLockHistory.clear();
-        mLockHistory.addAll(mSmartLockManager.getAlarmRecord(""));
+        //TODO
+        if(mSmartLockManager.getAlarmRecord("")!=null){
+            mLockHistory.addAll(mSmartLockManager.getAlarmRecord(""));
+        }
         mAlarmHistoryAdapter.notifyDataSetChanged();
 
     }
