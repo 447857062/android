@@ -13,9 +13,9 @@ public  class ComandID {
      */
     public static final byte DETEC_DEV_RESPONSE = (byte) 0x1;
     /**
-     * 查询设备
+     * 查询
      */
-    public static final byte QUERY_DEV = (byte) 0x2;
+    public static final byte QUERY_OPTION = (byte) 0x2;
     /**
      * 查询设备回应
      */
@@ -37,9 +37,9 @@ public  class ComandID {
      */
     public static final byte CMD_BIND = (byte) 0x7;
     /**
-     * 绑定回应
+     * 绑定APP回应
      */
-    public static final byte CMD_BIND_RESPONSE = (byte) 0x8;
+    public static final byte CMD_BIND_APP_RESPONSE = (byte) 0x8;
     /**
      * 心跳
      */
@@ -56,6 +56,22 @@ public  class ComandID {
      * 智能设备列表回应
      */
     public static final byte CMD_SEND_SMART_DEV_RESPONSE = (byte) 0xc;
+    /**
+     * 扫描wifi列表
+     */
+    public static final byte CMD_DEV_SCAN_WIFI = (byte) 0xd;
+    /**
+     * 扫描wifi列表回应
+     */
+    public static final byte CMD_DEV_SCAN_WIFI_ACK = (byte) 0xe;
+    /**
+     * 设置wifi中继
+     */
+    public static final byte CMD_DEV_SET_WIFI = (byte) 0xf;
+    /**
+     * 设置wifi中继回应
+     */
+    public static final byte CMD_DEV_SET_WIFI_ACK = (byte) 0x10;
 
 
 }

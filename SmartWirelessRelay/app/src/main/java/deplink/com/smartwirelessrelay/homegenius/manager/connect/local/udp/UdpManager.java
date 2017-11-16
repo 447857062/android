@@ -46,7 +46,7 @@ public class UdpManager implements OnGetIpListener {
         }
         //发送任务队列
         if (udpPacket == null) {
-            udpPacket = new UdpPacket(context, this);
+            udpPacket = new UdpPacket(this);
         }
         udpPacket.start();
 

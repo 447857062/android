@@ -11,21 +11,16 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
-import com.google.gson.Gson;
-
 import org.litepal.crud.DataSupport;
-import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -33,11 +28,9 @@ import deplink.com.smartwirelessrelay.homegenius.view.keyboard.KeyboardUtil;
 
 public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelListener, CompoundButton.OnCheckedChangeListener, SmartLockListener {
     private static final String TAG = "SetLockPwdActivity";
-    private View backView;
     private EditText etPwdOne, etPwdTwo, etPwdThree, etPwdFour, etPwdText;
     private EditText etPwdFive_setLockPwd, etPwdSix_setLockPwd;
     private KeyboardUtil kbUtil;
-    public String strLockPwdOne;
     private Handler mHandler;
     private Switch switch_remond_managerpassword;
 
@@ -101,13 +94,13 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     void initData() {
         //生成数据库
-        if (db == null) {
+      /*  if (db == null) {
             db = Connector.getDatabase();
-        }
+        }*/
         mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this, this);
-
-        kbUtil = new KeyboardUtil(this/*,this*/);
+        mSmartLockManager.InitSmartLockManager(this);
+        mSmartLockManager.addSmartLockListener(this);
+        kbUtil = new KeyboardUtil(this);
         ArrayList<EditText> list = new ArrayList<EditText>();
         list.add(etPwdOne);
         list.add(etPwdTwo);
@@ -149,7 +142,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                             String strReapt = etPwdText.getText().toString();
                             //TODO 查询管理密码 ，就是使用输入的密码开门，如果返回密码错误，就是错误
                             currentPassword = strReapt;
-                            mSmartLockManager.setSmaertLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
+                            mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
                             etPwdOne.setText("");
                             etPwdTwo.setText("");
                             etPwdThree.setText("");
@@ -192,9 +185,10 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         }
         //密码正确才能保存，消失界面显示
         // TODO 保存密码
-        Gson gson = new Gson();
-        OpResult opResult = gson.fromJson(result, OpResult.class);
-        if (opResult.getResult() == SmartLockConstant.OPENLOCK.SUCCESS && opResult.getCmd()== SmartLockConstant.CMD.OPEN) {
+
+        Log.i(TAG, "result=" + result);
+
+        if ("成功".equals(result)) {
             ContentValues values = new ContentValues();
             values.put("managerPassword", currentPassword);
             int affectColumn = DataSupport.updateAll(ManagerPassword.class, values);

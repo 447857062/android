@@ -39,6 +39,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private void initDatas() {
         mLocalConnectmanager=LocalConnectmanager.getInstance();
         mLocalConnectmanager.InitLocalConnectManager(this);
+        Log.i(TAG,"initDatas addLocalConnectListener");
         mLocalConnectmanager.addLocalConnectListener(this);
     }
 

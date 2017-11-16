@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public class SmartDev extends DataSupport implements Serializable{
     @Column(unique = true,nullable = false)
-    private String DevUid;
+    private String Uid;
     private String CtrUid;
     private String Type;
     private String Status;
@@ -25,12 +25,12 @@ public class SmartDev extends DataSupport implements Serializable{
         Org = org;
     }
 
-    public String getDevUid() {
-        return DevUid;
+    public String getUid() {
+        return Uid;
     }
 
-    public void setDevUid(String devUid) {
-        DevUid = devUid;
+    public void setUid(String uid) {
+        Uid = uid;
     }
 
     public String getCtrUid() {
@@ -68,7 +68,7 @@ public class SmartDev extends DataSupport implements Serializable{
     @Override
     public String toString() {
         return "SmartDev{" +
-                "DevUid='" + DevUid + '\'' +
+                "Uid='" + Uid + '\'' +
                 ", CtrUid='" + CtrUid + '\'' +
                 ", Type='" + Type + '\'' +
                 ", Status='" + Status + '\'' +

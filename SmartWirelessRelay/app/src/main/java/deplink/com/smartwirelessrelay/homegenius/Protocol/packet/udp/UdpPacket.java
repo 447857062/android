@@ -1,13 +1,12 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
 
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.BasicPacket;
 
 /**
  * udp发送广播包，探测本地连接的IP地址
@@ -21,10 +20,8 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
     //发送网络包队列
     public  ArrayList<BasicPacket> sendNetPakcetList;
     private UdpPacketThread udpPacketThread;
-    private Context mContext;
     private OnGetIpListener mOnGetIpListener;
-    public UdpPacket(Context context,OnGetIpListener listener) {
-        this.mContext = context;
+    public UdpPacket(OnGetIpListener listener) {
         this.mOnGetIpListener=listener;
         if (sendNetPakcetList == null) {
             sendNetPakcetList = new ArrayList<>();
@@ -58,7 +55,7 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
 
     public void start() {
         stop();
-        netUdp = new UdpComm(mContext, this);
+        netUdp = new UdpComm( this);
         netUdp.startServer();
         udpPacketThread = new UdpPacketThread();
         udpPacketThread.start();

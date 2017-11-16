@@ -54,7 +54,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * 这个类设计成单例
      */
     private static LocalConnectmanager instance;
-    private List<LocalConnecteListener> mLocalConnecteListener;
+    private  List<LocalConnecteListener> mLocalConnecteListener;
     private Context mContext;
     /**
      * 连接线程
@@ -79,7 +79,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * sslsocket握手成功
      */
     private boolean handshakeCompleted;
-
+    private int currentNetStatu;
     private LocalConnectmanager() {
     }
 
@@ -107,21 +107,33 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     }
 
     public void removeLocalConnectListener(LocalConnecteListener listener) {
-        this.mLocalConnecteListener.remove(listener);
+        if (listener != null && mLocalConnecteListener.contains(listener)) {
+            this.mLocalConnecteListener.remove(listener);
+        }
+
     }
     public void addLocalConnectListener(LocalConnecteListener listener) {
         if (listener != null && !mLocalConnecteListener.contains(listener)) {
+            Log.i(TAG,"addLocalConnectListener="+listener.toString());
             this.mLocalConnecteListener.add(listener);
         }
     }
 
+    /**
+     * 初始化网络连接广播
+     */
     private void initRegisterNetChangeReceive() {
-        mNetStatuChangeReceiver = new NetStatuChangeReceiver();
-        mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
-        IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        mContext.registerReceiver(mNetStatuChangeReceiver, filter);
-    }
+        if(mNetStatuChangeReceiver==null){
+            mNetStatuChangeReceiver = new NetStatuChangeReceiver();
+            mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
+            IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+            mContext.registerReceiver(mNetStatuChangeReceiver, filter);
+        }
 
+    }
+    private void unRegisterNetChangeReceive(){
+        mContext.unregisterReceiver(mNetStatuChangeReceiver);
+    }
     /**
      * 初始化本地连接管理器
      */
@@ -223,7 +235,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             });
             address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
-
             Log.e(TAG, "创建sslsocket success" + address.toString());
             //TODO
             GeneralPacket packet=new GeneralPacket(mContext);
@@ -257,7 +268,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             for(int i=0;i<mLocalConnecteListener.size();i++){
                 mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
             }
-
             return -1;
         }
         Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted + "message=" + DataExchange.byteArrayToHexString(message));
@@ -300,8 +310,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 int cmd = DataExchange.bytesToInt(buf, 6, 1);
 
                 str = new String(buf, 0, len);
-                Log.i(TAG, "cmd=" + cmd);
-                System.out.println("received:" + str + "length=" + len);
+                Log.i(TAG, "cmd=" + cmd+"length="+len);
                 System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
                 //数据长度,如果携带数据，数据的长度占2byte
                 byte[] lengthByte = new byte[2];
@@ -318,7 +327,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         }
 
                         break;
-                    case ComandID.CMD_BIND_RESPONSE:
+                    case ComandID.CMD_BIND_APP_RESPONSE:
                         byte[] uid = new byte[32];
                         System.arraycopy(buf, 7, uid, 0, 32);
                         str = new String(uid);
@@ -340,12 +349,21 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                     case ComandID.SET_CMD_RESPONSE:
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                        System.out.println("received:" + "length=" + length);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
-                        System.out.println("received devlist:" + str);
+                        Log.i(TAG,"received 设置结果:" + str + "length=" + length);
                         for(int i=0;i<mLocalConnecteListener.size();i++){
                             mLocalConnecteListener.get(i).OnGetSetresult(str);
                         }
+                        break;
+                    case ComandID.CMD_SEND_SMART_DEV_RESPONSE:
+                        // 绑定网关（中继器） 回应:{ "OP": "REPORT", "Method": "SetDevList", "Result": 0 }
+                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                        str = new String(buf, AppConstant.BASICLEGTH, length);
+                        System.out.println("绑定智能回应:" + str);
+                       /* for(int i=0;i<mLocalConnecteListener.size();i++){
+                            mLocalConnecteListener.get(i).OnGetSetresult(str);
+                        }*/
                         break;
 
                 }
@@ -355,6 +373,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             input.close();
         } catch (Exception e) {
             e.printStackTrace();
+            //TODO 连接断开
         }
         return str;
     }
@@ -400,7 +419,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
     }
 
-    private int currentNetStatu;
+
 
     //接收回调数据区域
     @Override
@@ -432,7 +451,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
     }
 
-
+    /**
+     * 重置sslsocket连接
+     */
     private void resetSslSocket() {
 
         new Thread(new Runnable() {

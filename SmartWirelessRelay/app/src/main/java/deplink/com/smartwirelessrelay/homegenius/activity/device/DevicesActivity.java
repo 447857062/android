@@ -29,17 +29,16 @@ import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
-public class DevicesActivity extends Activity implements View.OnClickListener,SmartLockListener{
+public class DevicesActivity extends Activity implements View.OnClickListener,DeviceListener{
     private static final String TAG="DevicesActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-
-    private SmartLockManager mSmartLockManager;
 
     private ListView listview_devies;
     private DeviceListAdapter mDeviceAdapter;
@@ -53,6 +52,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
     private List<SmartDev> datasBottom;
 
     private ImageView imageview_add_device;
+
+    private DeviceManager mDeviceManager;
+    private SmartLockManager mSmartLockManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,13 +68,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
     protected void onResume() {
         super.onResume();
 
-        mSmartLockManager.queryDeviceList();
+        mDeviceManager.queryDeviceList();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSmartLockManager.releaswSmartManager();
+        mDeviceManager.removeDeviceListener(this);
     }
 
     @Override
@@ -80,9 +82,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
         super.onPause();
     }
     private void initDatas() {
-        mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this, this);
-
+        mSmartLockManager=SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this);
+        mDeviceManager=DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this,this);
         datasTop=new ArrayList<>();
         datasBottom=new ArrayList<>();
         //使用数据库中的数据
@@ -99,7 +102,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
                        String deviceType= datasBottom.get(position - datasTop.size()).getType();
                         Log.i(TAG,"智能设备类型="+deviceType);
                         switch (deviceType){
-                            case "SmartLock":
+                            case "SMART_LOCK":
                                 startActivity(new Intent(DevicesActivity.this,SmartLockActivity.class));
                                 break;
                         }
@@ -200,13 +203,5 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Sm
 
         }
     };
-    @Override
-    public void responseSetResult(String result) {
 
-    }
-
-    @Override
-    public void responseBind(String result) {
-
-    }
 }
