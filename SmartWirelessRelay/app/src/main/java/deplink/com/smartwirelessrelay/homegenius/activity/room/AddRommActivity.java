@@ -3,6 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.room;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,8 +14,12 @@ import android.widget.Toast;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 public class AddRommActivity extends Activity implements View.OnClickListener{
+    private static final String TAG="AddRommActivity";
     private TextView textview_add_room_complement;
     private ImageView image_back;
     private RelativeLayout layout_getway;
@@ -52,12 +57,33 @@ public class AddRommActivity extends Activity implements View.OnClickListener{
             case  R.id.textview_add_room_complement:
                 String roomName=edittext_room_name.getText().toString();
                 if(!roomName.equals("")){
-                    boolean addResult=roomManager.addRoom(roomName);
-                    if(addResult){
-                        Toast.makeText(this,"添加房间成功",Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(this,"添加房间失败",Toast.LENGTH_SHORT).show();
-                    }
+                    roomManager.addRoom(roomName, new Observer() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull Object o) {
+                            Log.i(TAG,"add room react onNext="+(boolean)o);
+                            if((boolean)o){
+                                Toast.makeText(AddRommActivity.this,"添加房间成功",Toast.LENGTH_LONG).show();
+                            }else{
+                                Toast.makeText(AddRommActivity.this,"添加房间失败",Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
 
                 }else{
                     Toast.makeText(this,"请输入房间名称",Toast.LENGTH_SHORT).show();

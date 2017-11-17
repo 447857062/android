@@ -104,6 +104,7 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.ConfigWifiGetwayActivity"
             android:screenOrientation="portrait" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity"></activity>
     </application>
 
 </manifest>

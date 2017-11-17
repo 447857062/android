@@ -44,6 +44,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private void initDatas() {
         String hintRoomName = getIntent().getStringExtra("roomname");
         mRoomManager = RoomManager.getInstance();
+
         mDevices = mRoomManager.findRoom(hintRoomName,true).getmDevices();
 
         mRoomDevicesAdapter = new RoomDevicesListAdapter(this, mDevices);

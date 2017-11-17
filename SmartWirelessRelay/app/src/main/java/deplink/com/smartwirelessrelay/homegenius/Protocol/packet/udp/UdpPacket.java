@@ -87,11 +87,12 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
         @Override
         public void run() {
             super.run();
+            Log.i(TAG,"UdpPacketThread is Run");
             isRun = true;
             while (isRun) {
                 for (int i = 0; i < sendNetPakcetList.size(); i++) {
                     BasicPacket tmp = sendNetPakcetList.get(i);
-                    Log.i(TAG,"UdpPacketThread Udp packet ip != null"+(tmp.ip != null)+"Udp packet.isFinish="+tmp.isFinish);
+
                     if (tmp.ip != null ) {
                         netUdp.sendData(tmp.getUdpData());
                         delOneSendPacket(sendNetPakcetList, tmp);

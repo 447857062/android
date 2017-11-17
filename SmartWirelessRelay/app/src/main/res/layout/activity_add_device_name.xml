@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity">
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/image_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textview_device_title_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:text=""
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_device_name"
+        android:layout_below="@+id/layout_title"
+        android:background="@color/gray"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textview_show_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/layout_update_device_name"
+        android:layout_below="@+id/layout_device_name"
+        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_height="50dp">
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/textview_device_name_left"
+            android:layout_alignParentLeft="true"
+            android:text="名称:"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:maxLength="5"
+            android:id="@+id/edittext_add_device_input_name"
+            android:hint="例如我家的门锁（最多5个字）"
+            android:layout_toRightOf="@+id/textview_device_name_left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+    <Button
+        android:background="@color/blue"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/layout_update_device_name"
+        android:id="@+id/button_add_device_sure"
+        android:text="确定"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+</RelativeLayout>

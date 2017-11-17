@@ -8,17 +8,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
-import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
 
@@ -29,13 +24,10 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private static final String TAG = "AddDeviceQRcodeActivity";
     private Bundle mBundle;
     private String mRoomName;
-    private RoomManager mRoomManager;
     private GridView mGridView;
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;
     private CircleImageView imageview_scan_device;
-
-    private DeviceManager mDeviceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,15 +51,12 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
-        mDeviceManager=DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this,null);
         mBundle = getIntent().getExtras();
         Log.i(TAG, "mBundle!=null " + (mBundle != null));
         if (mBundle != null) {
             mRoomName = mBundle.getString("roomName");
             Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
         }
-        mRoomManager = RoomManager.getInstance();
         mDeviceTypes = new ArrayList<>();
         mDeviceTypes.add("智能网关");
         mDeviceTypes.add("路由器");
@@ -115,15 +104,22 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Intent intent=new Intent(AddDeviceQRcodeActivity.this,AddDeviceNameActivity.class);
+        intent.putExtra("mRoomName",mRoomName);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_DEVICE_SN) {
             String snCode = data.getStringExtra("deviceSN");
             if(snCode.contains("SMART_LOCK")){
-                Gson gson=new Gson();
-                QrcodeSmartDevice device=gson.fromJson(snCode,QrcodeSmartDevice.class);
-                mDeviceManager.bindSmartDevList(device);
+                intent.putExtra("currentAddDevice",snCode);
+                intent.putExtra("DeviceType","SMART_LOCK");
+                startActivity(intent);
+
             }else{
-                mDeviceManager.bindDevice();
+                //TODO
+                String uid="77685180654101946200316696479888";
+                intent.putExtra("currentAddDevice",uid);
+                intent.putExtra("DeviceType","getway");
+                startActivity(intent);
+
             }
 
         }

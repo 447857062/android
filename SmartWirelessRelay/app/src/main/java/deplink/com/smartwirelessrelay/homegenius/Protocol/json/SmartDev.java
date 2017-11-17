@@ -16,6 +16,24 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Status;
     private String Org;
     private String Ver;
+    private String name;
+    private Room room;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
 
     public String getOrg() {
         return Org;
@@ -68,12 +86,13 @@ public class SmartDev extends DataSupport implements Serializable{
     @Override
     public String toString() {
         return "SmartDev{" +
-                "Uid='" + Uid + '\'' +
-                ", CtrUid='" + CtrUid + '\'' +
-                ", Type='" + Type + '\'' +
-                ", Status='" + Status + '\'' +
+                "Ver='" + Ver + '\'' +
                 ", Org='" + Org + '\'' +
-                ", Ver='" + Ver + '\'' +
+                ", Status='" + Status + '\'' +
+                ", Type='" + Type + '\'' +
+                ", CtrUid='" + CtrUid + '\'' +
+                ", Uid='" + Uid + '\'' +
+                ", roomname='" + room.getRoomName() + '\'' +
                 '}';
     }
 }

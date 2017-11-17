@@ -15,7 +15,6 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.PublicMethod;
-import deplink.com.smartwirelessrelay.homegenius.util.SharedPreference;
 
 
 /**
@@ -62,21 +61,18 @@ public class UdpThread {
     }
 
     public void wifiCheckHandler() {
-        GeneralPacket packet = null;
+        GeneralPacket packet;
         try {
             //发送一个局域网查询包
             packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"), AppConstant.UDP_CONNECT_PORT, mContext);
+            //查询设备，探测设备区别(这里探测设备就不需要发送查询的gson数据了)
+            packet.packCheckPacketWithUID();
+            Log.i(TAG, "wifiCheckHandler send udp packet");
+            udp.writeNet(packet);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        //查询设备，探测设备区别(这里探测设备就不需要发送查询的gson数据了)
-        packet.packCheckPacketWithUID();
-        //uid
-        SharedPreference sharedPreference = new SharedPreference(mContext, "uid");
-        String uid = sharedPreference.getString("uid");
-        //已收到uid
-        Log.i(TAG, "wifiCheckHandler send udp packet");
-        udp.writeNet(packet);
+
 
     }
 

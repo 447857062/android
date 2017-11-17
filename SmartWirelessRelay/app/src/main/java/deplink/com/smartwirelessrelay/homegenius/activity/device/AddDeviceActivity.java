@@ -77,13 +77,12 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener{
                     Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
                     Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + RoomManager.getInstance().getmRooms().get(position));
                     intent.putExtras(bundle);
-                    startActivityForResult(intent, REQUEST_MODIFY_DEVICE);
+                    startActivity(intent);
                 }
                 Toast.makeText(AddDeviceActivity.this, "onclick position=" + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    public static final int REQUEST_MODIFY_DEVICE = 100;
     private void initViews() {
         image_back= (ImageView) findViewById(R.id.image_back);
         mDragGridView = (DragGridView) findViewById(R.id.dragGridView);

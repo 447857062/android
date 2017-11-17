@@ -273,6 +273,11 @@ public class SmartLockManager implements LocalConnecteListener {
     }
 
     @Override
+    public void OnGetBindresult(String setResult) {
+
+    }
+
+    @Override
     public void wifiConnectUnReachable() {
 
     }

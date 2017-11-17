@@ -14,6 +14,9 @@ import android.widget.Toast;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 public class ManageRoomActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ManageRoomActivity";
@@ -49,6 +52,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
             textview_room_name.setText(mRoomName);
         }
         mRoomManager = RoomManager.getInstance();
+        mRoomManager.initRoomManager();
     }
 
     private void initEvents() {
@@ -80,13 +84,32 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
             case R.id.button_delete_room:
                 //TODO 删除房间
                 if (mRoomName != null) {
-                    int column = mRoomManager.deleteRoom(mRoomName);
-                    Log.i(TAG, "删除房间，影响的行数=" + column);
-                    if (column == 1) {
-                        finish();
-                    } else {
-                        Toast.makeText(this, "删除房间失败", Toast.LENGTH_SHORT).show();
-                    }
+                    mRoomManager.deleteRoom(mRoomName, new Observer() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+                        @Override
+                        public void onNext(@NonNull Object o) {
+                            Log.i(TAG, "删除房间，影响的行数=" + o);
+                            if ((Integer)o == 1) {
+                                finish();
+                            } else {
+                                Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
                 }
 
                 break;

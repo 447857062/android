@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 
 
@@ -112,7 +113,7 @@ public class BasicPacket {
      * 基础打包函数
      * udp探测包
      **/
-    public int packUdpDetectData(byte cmdId) {
+    public int packUdpDetectData() {
         int len = 0;
 
         data = new byte[AppConstant.BASICLEGTH];
@@ -127,7 +128,7 @@ public class BasicPacket {
         //协议次版本号
         data[len++] = 0x0;
         // 命令id
-        data[len++] = cmdId;
+        data[len++] = ComandID.DETEC_DEV;
         // 设备uid，必填
         String uid;
 
@@ -156,10 +157,8 @@ public class BasicPacket {
         data[len++] = 0x0;//结束符号
         //数据长度，命令内容长度 (2)debug-0x0,0x0
         byte[] temp;
-
         data[len++] = (byte) 0x0;
         data[len++] = (byte) 0x0;
-
         //检验值crc，8位，占位
         //计算crc校验，data数据全部赋值后再计算(先不校验xdata数据)
      /*   CRC32 c = new CRC32();
@@ -169,7 +168,6 @@ public class BasicPacket {
         len += 8;*/
         len += 4;
         //xdata数据
-
         Log.e(TAG, "打包数据长度data.length=" + data.length + "打包数据:" + DataExchange.byteArrayToHexString(data));
         return data.length;
     }

@@ -33,6 +33,10 @@ public interface LocalConnecteListener {
      * 获取设置结果
      */
     void OnGetSetresult(String setResult);
+    /**
+     * 绑定结果
+     */
+    void OnGetBindresult(String setResult);
 
     /**
      * WiFi连接不可用

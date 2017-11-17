@@ -133,6 +133,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     @Override
+    public void OnGetBindresult(String setResult) {
+
+    }
+
+    @Override
     public void wifiConnectUnReachable() {
 
     }

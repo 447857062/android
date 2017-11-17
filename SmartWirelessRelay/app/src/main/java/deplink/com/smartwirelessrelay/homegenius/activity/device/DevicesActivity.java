@@ -177,6 +177,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
             mHandler.sendMessage(msg);
         }
     }
+
+    @Override
+    public void responseBindDeviceResult(String result) {
+
+    }
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

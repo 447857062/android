@@ -23,6 +23,10 @@ public class UdpComm {
     private RecvThread recvThread = null;
     private boolean isRun = false;
 
+    public boolean isRun() {
+        return isRun;
+    }
+
     public UdpComm(OnRecvLocalConnectIpListener listener) {
         this.listener = listener;
     }
@@ -107,6 +111,7 @@ public class UdpComm {
             isRun = true;
             DatagramPacket packet = new DatagramPacket(data, 0, data.length);
             packet.setPort(AppConstant.UDP_CONNECT_PORT);
+            Log.i(TAG,"udp RecvThread 接收数据 run");
             while (isRun) {
                 try {
                     udp.receive(packet);

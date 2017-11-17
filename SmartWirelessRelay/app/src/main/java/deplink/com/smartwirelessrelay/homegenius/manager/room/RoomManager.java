@@ -5,13 +5,18 @@ import android.util.Log;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
 
 /**
  * Created by Administrator on 2017/11/13.
@@ -24,7 +29,10 @@ public class RoomManager {
     private static RoomManager instance;
     private SQLiteDatabase db;
     private List<Room> mRooms;
-
+    /**
+     * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
+     */
+    private ExecutorService cachedThreadPool;
     /**
      * 获取房间列表
      *
@@ -88,10 +96,8 @@ public class RoomManager {
      * 初始化本地连接管理器
      */
     public void initRoomManager() {
-        //生成数据库
-      /*  if (db == null) {
-            db = Connector.getDatabase();
-        }*/
+        cachedThreadPool = Executors.newCachedThreadPool();
+
 
     }
 
@@ -99,27 +105,12 @@ public class RoomManager {
      * 查询数据库获取房间列表
      */
     public List<Room> getDatabaseRooms() {
-        mRooms = DataSupport.findAll(Room.class);
+        mRooms = DataSupport.findAll(Room.class,true);
         if (mRooms.size() == 0) {
             Room temp = new Room();
             temp.setRoomName("客厅");
             temp.setRoomOrdinalNumber(0);
-            List<SmartDev>devices=new ArrayList<>();
-           /* SmartDev dev=new SmartDev();
-            dev.setType("mensuo");
-            dev.setDevUid("1234567890klj");
-            dev.save();
-            devices.add(dev);
-            dev.setType("woshikelijun");
-            dev.setDevUid("1234567890klj");
-            dev.save();
-            devices.add(dev);
-            dev.setType("1114");
-            dev.setDevUid("1234567890klj");
-            dev.save();
-            devices.add(dev);*/
-           /* temp.setmDevices(devices);
-            temp.save();*/
+
             mRooms.add(temp);
 
             temp = new Room();
@@ -164,7 +155,7 @@ public class RoomManager {
      * @return
      */
     public Room findRoom(String roomName,boolean queryRelativeTable) {
-        Room room = null;
+        Room room;
 
              room =DataSupport.where("roomName = ?", roomName).find(Room.class,queryRelativeTable).get(0);
 
@@ -172,16 +163,33 @@ public class RoomManager {
         Log.i(TAG,"根据名字查询房间,查到房间"+room.toString());
         return room;
     }
+
+
+    private Observable mObservable;
+
+
     /**
      * 根据房间名称
      * 删除房间
+     * 使用RXjava框架
      */
-    public int deleteRoom(String roomName) {
-        int optionResult;
-        optionResult = DataSupport.deleteAll(Room.class, "roomName = ? ", roomName);
-        getDatabaseRooms();
-        Log.i(TAG, "根据房间名称删除房间=" + optionResult);
-        return optionResult;
+    public void deleteRoom(final String roomName, final io.reactivex.Observer observer) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                 final int affectColumn = DataSupport.deleteAll(Room.class, "roomName = ? ", roomName);
+                mObservable=Observable.create(new ObservableOnSubscribe() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                        e.onNext(affectColumn);
+                    }
+                });
+                mObservable.subscribe(observer);
+                getDatabaseRooms();
+                Log.i(TAG, "根据房间名称删除房间=" +affectColumn);
+            }
+        });
     }
 
     /**
@@ -203,14 +211,29 @@ public class RoomManager {
      * @param roomName
      * @return
      */
-    public boolean addRoom(String roomName) {
-        Room temp = new Room();
-        temp.setRoomName(roomName);
+    public void addRoom(final String roomName, final Observer observer) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
 
-        temp.setRoomOrdinalNumber(mRooms.size() + 1);
-        boolean optionResult;
-        optionResult =  temp.save();
-        mRooms.add(temp);
-        return optionResult;
+                Room temp = new Room();
+                temp.setRoomName(roomName);
+
+                temp.setRoomOrdinalNumber(mRooms.size() + 1);
+                final boolean optionResult;
+                optionResult =  temp.save();
+                mRooms.add(temp);
+                mObservable=Observable.create(new ObservableOnSubscribe() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                        e.onNext(optionResult);
+                        e.onComplete();
+                    }
+                });
+                mObservable.subscribe(observer);
+                getDatabaseRooms();
+                Log.i(TAG, "添加房间=" +optionResult);
+            }
+        });
     }
 }

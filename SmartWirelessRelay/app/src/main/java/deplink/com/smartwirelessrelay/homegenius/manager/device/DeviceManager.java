@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
@@ -53,19 +54,23 @@ public class DeviceManager implements LocalConnecteListener {
         }
         return instance;
     }
-    private  List<DeviceListener> mDeviceListenerList;
+
+    private List<DeviceListener> mDeviceListenerList;
+
     public void addDeviceListener(DeviceListener listener) {
         if (listener != null && !mDeviceListenerList.contains(listener)) {
-            Log.i(TAG,"addDeviceListener="+listener.toString());
+            Log.i(TAG, "addDeviceListener=" + listener.toString());
             this.mDeviceListenerList.add(listener);
         }
     }
+
     public void removeDeviceListener(DeviceListener listener) {
         if (listener != null && mDeviceListenerList.contains(listener)) {
             this.mDeviceListenerList.remove(listener);
         }
 
     }
+
     /**
      * 查询设备列表
      */
@@ -91,7 +96,7 @@ public class DeviceManager implements LocalConnecteListener {
      */
     public void InitDeviceManager(Context context, DeviceListener listener) {
         this.mContext = context;
-        this.mDeviceListenerList=new ArrayList<>();
+        this.mDeviceListenerList = new ArrayList<>();
 
 
         if (mLocalConnectmanager == null) {
@@ -156,7 +161,7 @@ public class DeviceManager implements LocalConnecteListener {
     /**
      * 绑定网关，中继器
      */
-    public void bindDevice() {
+    public void bindDevice(String uid) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
@@ -164,7 +169,7 @@ public class DeviceManager implements LocalConnecteListener {
         //设备赋值
         Device dev = new Device();
         //调试  uid 77685180654101946200316696479888
-        dev.setUid("77685180654101946200316696479888");
+        dev.setUid(uid);
 
 
         devs.add(dev);
@@ -178,6 +183,25 @@ public class DeviceManager implements LocalConnecteListener {
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
+    }
+
+    /**
+     * 更新设备所在房间
+     */
+    public void updateDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                //保存所在的房间
+                //查询设备
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class);
+                //找到要更行的设备,设置关联的房间
+                smartDev.setRoom(room);
+                smartDev.setName(deviceName);
+                smartDev.save();
+            }
+        });
+
     }
 
     @Override
@@ -215,7 +239,7 @@ public class DeviceManager implements LocalConnecteListener {
             if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
                 handleNormalDeviceList(aDeviceList);
             }
-            for(int i=0;i<mDeviceListenerList.size();i++){
+            for (int i = 0; i < mDeviceListenerList.size(); i++) {
                 mDeviceListenerList.get(i).responseQueryResult(result);
             }
         }
@@ -278,29 +302,50 @@ public class DeviceManager implements LocalConnecteListener {
         }
     }
 
-    private void saveDeviceToSqlite(DeviceList aDeviceList, int i) {
-        Device dev = new Device();
-        dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
-        dev.setUid(aDeviceList.getDevice().get(i).getUid());
-        boolean success = dev.save();
-        Log.i(TAG, "保存设备=" + success);
+    private void saveDeviceToSqlite(final DeviceList aDeviceList, final int i) {
+
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Device dev = new Device();
+                dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
+                dev.setUid(aDeviceList.getDevice().get(i).getUid());
+                boolean success = dev.save();
+                Log.i(TAG, "保存设备=" + success);
+            }
+        });
+
     }
 
 
-    private void saveSmartDeviceToSqlite(DeviceList aDeviceList, int i) {
-        SmartDev dev = new SmartDev();
-        dev.setUid(deviceUid);
-        dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
-        dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
-        dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
-        dev.setType(aDeviceList.getSmartDev().get(i).getType());
-        boolean success = dev.save();
-        Log.i(TAG, "保存智能锁设备=" + success);
+    private void saveSmartDeviceToSqlite(final DeviceList aDeviceList, final int i) {
+
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                SmartDev dev = new SmartDev();
+                dev.setUid(deviceUid);
+                dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
+                dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
+                dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
+                dev.setType(aDeviceList.getSmartDev().get(i).getType());
+                boolean success = dev.save();
+                Log.i(TAG, "保存智能锁设备=" + success);
+            }
+        });
+
     }
 
     @Override
     public void OnGetSetresult(String setResult) {
 
+    }
+
+    @Override
+    public void OnGetBindresult(String result) {
+        for (int i = 0; i < mDeviceListenerList.size(); i++) {
+            mDeviceListenerList.get(i).responseBindDeviceResult(result);
+        }
     }
 
     @Override

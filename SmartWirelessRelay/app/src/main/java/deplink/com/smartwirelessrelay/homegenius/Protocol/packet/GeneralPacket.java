@@ -48,7 +48,7 @@ public class GeneralPacket extends BasicPacket {
      */
     public int packCheckPacketWithUID() {
 
-        return packUdpDetectData(ComandID.DETEC_DEV);
+        return packUdpDetectData();
     }
 
     /**

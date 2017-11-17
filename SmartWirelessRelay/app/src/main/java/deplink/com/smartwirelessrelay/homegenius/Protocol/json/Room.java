@@ -4,6 +4,7 @@ import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class Room extends DataSupport implements Serializable{
      */
     private int roomOrdinalNumber;
 
-    private List<SmartDev>mDevices;
+    private List<SmartDev>mDevices=new ArrayList<>();
 
     public String getRoomName() {
         return roomName;
@@ -55,7 +56,7 @@ public class Room extends DataSupport implements Serializable{
         return "Room{" +
                 "roomName='" + roomName + '\'' +
                 ", roomOrdinalNumber=" + roomOrdinalNumber +
-                ", mDevices=" + mDevices +
+                ", mDevices=" + mDevices.size()+
                 '}';
     }
 }

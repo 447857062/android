@@ -1,6 +1,7 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.room.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.DeviceNameTranslate;
  * 每个房间管理的设备
  */
 public class RoomDevicesListAdapter extends BaseAdapter{
+    private static  final String TAG="RoomDevicesListAdapter";
     private Context mContext;
     private List<SmartDev>mSmartDev;
     public RoomDevicesListAdapter(Context mContext, List<SmartDev>smartDev) {
@@ -42,7 +44,7 @@ public class RoomDevicesListAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder vh;
         if(convertView==null){
             vh=new ViewHolder();
@@ -54,11 +56,19 @@ public class RoomDevicesListAdapter extends BaseAdapter{
         }else{
             vh = (ViewHolder) convertView.getTag();
         }
-        String deviceName=mSmartDev.get(position).getCtrUid();
+        String deviceName=mSmartDev.get(position).getType();
         if(deviceName.equals("")){
             deviceName="未知";
         }
-        vh.textview_device_type.setText(DeviceNameTranslate.getDeviceTranslatedName(mSmartDev.get(position).getType()));
+        vh.textview_device_type.setText(DeviceNameTranslate.getDeviceTranslatedName(mSmartDev.get(position).getType())+":"+mSmartDev.get(position).getName());
+        vh.imageview_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG,"imageview_delete onclick");
+                mSmartDev.remove(position);
+                notifyDataSetChanged();
+            }
+        });
         return convertView;
     }
 

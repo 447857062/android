@@ -92,13 +92,11 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
 
     @Override
     public void onNetStatuChange(int netStatu) {
-        if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
+      if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
             //wifi连接不可用
             if (udpPacket != null) {
                 udpPacket.stop();
             }
-
-
         } else {
             //重新连接
             if (udpPacket != null) {

@@ -43,9 +43,9 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
  * 2.建立长连接后需要启动模拟心跳的线程.
  * 3.本地连接需要在udp广播后获取到连接ip地址后才能运行
  * 使用：
- mLocalConnectmanager=LocalConnectmanager.getInstance();
- mLocalConnectmanager.InitLocalConnectManager(this);
- mLocalConnectmanager.addLocalConnectListener(this);
+ * mLocalConnectmanager=LocalConnectmanager.getInstance();
+ * mLocalConnectmanager.InitLocalConnectManager(this);
+ * mLocalConnectmanager.addLocalConnectListener(this);
  */
 public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatuschangeListener, UdpManagerGetIPLintener {
 
@@ -54,7 +54,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * 这个类设计成单例
      */
     private static LocalConnectmanager instance;
-    private  List<LocalConnecteListener> mLocalConnecteListener;
+    private List<LocalConnecteListener> mLocalConnecteListener;
     private Context mContext;
     /**
      * 连接线程
@@ -80,6 +80,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      */
     private boolean handshakeCompleted;
     private int currentNetStatu;
+
     private LocalConnectmanager() {
     }
 
@@ -112,9 +113,10 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
 
     }
+
     public void addLocalConnectListener(LocalConnecteListener listener) {
         if (listener != null && !mLocalConnecteListener.contains(listener)) {
-            Log.i(TAG,"addLocalConnectListener="+listener.toString());
+            Log.i(TAG, "addLocalConnectListener=" + listener.toString());
             this.mLocalConnecteListener.add(listener);
         }
     }
@@ -123,7 +125,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * 初始化网络连接广播
      */
     private void initRegisterNetChangeReceive() {
-        if(mNetStatuChangeReceiver==null){
+        if (mNetStatuChangeReceiver == null) {
             mNetStatuChangeReceiver = new NetStatuChangeReceiver();
             mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
             IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
@@ -131,9 +133,11 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
 
     }
-    private void unRegisterNetChangeReceive(){
+
+    private void unRegisterNetChangeReceive() {
         mContext.unregisterReceiver(mNetStatuChangeReceiver);
     }
+
     /**
      * 初始化本地连接管理器
      */
@@ -226,7 +230,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 public void handshakeCompleted(HandshakeCompletedEvent event) {
                     Log.i(TAG, "ssl握手成功回调");
                     handshakeCompleted = true;
-                    for(int i=0;i<mLocalConnecteListener.size();i++){
+                    for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                         mLocalConnecteListener.get(i).handshakeCompleted();
                     }
 
@@ -237,17 +241,19 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
             Log.e(TAG, "创建sslsocket success" + address.toString());
             //TODO
-            GeneralPacket packet=new GeneralPacket(mContext);
-            packet.packBindUnbindAppPacket( "77685180654101946200316696479445",ComandID.CMD_BIND);
+            GeneralPacket packet = new GeneralPacket(mContext);
+            packet.packBindUnbindAppPacket("77685180654101946200316696479445", ComandID.CMD_BIND);
             getOut(packet.data);
 
-            while (currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
-                getIn();
+            while (!sslSocket.isClosed()) {
+                if(currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED){
+                    getIn();
+                }
             }
         } catch (Exception e) {
             //TODO 获取连接异常的ip地址
             handshakeCompleted = false;
-            for(int i=0;i<mLocalConnecteListener.size();i++){
+            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).createSocketFailed("连接网关:创建到" + ipAddress + "的连接失败");
             }
             e.printStackTrace();
@@ -265,7 +271,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     public int getOut(byte[] message) {
         if (sslSocket == null) {
             Log.i(TAG, "socket==null cannot send tcp ip message");
-            for(int i=0;i<mLocalConnecteListener.size();i++){
+            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
             }
             return -1;
@@ -279,10 +285,24 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             out.flush();
             out.close();
         } catch (IOException e) {
+            reConnectLoclNet();
             e.printStackTrace();
             return -1;
         }
         return 0;
+    }
+
+    /**
+     * 重新建立连接
+     */
+    private void reConnectLoclNet() {
+        resetSslSocket();
+        if (mContext != null && mLocalConnecteListener != null) {
+            if (mUdpmanager == null) {
+                mUdpmanager = UdpManager.getInstance();
+                mUdpmanager.InitUdpConnect(mContext, this);
+            }
+        }
     }
 
     /**
@@ -291,7 +311,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     public String getIn() {
         if (sslSocket == null) {
             Log.i(TAG, "getIn() socket==null cannot receive message");
-            for(int i=0;i<mLocalConnecteListener.size();i++){
+            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
             }
             return "";
@@ -310,7 +330,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 int cmd = DataExchange.bytesToInt(buf, 6, 1);
 
                 str = new String(buf, 0, len);
-                Log.i(TAG, "cmd=" + cmd+"length="+len);
+                Log.i(TAG, "cmd=" + cmd + "length=" + len);
                 System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
                 //数据长度,如果携带数据，数据的长度占2byte
                 byte[] lengthByte = new byte[2];
@@ -320,9 +340,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                     case ComandID.HEARTBEAT_RESPONSE:
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                        if(length>0){
+                        if (length > 0) {
                             str = new String(buf, AppConstant.BASICLEGTH, length);
-                            Log.i(TAG,"心跳数据="+str);
+                            Log.i(TAG, "心跳数据=" + str);
                             decodeAlarmRecord(str);
                         }
 
@@ -331,18 +351,18 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         byte[] uid = new byte[32];
                         System.arraycopy(buf, 7, uid, 0, 32);
                         str = new String(uid);
-                        for(int i=0;i<mLocalConnecteListener.size();i++){
+                        for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                             mLocalConnecteListener.get(i).OnGetUid(str);
                         }
                         break;
                     case ComandID.QUERY_DEV_RESPONSE:
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
-                        System.out.println("received:" + "length=" + length+"received devlist:" + str);
+                        System.out.println("received:" + "length=" + length + "received devlist:" + str);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
 
-                        for(int i=0;i<mLocalConnecteListener.size();i++){
-                            Log.i(TAG,"mLocalConnecteListener="+mLocalConnecteListener.get(i).toString());
+                        for (int i = 0; i < mLocalConnecteListener.size(); i++) {
+                            Log.i(TAG, "mLocalConnecteListener=" + mLocalConnecteListener.get(i).toString());
                             mLocalConnecteListener.get(i).OnGetQueryresult(str);
                         }
                         break;
@@ -350,20 +370,22 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
-                        Log.i(TAG,"received 设置结果:" + str + "length=" + length);
-                        for(int i=0;i<mLocalConnecteListener.size();i++){
+                        Log.i(TAG, "received 设置结果:" + str + "length=" + length);
+                        for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                             mLocalConnecteListener.get(i).OnGetSetresult(str);
                         }
                         break;
                     case ComandID.CMD_SEND_SMART_DEV_RESPONSE:
                         // 绑定网关（中继器） 回应:{ "OP": "REPORT", "Method": "SetDevList", "Result": 0 }
+                        //绑定设备回应当前所有已绑定的设备，自己对有没有绑定上
+                        //{ "OP": "REPORT", "Method": "DevList", "Device": [ { "Uid": "77685180654101946200316696479888", "Status": "lo" } ], "SmartDev": [ { "Uid": "00-12-4b-00-0b-26-c2-15", "Org": "ismart", "Type": "SMART_LOCK", "Ver": "1" } ] }
                         System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                         length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("绑定智能回应:" + str);
-                       /* for(int i=0;i<mLocalConnecteListener.size();i++){
-                            mLocalConnecteListener.get(i).OnGetSetresult(str);
-                        }*/
+                        for (int i = 0; i < mLocalConnecteListener.size(); i++) {
+                            mLocalConnecteListener.get(i).OnGetBindresult(str);
+                        }
                         break;
 
                 }
@@ -401,24 +423,25 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             }
         });
     }*/
+
     /**
      * 解析报警记录
+     *
      * @param str
      */
     private void decodeAlarmRecord(String str) {
-        Gson gson=new Gson();
-        ReportAlertRecord record=gson.fromJson(str, ReportAlertRecord.class);
-        if(record!=null){
-            String recode= record.getALARM_INFO().get(0).getINFO();
-            Log.i(TAG,"recode="+recode);
-            ReportAlertRecordReal mAlertRecordReal=gson.fromJson(recode, ReportAlertRecordReal.class);
-            List<LOCK_ALARM>alermList=mAlertRecordReal.getLOCK_ALARM();
-            for(int i=0;i<mLocalConnecteListener.size();i++){
+        Gson gson = new Gson();
+        ReportAlertRecord record = gson.fromJson(str, ReportAlertRecord.class);
+        if (record != null) {
+            String recode = record.getALARM_INFO().get(0).getINFO();
+            Log.i(TAG, "recode=" + recode);
+            ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
+            List<LOCK_ALARM> alermList = mAlertRecordReal.getLOCK_ALARM();
+            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
             }
         }
     }
-
 
 
     //接收回调数据区域
@@ -431,7 +454,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         currentNetStatu = netStatu;
         if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
             //TODO wifi连接不可用
-            for(int i=0;i<mLocalConnecteListener.size();i++){
+            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).wifiConnectUnReachable();
             }
             if (mUdpmanager != null) {
