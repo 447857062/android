@@ -4,19 +4,103 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity">
-    <TextView
-        android:id="@+id/textview_title"
+
+    <RelativeLayout
+        android:id="@+id/layout_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="首页"
-        android:textColor="@android:color/white"
-        android:textSize="15dp" />
+        android:layout_height="260dp"
+        android:background="@android:color/holo_blue_light">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+
+                android:gravity="center_horizontal|center_vertical"
+                android:text="首页"
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/imageview_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_launcher" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <!--水平滚动的房间-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/layout_top_bar">
+
+        <RelativeLayout
+            android:id="@+id/layout_room_top"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <ImageView
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/imageview_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:text="房间"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/textview_room"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/imageview_room" />
+
+            <ImageView
+                android:src="@mipmap/ic_launcher"
+                android:id="@+id/imageview_arror_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <HorizontalScrollView
+            android:layout_below="@+id/layout_room_top"
+            android:layout_width="match_parent"
+            android:scrollbars="none"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+
+          <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp">
+
+                <GridView
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:numColumns="auto_fit"
+                    android:stretchMode="spacingWidthUniform"></GridView>
+          </LinearLayout>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
     <LinearLayout
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:weightSum="4">
 

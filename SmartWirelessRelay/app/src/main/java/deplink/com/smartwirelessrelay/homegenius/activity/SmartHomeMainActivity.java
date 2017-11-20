@@ -3,33 +3,47 @@ package deplink.com.smartwirelessrelay.homegenius.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
  * 智能家居主页
  */
-public class SmartHomeMainActivity extends Activity implements View.OnClickListener,LocalConnecteListener{
-    private static final String TAG="SmartHomeMainActivity";
+public class SmartHomeMainActivity extends Activity implements View.OnClickListener, LocalConnecteListener {
+    private static final String TAG = "SmartHomeMainActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
 
     private LocalConnectmanager mLocalConnectmanager;
+    private ImageView imageview_setting;
+
+    private List<Room> mRoomList = new ArrayList<>();
+    private HomepageGridViewAdapter mAdapter;
+    GridView gridView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +53,46 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initEvents();
     }
 
+    private RoomManager mRoomManager;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mRoomList.clear();
+        mRoomList.addAll(mRoomManager.getDatabaseRooms());
+        int size = mRoomList.size();
+        int length = 100;
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        float density = dm.density;
+        int gridviewWidth = (int) (size * (length + 4) * density);
+        int itemWidth = (int) (length * density);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
+        gridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
+        gridView.setColumnWidth(itemWidth); // 设置列表项宽
+        gridView.setHorizontalSpacing(5); // 设置列表项水平间距
+        gridView.setStretchMode(GridView.NO_STRETCH);
+        gridView.setNumColumns(size); // 设置列数量=列表集合数
+        gridView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void initDatas() {
-        mLocalConnectmanager=LocalConnectmanager.getInstance();
-        mLocalConnectmanager.InitLocalConnectManager(this);
-        Log.i(TAG,"initDatas addLocalConnectListener");
-        mLocalConnectmanager.addLocalConnectListener(this);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager = LocalConnectmanager.getInstance();
+                mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this);
+                mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
+                mRoomManager = RoomManager.getInstance();
+                mRoomManager.initRoomManager();
+                mAdapter=new HomepageGridViewAdapter(SmartHomeMainActivity.this,mRoomList);
+            }
+        });
+
     }
 
     private void initEvents() {
@@ -52,25 +101,44 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
+        imageview_setting.setOnClickListener(this);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putString("roomName", RoomManager.getInstance().getmRooms().get(position).getRoomName());
+                bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
+                Intent intent = new Intent(SmartHomeMainActivity.this, ManageRoomActivity.class);
+                Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + RoomManager.getInstance().getmRooms().get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void initViews() {
-        layout_home_page= (LinearLayout) findViewById(R.id.layout_home_page);
-        layout_devices= (LinearLayout) findViewById(R.id.layout_devices);
-        layout_rooms= (LinearLayout) findViewById(R.id.layout_rooms);
-        layout_personal_center= (LinearLayout) findViewById(R.id.layout_personal_center);
+        layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);
+        layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
+        layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
+        layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
+        imageview_setting = (ImageView) findViewById(R.id.imageview_setting);
+        gridView = (GridView) findViewById(R.id.grid);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mLocalConnectmanager.removeLocalConnectListener(this);
+        mRoomManager.updateRoomsOrdinalNumber();
     }
 
     /**
      * 再按一次退出应用
      */
     private long exitTime = 0;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -84,20 +152,24 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.layout_home_page:
 
                 break;
+            case R.id.imageview_setting:
+                startActivity(new Intent(SmartHomeMainActivity.this, HomePageSettingActivity.class));
+                break;
             case R.id.layout_devices:
-                startActivity(new Intent(this,DevicesActivity.class));
+                startActivity(new Intent(this, DevicesActivity.class));
                 break;
             case R.id.layout_rooms:
-                startActivity(new Intent(this,RoomActivity.class));
+                startActivity(new Intent(this, RoomActivity.class));
                 break;
             case R.id.layout_personal_center:
-                startActivity(new Intent(this,PersonalCenterActivity.class));
+                startActivity(new Intent(this, PersonalCenterActivity.class));
                 break;
         }
     }
@@ -124,7 +196,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     @Override
     public void OnGetQueryresult(String devList) {
-        Log.i(TAG,"OnGetQueryresult");
+        Log.i(TAG, "OnGetQueryresult");
     }
 
     @Override

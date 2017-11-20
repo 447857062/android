@@ -23,6 +23,7 @@
         android:layout_height="40dp" />
     <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
         android:layout_below="@+id/textview_option_explan"
+        android:layout_above="@+id/layout_button_bar"
         android:id="@+id/dragGridView"
         android:listSelector="@android:color/transparent"
         android:layout_width="match_parent"
@@ -35,6 +36,7 @@
         android:numColumns="3" >
     </deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView>
     <LinearLayout
+        android:id="@+id/layout_button_bar"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

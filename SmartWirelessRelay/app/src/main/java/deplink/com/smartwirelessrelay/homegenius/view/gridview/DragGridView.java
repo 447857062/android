@@ -140,8 +140,9 @@ public class DragGridView extends GridView{
 		public void run() {
 			isDrag = true; //设置可以拖拽
 			mVibrator.vibrate(50); //震动一下
-			mStartDragItemView.setVisibility(View.INVISIBLE);//隐藏该item
-
+			if(mStartDragItemView!=null){
+				mStartDragItemView.setVisibility(View.INVISIBLE);//隐藏该item
+			}
 			//根据我们按下的点显示item镜像
 			createDragImage(mDragBitmap, mDownX, mDownY);
 		}
@@ -214,7 +215,7 @@ public class DragGridView extends GridView{
 			int moveY = (int) ev.getY();
 
 			//如果我们在按下的item上面移动，只要不超过item的边界我们就不移除mRunnable
-			if(!isTouchInItem(mStartDragItemView, moveX, moveY)){
+			if(mStartDragItemView!=null && !isTouchInItem(mStartDragItemView, moveX, moveY)){
 				mHandler.removeCallbacks(mLongClickRunnable);
 			}
 			break;

@@ -48,11 +48,8 @@ public class DeviceManager implements LocalConnecteListener {
     private LocalConnectmanager mLocalConnectmanager;
     private GeneralPacket packet;
     private Context mContext;
-    /**
-     * 智能设备识别码DevUid
-     */
-    private String deviceUid;
-
+    private List<SmartDev>mSmartDevList;
+    private SmartDev currentSelectSmartDevice;
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
             instance = new DeviceManager();
@@ -114,23 +111,9 @@ public class DeviceManager implements LocalConnecteListener {
         packet = new GeneralPacket(mContext);
         cachedThreadPool = Executors.newCachedThreadPool();
         addDeviceListener(listener);
-        //TODO
-       /* List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
-        //当前只有一个智能锁
-        if (smartDevs.size() > 0) {
-            smartUid = smartDevs.get(0).getDevUid();
-        }
-            //TODO 创建一个初始化的报警记录
-        if (mSmartLock == null) {
-            mSmartLock = DataSupport.findFirst(SmartLock.class, true);
-            if (mSmartLock == null) {
-                mSmartLock = new SmartLock();
-                mSmartLock.setDevUid(smartUid);
-                mSmartLock.save();
-            }
-        }
-        */
-
+        mSmartDevList=new ArrayList<>();
+        mSmartDevList.clear();
+        mSmartDevList.addAll(DataSupport.findAll(SmartDev.class));
     }
 
     /**
@@ -182,6 +165,7 @@ public class DeviceManager implements LocalConnecteListener {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
+        queryCmd.setTimestamp();
         List<SmartDev> devs = new ArrayList<>();
         //设备赋值
         SmartDev dev = new SmartDev();
@@ -210,13 +194,12 @@ public class DeviceManager implements LocalConnecteListener {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
+        queryCmd.setTimestamp();
         List<Device> devs = new ArrayList<>();
         //设备赋值
         Device dev = new Device();
         //调试  uid 77685180654101946200316696479888
         dev.setUid(uid);
-
-
         devs.add(dev);
         queryCmd.setDevice(devs);
         Gson gson = new Gson();
@@ -230,6 +213,44 @@ public class DeviceManager implements LocalConnecteListener {
         });
     }
 
+
+
+    public SmartDev getCurrentSelectSmartDevice() {
+        return currentSelectSmartDevice;
+    }
+
+    public void setCurrentSelectSmartDevice(SmartDev currentSelectSmartDevice) {
+        this.currentSelectSmartDevice = currentSelectSmartDevice;
+    }
+
+    /**
+     * 解除绑定
+     * 解除绑定后根据返回结果更新数据库
+     */
+    public void deleteDevice() {
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("DELETE");
+        queryCmd.setMethod("DevList");
+        queryCmd.setTimestamp();
+        List<SmartDev> devs = new ArrayList<>();
+        //设备赋值
+        SmartDev dev = new SmartDev();
+        dev.setUid(currentSelectSmartDevice.getUid());
+        dev.setOrg(currentSelectSmartDevice.getOrg());
+        dev.setType(currentSelectSmartDevice.getType());
+        dev.setVer(currentSelectSmartDevice.getVer());
+        devs.add(dev);
+        queryCmd.setSmartDev(devs);
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        packet.packSendSmartDevsData(text.getBytes());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }
     /**
      * 更新设备所在房间
      */
@@ -280,6 +301,8 @@ public class DeviceManager implements LocalConnecteListener {
             Gson gson = new Gson();
             DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
             if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
+                mSmartDevList.clear();
+                mSmartDevList.addAll(DataSupport.findAll(SmartDev.class));
                 handleSmartDeviceList(aDeviceList);
             }
             //存储设备列表
@@ -304,16 +327,10 @@ public class DeviceManager implements LocalConnecteListener {
             Log.i(TAG, "智能设备type=" + aDeviceList.getSmartDev().get(i).getType());
             switch (aDeviceList.getSmartDev().get(i).getType()) {
                 case "SMART_LOCK":
-                    deviceUid = aDeviceList.getSmartDev().get(i).getUid();
-                    Log.i(TAG, "查询智能设备smartUid=" + deviceUid);
                     //查询数据库
                     List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
                     //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
                     Log.i(TAG, "查询智能设备smartDevs=" + smartDevs.size());
-                    //保存智能锁的devUid
-                    //TODO
-                  /*  mSmartLock.setDevUid(deviceUid);
-                    mSmartLock.save();*/
                     if (smartDevs.size() > 0) {
                         for (int devindex = 0; devindex < smartDevs.size(); devindex++) {
                             if (!smartDevs.get(devindex).getUid().equals(aDeviceList.getSmartDev().get(i).getUid())) {
@@ -371,7 +388,7 @@ public class DeviceManager implements LocalConnecteListener {
             @Override
             public void run() {
                 SmartDev dev = new SmartDev();
-                dev.setUid(deviceUid);
+                dev.setUid(aDeviceList.getSmartDev().get(i).getUid());
                 dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
                 dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());

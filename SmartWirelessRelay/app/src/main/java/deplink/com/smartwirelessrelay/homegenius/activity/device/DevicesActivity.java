@@ -82,10 +82,16 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
 
 
     private void initDatas() {
-        mSmartLockManager=SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this);
-        mDeviceManager=DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this,this);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSmartLockManager=SmartLockManager.getInstance();
+                mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
+                mDeviceManager=DeviceManager.getInstance();
+                mDeviceManager.InitDeviceManager(DevicesActivity.this,DevicesActivity.this);
+            }
+        });
+
         datasTop=new ArrayList<>();
         datasBottom=new ArrayList<>();
         //使用数据库中的数据
@@ -101,6 +107,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
                         //智能设备
                        String deviceType= datasBottom.get(position - datasTop.size()).getType();
                         Log.i(TAG,"智能设备类型="+deviceType);
+                        mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                         switch (deviceType){
                             case "SMART_LOCK":
                                 startActivity(new Intent(DevicesActivity.this,SmartLockActivity.class));
@@ -194,11 +201,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
             super.handleMessage(msg);
             String str = (String) msg.obj;
             switch (msg.what) {
-
                 case MSG_GET_DEVS:
                     Gson gson = new Gson();
                     DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
-
                     try {
                         datasTop.clear();
                         datasTop.addAll(aDeviceList.getDevice());

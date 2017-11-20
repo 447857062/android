@@ -124,7 +124,6 @@ public class RoomActivity extends Activity implements View.OnClickListener {
                     intent.putExtras(bundle);
                     startActivityForResult(intent, REQUEST_MODIFY_ROOM);
                 }
-                Toast.makeText(RoomActivity.this, "onclick position=" + position, Toast.LENGTH_SHORT).show();
             }
         });
     }

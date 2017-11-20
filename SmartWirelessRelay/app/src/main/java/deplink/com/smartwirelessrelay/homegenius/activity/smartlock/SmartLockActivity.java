@@ -8,6 +8,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
@@ -28,10 +29,9 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private Button button_no_save_password;
     private Button button_authorise;
     private Button button_open;
-
     private SmartLockManager mSmartLockManager;
     private AuthoriseDialog mAuthoriseDialog;
-
+    private TextView textview_update;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +96,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         button_no_save_password.setOnClickListener(this);
         button_authorise.setOnClickListener(this);
         button_open.setOnClickListener(this);
+        textview_update.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -104,6 +105,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         button_no_save_password = (Button) findViewById(R.id.button_no_save_password);
         button_authorise = (Button) findViewById(R.id.button_authorise);
         button_open = (Button) findViewById(R.id.button_open);
+        textview_update = (TextView) findViewById(R.id.textview_update);
     }
 
 
@@ -112,6 +114,9 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.button_alert_record:
                 startActivity(new Intent(this, AlarmHistoryActivity.class));
+                break;
+            case R.id.textview_update:
+                startActivity(new Intent(this, EditSmartLockActivity.class));
                 break;
             case R.id.button_open_lock_record:
                 startActivity(new Intent(SmartLockActivity.this, LockHistoryActivity.class));

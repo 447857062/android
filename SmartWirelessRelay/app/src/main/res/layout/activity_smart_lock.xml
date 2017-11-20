@@ -24,14 +24,16 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="智能门锁"
+            android:layout_centerVertical="true"
             android:textColor="@android:color/white" />
 
         <TextView
-            android:id="@+id/textview_clear_config"
+            android:id="@+id/textview_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="清除配置"
+            android:layout_centerVertical="true"
+            android:text="编辑"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
