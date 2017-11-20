@@ -333,7 +333,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
         if (sslSocket.isClosed()) {
             Log.i(TAG, "getIn() sslSocket.isClosed");
-            return "";
+            return "sslSocket.isClosed";
         }
         String str = null;
         try {
@@ -343,7 +343,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             if (len != -1) {
                 //读取cmd参数
                 int cmd = DataExchange.bytesToInt(buf, 6, 1);
-
                 str = new String(buf, 0, len);
                 Log.i(TAG, "cmd=" + cmd + "length=" + len);
                 System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
@@ -351,10 +350,11 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                 byte[] lengthByte = new byte[2];
                 //数据长度int表示
                 int length;
+                System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                length = DataExchange.bytesToInt(lengthByte, 0, 2);
+
                 switch (cmd) {
                     case ComandID.HEARTBEAT_RESPONSE:
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         if (length > 0) {
                             str = new String(buf, AppConstant.BASICLEGTH, length);
                             Log.i(TAG, "心跳数据=" + str);
@@ -363,8 +363,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
 
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                             Log.i(TAG,"绑定结果="+str);
@@ -372,8 +370,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         }
                         break;
                     case ComandID.QUERY_DEV_RESPONSE:
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         System.out.println("received:" + "length=" + length + "received devlist:" + str);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
 
@@ -383,8 +379,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         }
                         break;
                     case ComandID.SET_CMD_RESPONSE:
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         Log.i(TAG, "received 设置结果:" + str + "length=" + length);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -395,8 +389,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         // 绑定网关（中继器） 回应:{ "OP": "REPORT", "Method": "SetDevList", "Result": 0 }
                         //绑定设备回应当前所有已绑定的设备，自己对有没有绑定上
                         //{ "OP": "REPORT", "Method": "DevList", "Device": [ { "Uid": "77685180654101946200316696479888", "Status": "lo" } ], "SmartDev": [ { "Uid": "00-12-4b-00-0b-26-c2-15", "Org": "ismart", "Type": "SMART_LOCK", "Ver": "1" } ] }
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("绑定智能回应:" + str);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -404,8 +396,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         }
                         break;
                     case ComandID.CMD_DEV_SCAN_WIFI_ACK:
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("查询wifi列表回应:" + str);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -413,13 +403,11 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         }
                         break;
                     case ComandID.CMD_DEV_SET_WIFI_ACK:
-                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
-                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("设置中继上网返回:" + str);
                         //设置中继上网返回:{ "OP": "REPORT", "Method": "WIFI", "Result": 0 }
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                          //  mLocalConnecteListener.get(i).getWifiList(str);
+                            mLocalConnecteListener.get(i).onSetWifiRelayResult(str);
                         }
                         break;
 

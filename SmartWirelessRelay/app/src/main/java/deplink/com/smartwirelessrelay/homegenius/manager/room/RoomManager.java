@@ -82,14 +82,20 @@ public class RoomManager {
 
     /**
      * 更新房间的排列顺序
+     * 拖动排序的表格布局中，如果拖动了就要使用这个方法，重新为gridview按照设备的序号排列一下
      */
     public void updateRoomsOrdinalNumber() {
-       long time=System.currentTimeMillis();
-        for (int i = 0; i < mRooms.size(); i++) {
-            mRooms.get(i).setRoomOrdinalNumber(i);
-            mRooms.get(i).save();
-        };
-        Log.i(TAG,"耗时="+(System.currentTimeMillis()-time));
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < mRooms.size(); i++) {
+                    mRooms.get(i).setRoomOrdinalNumber(i);
+                    mRooms.get(i).save();
+                };
+            }
+        });
+
+
     }
 
     /**
@@ -97,8 +103,6 @@ public class RoomManager {
      */
     public void initRoomManager() {
         cachedThreadPool = Executors.newCachedThreadPool();
-
-
     }
 
     /**
@@ -155,19 +159,11 @@ public class RoomManager {
      * @return
      */
     public Room findRoom(String roomName,boolean queryRelativeTable) {
-        Room room;
-
-             room =DataSupport.where("roomName = ?", roomName).find(Room.class,queryRelativeTable).get(0);
-
-
+        Room room =DataSupport.where("roomName = ?", roomName).find(Room.class,queryRelativeTable).get(0);
         Log.i(TAG,"根据名字查询房间,查到房间"+room.toString());
         return room;
     }
-
-
     private Observable mObservable;
-
-
     /**
      * 根据房间名称
      * 删除房间
@@ -177,8 +173,7 @@ public class RoomManager {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-
-                 final int affectColumn = DataSupport.deleteAll(Room.class, "roomName = ? ", roomName);
+                final int affectColumn = DataSupport.deleteAll(Room.class, "roomName = ? ", roomName);
                 mObservable=Observable.create(new ObservableOnSubscribe() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter e) throws Exception {
@@ -215,7 +210,6 @@ public class RoomManager {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-
                 Room temp = new Room();
                 temp.setRoomName(roomName);
 

@@ -3,7 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock;
 import java.util.ArrayList;
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 
 /**

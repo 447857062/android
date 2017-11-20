@@ -20,5 +20,6 @@ public interface DeviceListener {
      *返回wifi列表
      */
     void responseWifiListResult(List<SSIDList>wifiList);
+    void responseSetWifirelayResult(int result);
 
 }

@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -23,15 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
-import deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.activity.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
@@ -126,20 +125,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
     }
-    /**
-     * 再按一次退出应用
-     */
-    private long exitTime = 0;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            if ((System.currentTimeMillis() - exitTime) > 2000) {
-                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-                exitTime = System.currentTimeMillis();
-            } else {
-                AppManager.getAppManager().finishAllActivity();
-            }
-            return true;
+
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -195,6 +184,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
 
     }
 
+    @Override
+    public void responseSetWifirelayResult(int result) {
+
+    }
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -212,7 +206,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
                         mDeviceAdapter.setTopList(datasTop);
                         mDeviceAdapter.setBottomList(datasBottom);
                         mDeviceAdapter.notifyDataSetChanged();
-                        Log.i(TAG, "mDeviceList.getDevice().size=" + aDeviceList.getDevice().size());
                     } catch (Exception e) {
                         //TODO
                         e.printStackTrace();

@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.OpResult;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SmartLock;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
@@ -227,44 +227,46 @@ public class SmartLockManager implements LocalConnecteListener {
     public void OnGetSetresult(String setResult) {
         Gson gson = new Gson();
         OpResult result = gson.fromJson(setResult, OpResult.class);
-        switch (result.getCmd()) {
-            case SmartLockConstant.CMD.OPEN:
-                switch (result.getResult()) {
-                    case SmartLockConstant.OPENLOCK.TIMEOUT:
-                        setResult = "超时";
-                        break;
-                    case SmartLockConstant.OPENLOCK.SUCCESS:
-                        setResult = "成功";
-                        break;
-                    case SmartLockConstant.OPENLOCK.PASSWORDERROR:
-                        setResult = "密码错误";
-                        break;
-                    case SmartLockConstant.OPENLOCK.FAIL:
-                        setResult = "失败";
-                        break;
-                }
-                break;
-            case SmartLockConstant.CMD.ONCE:
-            case SmartLockConstant.CMD.PERMANENT:
-            case SmartLockConstant.CMD.TIMELIMIT:
-                switch (result.getResult()) {
-                    case SmartLockConstant.AUTH.TIMEOUT:
-                        setResult = "超时";
-                        break;
-                    case SmartLockConstant.AUTH.SUCCESS:
-                        setResult = "成功";
-                        break;
-                    case SmartLockConstant.AUTH.PASSWORDERROR:
-                        setResult = "密码错误";
-                        break;
-                    case SmartLockConstant.AUTH.FAIL:
-                        setResult = "失败";
-                        break;
-                    case SmartLockConstant.AUTH.FORBADE:
-                        setResult = "禁止";
-                        break;
-                }
-                break;
+        if(result.getOP().equals("REPORT")&& result.getMethod().equals("SmartLock")){
+            switch (result.getCmd()) {
+                case SmartLockConstant.CMD.OPEN:
+                    switch (result.getResult()) {
+                        case SmartLockConstant.OPENLOCK.TIMEOUT:
+                            setResult = "超时";
+                            break;
+                        case SmartLockConstant.OPENLOCK.SUCCESS:
+                            setResult = "成功";
+                            break;
+                        case SmartLockConstant.OPENLOCK.PASSWORDERROR:
+                            setResult = "密码错误";
+                            break;
+                        case SmartLockConstant.OPENLOCK.FAIL:
+                            setResult = "失败";
+                            break;
+                    }
+                    break;
+                case SmartLockConstant.CMD.ONCE:
+                case SmartLockConstant.CMD.PERMANENT:
+                case SmartLockConstant.CMD.TIMELIMIT:
+                    switch (result.getResult()) {
+                        case SmartLockConstant.AUTH.TIMEOUT:
+                            setResult = "超时";
+                            break;
+                        case SmartLockConstant.AUTH.SUCCESS:
+                            setResult = "成功";
+                            break;
+                        case SmartLockConstant.AUTH.PASSWORDERROR:
+                            setResult = "密码错误";
+                            break;
+                        case SmartLockConstant.AUTH.FAIL:
+                            setResult = "失败";
+                            break;
+                        case SmartLockConstant.AUTH.FORBADE:
+                            setResult = "禁止";
+                            break;
+                    }
+                    break;
+            }
         }
         Log.i(TAG,"设置结果="+setResult);
         for(int i=0;i<mSmartLockListenerList.size();i++){
@@ -284,6 +286,11 @@ public class SmartLockManager implements LocalConnecteListener {
 
     @Override
     public void getWifiList(String result) {
+
+    }
+
+    @Override
+    public void onSetWifiRelayResult(String result) {
 
     }
 

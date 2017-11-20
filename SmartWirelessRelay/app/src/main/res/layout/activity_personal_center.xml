@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity">
 
     <TextView
         android:id="@+id/textview_title"

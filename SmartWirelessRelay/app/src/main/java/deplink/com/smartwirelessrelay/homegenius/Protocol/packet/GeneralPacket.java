@@ -11,46 +11,34 @@ import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
  */
 
 public class GeneralPacket extends BasicPacket {
-
-
     public GeneralPacket(InetAddress ip, int port, Context context) {
         super(context, ip, port);
     }
-
     public GeneralPacket(Context context) {
         super(context);
     }
-
     /**
      * 绑定设备
      * @return
      */
     public int packBindUnbindAppPacket(String uid, byte cmdID,byte[]xdata) {
-
         return packBindData(uid,cmdID,xdata);
-
     }
-
     /**
      * 打包心跳包
      * @return
      */
     public int packHeathPacket() {
-
         return packData( null, ComandID.HEARTBEAT);
-
     }
-
     /**
      * 发送广播包,探测设备
      * ip 255.255.255.255
      * @return
      */
     public int packCheckPacketWithUID() {
-
         return packUdpDetectData();
     }
-
     /**
      * 查询设备列表
      * @return

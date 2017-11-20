@@ -46,6 +46,7 @@ public interface LocalConnecteListener {
      * 查询到wifi列表
      */
     void getWifiList(String result);
+    void onSetWifiRelayResult(String result);
     /**
      * 获取报警记录
      */

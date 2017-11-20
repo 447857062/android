@@ -3,6 +3,9 @@ package deplink.com.smartwirelessrelay.homegenius.Protocol.json;
 import java.io.Serializable;
 import java.util.List;
 
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+
 /**
  * Created by Administrator on 2017/10/30.
  */
@@ -16,7 +19,7 @@ public class QueryOptions implements Serializable {
     private String LimitedTime;
     private String Result;
     private List<SmartDev>SmartDev;
-    private List<Device> Device;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device> Device;
     private long timestamp;
     private String  AuthId;
     public String getResult() {
@@ -39,11 +42,11 @@ public class QueryOptions implements Serializable {
         AuthId = authId;
     }
 
-    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev> getSmartDev() {
+    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev> getSmartDev() {
         return SmartDev;
     }
 
-    public void setSmartDev(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev> smartDev) {
+    public void setSmartDev(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev> smartDev) {
         SmartDev = smartDev;
     }
 

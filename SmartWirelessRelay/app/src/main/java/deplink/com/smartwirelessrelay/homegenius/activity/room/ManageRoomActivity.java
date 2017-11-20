@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.activity.SmartGetwayActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;

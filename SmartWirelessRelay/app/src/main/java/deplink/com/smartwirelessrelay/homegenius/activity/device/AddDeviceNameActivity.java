@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
@@ -139,6 +139,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
     @Override
     public void responseWifiListResult(List<SSIDList> wifiList) {
+
+    }
+
+    @Override
+    public void responseSetWifirelayResult(int result) {
 
     }
 

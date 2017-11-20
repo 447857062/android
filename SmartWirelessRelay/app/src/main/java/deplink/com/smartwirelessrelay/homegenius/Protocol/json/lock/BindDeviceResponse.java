@@ -3,8 +3,8 @@ package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock;
 import java.io.Serializable;
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -46,13 +46,4 @@ public class BindDeviceResponse implements Serializable {
         Method = method;
     }
 
-    @Override
-    public String toString() {
-        return "DeviceList{" +
-                "OP='" + OP + '\'' +
-                ", Method='" + Method + '\'' +
-                ", Device=" + Device +
-                ", SmartDev=" + SmartDev +
-                '}';
-    }
 }
