@@ -78,7 +78,7 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
         }
 
     }
-
+    //TODO 添加网络状态，连接状态反馈
     private void unRegisterNetChangeReceive() {
         mContext.unregisterReceiver(mNetStatuChangeReceiver);
     }

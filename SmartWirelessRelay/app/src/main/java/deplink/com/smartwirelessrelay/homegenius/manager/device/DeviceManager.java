@@ -17,8 +17,13 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.QueryWifiList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.QueryWifiListResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.Proto;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.WifiRelaySet;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
@@ -79,6 +84,7 @@ public class DeviceManager implements LocalConnecteListener {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("QUERY");
         queryCmd.setMethod("DevList");
+        queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         packet.packQueryDevListData(text.getBytes());
@@ -127,6 +133,45 @@ public class DeviceManager implements LocalConnecteListener {
 
     }
 
+    /**
+     * 查询wifi列表
+     * 返回:{ "OP": "REPORT", "Method": "WIFIRELAY", "SSIDList": [ ] }
+     */
+    public void queryWifiList() {
+        QueryWifiList query=new QueryWifiList();
+        query.setTimestamp();
+        Gson gson = new Gson();
+        String text = gson.toJson(query);
+        packet.packQueryWifiListData(text.getBytes());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }
+
+    /**
+     * 中继连接
+     */
+    public void setWifiRelay(AP_CLIENT paramas){
+
+        WifiRelaySet setCmd=new WifiRelaySet();
+        setCmd.setTimestamp();
+        Proto proto=new Proto() ;
+        proto.setAP_CLIENT(paramas);
+        setCmd.setProto(proto);
+        Gson gson = new Gson();
+        String text = gson.toJson(setCmd);
+        //
+        packet.packSetWifiListData(text.getBytes());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }
     /**
      * 绑定智能设备列表
      * {"org":"ismart","tp":"SMART_LOCK","ad":"00-12-4b-00-0b-26-c2-15","ver":"1"}
@@ -196,7 +241,9 @@ public class DeviceManager implements LocalConnecteListener {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class);
                 //找到要更行的设备,设置关联的房间
-                smartDev.setRoom(room);
+                List<Room>roomList=new ArrayList<Room>();
+                roomList.add(room);
+                smartDev.setRoomList(roomList);
                 smartDev.setName(deviceName);
                 smartDev.save();
             }
@@ -220,7 +267,7 @@ public class DeviceManager implements LocalConnecteListener {
     }
 
     @Override
-    public void OnGetUid(String uid) {
+    public void OnBindAppResult(String uid) {
 
     }
 
@@ -351,6 +398,15 @@ public class DeviceManager implements LocalConnecteListener {
     @Override
     public void wifiConnectUnReachable() {
 
+    }
+
+    @Override
+    public void getWifiList(String result) {
+        Gson gson=new Gson();
+        QueryWifiListResult wifiList=gson.fromJson(result, QueryWifiListResult.class);
+        for (int i = 0; i < mDeviceListenerList.size(); i++) {
+            mDeviceListenerList.get(i).responseWifiListResult(wifiList.getSSIDList());
+        }
     }
 
     @Override

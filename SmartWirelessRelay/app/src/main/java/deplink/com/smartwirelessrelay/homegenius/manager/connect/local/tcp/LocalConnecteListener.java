@@ -24,7 +24,7 @@ public interface LocalConnecteListener {
     /**
      * 获取uid
      */
-    void OnGetUid(String uid);
+    void OnBindAppResult(String uid);
     /**
      * 获取查询结果
      */
@@ -42,6 +42,10 @@ public interface LocalConnecteListener {
      * WiFi连接不可用
      */
     void wifiConnectUnReachable();
+    /**
+     * 查询到wifi列表
+     */
+    void getWifiList(String result);
     /**
      * 获取报警记录
      */

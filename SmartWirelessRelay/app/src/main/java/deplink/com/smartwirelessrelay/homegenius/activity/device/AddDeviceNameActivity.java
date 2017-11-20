@@ -12,9 +12,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
@@ -81,7 +84,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 case MSG_ADD_DEVICE_RESULT:
                     boolean success = (boolean) msg.obj;
                     //TODO 更新房间表
-
                     if (success) {
                         Toast.makeText(AddDeviceNameActivity.this, "添加设备" + deviceType + "成功", Toast.LENGTH_SHORT).show();
                     } else {
@@ -119,7 +121,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                             if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                                 Room room = RoomManager.getInstance().findRoom(mRoomName, false);
-
                                 mDeviceManager.updateDeviceInWhatRoom(room,aDeviceList.getSmartDev().get(i).getUid(),deviceName);
                             }
                         }
@@ -134,6 +135,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         msg.what = MSG_ADD_DEVICE_RESULT;
         msg.obj = success;
         mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void responseWifiListResult(List<SSIDList> wifiList) {
+
     }
 
     private boolean isDeviceAddSuccess(DeviceList aDeviceList) {

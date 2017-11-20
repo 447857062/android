@@ -17,10 +17,27 @@ public class QueryOptions implements Serializable {
     private String Result;
     private List<SmartDev>SmartDev;
     private List<Device> Device;
+    private long timestamp;
+    private String  AuthId;
     public String getResult() {
         return Result;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp() {
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    public String getAuthId() {
+        return AuthId;
+    }
+
+    public void setAuthId(String authId) {
+        AuthId = authId;
+    }
 
     public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev> getSmartDev() {
         return SmartDev;

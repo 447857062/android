@@ -118,7 +118,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     @Override
-    public void OnGetUid(String uid) {
+    public void OnBindAppResult(String uid) {
 
     }
 
@@ -139,6 +139,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     @Override
     public void wifiConnectUnReachable() {
+
+    }
+
+    @Override
+    public void getWifiList(String result) {
 
     }
 

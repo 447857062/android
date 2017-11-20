@@ -4,6 +4,7 @@ import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -17,7 +18,7 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Org;
     private String Ver;
     private String name;
-    private Room room;
+    private List<Room> roomList;
 
     public String getName() {
         return name;
@@ -27,12 +28,12 @@ public class SmartDev extends DataSupport implements Serializable{
         this.name = name;
     }
 
-    public Room getRoom() {
-        return room;
+    public List<Room> getRoomList() {
+        return roomList;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setRoomList(List<Room> roomList) {
+        this.roomList = roomList;
     }
 
     public String getOrg() {
@@ -92,7 +93,7 @@ public class SmartDev extends DataSupport implements Serializable{
                 ", Type='" + Type + '\'' +
                 ", CtrUid='" + CtrUid + '\'' +
                 ", Uid='" + Uid + '\'' +
-                ", roomname='" + room.getRoomName() + '\'' +
+                ", roomList.size='" + roomList.size() + '\'' +
                 '}';
     }
 }

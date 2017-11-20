@@ -26,6 +26,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.activity.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
@@ -70,7 +71,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
     @Override
     protected void onResume() {
         super.onResume();
-
         mDeviceManager.queryDeviceList();
     }
 
@@ -180,6 +180,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
 
     @Override
     public void responseBindDeviceResult(String result) {
+
+    }
+
+    @Override
+    public void responseWifiListResult(List<SSIDList> wifiList) {
 
     }
 

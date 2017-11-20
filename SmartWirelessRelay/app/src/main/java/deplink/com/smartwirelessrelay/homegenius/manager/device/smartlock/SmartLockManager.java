@@ -190,7 +190,7 @@ public class SmartLockManager implements LocalConnecteListener {
     }
 
     @Override
-    public void OnGetUid(String uid) {
+    public void OnBindAppResult(String uid) {
         for(int i=0;i<mSmartLockListenerList.size();i++){
             mSmartLockListenerList.get(i).responseBind(uid);
         }
@@ -279,6 +279,11 @@ public class SmartLockManager implements LocalConnecteListener {
 
     @Override
     public void wifiConnectUnReachable() {
+
+    }
+
+    @Override
+    public void getWifiList(String result) {
 
     }
 

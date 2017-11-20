@@ -23,14 +23,15 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.ConnectionMonitor;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecord;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecordReal;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.ConnectionMonitor;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
@@ -241,9 +242,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
             Log.e(TAG, "创建sslsocket success" + address.toString());
             //TODO
-            GeneralPacket packet = new GeneralPacket(mContext);
-            packet.packBindUnbindAppPacket("77685180654101946200316696479445", ComandID.CMD_BIND);
-            getOut(packet.data);
+            bindApp("77685180654101946200316696479445");
 
             while (!sslSocket.isClosed()) {
                 if(currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED){
@@ -259,6 +258,22 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 连接上后需要绑定app才能通讯
+     */
+    private void bindApp(String uid) {
+        GeneralPacket packet = new GeneralPacket(mContext);
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("SET");
+        queryCmd.setMethod("BindApp");
+        queryCmd.setTimestamp();
+        queryCmd.setAuthId(uid);
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        packet.packBindUnbindAppPacket(uid, ComandID.CMD_BIND,text.getBytes());
+        getOut(packet.data);
     }
 
 
@@ -300,8 +315,8 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         if (mContext != null && mLocalConnecteListener != null) {
             if (mUdpmanager == null) {
                 mUdpmanager = UdpManager.getInstance();
-                mUdpmanager.InitUdpConnect(mContext, this);
             }
+            mUdpmanager.InitUdpConnect(mContext, this);
         }
     }
 
@@ -323,7 +338,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         String str = null;
         try {
             InputStream input = sslSocket.getInputStream();
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[10240];
             int len = input.read(buf);
             if (len != -1) {
                 //读取cmd参数
@@ -348,11 +363,12 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
 
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
-                        byte[] uid = new byte[32];
-                        System.arraycopy(buf, 7, uid, 0, 32);
-                        str = new String(uid);
+                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                        str = new String(buf, AppConstant.BASICLEGTH, length);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                            mLocalConnecteListener.get(i).OnGetUid(str);
+                            Log.i(TAG,"绑定结果="+str);
+                            mLocalConnecteListener.get(i).OnBindAppResult(str);
                         }
                         break;
                     case ComandID.QUERY_DEV_RESPONSE:
@@ -385,6 +401,25 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         System.out.println("绑定智能回应:" + str);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                             mLocalConnecteListener.get(i).OnGetBindresult(str);
+                        }
+                        break;
+                    case ComandID.CMD_DEV_SCAN_WIFI_ACK:
+                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                        str = new String(buf, AppConstant.BASICLEGTH, length);
+                        System.out.println("查询wifi列表回应:" + str);
+                        for (int i = 0; i < mLocalConnecteListener.size(); i++) {
+                            mLocalConnecteListener.get(i).getWifiList(str);
+                        }
+                        break;
+                    case ComandID.CMD_DEV_SET_WIFI_ACK:
+                        System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
+                        length = DataExchange.bytesToInt(lengthByte, 0, 2);
+                        str = new String(buf, AppConstant.BASICLEGTH, length);
+                        System.out.println("设置中继上网返回:" + str);
+                        //设置中继上网返回:{ "OP": "REPORT", "Method": "WIFI", "Result": 0 }
+                        for (int i = 0; i < mLocalConnecteListener.size(); i++) {
+                          //  mLocalConnecteListener.get(i).getWifiList(str);
                         }
                         break;
 

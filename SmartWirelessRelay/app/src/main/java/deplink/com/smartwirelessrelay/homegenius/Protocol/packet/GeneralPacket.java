@@ -25,9 +25,9 @@ public class GeneralPacket extends BasicPacket {
      * 绑定设备
      * @return
      */
-    public int packBindUnbindAppPacket(String uid, byte cmdID) {
+    public int packBindUnbindAppPacket(String uid, byte cmdID,byte[]xdata) {
 
-        return packBindData(uid,cmdID);
+        return packBindData(uid,cmdID,xdata);
 
     }
 
@@ -82,6 +82,12 @@ public class GeneralPacket extends BasicPacket {
      */
     public int packSendSmartDevsData( byte[]xdata) {
         return packData(xdata,ComandID.CMD_SEND_SMART_DEV);
+    }
+    public int packQueryWifiListData( byte[]xdata) {
+        return packData(xdata,ComandID.CMD_DEV_SCAN_WIFI);
+    }
+    public int packSetWifiListData( byte[]xdata) {
+        return packData(xdata,ComandID.CMD_DEV_SET_WIFI);
     }
     /**
      *设备列表下发
