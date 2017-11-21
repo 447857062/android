@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.getway;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.widget.Toast;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 
 public class GetwayCheckActivity extends Activity implements View.OnClickListener, UdpManagerGetIPLintener {
     private static final String TAG = "GetwayCheckActivity";
@@ -33,9 +32,6 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
     private void initDatas() {
         mUdpmanager = UdpManager.getInstance();
         mUdpmanager.InitUdpConnect(this, this);
-        mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, null);
-        currentAddDevice = getIntent().getStringExtra("currentAddDevice");
     }
 
     private void initEvents() {
@@ -48,8 +44,6 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         button_next_step = (Button) findViewById(R.id.button_next_step);
     }
 
-    private DeviceManager mDeviceManager;
-    private String currentAddDevice;
 
     @Override
     public void onClick(View v) {
@@ -78,9 +72,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         msg.what=MSG_CHECK_GETWAY_OK;
         msg.obj=ipAddress;
         mHanHandler.sendMessage(msg);
-        if(currentAddDevice!=null){
-            mDeviceManager.bindDevice(currentAddDevice);
-        }
+
 
     }
 }

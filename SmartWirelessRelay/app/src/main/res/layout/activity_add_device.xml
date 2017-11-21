@@ -28,7 +28,13 @@
             android:text="添加分类"
             android:textColor="@android:color/white"
             android:textSize="15dp" />
-
+        <TextView
+            android:text="跳过"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/textview_skip_this_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
     <TextView
@@ -37,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title"
-        android:text="请选择设备所在的房间" />
+        android:text="请选择设备所在的房间,跳过设备默认分类为全部" />
 
     <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
         android:id="@+id/dragGridView"

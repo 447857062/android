@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity;
@@ -43,8 +46,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     private List<Room> mRoomList = new ArrayList<>();
     private HomepageGridViewAdapter mAdapter;
-    GridView gridView;
-
+    private GridView roomGridView;
+    private ListView listview_experience_center;
+    private ExperienceCenterListAdapter mExperienceCenterListAdapter;
+    private  List<ExperienceCenterDevice>mExperienceCenterDeviceList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,12 +77,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
-        gridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
-        gridView.setColumnWidth(itemWidth); // 设置列表项宽
-        gridView.setHorizontalSpacing(5); // 设置列表项水平间距
-        gridView.setStretchMode(GridView.NO_STRETCH);
-        gridView.setNumColumns(size); // 设置列数量=列表集合数
-        gridView.setAdapter(mAdapter);
+        roomGridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
+        roomGridView.setColumnWidth(itemWidth); // 设置列表项宽
+        roomGridView.setHorizontalSpacing(5); // 设置列表项水平间距
+        roomGridView.setStretchMode(GridView.NO_STRETCH);
+        roomGridView.setNumColumns(size); // 设置列数量=列表集合数
+        roomGridView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -90,10 +95,20 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
                 mRoomManager = RoomManager.getInstance();
                 mRoomManager.initRoomManager();
-                mAdapter=new HomepageGridViewAdapter(SmartHomeMainActivity.this,mRoomList);
+
             }
         });
-
+        mAdapter=new HomepageGridViewAdapter(SmartHomeMainActivity.this,mRoomList);
+        mExperienceCenterDeviceList=new ArrayList<>();
+        ExperienceCenterDevice oneDevice=new ExperienceCenterDevice();
+        oneDevice.setDeviceName("智能门锁");
+        oneDevice.setOnline(true);
+        mExperienceCenterDeviceList.add(oneDevice);
+        oneDevice=new ExperienceCenterDevice();
+        oneDevice.setDeviceName("智能开关");
+        oneDevice.setOnline(false);
+        mExperienceCenterDeviceList.add(oneDevice);
+        mExperienceCenterListAdapter=new ExperienceCenterListAdapter(this,mExperienceCenterDeviceList);
     }
 
     private void initEvents() {
@@ -103,7 +118,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
         imageview_setting.setOnClickListener(this);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        roomGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
@@ -115,7 +130,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-
+        listview_experience_center.setAdapter(mExperienceCenterListAdapter);
 
     }
 
@@ -125,7 +140,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
         imageview_setting = (ImageView) findViewById(R.id.imageview_setting);
-        gridView = (GridView) findViewById(R.id.grid);
+        roomGridView = (GridView) findViewById(R.id.grid);
+        listview_experience_center = (ListView) findViewById(R.id.listview_experience_center);
     }
 
     @Override

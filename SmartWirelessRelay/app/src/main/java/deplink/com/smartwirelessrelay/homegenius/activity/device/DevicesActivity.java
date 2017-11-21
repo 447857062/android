@@ -26,18 +26,19 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.DeviceListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
-public class DevicesActivity extends Activity implements View.OnClickListener,DeviceListener{
-    private static final String TAG="DevicesActivity";
+public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
+    private static final String TAG = "DevicesActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
@@ -47,17 +48,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
     private DeviceListAdapter mDeviceAdapter;
     /**
      * 上面半部分列表的数据
-     * */
+     */
     private List<Device> datasTop;
     /**
      * 下面半部分列表的数据
-     * */
+     */
     private List<SmartDev> datasBottom;
 
     private ImageView imageview_add_device;
 
     private DeviceManager mDeviceManager;
     private SmartLockManager mSmartLockManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,35 +86,39 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mSmartLockManager=SmartLockManager.getInstance();
+                mSmartLockManager = SmartLockManager.getInstance();
                 mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
-                mDeviceManager=DeviceManager.getInstance();
-                mDeviceManager.InitDeviceManager(DevicesActivity.this,DevicesActivity.this);
+                mDeviceManager = DeviceManager.getInstance();
+                mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
             }
         });
 
-        datasTop=new ArrayList<>();
-        datasBottom=new ArrayList<>();
+        datasTop = new ArrayList<>();
+        datasBottom = new ArrayList<>();
         //使用数据库中的数据
-        datasTop= DataSupport.findAll(Device.class);
-        datasBottom= DataSupport.findAll(SmartDev.class);
+        datasTop = DataSupport.findAll(Device.class);
+        datasBottom = DataSupport.findAll(SmartDev.class);
 
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
         listview_devies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if(datasTop.size()<(position+1)){
-                        //智能设备
-                       String deviceType= datasBottom.get(position - datasTop.size()).getType();
-                        Log.i(TAG,"智能设备类型="+deviceType);
-                        mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
-                        switch (deviceType){
-                            case "SMART_LOCK":
-                                startActivity(new Intent(DevicesActivity.this,SmartLockActivity.class));
-                                break;
-                        }
+                if (datasTop.size() < (position + 1)) {
+                    //智能设备
+                    String deviceType = datasBottom.get(position - datasTop.size()).getType();
+                    Log.i(TAG, "智能设备类型=" + deviceType);
+                    mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                    switch (deviceType) {
+                        case "SMART_LOCK":
+                            startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
+                            break;
                     }
+                } else {
+                    //网关设备
+                    mDeviceManager.setCurrentSelectGetwayDevice(datasTop.get(position));
+                    startActivity(new Intent(DevicesActivity.this, GetwayDeviceActivity.class));
+                }
             }
         });
     }
@@ -125,6 +131,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -132,38 +139,41 @@ public class DevicesActivity extends Activity implements View.OnClickListener,De
         }
         return super.onKeyDown(keyCode, event);
     }
+
     private void initViews() {
-        layout_home_page= (LinearLayout) findViewById(R.id.layout_home_page);
-        layout_devices= (LinearLayout) findViewById(R.id.layout_devices);
-        layout_rooms= (LinearLayout) findViewById(R.id.layout_rooms);
-        layout_personal_center= (LinearLayout) findViewById(R.id.layout_personal_center);
-        listview_devies= (ListView) findViewById(R.id.listview_devies);
-        imageview_add_device= (ImageView) findViewById(R.id.imageview_add_device);
+        layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);
+        layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
+        layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
+        layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
+        listview_devies = (ListView) findViewById(R.id.listview_devies);
+        imageview_add_device = (ImageView) findViewById(R.id.imageview_add_device);
         //TODO 初始化设备列表
 
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.layout_home_page:
-                startActivity(new Intent(this,SmartHomeMainActivity.class));
+                startActivity(new Intent(this, SmartHomeMainActivity.class));
                 break;
             case R.id.layout_devices:
-               // startActivity(new Intent(this,DevicesActivity.class));
+                // startActivity(new Intent(this,DevicesActivity.class));
                 break;
             case R.id.layout_rooms:
-                startActivity(new Intent(this,RoomActivity.class));
+                startActivity(new Intent(this, RoomActivity.class));
                 break;
             case R.id.layout_personal_center:
-                startActivity(new Intent(this,PersonalCenterActivity.class));
+                startActivity(new Intent(this, PersonalCenterActivity.class));
                 break;
             case R.id.imageview_add_device:
-                startActivity(new Intent(this,AddDeviceActivity.class));
+                startActivity(new Intent(this, AddDeviceActivity.class));
                 break;
         }
     }
+
     private static final int MSG_GET_DEVS = 0x01;
+
     @Override
     public void responseQueryResult(String result) {
         if (result.contains("DevList")) {

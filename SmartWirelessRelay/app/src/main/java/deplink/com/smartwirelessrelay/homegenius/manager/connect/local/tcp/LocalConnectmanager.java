@@ -360,7 +360,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                             Log.i(TAG, "心跳数据=" + str);
                             decodeAlarmRecord(str);
                         }
-
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
                         str = new String(buf, AppConstant.BASICLEGTH, length);
@@ -389,6 +388,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
                         // 绑定网关（中继器） 回应:{ "OP": "REPORT", "Method": "SetDevList", "Result": 0 }
                         //绑定设备回应当前所有已绑定的设备，自己对有没有绑定上
                         //{ "OP": "REPORT", "Method": "DevList", "Device": [ { "Uid": "77685180654101946200316696479888", "Status": "lo" } ], "SmartDev": [ { "Uid": "00-12-4b-00-0b-26-c2-15", "Org": "ismart", "Type": "SMART_LOCK", "Ver": "1" } ] }
+                        //删除智能回应:{ "OP": "REPORT", "Method": "DevList", "Device": [ { "Uid": "77685180654101946200316696479888", "Status": "lo" } ], "SmartDev": [ ] }
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("绑定智能回应:" + str);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {

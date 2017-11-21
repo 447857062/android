@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+   <ImageView
+       android:id="@+id/image_device_type"
+       android:src="@mipmap/ic_launcher"
+       android:layout_centerVertical="true"
+       android:layout_alignParentLeft="true"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />
+    <TextView
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/image_device_type"
+        android:id="@+id/textview_device_name"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_toRightOf="@+id/textview_device_name"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="100dp"
+        android:id="@+id/textview_online_statu"
+        android:textColor="@android:color/holo_red_light"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentRight="true"
+        android:id="@+id/iamgeview_setting"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

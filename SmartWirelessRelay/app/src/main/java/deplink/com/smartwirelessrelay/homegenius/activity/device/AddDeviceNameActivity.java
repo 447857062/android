@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +16,8 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
@@ -109,19 +110,20 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     @Override
     public void responseBindDeviceResult(String result) {
         Gson gson = new Gson();
+
         final DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
         boolean success = false;
         switch (deviceType) {
             case "SMART_LOCK":
-
                 success = isSmartDeviceAddSuccess(aDeviceList);
+                mDeviceManager.addDBSmartDevice(device);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                             if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                                 Room room = RoomManager.getInstance().findRoom(mRoomName, false);
-                                mDeviceManager.updateDeviceInWhatRoom(room,aDeviceList.getSmartDev().get(i).getUid(),deviceName);
+                                mDeviceManager.updateSmartDeviceInWhatRoom(room,aDeviceList.getSmartDev().get(i).getUid(),deviceName);
                             }
                         }
                     }
@@ -129,6 +131,18 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 break;
             case "getway":
                 success = isDeviceAddSuccess(aDeviceList);
+                mDeviceManager.addDBGetwayDevice(currentAddDevice);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
+                            if (aDeviceList.getDevice().get(i).getUid().equals(currentAddDevice)) {
+                                Room room = RoomManager.getInstance().findRoom(mRoomName, false);
+                                mDeviceManager.updateGetwayDeviceInWhatRoom(room,aDeviceList.getDevice().get(i).getUid(),deviceName);
+                            }
+                        }
+                    }
+                });
                 break;
         }
         Message msg = Message.obtain();

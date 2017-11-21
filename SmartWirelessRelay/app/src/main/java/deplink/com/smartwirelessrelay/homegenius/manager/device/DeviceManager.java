@@ -51,6 +51,7 @@ public class DeviceManager implements LocalConnecteListener {
     private Context mContext;
     private List<SmartDev> mSmartDevList;
     private SmartDev currentSelectSmartDevice;
+    private Device currentSelectGetwayDevice;
 
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
@@ -72,7 +73,6 @@ public class DeviceManager implements LocalConnecteListener {
         if (listener != null && mDeviceListenerList.contains(listener)) {
             this.mDeviceListenerList.remove(listener);
         }
-
     }
 
     /**
@@ -218,8 +218,40 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
-
-
+    /**
+     * 如果数据库中没有这个设备，需要修改数据库
+     * 如果有这个设备就不处理
+     * 添加智能设备成功，需要更新数据库
+     */
+    public boolean addDBSmartDevice(QrcodeSmartDevice device) {
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
+       if(smartDev==null){
+           smartDev=new SmartDev();
+           smartDev.setUid(device.getAd());
+           smartDev.setOrg(device.getOrg());
+           smartDev.setVer(device.getVer());
+           smartDev.setType(device.getTp());
+           boolean addResult=smartDev.save();
+           Log.i(TAG,"向数据库中添加一条智能设备数据="+addResult);
+          return addResult;
+       }
+        Log.i(TAG,"数据库中已存在相同设备，不必要添加");
+        return false;
+    }
+    public boolean addDBGetwayDevice(String uid) {
+        //查询设备
+        Device getwayDevice = DataSupport.where("Uid=?", uid).findFirst(Device.class);
+        if(getwayDevice==null){
+            getwayDevice=new Device();
+            getwayDevice.setUid(uid);
+            boolean addResult=getwayDevice.save();
+            Log.i(TAG,"向数据库中添加一条网关设备数据="+addResult);
+            return addResult;
+        }
+        Log.i(TAG,"数据库中已存在相同网关设备，不必要添加");
+        return false;
+    }
     public SmartDev getCurrentSelectSmartDevice() {
         return currentSelectSmartDevice;
     }
@@ -228,11 +260,44 @@ public class DeviceManager implements LocalConnecteListener {
         this.currentSelectSmartDevice = currentSelectSmartDevice;
     }
 
+    public Device getCurrentSelectGetwayDevice() {
+        return currentSelectGetwayDevice;
+    }
+
+    public void setCurrentSelectGetwayDevice(Device currentSelectGetwayDevice) {
+        this.currentSelectGetwayDevice = currentSelectGetwayDevice;
+    }
+
+    /**
+     * 查找所有的智能设备
+     */
+    public List<SmartDev> findAllSmartDevice() {
+        List<SmartDev> smartDevices = DataSupport.findAll(SmartDev.class);
+        Log.i(TAG,"查找所有的智能设备,设备个数="+smartDevices.size());
+        return smartDevices;
+    }
+    /**
+     * 删除数据库中的一个智能设备
+     */
+    public int deleteDBSmartDevice(String uid) {
+       int affectcolumn = DataSupport.deleteAll(SmartDev.class,"Uid=?",uid);
+        Log.i(TAG,"删除一个智能设备，删除影响的行数="+affectcolumn);
+        return affectcolumn;
+    }
+    /**
+     * 删除数据库中的一个网关设备
+     */
+    public int deleteDBGetwayDevice(String uid) {
+       int affectcolumn = DataSupport.deleteAll(Device.class,"Uid=?",uid);
+        Log.i(TAG,"删除一个网关设备，删除影响的行数="+affectcolumn);
+        return affectcolumn;
+    }
+
     /**
      * 解除绑定
      * 解除绑定后根据返回结果更新数据库
      */
-    public void deleteDevice() {
+    public void deleteSmartDevice() {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("DELETE");
         queryCmd.setMethod("DevList");
@@ -257,27 +322,114 @@ public class DeviceManager implements LocalConnecteListener {
         });
     }
 
+    public void deleteGetwayDevice() {
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("DELETE");
+        queryCmd.setMethod("DevList");
+        queryCmd.setTimestamp();
+        List<Device> devs = new ArrayList<>();
+        //设备赋值
+        Device dev = new Device();
+        dev.setUid(currentSelectGetwayDevice.getUid());
+        devs.add(dev);
+        queryCmd.setDevice(devs);
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        packet.packSendSmartDevsData(text.getBytes());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }
+
     /**
      * 更新设备所在房间
      */
-    public void updateDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
+    public void updateSmartDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG,"更新智能设备所在的房间=start");
+                //保存所在的房间
+                //查询设备
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class,true);
+                //找到要更行的设备,设置关联的房间
+                List<Room> roomList = new ArrayList<>();
+                //TODO 这里需要判断非空
+                roomList.addAll(smartDev.getRoomList());
+                roomList.add(room);
+                smartDev.setRoomList(roomList);
+                smartDev.setName(deviceName);
+               boolean saveResult= smartDev.save();
+                Log.i(TAG,"更新智能设备所在的房间="+saveResult);
+            }
+        });
+
+    }
+    public void updateGetwayDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 //保存所在的房间
                 //查询设备
-                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class);
+                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class,true);
                 //找到要更行的设备,设置关联的房间
                 List<Room> roomList = new ArrayList<>();
+                roomList.addAll(getwayDevice.getRoomList());
                 roomList.add(room);
-                smartDev.setRoomList(roomList);
-                smartDev.setName(deviceName);
-                smartDev.save();
+                getwayDevice.setRoomList(roomList);
+                getwayDevice.setName(deviceName);
+                getwayDevice.save();
             }
         });
 
     }
+    public void deleteSmartDeviceInWhatRoom(final Room room, final String deviceUid) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                //保存所在的房间
+                //查询设备
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class,true);
+                //找到要更行的设备,设置关联的房间
+                List<Room> roomList = new ArrayList<>();
+                roomList.addAll(smartDev.getRoomList());
+                for(int i=0;i<roomList.size();i++){
+                    if(roomList.get(i).getRoomName().equals(room.getRoomName())){
+                        roomList.remove(i);
+                    }
+                }
+                smartDev.setRoomList(roomList);
+                boolean saveResult= smartDev.save();
+                Log.i(TAG,"deleteSmartDeviceInWhatRoom saveResult="+saveResult);
+            }
+        });
 
+    }
+    public void deleteGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                //保存所在的房间
+                //查询设备
+                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class,true);
+                //找到要更行的设备,设置关联的房间
+                List<Room> roomList = new ArrayList<>();
+                roomList.addAll(getwayDevice.getRoomList());
+                for(int i=0;i<roomList.size();i++){
+                    if(roomList.get(i).getRoomName().equals(room.getRoomName())){
+                        roomList.remove(i);
+                    }
+                }
+                getwayDevice.setRoomList(roomList);
+                boolean saveResult=getwayDevice.save();
+                Log.i(TAG,"deleteGetwayDeviceInWhatRoom saveResult="+saveResult);
+            }
+        });
+
+    }
     @Override
     public void handshakeCompleted() {
 

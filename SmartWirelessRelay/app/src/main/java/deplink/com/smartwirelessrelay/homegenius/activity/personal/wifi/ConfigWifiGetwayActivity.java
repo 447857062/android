@@ -2,6 +2,8 @@ package deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -93,9 +95,23 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     public void responseWifiListResult(List<SSIDList> wifiList) {
 
     }
-
+    private static final int MSG_SET_WIFIRELAY_RESULT=100;
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case MSG_SET_WIFIRELAY_RESULT:
+                    Toast.makeText(ConfigWifiGetwayActivity.this,"配置wifi中继返回结果="+msg.arg1,Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
     @Override
     public void responseSetWifirelayResult(int result) {
-
+        Message msg=Message.obtain();
+        msg.what=MSG_SET_WIFIRELAY_RESULT;
+        msg.arg1=result;
+        mHandler.sendMessage(msg);
     }
 }

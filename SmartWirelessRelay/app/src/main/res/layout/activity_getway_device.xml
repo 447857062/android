@@ -24,21 +24,14 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="编辑"
+            android:text="网关"
             android:textColor="@android:color/white" />
 
-        <TextView
-            android:id="@+id/textview_edit_complement"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="完成"
-            android:textColor="@android:color/white" />
+
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_device_name"
+        android:id="@+id/layout_getway_name"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
@@ -53,10 +46,10 @@
             android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:text="名称:" />
+            android:text="网关名称:" />
 
         <EditText
-            android:hint=""
+            android:hint="我家的网关"
             android:background="@null"
             android:gravity="center_vertical"
             android:layout_marginRight="50dp"
@@ -73,12 +66,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+
+
     <RelativeLayout
         android:id="@+id/layout_select_room"
         android:background="@android:color/darker_gray"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/layout_device_name"
+        android:layout_below="@+id/layout_getway_name"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:gravity="center_vertical">
@@ -92,7 +87,7 @@
             android:text="房间分类:" />
 
         <TextView
-            android:text="全部"
+            android:hint=""
             android:background="@null"
             android:gravity="center_vertical"
             android:layout_marginRight="50dp"
@@ -109,43 +104,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/layout_getway"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/layout_select_room"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/textview_getway"
-            android:layout_width="wrap_content"
-            android:minWidth="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="网关:" />
-
-        <EditText
-            android:hint=""
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:layout_marginRight="50dp"
-            android:id="@+id/edittext_input_getway_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/textview_getway" />
-        <ImageView
-            android:src="@mipmap/ic_launcher"
-            android:layout_toRightOf="@+id/edittext_input_getway_name"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:id="@+id/imageview_getway_arror_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-
-
 
     <Button
         android:background="@color/blue"
@@ -153,7 +111,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/layout_getway"
+        android:layout_below="@+id/layout_select_room"
         android:id="@+id/button_delete_device"
         android:text="删除设备"
         android:layout_width="match_parent"

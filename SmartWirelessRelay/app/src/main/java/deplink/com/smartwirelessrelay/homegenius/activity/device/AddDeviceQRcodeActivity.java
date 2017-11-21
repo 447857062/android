@@ -13,6 +13,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwaySettingOptionsActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
@@ -137,10 +138,11 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     break;
                 case REQUEST_ADD_SMART_GETWAY:
                     //添加智能网关
-                    intent = new Intent(AddDeviceQRcodeActivity.this, GetwayCheckActivity.class);
-                    // intent.putExtra("mRoomName",mRoomName);
+                   // intent = new Intent(AddDeviceQRcodeActivity.this, GetwayCheckActivity.class);
+                    intent = new Intent(AddDeviceQRcodeActivity.this, AddGetwaySettingOptionsActivity.class);
                     String uid = "77685180654101946200316696479888";
                     intent.putExtra("currentAddDevice", uid);
+                    intent.putExtra("mRoomName", mRoomName);
                     startActivity(intent);
                     break;
             }

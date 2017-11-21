@@ -12,8 +12,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceNameTranslate;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -23,9 +25,13 @@ public class RoomDevicesListAdapter extends BaseAdapter{
     private static  final String TAG="RoomDevicesListAdapter";
     private Context mContext;
     private List<SmartDev>mSmartDev;
-    public RoomDevicesListAdapter(Context mContext, List<SmartDev>smartDev) {
+    private  Room currentRoom;
+    private DeviceManager mDeviceManager;
+    public RoomDevicesListAdapter(Context mContext, List<SmartDev>smartDev, Room room, DeviceManager deviceManager) {
         this.mContext=mContext;
         this.mSmartDev=smartDev;
+        this.currentRoom=room;
+        this.mDeviceManager=deviceManager;
     }
 
     @Override
@@ -65,6 +71,8 @@ public class RoomDevicesListAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"imageview_delete onclick");
+                //删除数据库中的数据
+                mDeviceManager.deleteSmartDeviceInWhatRoom(currentRoom,mSmartDev.get(position).getUid());
                 mSmartDev.remove(position);
                 notifyDataSetChanged();
             }
