@@ -10,6 +10,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 
+
 /**
  * Created by Administrator on 2017/10/30.
  * 房间管理
