@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;

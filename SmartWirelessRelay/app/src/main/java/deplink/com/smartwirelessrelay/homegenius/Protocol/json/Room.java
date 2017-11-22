@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 
 

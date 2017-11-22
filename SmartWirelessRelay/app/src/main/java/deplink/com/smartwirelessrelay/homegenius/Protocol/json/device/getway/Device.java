@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway;
 
 import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
@@ -17,7 +17,19 @@ public class Device extends DataSupport implements Serializable{
     private String Uid;
     private String Status;
     private String name;
+    /**
+     * 网关的IP地址
+     */
+    private String ipAddress;
     private List<Room>roomList=new ArrayList<>();
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
 
     public String getName() {
         return name;

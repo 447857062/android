@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;

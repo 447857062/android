@@ -7,7 +7,7 @@ import org.litepal.crud.DataSupport;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 
 /**
  * Created by Administrator on 2017/11/22.

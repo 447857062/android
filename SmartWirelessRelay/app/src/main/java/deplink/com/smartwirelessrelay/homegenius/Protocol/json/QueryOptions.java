@@ -3,7 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.Protocol.json;
 import java.io.Serializable;
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 
 /**
@@ -19,7 +19,7 @@ public class QueryOptions implements Serializable {
     private String LimitedTime;
     private String Result;
     private List<SmartDev>SmartDev;
-    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device> Device;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device> Device;
     private long timestamp;
     private String  AuthId;
     private String  Data;

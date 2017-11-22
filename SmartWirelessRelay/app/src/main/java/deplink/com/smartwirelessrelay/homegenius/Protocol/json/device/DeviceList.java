@@ -3,13 +3,15 @@ package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device;
 import java.io.Serializable;
 import java.util.List;
 
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
+
 /**
  * Created by Administrator on 2017/10/30.
  */
 public class DeviceList   implements Serializable {
     private String OP;
     private String Method;
-    private List<Device> Device;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device> Device;
     private List<SmartDev>SmartDev;
     public List<Device> getDevice() {
         return Device;

@@ -1,29 +1,37 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device.getway;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.adapter.GetwayListDevicesAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 
-public class GetwayCheckActivity extends Activity implements View.OnClickListener, UdpManagerGetIPLintener {
+public class GetwayCheckActivity extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener,UdpManagerGetIPLintener {
     private static final String TAG = "GetwayCheckActivity";
-    private Button button_next_step;
     private ImageView image_back;
     private UdpManager mUdpmanager;
-
+    private ListView listview_getway_devices;
+    private List<Device>mDevices;
+    private GetwayListDevicesAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_getway_check);
+        setContentView(R.layout.activity_getway_check_list);
         initViews();
         initDatas();
         initEvents();
@@ -32,16 +40,20 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
     private void initDatas() {
         mUdpmanager = UdpManager.getInstance();
         mUdpmanager.InitUdpConnect(this, this);
+        mDevices=new ArrayList<>();
+        mAdapter=new GetwayListDevicesAdapter(this,mDevices);
+
     }
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        button_next_step.setOnClickListener(this);
+        listview_getway_devices.setAdapter(mAdapter);
+        listview_getway_devices.setOnItemClickListener(this);
     }
 
     private void initViews() {
         image_back = (ImageView) findViewById(R.id.image_back);
-        button_next_step = (Button) findViewById(R.id.button_next_step);
+        listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
     }
 
 
@@ -60,6 +72,9 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
             super.handleMessage(msg);
             switch (msg.what){
                 case MSG_CHECK_GETWAY_OK:
+                    Device device=new Device();
+                    device.setIpAddress((String) msg.obj);
+                    mDevices.add(device);
                     Toast.makeText(GetwayCheckActivity.this,"检查到IP为:"+ msg.obj+"的网关",Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -72,5 +87,10 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         msg.what=MSG_CHECK_GETWAY_OK;
         msg.obj=ipAddress;
         mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        startActivity(new Intent(GetwayCheckActivity.this,GetwayDeviceActivity.class));
     }
 }
