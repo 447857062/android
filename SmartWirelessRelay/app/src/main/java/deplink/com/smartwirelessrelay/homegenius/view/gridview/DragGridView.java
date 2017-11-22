@@ -365,11 +365,9 @@ public class DragGridView extends GridView{
 				getChildAt(0).setVisibility(View.VISIBLE);
 			}
 			mLastHiddenItem=tempPosition - getFirstVisiblePosition();
-
 			if(onChanageListener != null){
 				onChanageListener.onChange(mDragPosition, tempPosition);
 			}
-			
 			mDragPosition = tempPosition;
 		}
 	}

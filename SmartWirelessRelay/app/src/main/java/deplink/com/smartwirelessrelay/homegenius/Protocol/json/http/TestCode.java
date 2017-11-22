@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.http;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.http;
 
 /**
  * Created by Administrator on 2017/11/22.

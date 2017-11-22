@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.adapter.WifiListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;

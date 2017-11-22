@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,11 +28,11 @@ public class ReportAlertRecord implements Serializable {
         Method = method;
     }
 
-    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ALARM_INFO> getALARM_INFO() {
+    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ALARM_INFO> getALARM_INFO() {
         return ALARM_INFO;
     }
 
-    public void setALARM_INFO(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ALARM_INFO> ALARM_INFO) {
+    public void setALARM_INFO(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ALARM_INFO> ALARM_INFO) {
         this.ALARM_INFO = ALARM_INFO;
     }
 

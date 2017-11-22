@@ -2,7 +2,7 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp;
 
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
 
 /**
  * Created by Administrator on 2017/11/7.

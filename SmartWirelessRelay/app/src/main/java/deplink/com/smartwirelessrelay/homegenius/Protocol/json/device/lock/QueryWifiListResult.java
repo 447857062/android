@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,11 +17,11 @@ public class QueryWifiListResult implements Serializable{
         this.timestamp = timestamp;
     }
 
-    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList> getSSIDList() {
+    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList> getSSIDList() {
         return SSIDList;
     }
 
-    public void setSSIDList(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList> SSIDList) {
+    public void setSSIDList(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList> SSIDList) {
         this.SSIDList = SSIDList;
     }
 

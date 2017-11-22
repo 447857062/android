@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock;
 
 import org.litepal.crud.DataSupport;
 

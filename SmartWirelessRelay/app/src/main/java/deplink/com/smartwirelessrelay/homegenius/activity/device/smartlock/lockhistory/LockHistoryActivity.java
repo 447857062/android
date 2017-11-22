@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.LockHistorys;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistorys;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.UpdateSmartLockUserIdActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -29,7 +29,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 public class LockHistoryActivity extends Activity implements SmartLockListener,View.OnClickListener{
     private static final String TAG = "LockHistory";
     private ListView dev_list;
-    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.LockHistory> mRecordList;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistory> mRecordList;
     private LockHistoryAdapter recordAdapter;
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_back;

@@ -2,7 +2,7 @@ package deplink.com.smartwirelessrelay.homegenius.manager.device;
 
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 
 /**
  * Created by Administrator on 2017/11/9.

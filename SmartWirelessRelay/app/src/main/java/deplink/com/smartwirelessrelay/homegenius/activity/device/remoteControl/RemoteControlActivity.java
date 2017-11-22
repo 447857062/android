@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json.QueryBandResponse;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryBandResponse;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import retrofit2.Call;

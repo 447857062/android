@@ -20,7 +20,7 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;

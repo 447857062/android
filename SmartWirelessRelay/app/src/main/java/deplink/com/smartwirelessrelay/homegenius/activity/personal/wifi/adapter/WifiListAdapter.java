@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 
 /**
  * Created by Administrator on 2017/8/29.

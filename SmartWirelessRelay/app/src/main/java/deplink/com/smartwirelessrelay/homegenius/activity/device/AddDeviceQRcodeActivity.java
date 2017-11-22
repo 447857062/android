@@ -127,9 +127,10 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Intent intent = new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
-        String qrCodeResult = data.getStringExtra("deviceSN");
-        Log.i(TAG, "二维码扫码结果=" + qrCodeResult);
+
         if (resultCode == RESULT_OK) {
+            String qrCodeResult = data.getStringExtra("deviceSN");
+            Log.i(TAG, "二维码扫码结果=" + qrCodeResult);
             switch (requestCode) {
                 case REQUEST_CODE_DEVICE_SN:
 

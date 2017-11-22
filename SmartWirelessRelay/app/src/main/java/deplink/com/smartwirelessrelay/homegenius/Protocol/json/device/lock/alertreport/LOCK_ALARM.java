@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -6,7 +6,7 @@ import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SmartLock;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock;
 
 /**
  * Created by Administrator on 2017/10/30.

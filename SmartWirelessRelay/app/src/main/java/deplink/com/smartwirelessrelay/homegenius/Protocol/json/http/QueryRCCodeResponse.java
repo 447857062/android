@@ -1,17 +1,15 @@
-package deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.http;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/11/22.
  */
-public class QueryTestCodeResponse implements Serializable{
+public class QueryRCCodeResponse implements Serializable{
     private boolean result;
     private int errno;
     private String err;
-    private List<TestCode>value=new ArrayList<>();
+    private CodeValue value;
 
     public boolean isResult() {
         return result;
@@ -37,11 +35,11 @@ public class QueryTestCodeResponse implements Serializable{
         this.err = err;
     }
 
-    public List<TestCode> getValue() {
+    public CodeValue getValue() {
         return value;
     }
 
-    public void setValue(List<TestCode> value) {
+    public void setValue(CodeValue value) {
         this.value = value;
     }
 }

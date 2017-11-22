@@ -14,7 +14,7 @@ import android.widget.Toast;
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;

@@ -2,6 +2,8 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
@@ -78,21 +80,44 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
         }
 
     }
+
     //TODO 添加网络状态，连接状态反馈
     private void unRegisterNetChangeReceive() {
         mContext.unregisterReceiver(mNetStatuChangeReceiver);
     }
 
+    /**
+     * 检查到网关后还要继续检查把收到的网关列一个表
+     *
+     * @param packet
+     */
     @Override
     public void onRecvLocalConnectIp(byte[] packet) {
         Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
-        udpPacket.stop();
+        Message msg = Message.obtain();
+        msg.what = MSG_STOP_CHECK_GETWAY;
+        mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
         mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet));
     }
 
+    private static final int MSG_STOP_CHECK_GETWAY = 100;
+    private static final int MSG_STOP_CHECK_GETWAY_DELAY = 8000;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_STOP_CHECK_GETWAY:
+                    udpPacket.stop();
+                    break;
+
+            }
+        }
+    };
+
     @Override
     public void onNetStatuChange(int netStatu) {
-      if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
+        if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
             //wifi连接不可用
             if (udpPacket != null) {
                 udpPacket.stop();

@@ -25,9 +25,9 @@ import javax.net.ssl.TrustManagerFactory;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecord;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.ReportAlertRecordReal;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecord;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecordReal;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;

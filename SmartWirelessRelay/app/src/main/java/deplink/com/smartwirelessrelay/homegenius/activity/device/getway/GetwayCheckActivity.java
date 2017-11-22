@@ -54,7 +54,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         }
     }
     private static final int MSG_CHECK_GETWAY_OK=100;
-    private Handler mHanHandler =new Handler(){
+    private Handler mHandler =new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -71,8 +71,6 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         Message msg=Message.obtain();
         msg.what=MSG_CHECK_GETWAY_OK;
         msg.obj=ipAddress;
-        mHanHandler.sendMessage(msg);
-
-
+        mHandler.sendMessage(msg);
     }
 }

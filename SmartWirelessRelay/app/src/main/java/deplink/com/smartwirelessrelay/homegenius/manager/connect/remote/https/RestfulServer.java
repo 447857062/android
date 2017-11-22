@@ -1,9 +1,9 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https;
 
 
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json.QueryBandResponse;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json.QueryRCCodeResponse;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.json.QueryTestCodeResponse;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryBandResponse;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryRCCodeResponse;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryTestCodeResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

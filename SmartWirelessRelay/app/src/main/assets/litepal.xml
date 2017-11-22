@@ -25,10 +25,10 @@
     <list>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device"></mapping>
-        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword"></mapping>
+        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room"></mapping>
-        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SmartLock"></mapping>
-        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.alertreport.LOCK_ALARM"></mapping>
+        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock"></mapping>
+        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM"></mapping>
     </list>
 
     <!--
