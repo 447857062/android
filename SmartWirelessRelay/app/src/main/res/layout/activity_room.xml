@@ -4,18 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity">
-    <TextView
-        android:id="@+id/textview_title"
+    <RelativeLayout
+        android:id="@+id/layout_title"
+
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="房间"
-        android:textColor="@android:color/white"
-        android:textSize="15dp" />
+        android:layout_height="60dp">
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/holo_blue_light"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="房间"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/imageview_addroom"
+            android:src="@mipmap/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/textview_option_explan"
-        android:layout_below="@+id/textview_title"
+        android:layout_below="@+id/layout_title"
         android:text="我的房间(长按可排序，点击编辑房间)"
         android:layout_width="match_parent"
         android:layout_marginLeft="20dp"

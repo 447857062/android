@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
 
     private RoomManager mRoomManager;
     private List<Room> mRooms = new ArrayList<>();
-
+    private ImageView imageview_addroom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
+        imageview_addroom.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
@@ -103,9 +105,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //最大值，最后一个，添加房间
-                if (position == mRoomsAdapter.getCount() - 1) {
-                    startActivity(new Intent(RoomActivity.this, AddRommActivity.class));
-                } else {
+
                     Bundle bundle = new Bundle();
                     bundle.putString("roomName", RoomManager.getInstance().getmRooms().get(position).getRoomName());
                     bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
@@ -113,7 +113,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
                     Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + RoomManager.getInstance().getmRooms().get(position));
                     intent.putExtras(bundle);
                     startActivityForResult(intent, REQUEST_MODIFY_ROOM);
-                }
+
             }
         });
     }
@@ -126,6 +126,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
         mDragGridView = (DragGridView) findViewById(R.id.dragGridView);
+        imageview_addroom = (ImageView) findViewById(R.id.imageview_addroom);
     }
 
     @Override
@@ -142,6 +143,9 @@ public class RoomActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.layout_personal_center:
                 startActivity(new Intent(this, PersonalCenterActivity.class));
+                break;
+            case R.id.imageview_addroom:
+                startActivity(new Intent(RoomActivity.this, AddRommActivity.class));
                 break;
         }
     }
