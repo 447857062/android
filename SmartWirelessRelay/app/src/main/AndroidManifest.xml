@@ -117,7 +117,8 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwaySettingOptionsActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.ChooseBandActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.addRemoteControlActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.addRemoteControlActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity"></activity>
     </application>
 
 </manifest>

@@ -13,6 +13,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
@@ -91,7 +92,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 startActivity(new Intent(this,RoomActivity.class));
                 break;
             case R.id.layout_personal_center:
-               // startActivity(new Intent(this,PersonalCenterActivity.class));
+                startActivity(new Intent(this,ExperienceDevicesActivity.class));
                 break;
         }
     }

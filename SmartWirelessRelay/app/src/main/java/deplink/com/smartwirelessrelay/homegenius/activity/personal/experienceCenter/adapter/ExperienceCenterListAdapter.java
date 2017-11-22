@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter;
+package deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,7 +17,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Experience
  *
  */
 public class ExperienceCenterListAdapter extends BaseAdapter {
-    private static final String TAG = "ExperienceCenterAdapter";
+    private static final String TAG = "CenterListAdapter";
     private List<ExperienceCenterDevice> mDatas;
     private Context mContext;
 
@@ -52,7 +52,7 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
 
 
             convertView = LayoutInflater.from(mContext).inflate(
-                    R.layout.experience_center_listitem, null);
+                    R.layout.person_page_experience_center_listitem, null);
             viewHolder.image_device_type = (ImageView) convertView
                     .findViewById(R.id.image_device_type);
             viewHolder.textview_device_name = (TextView) convertView
