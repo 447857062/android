@@ -8,7 +8,6 @@ public class QrcodeSmartDevice {
     private String tp;
     private String ad;
     private String ver;
-
     public String getOrg() {
         return org;
     }

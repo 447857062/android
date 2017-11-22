@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,11 +111,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         Gson gson = new Gson();
 
         final DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
-        boolean success = false;
+        boolean success;
+        success = isSmartDeviceAddSuccess(aDeviceList);
+        mDeviceManager.addDBSmartDevice(device);
         switch (deviceType) {
             case "SMART_LOCK":
-                success = isSmartDeviceAddSuccess(aDeviceList);
-                mDeviceManager.addDBSmartDevice(device);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -129,16 +128,15 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     }
                 });
                 break;
-            case "getway":
-                success = isDeviceAddSuccess(aDeviceList);
-                mDeviceManager.addDBGetwayDevice(currentAddDevice);
+            case "IRMOTE_V2":
+                // 智能遥控添加结果
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
-                            if (aDeviceList.getDevice().get(i).getUid().equals(currentAddDevice)) {
+                        for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
+                            if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                                 Room room = RoomManager.getInstance().findRoom(mRoomName, false);
-                                mDeviceManager.updateGetwayDeviceInWhatRoom(room,aDeviceList.getDevice().get(i).getUid(),deviceName);
+                                mDeviceManager.updateSmartDeviceInWhatRoom(room,aDeviceList.getSmartDev().get(i).getUid(),deviceName);
                             }
                         }
                     }
@@ -186,14 +184,15 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switch (v.getId()) {
             case R.id.button_add_device_sure:
                 deviceName=edittext_add_device_input_name.getText().toString();
+                Gson gson = new Gson();
+                device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                 switch (deviceType) {
                     case "SMART_LOCK":
-                        Gson gson = new Gson();
-                        device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         mDeviceManager.bindSmartDevList(device);
                         break;
-                    case "getway":
-                        mDeviceManager.bindDevice(currentAddDevice);
+                    case "IRMOTE_V2":
+                        // 绑定智能遥控
+                        mDeviceManager.bindSmartDevList(device);
                         break;
                     default:
                         break;

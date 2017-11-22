@@ -11,6 +11,7 @@ public class OpResult  implements Serializable{
     private String Method="SmartLock";
     private int Result;
     private int Cmd;
+  
 
     public String getOP() {
         return OP;

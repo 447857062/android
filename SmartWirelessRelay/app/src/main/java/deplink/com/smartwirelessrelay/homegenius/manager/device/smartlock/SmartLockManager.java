@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.ManagerPassword;
@@ -28,7 +29,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
  * 智能锁设备管理器
  * 需要context，LocalConnecteListener（非必须）参数
  * 使用：
- * <p>
+ * <p/>
  * private SmartLockManager mSmartLockManager;
  * mSmartLockManager = SmartLockManager.getInstance();
  * mSmartLockManager.InitSmartLockManager(this);
@@ -48,7 +49,7 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     private static SmartLockManager instance;
     private SmartLock mSmartLock;
-   // private SQLiteDatabase db;
+    // private SQLiteDatabase db;
     private String smartUid = "00-12-4b-00-0b-26-c2-15";
 
     private SmartLockManager() {
@@ -68,7 +69,7 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     public void InitSmartLockManager(Context context) {
         this.mContext = context;
-        this.mSmartLockListenerList=new ArrayList<>();
+        this.mSmartLockListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
             mLocalConnectmanager.InitLocalConnectManager(mContext);
@@ -80,7 +81,7 @@ public class SmartLockManager implements LocalConnecteListener {
             db = Connector.getDatabase();
         }*/
         ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
-        Log.i(TAG,"managerPassword!=null"+(managerPassword!=null));
+        Log.i(TAG, "managerPassword!=null" + (managerPassword != null));
         if (managerPassword == null) {
             managerPassword = new ManagerPassword();
             managerPassword.save();
@@ -91,20 +92,24 @@ public class SmartLockManager implements LocalConnecteListener {
 
 
     }
-    private  List<SmartLockListener> mSmartLockListenerList;
+
+    private List<SmartLockListener> mSmartLockListenerList;
+
     public void addSmartLockListener(SmartLockListener listener) {
 
         if (listener != null && !mSmartLockListenerList.contains(listener)) {
-            Log.i(TAG,"addSmartLockListener="+listener.toString());
+            Log.i(TAG, "addSmartLockListener=" + listener.toString());
             this.mSmartLockListenerList.add(listener);
         }
     }
+
     public void removeSmartLockListener(SmartLockListener listener) {
         if (listener != null && mSmartLockListenerList.contains(listener)) {
             this.mSmartLockListenerList.remove(listener);
         }
 
     }
+
     public void releaswSmartManager() {
         mLocalConnectmanager.removeLocalConnectListener(this);
     }
@@ -191,7 +196,7 @@ public class SmartLockManager implements LocalConnecteListener {
 
     @Override
     public void OnBindAppResult(String uid) {
-        for(int i=0;i<mSmartLockListenerList.size();i++){
+        for (int i = 0; i < mSmartLockListenerList.size(); i++) {
             mSmartLockListenerList.get(i).responseBind(uid);
         }
     }
@@ -211,8 +216,8 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         //SmartLock-HisRecord"
         if (result.contains("SmartLock-HisRecord")) {
-            for(int i=0;i<mSmartLockListenerList.size();i++){
-                Log.i(TAG,"SmartLockListener =="+mSmartLockListenerList.get(i).toString());
+            for (int i = 0; i < mSmartLockListenerList.size(); i++) {
+                Log.i(TAG, "SmartLockListener ==" + mSmartLockListenerList.get(i).toString());
                 mSmartLockListenerList.get(i).responseQueryResult(result);
             }
         }
@@ -221,13 +226,15 @@ public class SmartLockManager implements LocalConnecteListener {
     /**
      * 门锁开锁，授权操作结果返回
      * 操作结果解释
+     *
      * @param setResult
      */
     @Override
     public void OnGetSetresult(String setResult) {
         Gson gson = new Gson();
-        OpResult result = gson.fromJson(setResult, OpResult.class);
-        if(result.getOP().equals("REPORT")&& result.getMethod().equals("SmartLock")){
+        ResultType type = gson.fromJson(setResult, ResultType.class);
+        if (type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
+            OpResult result = gson.fromJson(setResult, OpResult.class);
             switch (result.getCmd()) {
                 case SmartLockConstant.CMD.OPEN:
                     switch (result.getResult()) {
@@ -268,8 +275,8 @@ public class SmartLockManager implements LocalConnecteListener {
                     break;
             }
         }
-        Log.i(TAG,"设置结果="+setResult);
-        for(int i=0;i<mSmartLockListenerList.size();i++){
+        Log.i(TAG, "设置结果=" + setResult);
+        for (int i = 0; i < mSmartLockListenerList.size(); i++) {
             mSmartLockListenerList.get(i).responseSetResult(setResult);
         }
     }
@@ -322,9 +329,9 @@ public class SmartLockManager implements LocalConnecteListener {
     public List<LOCK_ALARM> getAlarmRecord(String devUid) {
         //TODO
         smartUid = "00-12-4b-00-0b-26-c2-15";
-        List<SmartLock> mSmartDevices=DataSupport.where("Uid = ?", smartUid).find(SmartLock.class, true);
-        if(mSmartDevices.size()>0){
-            List<LOCK_ALARM> newsList =mSmartDevices.get(0).getAlarmList();
+        List<SmartLock> mSmartDevices = DataSupport.where("Uid = ?", smartUid).find(SmartLock.class, true);
+        if (mSmartDevices.size() > 0) {
+            List<LOCK_ALARM> newsList = mSmartDevices.get(0).getAlarmList();
         }
 
         return null;

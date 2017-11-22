@@ -179,7 +179,7 @@ public class DeviceManager implements LocalConnecteListener {
         dev.setOrg(smartDevice.getOrg());
         dev.setType(smartDevice.getTp());
         dev.setVer(smartDevice.getVer());
-
+        //设备列表添加一个设备
         devs.add(dev);
         queryCmd.setSmartDev(devs);
         Gson gson = new Gson();
@@ -218,6 +218,7 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 如果数据库中没有这个设备，需要修改数据库
      * 如果有这个设备就不处理
@@ -226,32 +227,34 @@ public class DeviceManager implements LocalConnecteListener {
     public boolean addDBSmartDevice(QrcodeSmartDevice device) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
-       if(smartDev==null){
-           smartDev=new SmartDev();
-           smartDev.setUid(device.getAd());
-           smartDev.setOrg(device.getOrg());
-           smartDev.setVer(device.getVer());
-           smartDev.setType(device.getTp());
-           boolean addResult=smartDev.save();
-           Log.i(TAG,"向数据库中添加一条智能设备数据="+addResult);
-          return addResult;
-       }
-        Log.i(TAG,"数据库中已存在相同设备，不必要添加");
+        if (smartDev == null) {
+            smartDev = new SmartDev();
+            smartDev.setUid(device.getAd());
+            smartDev.setOrg(device.getOrg());
+            smartDev.setVer(device.getVer());
+            smartDev.setType(device.getTp());
+            boolean addResult = smartDev.save();
+            Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
+            return addResult;
+        }
+        Log.i(TAG, "数据库中已存在相同设备，不必要添加");
         return false;
     }
+
     public boolean addDBGetwayDevice(String uid) {
         //查询设备
         Device getwayDevice = DataSupport.where("Uid=?", uid).findFirst(Device.class);
-        if(getwayDevice==null){
-            getwayDevice=new Device();
+        if (getwayDevice == null) {
+            getwayDevice = new Device();
             getwayDevice.setUid(uid);
-            boolean addResult=getwayDevice.save();
-            Log.i(TAG,"向数据库中添加一条网关设备数据="+addResult);
+            boolean addResult = getwayDevice.save();
+            Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
             return addResult;
         }
-        Log.i(TAG,"数据库中已存在相同网关设备，不必要添加");
+        Log.i(TAG, "数据库中已存在相同网关设备，不必要添加");
         return false;
     }
+
     public SmartDev getCurrentSelectSmartDevice() {
         return currentSelectSmartDevice;
     }
@@ -273,23 +276,25 @@ public class DeviceManager implements LocalConnecteListener {
      */
     public List<SmartDev> findAllSmartDevice() {
         List<SmartDev> smartDevices = DataSupport.findAll(SmartDev.class);
-        Log.i(TAG,"查找所有的智能设备,设备个数="+smartDevices.size());
+        Log.i(TAG, "查找所有的智能设备,设备个数=" + smartDevices.size());
         return smartDevices;
     }
+
     /**
      * 删除数据库中的一个智能设备
      */
     public int deleteDBSmartDevice(String uid) {
-       int affectcolumn = DataSupport.deleteAll(SmartDev.class,"Uid=?",uid);
-        Log.i(TAG,"删除一个智能设备，删除影响的行数="+affectcolumn);
+        int affectcolumn = DataSupport.deleteAll(SmartDev.class, "Uid=?", uid);
+        Log.i(TAG, "删除一个智能设备，删除影响的行数=" + affectcolumn);
         return affectcolumn;
     }
+
     /**
      * 删除数据库中的一个网关设备
      */
     public int deleteDBGetwayDevice(String uid) {
-       int affectcolumn = DataSupport.deleteAll(Device.class,"Uid=?",uid);
-        Log.i(TAG,"删除一个网关设备，删除影响的行数="+affectcolumn);
+        int affectcolumn = DataSupport.deleteAll(Device.class, "Uid=?", uid);
+        Log.i(TAG, "删除一个网关设备，删除影响的行数=" + affectcolumn);
         return affectcolumn;
     }
 
@@ -351,30 +356,30 @@ public class DeviceManager implements LocalConnecteListener {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG,"更新智能设备所在的房间=start");
+                Log.i(TAG, "更新智能设备所在的房间=start");
                 //保存所在的房间
                 //查询设备
-                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class,true);
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
                 List<Room> roomList = new ArrayList<>();
-                //TODO 这里需要判断非空
                 roomList.addAll(smartDev.getRoomList());
                 roomList.add(room);
                 smartDev.setRoomList(roomList);
                 smartDev.setName(deviceName);
-               boolean saveResult= smartDev.save();
-                Log.i(TAG,"更新智能设备所在的房间="+saveResult);
+                boolean saveResult = smartDev.save();
+                Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
             }
         });
 
     }
+
     public void updateGetwayDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 //保存所在的房间
                 //查询设备
-                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class,true);
+                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
                 //找到要更行的设备,设置关联的房间
                 List<Room> roomList = new ArrayList<>();
                 roomList.addAll(getwayDevice.getRoomList());
@@ -386,50 +391,53 @@ public class DeviceManager implements LocalConnecteListener {
         });
 
     }
+
     public void deleteSmartDeviceInWhatRoom(final Room room, final String deviceUid) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 //保存所在的房间
                 //查询设备
-                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class,true);
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
                 List<Room> roomList = new ArrayList<>();
                 roomList.addAll(smartDev.getRoomList());
-                for(int i=0;i<roomList.size();i++){
-                    if(roomList.get(i).getRoomName().equals(room.getRoomName())){
+                for (int i = 0; i < roomList.size(); i++) {
+                    if (roomList.get(i).getRoomName().equals(room.getRoomName())) {
                         roomList.remove(i);
                     }
                 }
                 smartDev.setRoomList(roomList);
-                boolean saveResult= smartDev.save();
-                Log.i(TAG,"deleteSmartDeviceInWhatRoom saveResult="+saveResult);
+                boolean saveResult = smartDev.save();
+                Log.i(TAG, "deleteSmartDeviceInWhatRoom saveResult=" + saveResult);
             }
         });
 
     }
+
     public void deleteGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 //保存所在的房间
                 //查询设备
-                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class,true);
+                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
                 //找到要更行的设备,设置关联的房间
                 List<Room> roomList = new ArrayList<>();
                 roomList.addAll(getwayDevice.getRoomList());
-                for(int i=0;i<roomList.size();i++){
-                    if(roomList.get(i).getRoomName().equals(room.getRoomName())){
+                for (int i = 0; i < roomList.size(); i++) {
+                    if (roomList.get(i).getRoomName().equals(room.getRoomName())) {
                         roomList.remove(i);
                     }
                 }
                 getwayDevice.setRoomList(roomList);
-                boolean saveResult=getwayDevice.save();
-                Log.i(TAG,"deleteGetwayDeviceInWhatRoom saveResult="+saveResult);
+                boolean saveResult = getwayDevice.save();
+                Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
             }
         });
 
     }
+
     @Override
     public void handshakeCompleted() {
 
@@ -480,29 +488,38 @@ public class DeviceManager implements LocalConnecteListener {
      * @param aDeviceList 接收到的包含网关设备和智能设备的设备列表对象
      */
     private void handleSmartDeviceList(DeviceList aDeviceList) {
-
         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
             Log.i(TAG, "智能设备type=" + aDeviceList.getSmartDev().get(i).getType());
-            switch (aDeviceList.getSmartDev().get(i).getType()) {
-                case "SMART_LOCK":
-                    //查询数据库
-                    List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
-                    //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
-                    Log.i(TAG, "查询智能设备smartDevs=" + smartDevs.size());
-                    if (smartDevs.size() > 0) {
+            List<SmartDev> smartDevs = DataSupport.findAll(SmartDev.class);
+            Log.i(TAG, "查询智能设备smartDevs=" + smartDevs.size());
+            if (smartDevs.size() > 0) {
+                switch (aDeviceList.getSmartDev().get(i).getType()) {
+                    case "SMART_LOCK":
+                    case "IRMOTE_V2":
+                        //查询数据库
+                        boolean addToDb = true;
                         for (int devindex = 0; devindex < smartDevs.size(); devindex++) {
-                            if (!smartDevs.get(devindex).getUid().equals(aDeviceList.getSmartDev().get(i).getUid())) {
-                                saveSmartDeviceToSqlite(aDeviceList, i);
+                            //数据库遍历。查找需要插入的智能设备（如果数据库中存在这个设备就不能插入）
+                            //所有数据库中的设备中都没有和当前循环选中的设备uid相同，添加设备
+                            if (smartDevs.get(devindex).getUid().equals(aDeviceList.getSmartDev().get(i).getUid())) {
+                                addToDb = false;
                             }
                         }
-                    } else {
-                        //数据库中没有就要新建数据
-                        saveSmartDeviceToSqlite(aDeviceList, i);
-                    }
-                    break;
-            }
+                        if (addToDb) {
+                            saveSmartDeviceToSqlite(aDeviceList, i);
+                        }
+                        //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
+                        break;
+                  default:
 
+                        break;
+                }
+            } else {
+                //数据库中没有就要新建数据
+                saveSmartDeviceToSqlite(aDeviceList, i);
+            }
         }
+
     }
 
     private void handleNormalDeviceList(DeviceList aDeviceList) {
@@ -511,12 +528,15 @@ public class DeviceManager implements LocalConnecteListener {
             List<Device> devices = DataSupport.findAll(Device.class);
             if (devices.size() > 0) {
                 //有设备，要判断devUID如果有了就不能保存了
+                boolean addToDb = true;
                 for (int devindex = 0; devindex < devices.size(); devindex++) {
-                    if (!devices.get(devindex).getUid().equals(aDeviceList.getDevice().get(i).getUid())) {
-                        saveDeviceToSqlite(aDeviceList, i);
+                    if (devices.get(devindex).getUid().equals(aDeviceList.getDevice().get(i).getUid())) {
+                        addToDb = false;
                     }
                 }
-
+                if (addToDb) {
+                    saveDeviceToSqlite(aDeviceList, i);
+                }
             } else {
                 saveDeviceToSqlite(aDeviceList, i);
             }

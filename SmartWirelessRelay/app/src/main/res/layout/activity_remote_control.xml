@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity">
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/textview_show_result"
+        android:layout_width="match_parent"
+        android:minHeight="100dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_below="@+id/textview_show_result"
+        android:text="学习"
+        android:id="@+id/button_study"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_below="@+id/button_study"
+        android:text="发送数据"
+        android:id="@+id/button_send_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_below="@+id/button_send_data"
+        android:text="获取品牌"
+        android:id="@+id/button_get_band"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -27,6 +27,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
@@ -35,6 +36,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceL
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
@@ -96,7 +98,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
         //使用数据库中的数据
-        datasTop = DataSupport.findAll(Device.class);
+        datasTop.addAll( GetwayManager.getInstance().queryAllGetwayDevice());
         datasBottom = DataSupport.findAll(SmartDev.class);
 
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
@@ -112,6 +114,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     switch (deviceType) {
                         case "SMART_LOCK":
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
+                            break;
+                        case "IRMOTE_V2":
+                            startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
                             break;
                     }
                 } else {

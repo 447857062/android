@@ -4,6 +4,7 @@ import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
@@ -20,7 +21,10 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Org;
     private String Ver;
     private String name;
-    private List<Room> roomList;
+    /**
+     * 数据库中的关联关系必须要初始化好列表
+     */
+    private List<Room> roomList=new ArrayList<>();
 
     public String getName() {
         return name;

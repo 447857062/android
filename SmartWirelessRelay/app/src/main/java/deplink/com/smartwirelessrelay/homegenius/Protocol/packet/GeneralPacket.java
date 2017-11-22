@@ -74,6 +74,9 @@ public class GeneralPacket extends BasicPacket {
     public int packQueryWifiListData( byte[]xdata) {
         return packData(xdata,ComandID.CMD_DEV_SCAN_WIFI);
     }
+    public int packRemoteControlData( byte[]xdata) {
+        return packData(xdata,ComandID.SET_CMD);
+    }
     public int packSetWifiListData( byte[]xdata) {
         return packData(xdata,ComandID.CMD_DEV_SET_WIFI);
     }

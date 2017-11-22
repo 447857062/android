@@ -14,6 +14,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwaySettingOptionsActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.ChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
@@ -85,6 +86,13 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
             case "智能网关":
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_SMART_GETWAY);
                 break;
+            case "红外万能遥控":
+                startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
+                break;
+            case "智能空调遥控":
+                intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, ChooseBandActivity.class);
+                startActivity( intentQrcodeSn);
+                break;
             default:
                 startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_SN);
 
@@ -96,6 +104,10 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
 
     public final static int REQUEST_CODE_DEVICE_SN = 1;
     public final static int REQUEST_ADD_SMART_GETWAY = 2;
+    /**
+     * 红外万能遥控
+     */
+    public final static int REQUEST_ADD_INFRAED_UNIVERSAL_RC = 3;
 
     @Override
     public void onClick(View v) {
@@ -115,14 +127,15 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Intent intent = new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
-
+        String qrCodeResult = data.getStringExtra("deviceSN");
+        Log.i(TAG, "二维码扫码结果=" + qrCodeResult);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_DEVICE_SN:
-                    String snCode = data.getStringExtra("deviceSN");
-                    if (snCode.contains("SMART_LOCK")) {
+
+                    if (qrCodeResult.contains("SMART_LOCK")) {
                         intent.putExtra("mRoomName", mRoomName);
-                        intent.putExtra("currentAddDevice", snCode);
+                        intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", "SMART_LOCK");
                         startActivity(intent);
 
@@ -136,9 +149,16 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
 
                     }
                     break;
+                case REQUEST_ADD_INFRAED_UNIVERSAL_RC:
+                    //{"org":"ismart","tp":"IRMOTE_V2","ad":"00-12-4b-00-08-93-55-bb","ver":"1"}
+                    intent.putExtra("mRoomName", mRoomName);
+                    intent.putExtra("currentAddDevice", qrCodeResult);
+                    intent.putExtra("DeviceType", "IRMOTE_V2");
+                    startActivity(intent);
+                    break;
                 case REQUEST_ADD_SMART_GETWAY:
                     //添加智能网关
-                   // intent = new Intent(AddDeviceQRcodeActivity.this, GetwayCheckActivity.class);
+                    // intent = new Intent(AddDeviceQRcodeActivity.this, GetwayCheckActivity.class);
                     intent = new Intent(AddDeviceQRcodeActivity.this, AddGetwaySettingOptionsActivity.class);
                     String uid = "77685180654101946200316696479888";
                     intent.putExtra("currentAddDevice", uid);

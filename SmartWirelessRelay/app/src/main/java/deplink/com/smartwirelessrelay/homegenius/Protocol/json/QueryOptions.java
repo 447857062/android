@@ -22,6 +22,22 @@ public class QueryOptions implements Serializable {
     private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Device> Device;
     private long timestamp;
     private String  AuthId;
+    private String  Data;
+
+    public String getData() {
+        return Data;
+    }
+
+    public void setData(String data) {
+        Data = data;
+    }
+
+    /**
+     * 查询智能设备使用
+     */
+    private String SmartUid;
+
+
     public String getResult() {
         return Result;
     }
@@ -62,10 +78,7 @@ public class QueryOptions implements Serializable {
         Result = result;
     }
 
-    /**
-     * 查询智能设备使用
-     */
-    private String SmartUid;
+
 
     public String getOP() {
         return OP;

@@ -26,10 +26,11 @@ import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 /**
  * 添加网关走到添加网关名称，配置wifi网关
  */
-public class AddGetwaySettingOptionsActivity extends Activity implements View.OnClickListener,DeviceListener{
+public class AddGetwaySettingOptionsActivity extends Activity implements View.OnClickListener, DeviceListener {
     private Button button_save;
     private Button button_config_wifi;
     private EditText edittext_input_devie_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,27 +46,30 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
     }
 
     private void initViews() {
-        button_save= (Button) findViewById(R.id.button_save);
-        button_config_wifi= (Button) findViewById(R.id.button_config_wifi);
-        edittext_input_devie_name= (EditText) findViewById(R.id.edittext_input_devie_name);
+        button_save = (Button) findViewById(R.id.button_save);
+        button_config_wifi = (Button) findViewById(R.id.button_config_wifi);
+        edittext_input_devie_name = (EditText) findViewById(R.id.edittext_input_devie_name);
     }
 
     /**
      * 网关设备扫码出来的字符串
      */
     private String currentAddDevice;
+
     private void initDatas() {
         currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         mRoomName = getIntent().getStringExtra("mRoomName");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
     }
+
     private DeviceManager mDeviceManager;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button_save:
-                if(currentAddDevice!=null){
+                if (currentAddDevice != null) {
                     mDeviceManager.bindDevice(currentAddDevice);
                 }
                 break;
@@ -79,19 +83,21 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
     public void responseQueryResult(String result) {
 
     }
-    private static final int MSG_BIND_DEVICE_RESPONSE=100;
-    private Handler mHanHandler =new Handler(){
+
+    private static final int MSG_BIND_DEVICE_RESPONSE = 100;
+    private Handler mHanHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_BIND_DEVICE_RESPONSE:
 
-                    Toast.makeText(AddGetwaySettingOptionsActivity.this,"绑定网关设备成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddGetwaySettingOptionsActivity.this, "绑定网关设备成功", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     };
+
     private boolean isDeviceAddSuccess(DeviceList aDeviceList) {
         for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
             if (aDeviceList.getDevice().get(i).getUid().equals(currentAddDevice)) {
@@ -101,28 +107,30 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
         return false;
     }
+
     private String deviceName;
     private String mRoomName;
+
     @Override
     public void responseBindDeviceResult(String result) {
-        Gson gson=new Gson();
+        Gson gson = new Gson();
         boolean addDeviceSuccess;
-        DeviceList mDeviceList= gson.fromJson(result, DeviceList.class);
-        addDeviceSuccess=isDeviceAddSuccess(mDeviceList);
+        DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
+        addDeviceSuccess = isDeviceAddSuccess(mDeviceList);
         mDeviceManager.addDBGetwayDevice(currentAddDevice);
-                deviceName=edittext_input_devie_name.getText().toString();
-        if(deviceName.equals("")){
-            deviceName="家里的网关";
+        deviceName = edittext_input_devie_name.getText().toString();
+        if (deviceName.equals("")) {
+            deviceName = "家里的网关";
         }
-                for (int i = 0; i < mDeviceList.getDevice().size(); i++) {
-                    if (mDeviceList.getDevice().get(i).getUid().equals(currentAddDevice)) {
-                        Room room = RoomManager.getInstance().findRoom(mRoomName, false);
-                        mDeviceManager.updateGetwayDeviceInWhatRoom(room,mDeviceList.getDevice().get(i).getUid(),deviceName);
-                    }
-                }
+        for (int i = 0; i < mDeviceList.getDevice().size(); i++) {
+            if (mDeviceList.getDevice().get(i).getUid().equals(currentAddDevice)) {
+                Room room = RoomManager.getInstance().findRoom(mRoomName, false);
+                mDeviceManager.updateGetwayDeviceInWhatRoom(room, mDeviceList.getDevice().get(i).getUid(), deviceName);
+            }
+        }
 
 
-        if(addDeviceSuccess){
+        if (addDeviceSuccess) {
             mHanHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
         }
     }

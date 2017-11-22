@@ -2,6 +2,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.room;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -19,7 +20,11 @@ import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.RoomGetwa
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
+/**
+ * 查看智能设备列表的界面
+ */
 public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+    private static final String TAG="DeviceNumberActivity";
     private ImageView image_back;
     private ListView listview_devices;
     private RoomDevicesListAdapter mRoomDevicesAdapter;
@@ -67,6 +72,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mRoomGetwayDevicesListAdapter=new RoomGetwayDevicesListAdapter(this,mGetwayDevices,currentRoom,mDeviceManager);
         listview_getway_devices.setAdapter(mRoomGetwayDevicesListAdapter);
         mRoomGetwayDevicesListAdapter.notifyDataSetChanged();
+        Log.i(TAG,"初始化设备列表，智能设备="+mDevices.size()+"网关设备="+mGetwayDevices.size());
     }
 
     private void initViews() {

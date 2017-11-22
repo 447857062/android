@@ -7,6 +7,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChang
  */
 public class RemoteConnectManager implements NetStatuChangeReceiver.onNetStatuschangeListener{
     private static final String TAG="RemoteConnectManager";
+
     @Override
     public void onNetStatuChange(int netStatu) {
 
