@@ -39,10 +39,6 @@ public interface LocalConnecteListener {
     void OnGetBindresult(String setResult);
 
     /**
-     * WiFi连接不可用
-     */
-    void wifiConnectUnReachable();
-    /**
      * 查询到wifi列表
      */
     void getWifiList(String result);

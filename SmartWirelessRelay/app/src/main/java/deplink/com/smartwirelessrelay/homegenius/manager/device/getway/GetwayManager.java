@@ -17,6 +17,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 
@@ -76,7 +77,7 @@ public class GetwayManager implements LocalConnecteListener{
         mGetwayListenerList=new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            mLocalConnectmanager.InitLocalConnectManager(mContext);
+            mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -153,6 +154,13 @@ public class GetwayManager implements LocalConnecteListener{
         Log.i(TAG, "数据库中已存在相同网关设备，不必要添加");
         return false;
     }
+
+    /**
+     *
+     * @param room 更新房间
+     * @param deviceUid 当前网关设备
+     * @param deviceName 当前网关设备名称
+     */
     public void updateGetwayDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
         cachedThreadPool.execute(new Runnable() {
             @Override
@@ -255,10 +263,6 @@ public class GetwayManager implements LocalConnecteListener{
         }
     }
 
-    @Override
-    public void wifiConnectUnReachable() {
-
-    }
 
     @Override
     public void getWifiList(String result) {

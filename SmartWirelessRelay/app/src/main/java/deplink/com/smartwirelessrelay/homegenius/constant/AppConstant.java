@@ -32,4 +32,5 @@ public class AppConstant {
      * 本地连接socket 输入输出流的超时
      */
     public static final int LOCAL_SERVER_SOCKET_TIMEOUT = 5000;
+    public static final String  BIND_APP_MAC = "77685180654101946200316696479445";
 }

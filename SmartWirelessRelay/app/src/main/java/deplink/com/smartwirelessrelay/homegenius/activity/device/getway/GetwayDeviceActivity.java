@@ -8,21 +8,27 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 public class GetwayDeviceActivity extends Activity implements View.OnClickListener, GetwayListener {
     private Button button_delete_device;
     private GetwayManager mGetwayManager;
     private boolean isStartFromExperience;
     private RelativeLayout layout_config_wifi_getway;
+    private RelativeLayout layout_select_room;
+    private TextView textview_select_room_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +52,16 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private void initEvents() {
         button_delete_device.setOnClickListener(this);
         layout_config_wifi_getway.setOnClickListener(this);
+        layout_select_room.setOnClickListener(this);
     }
 
     private void initViews() {
         button_delete_device = (Button) findViewById(R.id.button_delete_device);
         layout_config_wifi_getway = (RelativeLayout) findViewById(R.id.layout_config_wifi_getway);
+        layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
+        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
     }
-
+    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -68,6 +77,11 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.layout_config_wifi_getway:
                 startActivity(new Intent(this, GetwayCheckActivity.class));
+                break;
+            case R.id.layout_select_room:
+                Intent intent = new Intent(this, AddDeviceActivity.class);
+                intent.putExtra("EditSmartLockActivity", true);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
         }
     }
@@ -88,7 +102,18 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         }
     };
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
+            String roomName = data.getStringExtra("roomName");
+            Room room= RoomManager.getInstance().findRoom(roomName,true);
+            String deviceUid=mGetwayManager.getCurrentSelectGetwayDevice().getUid();
+            String deviceName=mGetwayManager.getCurrentSelectGetwayDevice().getName();
+            mGetwayManager.updateGetwayDeviceInWhatRoom(room,deviceUid,deviceName);
+            textview_select_room_name.setText(roomName);
+        }
+    }
     @Override
     public void responseResult(String result) {
         boolean deleteSuccess = true;

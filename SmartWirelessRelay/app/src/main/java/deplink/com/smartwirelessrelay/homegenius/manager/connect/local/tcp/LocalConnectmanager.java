@@ -3,6 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -91,13 +92,13 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
         return instance;
     }
-
+    private String appAuth;
     /**
      * 初始化本地连接管理器
      */
-    public int InitLocalConnectManager(Context context) {
+    public int InitLocalConnectManager(Context context,String bindAppAuth) {
         this.mContext = context;
-
+        this.appAuth=bindAppAuth;
         this.mLocalConnecteListener = new ArrayList<>();
 
         initRegisterNetChangeReceive();
@@ -242,9 +243,16 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
             Log.e(TAG, "创建sslsocket success" + address.toString());
             //TODO
-            bindApp("77685180654101946200316696479445");
+            if(appAuth==null){
+                if(mContext!=null){
+                    Toast.makeText(mContext,"用户未绑定zgbee模块",Toast.LENGTH_SHORT).show();
+                }
 
-            while (!sslSocket.isClosed()) {
+            }else{
+                bindApp(appAuth);
+            }
+
+            while (sslSocket!=null &&!sslSocket.isClosed()) {
                 if(currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED){
                     getIn();
                 }
@@ -423,30 +431,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         return str;
     }
 
-
-  /*  *//**
-     *
-     * 第一次绑定app
-     * 封装好uid的数据包
-     *//*
-    public void bindApp(byte[]data) {
-        GeneralPacket packet=new GeneralPacket(mContext);
-        packet.packBindUnbindAppPacket( uid, ComandID.CMD_BIND);
-       getOut(data);
-    }
-    *//**
-     * 解除绑定设备
-     *//*
-    public void unBindApp(String uid) {
-        packet.packBindUnbindAppPacket( uid, ComandID.CMD_BIND);
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
-            }
-        });
-    }*/
-
     /**
      * 解析报警记录
      *
@@ -477,9 +461,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         currentNetStatu = netStatu;
         if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
             //TODO wifi连接不可用
-            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                mLocalConnecteListener.get(i).wifiConnectUnReachable();
-            }
+           if(mContext!=null){
+               Toast.makeText(mContext,"wifi连接不可用，本地连接已断开",Toast.LENGTH_SHORT).show();
+           }
             if (mUdpmanager != null) {
                 mUdpmanager = null;
             }
@@ -501,7 +485,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * 重置sslsocket连接
      */
     private void resetSslSocket() {
-
         new Thread(new Runnable() {
             @Override
             public void run() {

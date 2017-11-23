@@ -29,6 +29,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCente
 import deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -93,7 +94,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             @Override
             public void run() {
                 mLocalConnectmanager = LocalConnectmanager.getInstance();
-                mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this);
+                mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this, AppConstant.BIND_APP_MAC);
                 mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
                 mRoomManager = RoomManager.getInstance();
                 mRoomManager.initRoomManager();
@@ -249,10 +250,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     }
 
-    @Override
-    public void wifiConnectUnReachable() {
-
-    }
 
     @Override
     public void getWifiList(String result) {

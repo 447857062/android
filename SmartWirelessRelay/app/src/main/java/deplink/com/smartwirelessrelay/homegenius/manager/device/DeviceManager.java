@@ -26,6 +26,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.Proto;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.WifiRelaySet;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 
@@ -102,7 +103,7 @@ public class DeviceManager implements LocalConnecteListener {
         this.mDeviceListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            mLocalConnectmanager.InitLocalConnectManager(mContext);
+            mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -465,10 +466,6 @@ public class DeviceManager implements LocalConnecteListener {
         }
     }
 
-    @Override
-    public void wifiConnectUnReachable() {
-
-    }
 
     @Override
     public void getWifiList(String result) {

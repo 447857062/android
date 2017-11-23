@@ -49,9 +49,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         textview_edit_complement.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
     }
-
     private boolean isStartFromExperience;
-
     private void initDatas() {
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
