@@ -17,12 +17,14 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 public class EditSmartLockActivity extends Activity implements View.OnClickListener, DeviceListener {
 
@@ -70,6 +72,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
             String roomName = data.getStringExtra("roomName");
+            Room room= RoomManager.getInstance().findRoom(roomName,true);
+            String deviceUid=mDeviceManager.getCurrentSelectSmartDevice().getUid();
+            String deviceName=mDeviceManager.getCurrentSelectSmartDevice().getName();
+            mDeviceManager.updateSmartDeviceInWhatRoom(room,deviceUid,deviceName);
             textview_select_room_name.setText(roomName);
         }
     }
