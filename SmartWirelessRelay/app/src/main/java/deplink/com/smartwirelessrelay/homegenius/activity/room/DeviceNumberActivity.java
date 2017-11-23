@@ -18,6 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.RoomDevicesListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.RoomGetwayDevicesListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
@@ -55,11 +56,16 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private List<Device>mGetwayDevices=new ArrayList<>();
     private Room currentRoom;
     private DeviceManager mDeviceManager;
+    private GetwayManager mGetwayManager;
     private void initDatas() {
         String hintRoomName = getIntent().getStringExtra("roomname");
         mRoomManager = RoomManager.getInstance();
+
         mDeviceManager=DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this,null);
+
+        mGetwayManager=GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this,null);
 
         currentRoom=mRoomManager.findRoom(hintRoomName,true);
 
@@ -69,7 +75,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mRoomDevicesAdapter.notifyDataSetChanged();
 
         mGetwayDevices= currentRoom.getmGetwayDevices();
-        mRoomGetwayDevicesListAdapter=new RoomGetwayDevicesListAdapter(this,mGetwayDevices,currentRoom,mDeviceManager);
+        mRoomGetwayDevicesListAdapter=new RoomGetwayDevicesListAdapter(this,mGetwayDevices,currentRoom,mGetwayManager);
         listview_getway_devices.setAdapter(mRoomGetwayDevicesListAdapter);
         mRoomGetwayDevicesListAdapter.notifyDataSetChanged();
         Log.i(TAG,"初始化设备列表，智能设备="+mDevices.size()+"网关设备="+mGetwayDevices.size());

@@ -14,7 +14,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -25,12 +25,12 @@ public class RoomGetwayDevicesListAdapter extends BaseAdapter {
     private Context mContext;
     private List<Device> mGetwayDev;
     private Room currentRoom;
-    private DeviceManager mDeviceManager;
-    public RoomGetwayDevicesListAdapter(Context mContext, List<Device> devices, Room room,DeviceManager deviceManager) {
+    private GetwayManager mGetwayManager;
+    public RoomGetwayDevicesListAdapter(Context mContext, List<Device> devices, Room room,GetwayManager deviceManager) {
         this.mContext = mContext;
         this.mGetwayDev = devices;
         this.currentRoom=room;
-        this.mDeviceManager=deviceManager;
+        this.mGetwayManager=deviceManager;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class RoomGetwayDevicesListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Log.i(TAG, "imageview_delete onclick");
                 //删除数据库中的数据
-               mDeviceManager.deleteGetwayDeviceInWhatRoom(currentRoom,mGetwayDev.get(position).getUid());
+               mGetwayManager.deleteGetwayDeviceInWhatRoom(currentRoom,mGetwayDev.get(position).getUid());
                 mGetwayDev.remove(position);
                 notifyDataSetChanged();
             }

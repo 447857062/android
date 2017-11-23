@@ -54,9 +54,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     }
 
     private List<SSIDList> mDatas;
-    private String currentAddDevice;
     private void initDatas() {
-        currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         mDatas = new ArrayList<>();
@@ -126,7 +124,6 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
             intent.putExtra(setApCliEncrypType,setApCliEncrypType);
             intent.putExtra(setApCliAuthMode,setApCliAuthMode);
             intent.putExtra(setChannel,setChannel);
-            intent.putExtra("currentAddDevice",currentAddDevice);
             startActivity(intent);
         }
 

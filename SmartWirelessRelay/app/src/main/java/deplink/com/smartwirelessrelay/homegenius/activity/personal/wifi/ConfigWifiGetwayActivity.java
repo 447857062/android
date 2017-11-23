@@ -26,7 +26,6 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     private Button button_connect_right_now;
     private EditText edittext_input_wifi_password;
     private DeviceManager mDeviceManager;
-    private String currentAddDevice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +39,6 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     private String setApCliAuthMode;
     private String setChannel;
     private void initDatas() {
-        currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         setApCliSsid=getIntent().getStringExtra("setApCliSsid");
         setApCliEncrypType=getIntent().getStringExtra("setApCliEncrypType");
         setApCliAuthMode=getIntent().getStringExtra("setApCliAuthMode");
@@ -81,7 +79,6 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
                     mDeviceManager.setWifiRelay(setCmd);
 
                     Intent intent=new Intent(ConfigWifiGetwayActivity.this,AddGetwaySettingOptionsActivity.class);
-                    intent.putExtra("currentAddDevice",currentAddDevice);
                     startActivity(intent);
                 }
 

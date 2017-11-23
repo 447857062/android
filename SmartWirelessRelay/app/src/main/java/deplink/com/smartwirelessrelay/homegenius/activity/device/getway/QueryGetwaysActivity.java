@@ -19,6 +19,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 
 /**
  * 获取所有的网关
@@ -49,6 +50,7 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
 
     private void initDatas() {
         currentAddDevice=getIntent().getStringExtra("currentAddDevice");
+        GetwayManager.getInstance().setCurrentAddDevice(currentAddDevice);
         mUdpmanager = UdpManager.getInstance();
         mUdpmanager.InitUdpConnect(this, this);
         mDevices=new ArrayList<>();
@@ -75,8 +77,6 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
                     Toast.makeText(QueryGetwaysActivity.this,"检查到IP为:"+ msg.obj+"的网关",Toast.LENGTH_SHORT).show();
                     //TODO 连接tcp/ip
                     Intent intent=new Intent(QueryGetwaysActivity.this,ScanWifiListActivity.class);
-                    Log.i(TAG,"查询网关：当前要添加的设备是="+currentAddDevice);
-                    intent.putExtra("currentAddDevice",currentAddDevice);
                     startActivity(intent);
                     break;
             }

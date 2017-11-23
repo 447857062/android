@@ -121,7 +121,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     }
                 } else {
                     //网关设备
-                    mDeviceManager.setCurrentSelectGetwayDevice(datasTop.get(position));
+                    GetwayManager.getInstance().setCurrentSelectGetwayDevice(datasTop.get(position));
                     startActivity(new Intent(DevicesActivity.this, GetwayDeviceActivity.class));
                 }
             }

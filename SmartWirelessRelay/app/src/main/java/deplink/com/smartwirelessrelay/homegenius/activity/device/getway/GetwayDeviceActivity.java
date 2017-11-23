@@ -12,18 +12,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 
-public class GetwayDeviceActivity extends Activity implements View.OnClickListener, DeviceListener {
+public class GetwayDeviceActivity extends Activity implements View.OnClickListener, GetwayListener {
     private Button button_delete_device;
-    private DeviceManager mDeviceManager;
+    private GetwayManager mGetwayManager;
     private boolean isStartFromExperience;
     private RelativeLayout layout_config_wifi_getway;
     @Override
@@ -40,8 +37,8 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         if (isStartFromExperience) {
 
         } else {
-            mDeviceManager = DeviceManager.getInstance();
-            mDeviceManager.InitDeviceManager(this, this);
+            mGetwayManager=GetwayManager.getInstance();
+            mGetwayManager.InitGetwayManager(this,this);
         }
 
     }
@@ -65,7 +62,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                     Toast.makeText(this, "删除网关设备成功", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, DevicesActivity.class));
                 } else {
-                    mDeviceManager.deleteGetwayDevice();
+                    mGetwayManager.deleteGetwayDevice();
                 }
 
                 break;
@@ -75,10 +72,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
 
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private Handler mHandler = new Handler() {
@@ -87,7 +80,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
-                    mDeviceManager.deleteDBGetwayDevice(mDeviceManager.getCurrentSelectGetwayDevice().getUid());
+                    mGetwayManager.deleteDBGetwayDevice(mGetwayManager.getCurrentSelectGetwayDevice().getUid());
                     Toast.makeText(GetwayDeviceActivity.this, "删除设备成功", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(GetwayDeviceActivity.this, DevicesActivity.class));
                     break;
@@ -95,28 +88,19 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         }
     };
 
+
     @Override
-    public void responseBindDeviceResult(String result) {
+    public void responseResult(String result) {
         boolean deleteSuccess = true;
         Gson gson = new Gson();
         DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
         for (int i = 0; i < mDeviceList.getDevice().size(); i++) {
-            if (mDeviceList.getDevice().get(i).getUid().equals(mDeviceManager.getCurrentSelectGetwayDevice().getUid())) {
+            if (mDeviceList.getDevice().get(i).getUid().equals(mGetwayManager.getCurrentSelectGetwayDevice().getUid())) {
                 deleteSuccess = false;
             }
         }
         if (deleteSuccess) {
             mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
         }
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
-
-    @Override
-    public void responseSetWifirelayResult(int result) {
-
     }
 }
