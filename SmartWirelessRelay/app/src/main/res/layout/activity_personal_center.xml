@@ -59,38 +59,12 @@
             android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_config_wifi_getway"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_getway_check"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/darker_gray"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="50dp"
-            android:text="配置Wifi网关" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_experience_center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_config_wifi_getway"
+        android:layout_below="@+id/layout_getway_check"
         android:layout_marginTop="10dp"
         android:background="@android:color/darker_gray"
         android:gravity="center_vertical"

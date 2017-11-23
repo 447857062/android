@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
@@ -91,15 +92,17 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     }
 
     private SQLiteDatabase db;
-
+    private boolean isStartFromExperience;
     void initData() {
-        //生成数据库
-      /*  if (db == null) {
-            db = Connector.getDatabase();
-        }*/
-        mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this);
-        mSmartLockManager.addSmartLockListener(this);
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        if(isStartFromExperience){
+
+        }else{
+            mSmartLockManager = SmartLockManager.getInstance();
+            mSmartLockManager.InitSmartLockManager(this);
+            mSmartLockManager.addSmartLockListener(this);
+        }
+
         kbUtil = new KeyboardUtil(this);
         ArrayList<EditText> list = new ArrayList<EditText>();
         list.add(etPwdOne);
@@ -142,7 +145,13 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                             String strReapt = etPwdText.getText().toString();
                             //TODO 查询管理密码 ，就是使用输入的密码开门，如果返回密码错误，就是错误
                             currentPassword = strReapt;
-                            mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
+                            if(isStartFromExperience){
+                                Toast.makeText(SetLockPwdActivity.this,"开门成功",Toast.LENGTH_SHORT).show();
+                                SetLockPwdActivity.this.finish();
+                            }else{
+                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
+                            }
+
                             etPwdOne.setText("");
                             etPwdTwo.setText("");
                             etPwdThree.setText("");

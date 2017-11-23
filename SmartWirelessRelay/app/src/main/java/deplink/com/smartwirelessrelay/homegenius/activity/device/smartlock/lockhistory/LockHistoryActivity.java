@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistory;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistorys;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.UpdateSmartLockUserIdActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
@@ -29,12 +30,12 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 public class LockHistoryActivity extends Activity implements SmartLockListener,View.OnClickListener{
     private static final String TAG = "LockHistory";
     private ListView dev_list;
-    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistory> mRecordList;
+    private List<LockHistory> mRecordList;
     private LockHistoryAdapter recordAdapter;
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_back;
     private TextView textview_update_id;
-
+    private boolean isStartFromExperience;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
     @Override
     protected void onPause() {
         super.onPause();
-        mSmartLockManager.removeSmartLockListener(this);
+        if(!isStartFromExperience){
+            mSmartLockManager.removeSmartLockListener(this);
+        }
     }
 
     private void initEvents() {
@@ -57,6 +60,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
     }
 
     private void initData() {
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         mRecordList = new ArrayList<>();
         recordAdapter = new LockHistoryAdapter(this, mRecordList);
     }
@@ -72,10 +76,31 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
     @Override
     protected void onResume() {
         super.onResume();
-        mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(this);
-        mSmartLockManager.addSmartLockListener(this);
-        mSmartLockManager.queryLockHistory();
+        if(isStartFromExperience){
+            mRecordList.clear();
+            LockHistory temp=new LockHistory();
+            temp.setTime("2017-11-23 12:35:23");
+            temp.setUserid("001");
+            mRecordList.add(temp);
+            temp=new LockHistory();
+            temp.setTime("2017-11-24 12:35:23");
+            temp.setUserid("002");
+            mRecordList.add(temp);
+            temp=new LockHistory();
+            temp.setTime("2017-11-25 12:35:23");
+            temp.setUserid("003");
+            mRecordList.add(temp);
+            temp=new LockHistory();
+            temp.setTime("2017-11-26 12:35:23");
+            temp.setUserid("004");
+            mRecordList.add(temp);
+        }else{
+            mSmartLockManager = SmartLockManager.getInstance();
+            mSmartLockManager.InitSmartLockManager(this);
+            mSmartLockManager.addSmartLockListener(this);
+            mSmartLockManager.queryLockHistory();
+        }
+
     }
 
     private static final int MSG_GET_HISTORYRECORD = 0x01;

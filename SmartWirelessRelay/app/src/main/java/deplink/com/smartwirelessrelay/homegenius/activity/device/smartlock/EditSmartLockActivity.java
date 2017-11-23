@@ -50,9 +50,12 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         layout_select_room.setOnClickListener(this);
     }
 
+    private boolean isStartFromExperience;
+
     private void initDatas() {
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
     }
 
     private void initViews() {
@@ -88,7 +91,12 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 break;
             case R.id.button_delete_device:
                 //删除设备
-                mDeviceManager.deleteSmartDevice();
+                if (!isStartFromExperience) {
+                    mDeviceManager.deleteSmartDevice();
+                } else {
+                    startActivity(new Intent(this, DevicesActivity.class));
+                }
+
                 break;
             case R.id.image_back:
                 onBackPressed();

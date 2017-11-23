@@ -233,7 +233,7 @@ public class SmartLockManager implements LocalConnecteListener {
     public void OnGetSetresult(String setResult) {
         Gson gson = new Gson();
         ResultType type = gson.fromJson(setResult, ResultType.class);
-        if (type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
+        if (type!=null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
             OpResult result = gson.fromJson(setResult, OpResult.class);
             switch (result.getCmd()) {
                 case SmartLockConstant.CMD.OPEN:

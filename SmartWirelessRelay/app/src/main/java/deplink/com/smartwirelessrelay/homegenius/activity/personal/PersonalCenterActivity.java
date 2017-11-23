@@ -14,13 +14,11 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 
 public class PersonalCenterActivity extends Activity implements View.OnClickListener{
     private RelativeLayout layout_getway_check;
-    private RelativeLayout layout_config_wifi_getway;
     private RelativeLayout layout_experience_center;
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -37,7 +35,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_getway_check.setOnClickListener(this);
-        layout_config_wifi_getway.setOnClickListener(this);
         layout_experience_center.setOnClickListener(this);
         layout_home_page.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
@@ -47,7 +44,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
 
     private void initViews() {
         layout_getway_check= (RelativeLayout) findViewById(R.id.layout_getway_check);
-        layout_config_wifi_getway= (RelativeLayout) findViewById(R.id.layout_config_wifi_getway);
         layout_experience_center= (RelativeLayout) findViewById(R.id.layout_experience_center);
         layout_home_page= (LinearLayout) findViewById(R.id.layout_home_page);
         layout_devices= (LinearLayout) findViewById(R.id.layout_devices);
@@ -77,10 +73,8 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             case R.id.layout_getway_check:
                 startActivity(new Intent(PersonalCenterActivity.this, GetwayCheckActivity.class));
                 break;
-            case R.id.layout_config_wifi_getway:
-                startActivity(new Intent(PersonalCenterActivity.this,ScanWifiListActivity.class));
-                break;
             case R.id.layout_experience_center:
+                startActivity(new Intent(this,ExperienceDevicesActivity.class));
                 break;
             case R.id.layout_home_page:
                 startActivity(new Intent(this,SmartHomeMainActivity.class));
@@ -92,7 +86,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 startActivity(new Intent(this,RoomActivity.class));
                 break;
             case R.id.layout_personal_center:
-                startActivity(new Intent(this,ExperienceDevicesActivity.class));
                 break;
         }
     }

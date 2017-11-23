@@ -6,9 +6,10 @@
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity">
 
     <RelativeLayout
+        android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_blue_light"
         android:layout_height="60dp"
+        android:background="@android:color/holo_blue_light"
         android:gravity="center_vertical">
 
         <ImageView
@@ -23,8 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="智能门锁"
             android:layout_centerVertical="true"
+            android:text="智能门锁"
             android:textColor="@android:color/white" />
 
         <TextView
@@ -37,43 +38,124 @@
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
-    <FrameLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/button_alert_record"
+        <RelativeLayout
+            android:id="@+id/layout_alert_record"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|left"
-            android:text="报警记录" />
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true">
 
-        <Button
-            android:id="@+id/button_open_lock_record"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
-            android:text="开锁记录" />
+            <ImageView
+                android:id="@+id/imageview_alert_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher" />
 
-        <Button
-            android:id="@+id/button_no_save_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
-            android:text="密码不保存" />
+            <TextView
+                android:layout_below="@+id/imageview_alert_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="报警记录" />
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/button_authorise"
+        <RelativeLayout
+            android:id="@+id/layout_lock_record"
+            android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:text="授权" />
-        <Button
-            android:id="@+id/button_open"
+            android:layout_height="80dp"
+            android:layout_toRightOf="@+id/layout_alert_record">
+
+            <ImageView
+                android:id="@+id/imageview_lock_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_below="@+id/imageview_lock_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="开锁记录" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_password_not_save"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:text="开锁" />
-    </FrameLayout>
+            android:layout_height="80dp"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/layout_lock_record">
+
+            <ImageView
+                android:id="@+id/imageview_password_not_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_below="@+id/imageview_password_not_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="密码不保存" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_auth"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/layout_password_not_save">
+
+            <ImageView
+                android:id="@+id/imageview_auth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_below="@+id/imageview_auth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="授权" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_open"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_marginTop="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/layout_alert_record">
+
+            <ImageView
+                android:id="@+id/iamgeview_option_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iamgeview_option_open"
+                android:layout_centerHorizontal="true"
+                android:text="开锁" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
 </RelativeLayout>
