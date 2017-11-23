@@ -235,12 +235,9 @@ public class DragGridView extends GridView{
 		if(x < leftOffset || x > leftOffset + dragView.getWidth()){
 			return false;
 		}
-		
-		if(y < topOffset || y > topOffset + dragView.getHeight()){
-			return false;
-		}
-		
-		return true;
+
+		return !(y < topOffset || y > topOffset + dragView.getHeight());
+
 	}
 	
 	
@@ -418,6 +415,6 @@ public class DragGridView extends GridView{
 		 * @param to
 		 * 			拖拽到的position
 		 */
-		public void onChange(int form, int to);
+		void onChange(int form, int to);
 	}
 }

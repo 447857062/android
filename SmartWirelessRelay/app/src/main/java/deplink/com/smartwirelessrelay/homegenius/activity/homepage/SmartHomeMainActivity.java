@@ -21,9 +21,11 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
@@ -108,9 +110,30 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         oneDevice.setDeviceName("智能开关");
         oneDevice.setOnline(false);
         mExperienceCenterDeviceList.add(oneDevice);
+        oneDevice=new ExperienceCenterDevice();
+        oneDevice.setDeviceName("智能网关");
+        oneDevice.setOnline(false);
+        mExperienceCenterDeviceList.add(oneDevice);
         mExperienceCenterListAdapter=new ExperienceCenterListAdapter(this,mExperienceCenterDeviceList);
+        listview_experience_center.setOnItemClickListener(mExperienceCenterListClickListener);
     }
-
+    private AdapterView.OnItemClickListener mExperienceCenterListClickListener=new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            switch (mExperienceCenterDeviceList.get(position).getDeviceName()){
+                case "智能门锁":
+                    Intent intent = new Intent(SmartHomeMainActivity.this, SmartLockActivity.class);
+                    intent.putExtra("isStartFromExperience",true);
+                    startActivity(intent);
+                    break;
+                case "智能网关":
+                    Intent intentGetwayDevice = new Intent(SmartHomeMainActivity.this, GetwayDeviceActivity.class);
+                    intentGetwayDevice.putExtra("isStartFromExperience",true);
+                    startActivity(intentGetwayDevice);
+                    break;
+            }
+        }
+    };
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);

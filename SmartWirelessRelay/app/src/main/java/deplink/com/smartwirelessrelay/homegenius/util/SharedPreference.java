@@ -21,7 +21,7 @@ public class SharedPreference {
     }
 
     private void saveData(String name) {
-        share = mContext.getSharedPreferences(name, mContext.MODE_PRIVATE);
+        share = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
         editor = share.edit();
     }
 

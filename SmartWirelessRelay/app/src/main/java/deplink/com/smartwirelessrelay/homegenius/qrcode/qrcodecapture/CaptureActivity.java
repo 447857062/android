@@ -24,6 +24,7 @@ import java.util.Vector;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.QueryGetwaysActivity;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.CameraManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.CaptureActivityHandler;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.InactivityTimer;
@@ -33,6 +34,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     private static final String TAG = "CaptureActivity";
 
     public static final int CAPTURE_TYPE_ROUTER_SN = 1;
+    public static final int REQUEST_CODE_GETWAY = 3;
 
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
@@ -47,7 +49,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     private boolean vibrate = true;
     private int type = 0;
     private TextView textview_title;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +225,12 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
                 this.setResult(RESULT_OK, intent);
                 finish();
                 break;
-
+            case REQUEST_CODE_GETWAY:
+                intent =new Intent(this, QueryGetwaysActivity.class);
+                intent.putExtra("currentAddDevice", deviceSn);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

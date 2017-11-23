@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
@@ -87,9 +87,9 @@ public class SmartLockManager implements LocalConnecteListener {
             managerPassword.save();
         }
         packet = new GeneralPacket(mContext);
-
-        cachedThreadPool = Executors.newCachedThreadPool();
-
+        if(cachedThreadPool==null){
+            cachedThreadPool = Executors.newCachedThreadPool();
+        }
 
     }
 

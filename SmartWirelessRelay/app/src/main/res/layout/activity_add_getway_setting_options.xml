@@ -82,16 +82,5 @@
             android:background="@color/blue"
             android:text="保存" />
 
-        <Button
-            android:id="@+id/button_config_wifi"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/button_save"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/blue"
-            android:text="配置wifi网关" />
     </RelativeLayout>
 

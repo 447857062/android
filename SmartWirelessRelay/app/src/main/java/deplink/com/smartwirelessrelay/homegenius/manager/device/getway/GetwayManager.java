@@ -1,11 +1,13 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.device.getway;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 
@@ -22,11 +24,34 @@ public class GetwayManager {
      * 这个类设计成单例
      */
     private static GetwayManager instance;
+    private Context mContext;
+    /**
+     * 添加设备时候，要往那个房间添加
+     */
+    private  String currentAddRoom;
+
+    public String getCurrentAddRoom() {
+        Log.i(TAG,"getCurrentAddRoom:"+currentAddRoom);
+        return currentAddRoom;
+    }
+
+    public void setCurrentAddRoom(String currentAddRoom) {
+        Log.i(TAG,"setCurrentAddRoom:"+currentAddRoom);
+        this.currentAddRoom = currentAddRoom;
+    }
+
     public static synchronized GetwayManager getInstance() {
         if (instance == null) {
             instance = new GetwayManager();
         }
         return instance;
+    }
+    public void InitGetwayManager(Context context) {
+        this.mContext = context;
+        if(cachedThreadPool==null){
+            cachedThreadPool = Executors.newCachedThreadPool();
+        }
+
     }
     public List<Device>queryAllGetwayDevice(){
         List<Device>list=DataSupport.findAll(Device.class);

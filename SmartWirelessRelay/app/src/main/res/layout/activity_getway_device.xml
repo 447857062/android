@@ -104,14 +104,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
-
+    <!--配置wif网关-->
+    <RelativeLayout
+        android:id="@+id/layout_config_wifi_getway"
+        android:layout_below="@+id/layout_select_room"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="配置wif网关"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/imageview_arror_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
     <Button
         android:background="@color/blue"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/layout_select_room"
+        android:layout_below="@+id/layout_config_wifi_getway"
         android:id="@+id/button_delete_device"
         android:text="删除设备"
         android:layout_width="match_parent"

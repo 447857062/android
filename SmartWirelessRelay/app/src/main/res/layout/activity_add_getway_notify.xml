@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/holo_blue_light"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/image_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="网关"
+            android:textColor="@android:color/white" />
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageview_show_net_option"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginTop="100dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textview_info_1"
+        android:layout_marginLeft="50dp"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageview_show_net_option"
+        android:gravity="left"
+        android:text="1.将网关接通网络和电源" />
+
+    <TextView
+        android:layout_marginLeft="50dp"
+        android:id="@+id/textview_info_2"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_info_1"
+        android:gravity="left"
+        android:text="2.确认盒子与手机连接到相同的路由器网络" />
+
+    <RelativeLayout
+        android:id="@+id/layout_info_3"
+        android:layout_marginLeft="50dp"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_below="@+id/textview_info_2">
+
+        <TextView
+            android:id="@+id/textview_info_3_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="3.待网关" />
+        <TextView
+            android:id="@+id/textview_info_3_2"
+            android:layout_toRightOf="@+id/textview_info_3_1"
+            android:textColor="@color/blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="指示灯闪烁时" />
+        <TextView
+            android:id="@+id/textview_info_3_3"
+            android:layout_toRightOf="@+id/textview_info_3_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="，即可点击下一步“添加”" />
+
+    </RelativeLayout>
+    <Button
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/layout_info_3"
+        android:id="@+id/button_next_step"
+        android:text="下一步"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

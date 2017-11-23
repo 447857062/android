@@ -92,10 +92,7 @@ public class ConnectionMonitor {
             packet.packHeathPacket();
             int clientStatus=LocalConnectmanager.getInstance().getOut(packet.data);
             Log.i(TAG, "clientStatus=" + clientStatus);
-            if (clientStatus == -1) {
-                return true;
-            }
-            return false;
+            return clientStatus == -1;
         } catch (Exception se) {
             Log.i(TAG, "断开连接");
             return true;

@@ -98,7 +98,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
         //使用数据库中的数据
-        datasTop.addAll( GetwayManager.getInstance().queryAllGetwayDevice());
+        datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
         datasBottom = DataSupport.findAll(SmartDev.class);
 
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);

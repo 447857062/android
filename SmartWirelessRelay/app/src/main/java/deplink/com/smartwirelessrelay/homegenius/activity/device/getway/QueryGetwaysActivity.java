@@ -7,9 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,58 +15,54 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.adapter.GetwayListDevicesAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 
 /**
- * 查询附近所有的wifi
+ * 获取所有的网关
+ * 判断当前要添加的网关要不要配置wifi
  */
-public class GetwayCheckActivity extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener,UdpManagerGetIPLintener {
-    private static final String TAG = "GetwayCheckActivity";
-    private ImageView image_back;
+public class QueryGetwaysActivity extends Activity implements View.OnClickListener,UdpManagerGetIPLintener {
+    private static final String TAG = "QueryGetwaysActivity";
+    private static final int MSG_CHECK_GETWAY_OK=100;
+    private String currentAddDevice;
+    private TextView textview_cancel;
     private UdpManager mUdpmanager;
-    private ListView listview_getway_devices;
-    private List<Device>mDevices;
-    private GetwayListDevicesAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_getway_check_list);
+        setContentView(R.layout.activity_query_getways);
         initViews();
         initDatas();
         initEvents();
     }
 
-    private void initDatas() {
-        mUdpmanager = UdpManager.getInstance();
-        mUdpmanager.InitUdpConnect(this, this);
-        mDevices=new ArrayList<>();
-        mAdapter=new GetwayListDevicesAdapter(this,mDevices);
-
-    }
-
     private void initEvents() {
-        image_back.setOnClickListener(this);
-        listview_getway_devices.setAdapter(mAdapter);
-        listview_getway_devices.setOnItemClickListener(this);
+        textview_cancel.setOnClickListener(this);
     }
 
     private void initViews() {
-        image_back = (ImageView) findViewById(R.id.image_back);
-        listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
+        textview_cancel= (TextView) findViewById(R.id.textview_cancel);
     }
 
+    private void initDatas() {
+        currentAddDevice=getIntent().getStringExtra("currentAddDevice");
+        mUdpmanager = UdpManager.getInstance();
+        mUdpmanager.InitUdpConnect(this, this);
+        mDevices=new ArrayList<>();
+    }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.image_back:
-                onBackPressed();
+        switch (v.getId()){
+            case R.id.textview_cancel:
+                startActivity(new Intent(this, DevicesActivity.class));
                 break;
         }
     }
-    private static final int MSG_CHECK_GETWAY_OK=100;
+    private List<Device> mDevices;
     private Handler mHandler =new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -78,8 +72,12 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
                     Device device=new Device();
                     device.setIpAddress((String) msg.obj);
                     mDevices.add(device);
-                    mAdapter.notifyDataSetChanged();
-                    Toast.makeText(GetwayCheckActivity.this,"检查到IP为:"+ msg.obj+"的网关",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QueryGetwaysActivity.this,"检查到IP为:"+ msg.obj+"的网关",Toast.LENGTH_SHORT).show();
+                    //TODO 连接tcp/ip
+                    Intent intent=new Intent(QueryGetwaysActivity.this,ScanWifiListActivity.class);
+                    Log.i(TAG,"查询网关：当前要添加的设备是="+currentAddDevice);
+                    intent.putExtra("currentAddDevice",currentAddDevice);
+                    startActivity(intent);
                     break;
             }
         }
@@ -91,10 +89,5 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         msg.what=MSG_CHECK_GETWAY_OK;
         msg.obj=ipAddress;
         mHandler.sendMessage(msg);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(GetwayCheckActivity.this,GetwayDeviceActivity.class));
     }
 }

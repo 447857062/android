@@ -153,8 +153,8 @@ public class SecurityPasswordEditText extends LinearLayout {
 	StringBuilder builder;  
 
 	public interface SecurityEditCompleListener {  
-		public void onNumCompleted(String num); 
-		public void unCompleted(String num); 
+		void onNumCompleted(String num);
+		void unCompleted(String num);
 	}  
 
 	public SecurityEditCompleListener mListener;  

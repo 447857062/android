@@ -21,6 +21,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.AuthoriseDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.PasswordNotsaveDialog;
 
 public class SmartLockActivity extends Activity implements View.OnClickListener, SmartLockListener, AuthoriseDialog.GetDialogAuthtTypeTimeListener {
     private static final String TAG = "SmartLockActivity";
@@ -118,26 +119,34 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
             case R.id.layout_alert_record:
                 Intent intentAlarmHistory = new Intent(this, AlarmHistoryActivity.class);
-                intentAlarmHistory.putExtra("isStartFromExperience", true);
+                intentAlarmHistory.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivity(intentAlarmHistory);
                 break;
             case R.id.layout_lock_record:
                 Intent intentLockHistory = new Intent(this, LockHistoryActivity.class);
-                intentLockHistory.putExtra("isStartFromExperience", true);
+                intentLockHistory.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivity(intentLockHistory);
                 break;
             case R.id.layout_password_not_save:
-                if (isStartFromExperience) {
-                    saveManagetPasswordExperience=false;
-                    mHandler.sendEmptyMessage(MSG_SHOW_NOTSAVE_PASSWORD_DIALOG);
+                PasswordNotsaveDialog dialog=new PasswordNotsaveDialog(this);
+                dialog.setmOnSureClick(new PasswordNotsaveDialog.PasswordNotsaveSureListener() {
+                    @Override
+                    public void onSureClick() {
+                        if (isStartFromExperience) {
+                            saveManagetPasswordExperience=false;
+                            mHandler.sendEmptyMessage(MSG_SHOW_NOTSAVE_PASSWORD_DIALOG);
 
-                } else {
-                    ManagerPassword temp = DataSupport.findFirst(ManagerPassword.class);
-                    temp.setToDefault("remenbEnable");
-                    temp.setToDefault("managerPassword");
-                    int affectColumn = temp.updateAll();
-                    Log.i(TAG, "密码不保存影响的行数=" + affectColumn);
-                }
+                        } else {
+                            ManagerPassword temp = DataSupport.findFirst(ManagerPassword.class);
+                            temp.setToDefault("remenbEnable");
+                            temp.setToDefault("managerPassword");
+                            int affectColumn = temp.updateAll();
+                            Log.i(TAG, "密码不保存影响的行数=" + affectColumn);
+                        }
+                    }
+                });
+                dialog.show();
+
 
                 break;
             case R.id.layout_auth:

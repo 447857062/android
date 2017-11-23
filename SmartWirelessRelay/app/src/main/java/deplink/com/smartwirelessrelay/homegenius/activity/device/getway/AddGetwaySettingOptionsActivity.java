@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,17 +19,18 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
-import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
  * 添加网关走到添加网关名称，配置wifi网关
  */
 public class AddGetwaySettingOptionsActivity extends Activity implements View.OnClickListener, DeviceListener {
+    private static final String TAG="GetwaySettingOptions";
     private Button button_save;
-    private Button button_config_wifi;
     private EditText edittext_input_devie_name;
 
     @Override
@@ -42,12 +44,10 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     private void initEvents() {
         button_save.setOnClickListener(this);
-        button_config_wifi.setOnClickListener(this);
     }
 
     private void initViews() {
         button_save = (Button) findViewById(R.id.button_save);
-        button_config_wifi = (Button) findViewById(R.id.button_config_wifi);
         edittext_input_devie_name = (EditText) findViewById(R.id.edittext_input_devie_name);
     }
 
@@ -58,7 +58,10 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     private void initDatas() {
         currentAddDevice = getIntent().getStringExtra("currentAddDevice");
-        mRoomName = getIntent().getStringExtra("mRoomName");
+        //TODO
+        currentAddDevice="77685180654101946200316696479888";
+        mRoomName = GetwayManager.getInstance().getCurrentAddRoom();
+        Log.i(TAG,"mRoomName="+mRoomName);
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
     }
@@ -73,9 +76,6 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
                     mDeviceManager.bindDevice(currentAddDevice);
                 }
                 break;
-            case R.id.button_config_wifi:
-                startActivity(new Intent(this, ScanWifiListActivity.class));
-                break;
         }
     }
 
@@ -85,13 +85,13 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
     }
 
     private static final int MSG_BIND_DEVICE_RESPONSE = 100;
-    private Handler mHanHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_BIND_DEVICE_RESPONSE:
-
+                    startActivity(new Intent(AddGetwaySettingOptionsActivity.this, DevicesActivity.class));
                     Toast.makeText(AddGetwaySettingOptionsActivity.this, "绑定网关设备成功", Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -113,6 +113,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     @Override
     public void responseBindDeviceResult(String result) {
+        Log.i(TAG,"绑定网关设备返回："+result+"当前要绑定的是：");
         Gson gson = new Gson();
         boolean addDeviceSuccess;
         DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
@@ -131,7 +132,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
 
         if (addDeviceSuccess) {
-            mHanHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
+            mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
         }
     }
 

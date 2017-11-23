@@ -91,7 +91,7 @@ public class RoomManager {
                 for (int i = 0; i < mRooms.size(); i++) {
                     mRooms.get(i).setRoomOrdinalNumber(i);
                     mRooms.get(i).save();
-                };
+                }
             }
         });
 

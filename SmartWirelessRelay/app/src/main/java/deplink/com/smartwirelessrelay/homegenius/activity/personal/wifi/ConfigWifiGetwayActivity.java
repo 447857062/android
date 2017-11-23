@@ -1,6 +1,7 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwaySettingOptionsActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 
@@ -24,6 +26,7 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     private Button button_connect_right_now;
     private EditText edittext_input_wifi_password;
     private DeviceManager mDeviceManager;
+    private String currentAddDevice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,7 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     private String setApCliAuthMode;
     private String setChannel;
     private void initDatas() {
+        currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         setApCliSsid=getIntent().getStringExtra("setApCliSsid");
         setApCliEncrypType=getIntent().getStringExtra("setApCliEncrypType");
         setApCliAuthMode=getIntent().getStringExtra("setApCliAuthMode");
@@ -75,6 +79,10 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
                     setCmd.setChannel(setChannel);
                     setCmd.setApCliWPAPSK(password);
                     mDeviceManager.setWifiRelay(setCmd);
+
+                    Intent intent=new Intent(ConfigWifiGetwayActivity.this,AddGetwaySettingOptionsActivity.class);
+                    intent.putExtra("currentAddDevice",currentAddDevice);
+                    startActivity(intent);
                 }
 
                 break;

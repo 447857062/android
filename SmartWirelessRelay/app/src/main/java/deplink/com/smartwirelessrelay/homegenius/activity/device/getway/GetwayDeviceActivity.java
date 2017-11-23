@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -23,7 +24,8 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 public class GetwayDeviceActivity extends Activity implements View.OnClickListener, DeviceListener {
     private Button button_delete_device;
     private DeviceManager mDeviceManager;
-
+    private boolean isStartFromExperience;
+    private RelativeLayout layout_config_wifi_getway;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,16 +36,24 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     }
 
     private void initDatas() {
-        mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        if (isStartFromExperience) {
+
+        } else {
+            mDeviceManager = DeviceManager.getInstance();
+            mDeviceManager.InitDeviceManager(this, this);
+        }
+
     }
 
     private void initEvents() {
         button_delete_device.setOnClickListener(this);
+        layout_config_wifi_getway.setOnClickListener(this);
     }
 
     private void initViews() {
         button_delete_device = (Button) findViewById(R.id.button_delete_device);
+        layout_config_wifi_getway = (RelativeLayout) findViewById(R.id.layout_config_wifi_getway);
     }
 
     @Override
@@ -51,7 +61,16 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.button_delete_device:
                 //删除设备
-                mDeviceManager.deleteGetwayDevice();
+                if (isStartFromExperience) {
+                    Toast.makeText(this, "删除网关设备成功", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, DevicesActivity.class));
+                } else {
+                    mDeviceManager.deleteGetwayDevice();
+                }
+
+                break;
+            case R.id.layout_config_wifi_getway:
+                startActivity(new Intent(this, GetwayCheckActivity.class));
                 break;
         }
     }

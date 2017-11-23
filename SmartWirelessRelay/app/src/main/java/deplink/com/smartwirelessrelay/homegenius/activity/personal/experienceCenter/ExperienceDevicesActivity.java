@@ -13,6 +13,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 
@@ -81,6 +82,9 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
         Log.i(TAG, "position=" + position);
         switch (position) {
             case 0:
+                Intent intentGetwayDevice = new Intent(ExperienceDevicesActivity.this, GetwayDeviceActivity.class);
+                intentGetwayDevice.putExtra("isStartFromExperience",true);
+                startActivity(intentGetwayDevice);
                 break;
             case 2:
                 Intent intent = new Intent(this, SmartLockActivity.class);

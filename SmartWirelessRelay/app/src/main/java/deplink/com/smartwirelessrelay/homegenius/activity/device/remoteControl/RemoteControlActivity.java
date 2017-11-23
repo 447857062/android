@@ -85,7 +85,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            textview_show_result.setText("返回结果："+(String)msg.obj);
+            textview_show_result.setText("返回结果："+ msg.obj);
         }
     };
     //设置结果:{ "OP": "REPORT", "Method": "Study", "Result": "err" }

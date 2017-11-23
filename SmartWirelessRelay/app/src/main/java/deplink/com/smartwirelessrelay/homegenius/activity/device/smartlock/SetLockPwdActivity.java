@@ -3,7 +3,6 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +33,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     private KeyboardUtil kbUtil;
     private Handler mHandler;
     private Switch switch_remond_managerpassword;
+    private boolean isStartFromExperience;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,13 +91,12 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         switch_remond_managerpassword.setOnCheckedChangeListener(this);
     }
 
-    private SQLiteDatabase db;
-    private boolean isStartFromExperience;
-    void initData() {
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
-        if(isStartFromExperience){
 
-        }else{
+    private void initData() {
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        if (isStartFromExperience) {
+
+        } else {
             mSmartLockManager = SmartLockManager.getInstance();
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
@@ -145,10 +144,10 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                             String strReapt = etPwdText.getText().toString();
                             //TODO 查询管理密码 ，就是使用输入的密码开门，如果返回密码错误，就是错误
                             currentPassword = strReapt;
-                            if(isStartFromExperience){
-                                Toast.makeText(SetLockPwdActivity.this,"开门成功",Toast.LENGTH_SHORT).show();
+                            if (isStartFromExperience) {
+                                Toast.makeText(SetLockPwdActivity.this, "开门成功", Toast.LENGTH_SHORT).show();
                                 SetLockPwdActivity.this.finish();
-                            }else{
+                            } else {
                                 mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
                             }
 
