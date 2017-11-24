@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="1"
+    android:background="@drawable/addtoblack_dialog_background"
+    >
+    <TextView
+        android:id="@+id/textview_unbind_device_type"
+        android:textColor="@color/text_color_3A3A3A"
+        android:textSize="18dp"
+        android:paddingLeft="34dp"
+        android:paddingRight="34dp"
+
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical|left"
+        android:layout_marginTop="35dp"
+        android:text="您将解绑路由器"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/textivew_msg"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="@dimen/text_size_xhdpi_15"
+        android:textColor="@color/text_color_3A3A3A"
+        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="28dp"
+        android:layout_marginRight="28dp"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/dialog_sure_cancel_button"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="取消"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_alignParentRight="true"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/dialog_sure_cancel_button"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="确认"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

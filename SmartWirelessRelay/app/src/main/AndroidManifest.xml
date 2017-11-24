@@ -122,7 +122,10 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.QueryGetwaysActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UserinfoActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UpdateNicknameActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UpdateNicknameActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterSettingActivity"></activity>
     </application>
 
 </manifest>

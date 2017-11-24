@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
+    <!-- android:layout_marginTop="@dimen/recyclerview_righttext_margintop"-->
+    <ImageView
+        android:id="@+id/imageview_devicetype"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="28dp"
+        android:src="@drawable/default_device" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="33dp"
+        android:layout_toRightOf="@+id/imageview_devicetype">
+
+        <TextView
+            android:id="@+id/textview_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:textColor="@color/text_color_3A3A3A"
+            android:textSize="@dimen/text_size_xhdpi_15" />
+
+        <TextView
+            android:id="@+id/textview_device_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_device_name"
+            android:text="--"
+            android:textColor="@color/text_color_908F8F"
+            android:textSize="10dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/devicetype_line_driver" />
+    </RelativeLayout>
+</RelativeLayout>

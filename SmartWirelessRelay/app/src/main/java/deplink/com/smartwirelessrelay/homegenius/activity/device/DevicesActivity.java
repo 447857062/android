@@ -14,29 +14,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
-
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
@@ -117,6 +116,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             break;
                         case "IRMOTE_V2":
                             startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
+                            break;
+                        case "路由器":
+                            RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
+                            startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                     }
                 } else {
@@ -211,21 +214,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_GET_DEVS:
-                    Gson gson = new Gson();
-                    DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
-                    try {
-                        datasTop.clear();
-                        datasTop.addAll(aDeviceList.getDevice());
-                        datasBottom.clear();
-                        datasBottom.addAll(aDeviceList.getSmartDev());
-                        mDeviceAdapter.setTopList(datasTop);
-                        mDeviceAdapter.setBottomList(datasBottom);
-                        mDeviceAdapter.notifyDataSetChanged();
-                    } catch (Exception e) {
-                        //TODO
-                        e.printStackTrace();
-                    }
-
                     try {
                         new AlertDialog
                                 .Builder(DevicesActivity.this)

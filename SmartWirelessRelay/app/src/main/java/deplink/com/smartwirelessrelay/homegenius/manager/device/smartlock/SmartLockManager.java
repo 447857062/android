@@ -77,10 +77,6 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         mLocalConnectmanager.addLocalConnectListener(this);
 
-        //生成数据库
-       /* if (db == null) {
-            db = Connector.getDatabase();
-        }*/
         ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
         Log.i(TAG, "managerPassword!=null" + (managerPassword != null));
         if (managerPassword == null) {
