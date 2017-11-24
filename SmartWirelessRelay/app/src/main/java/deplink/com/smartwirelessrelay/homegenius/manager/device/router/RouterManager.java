@@ -1,5 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.device.router;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
@@ -88,6 +89,25 @@ public class RouterManager  {
                 });
                 mObservable.subscribe(observer);
                 Log.i(TAG, "保存路由器设备=" + success);
+            }
+        });
+
+    }
+    public void updateRouterName(final String name, final Observer observer) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                ContentValues values=new ContentValues();
+                values.put("name",name);
+                final int affectColumn=DataSupport.updateAll(SmartDev.class,values,"Uid=?",currentSelectedRouter.getUid());
+                mObservable=Observable.create(new ObservableOnSubscribe() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                        e.onNext(affectColumn);
+                    }
+                });
+                mObservable.subscribe(observer);
+                Log.i(TAG, "更新路由器名称=" + affectColumn);
             }
         });
 

@@ -35,7 +35,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private Button buttton_delete_router;
     private RouterManager mRouterManager;
     private TextView textview_room_select_2;
-    private TextView textview_route_name_1;
+    private TextView textview_route_name_2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +48,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        textview_route_name_1.setText(mRouterManager.getCurrentSelectedRouter().getName());
+        textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
     }
 
     private void initDatas() {
@@ -81,7 +81,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_reboot_out = (RelativeLayout) findViewById(R.id.layout_reboot_out);
         buttton_delete_router = (Button) findViewById(R.id.buttton_delete_router);
         textview_room_select_2 = (TextView) findViewById(R.id.textview_room_select_2);
-        textview_route_name_1 = (TextView) findViewById(R.id.textview_route_name_1);
+        textview_route_name_2 = (TextView) findViewById(R.id.textview_route_name_2);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -130,6 +130,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 onBackPressed();
                 break;
             case R.id.layout_router_name_out:
+                startActivity(new Intent(this,RouterNameUpdateActivity.class));
                 break;
             case R.id.layout_room_select_out:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
