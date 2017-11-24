@@ -9,11 +9,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -30,7 +34,8 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_reboot_out;
     private Button buttton_delete_router;
     private RouterManager mRouterManager;
-
+    private TextView textview_room_select_2;
+    private TextView textview_route_name_1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +43,12 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         initViews();
         initDatas();
         initEvents();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        textview_route_name_1.setText(mRouterManager.getCurrentSelectedRouter().getName());
     }
 
     private void initDatas() {
@@ -69,8 +80,49 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_update_out = (RelativeLayout) findViewById(R.id.layout_update_out);
         layout_reboot_out = (RelativeLayout) findViewById(R.id.layout_reboot_out);
         buttton_delete_router = (Button) findViewById(R.id.buttton_delete_router);
+        textview_room_select_2 = (TextView) findViewById(R.id.textview_room_select_2);
+        textview_route_name_1 = (TextView) findViewById(R.id.textview_route_name_1);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
+            final String roomName = data.getStringExtra("roomName");
+            Room room= RoomManager.getInstance().findRoom(roomName,true);
+            String deviceUid=mRouterManager.getCurrentSelectedRouter().getUid();
+            String deviceName=mRouterManager.getCurrentSelectedRouter().getName();
+            mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName, new Observer() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
 
+                }
+
+                @Override
+                public void onNext(@NonNull Object o) {
+                    if ((boolean) o) {
+                        textview_room_select_2.setText(roomName);
+                    }else{
+                        Message msg = Message.obtain();
+                        msg.what = MSG_UPDATE_ROOM_FAIL;
+                        mHandler.sendMessage(msg);
+                    }
+                   ;
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+
+        }
+    }
+    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -80,6 +132,9 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             case R.id.layout_router_name_out:
                 break;
             case R.id.layout_room_select_out:
+                Intent intent = new Intent(this, AddDeviceActivity.class);
+                intent.putExtra("EditSmartLockActivity", true);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.layout_connect_type_select_out:
                 break;
@@ -126,6 +181,10 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         }
     }
     private static final int MSG_DELETE_ROUTER_FAIL=100;
+    /**
+     * 更新路由器所在房间失败
+     */
+    private static final int MSG_UPDATE_ROOM_FAIL = 101;
     private Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -133,6 +192,9 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             switch (msg.what){
                 case MSG_DELETE_ROUTER_FAIL:
                     Toast.makeText(RouterSettingActivity.this,"删除路由器失败",Toast.LENGTH_SHORT).show();
+                    break;
+                case MSG_UPDATE_ROOM_FAIL:
+                    Toast.makeText(RouterSettingActivity.this, "更新路由器所在房间失败", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

@@ -75,11 +75,18 @@ public class RouterManager  {
      * 保存路由器到数据库
      * @param dev 路由器
      */
-    public void saveRouter(final SmartDev dev) {
+    public void saveRouter(final SmartDev dev,final Observer observer) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                boolean success = dev.save();
+                final boolean success = dev.save();
+                mObservable=Observable.create(new ObservableOnSubscribe() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                        e.onNext(success);
+                    }
+                });
+                mObservable.subscribe(observer);
                 Log.i(TAG, "保存路由器设备=" + success);
             }
         });
@@ -110,7 +117,7 @@ public class RouterManager  {
      * @param sn
      * @param deviceName
      */
-    public void updateDeviceInWhatRoom(final Room room, final String sn, final String deviceName) {
+    public void updateDeviceInWhatRoom(final Room room, final String sn, final String deviceName,final Observer observer) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -124,7 +131,14 @@ public class RouterManager  {
                 roomList.add(room);
                 smartDev.setRoomList(roomList);
                 smartDev.setName(deviceName);
-                boolean saveResult = smartDev.save();
+                final boolean saveResult = smartDev.save();
+                mObservable=Observable.create(new ObservableOnSubscribe() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                        e.onNext(saveResult);
+                    }
+                });
+                mObservable.subscribe(observer);
                 Log.i(TAG, "更新路由器设备所在的房间=" + saveResult);
             }
         });
