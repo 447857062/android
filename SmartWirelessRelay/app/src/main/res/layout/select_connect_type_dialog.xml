@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="1"
+    android:background="@drawable/addtoblack_dialog_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textview_unbind_device_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="请选择上网方式"
+        android:textColor="@android:color/black"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_weight="5"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/layout_ppop"
+            android:background="@drawable/connect_setting_button_drawable"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray_DFDEDE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="宽带拨号"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_dynamics_ip"
+            android:background="@drawable/connect_setting_button_drawable"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray_DFDEDE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="动态IP"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_static_ip"
+            android:background="@drawable/connect_setting_button_drawable"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray_DFDEDE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="静态IP"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_wireless_relay"
+            android:background="@drawable/connect_setting_button_drawable"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray_DFDEDE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="无线中继"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_cancel"
+            android:background="@drawable/connect_setting_button_drawable"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray_DFDEDE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="5dp"
+                android:text="取消"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

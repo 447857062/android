@@ -10,6 +10,12 @@ public class AppConstant {
         public static String CURRENT_DEVICE_SN = "CURRENT_DEVICE_SN";
     }
     /**
+     * 操作入口，是本地操作，还是websocket
+     */
+    public static final String OPERATION_TYPE="op_type";
+    public static final String OPERATION_TYPE_LOCAL="op_local";
+    public static final String OPERATION_TYPE_WEB="op_web";
+    /**
      * 数据包基本长度，不带数据
      */
     public static final int BASICLEGTH = 84;

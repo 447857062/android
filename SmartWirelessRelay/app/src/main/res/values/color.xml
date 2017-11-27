@@ -35,4 +35,6 @@
     <color name="color_B9E0D9">#B9E0D9</color>
     <color name="memory_percent_text_color">#22AC3A</color>
     <color name="cpu_percent_text_color">#DC5F5F</color>
+    <!--灰色-->
+    <color name="gray_DFDEDE">#DFDEDE</color>
 </resources>
