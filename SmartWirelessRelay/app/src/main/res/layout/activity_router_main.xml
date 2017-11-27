@@ -225,18 +225,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_select_show_current_list">
+        <FrameLayout
+            android:id="@+id/frame_devicelist_content_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
+                android:id="@+id/listview_device_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null" />
+            <TextView
+                android:id="@+id/textview_show_query_device_result"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+       <FrameLayout
+           android:id="@+id/frame_blacklist_content"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+           <TextView
+               android:id="@+id/textview_show_blacklist_device_result"
+               android:gravity="center_horizontal"
+               android:layout_gravity="center_vertical"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content" />
+           <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
+               android:id="@+id/listview_black_list"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:divider="@null" />
+       </FrameLayout>
 
-        <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
-            android:id="@+id/listview_device_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null" />
-        <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
-            android:id="@+id/listview_black_list"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null" />
     </FrameLayout>
 
 </RelativeLayout>

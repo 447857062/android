@@ -36,10 +36,6 @@ public class GetwayManager implements LocalConnecteListener{
     private static GetwayManager instance;
     private Context mContext;
     /**
-     * 添加设备时候，要往那个房间添加
-     */
-    private  String currentAddRoom;
-    /**
      * 当前要添加设备的识别码，二维码扫码出来的
      */
     private  String currentAddDevice;
@@ -56,15 +52,6 @@ public class GetwayManager implements LocalConnecteListener{
         this.currentAddDevice = currentAddDevice;
     }
 
-    public String getCurrentAddRoom() {
-        Log.i(TAG,"getCurrentAddRoom:"+currentAddRoom);
-        return currentAddRoom;
-    }
-
-    public void setCurrentAddRoom(String currentAddRoom) {
-        Log.i(TAG,"setCurrentAddRoom:"+currentAddRoom);
-        this.currentAddRoom = currentAddRoom;
-    }
 
     public static synchronized GetwayManager getInstance() {
         if (instance == null) {

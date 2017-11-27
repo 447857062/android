@@ -54,8 +54,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     private void initDatas() {
         currentAddDevice = GetwayManager.getInstance().getCurrentAddDevice();
-
-        mRoomName = GetwayManager.getInstance().getCurrentAddRoom();
+        mRoomName = RoomManager.getInstance().getCurrentSelectedRoom().getRoomName();
         Log.i(TAG,"mRoomName="+mRoomName);
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,this);

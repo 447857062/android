@@ -63,7 +63,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 mRemoteControlManager.sendData("");
                 break;
             case R.id.button_get_band:
-                RestfulTools.getSingleton(this).queryBand("TV", "cn", new Callback<QueryBandResponse>() {
+                RestfulTools.getSingleton(this).queryBand("KT", "cn", new Callback<QueryBandResponse>() {
                     @Override
                     public void onResponse(Call<QueryBandResponse> call, Response<QueryBandResponse> response) {
                         Log.i(TAG,"response="+response.message());

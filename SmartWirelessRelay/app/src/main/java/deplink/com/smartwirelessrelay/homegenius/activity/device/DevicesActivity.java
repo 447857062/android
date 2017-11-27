@@ -26,6 +26,9 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDL
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
@@ -117,9 +120,21 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         case "IRMOTE_V2":
                             startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
                             break;
+                        case "智能空调":
+                            startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
+                            break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
+                            break;
+                        case "智能电视":
+                            startActivity(new Intent(DevicesActivity.this, TvMainActivity.class));
+                            break;
+                        case "智能机顶盒遥控":
+                            startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
+                            break;
+                        case "智能开关":
+                           // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));
                             break;
                     }
                 } else {

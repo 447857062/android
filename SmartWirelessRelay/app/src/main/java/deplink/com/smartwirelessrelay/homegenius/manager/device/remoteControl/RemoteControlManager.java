@@ -23,11 +23,11 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
 
 /**
  * Created by Administrator on 2017/11/22.
- *  private RemoteControlManager mRemoteControlManager;
- *   mRemoteControlManager=RemoteControlManager.getInstance();
- mRemoteControlManager.InitRemoteControlManager(this,this);
+ * private RemoteControlManager mRemoteControlManager;
+ * mRemoteControlManager=RemoteControlManager.getInstance();
+ * mRemoteControlManager.InitRemoteControlManager(this,this);
  */
-public class RemoteControlManager implements LocalConnecteListener{
+public class RemoteControlManager implements LocalConnecteListener {
     private static final String TAG = "RemoteControlManager";
     /**
      * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
@@ -42,17 +42,19 @@ public class RemoteControlManager implements LocalConnecteListener{
     private Context mContext;
     private List<RemoteControlListener> mRemoteControlListenerList;
     private Gson gson;
-    private List<SmartDev>mRemoteControlDeviceList;
+    private List<SmartDev> mRemoteControlDeviceList;
     /**
      * 当前选中的遥控设备
      */
     private SmartDev mRemoteControlDevice;
+
     public static synchronized RemoteControlManager getInstance() {
         if (instance == null) {
             instance = new RemoteControlManager();
         }
         return instance;
     }
+
     public void InitRemoteControlManager(Context context, RemoteControlListener listener) {
         this.mContext = context;
         if (mLocalConnectmanager == null) {
@@ -62,20 +64,20 @@ public class RemoteControlManager implements LocalConnecteListener{
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         cachedThreadPool = Executors.newCachedThreadPool();
-        mRemoteControlListenerList=new ArrayList<>();
+        mRemoteControlListenerList = new ArrayList<>();
         addRemoteControlListener(listener);
-        gson=new Gson();
-        mRemoteControlDeviceList=new ArrayList<>();
-        mRemoteControlDeviceList.addAll(DataSupport.where("Type=?","IRMOTE_V2").find(SmartDev.class));
+        gson = new Gson();
+        mRemoteControlDeviceList = new ArrayList<>();
+        mRemoteControlDeviceList.addAll(DataSupport.where("Type=?", "IRMOTE_V2").find(SmartDev.class));
         //TODO 当前选中的遥控器
-        mRemoteControlDevice=mRemoteControlDeviceList.get(0);
+        mRemoteControlDevice = mRemoteControlDeviceList.get(0);
     }
 
-    public  void study(){
+    public void study() {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                QueryOptions cmd=new QueryOptions();
+                QueryOptions cmd = new QueryOptions();
                 cmd.setOP("SET");
                 cmd.setMethod("IrmoteV2");
                 cmd.setTimestamp();
@@ -87,11 +89,12 @@ public class RemoteControlManager implements LocalConnecteListener{
             }
         });
     }
-    public  void sendData(final String data){
+
+    public void sendData(final String data) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                QueryOptions cmd=new QueryOptions();
+                QueryOptions cmd = new QueryOptions();
                 cmd.setOP("SET");
                 cmd.setMethod("IrmoteV2");
                 cmd.setTimestamp();
@@ -104,6 +107,7 @@ public class RemoteControlManager implements LocalConnecteListener{
             }
         });
     }
+
     public void addRemoteControlListener(RemoteControlListener listener) {
         if (listener != null && !mRemoteControlListenerList.contains(listener)) {
             this.mRemoteControlListenerList.add(listener);
@@ -143,11 +147,11 @@ public class RemoteControlManager implements LocalConnecteListener{
 
     @Override
     public void OnGetSetresult(String setResult) {
-        RemoteControlOpResult result=gson.fromJson(setResult,RemoteControlOpResult.class);
-        Log.i(TAG,TAG+":获取设置结果setResult="+setResult);
-        if(result!=null){
-            for(int i=0;i<mRemoteControlListenerList.size();i++){
-                mRemoteControlListenerList.get(i).responseQueryResult(result.getCommand()+result.getResult());
+        RemoteControlOpResult result = gson.fromJson(setResult, RemoteControlOpResult.class);
+        Log.i(TAG, TAG + ":获取设置结果setResult=" + setResult);
+        if (result != null) {
+            for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                mRemoteControlListenerList.get(i).responseQueryResult(result.getCommand() + result.getResult());
             }
         }
 

@@ -52,7 +52,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private GridView roomGridView;
     private ListView listview_experience_center;
     private ExperienceCenterListAdapter mExperienceCenterListAdapter;
-    private  List<ExperienceCenterDevice>mExperienceCenterDeviceList;
+    private List<ExperienceCenterDevice> mExperienceCenterDeviceList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,51 +91,49 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager = LocalConnectmanager.getInstance();
-                mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this, AppConstant.BIND_APP_MAC);
-                mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
-                mRoomManager = RoomManager.getInstance();
-                mRoomManager.initRoomManager();
 
-            }
-        });
-        mAdapter=new HomepageGridViewAdapter(SmartHomeMainActivity.this,mRoomList);
-        mExperienceCenterDeviceList=new ArrayList<>();
-        ExperienceCenterDevice oneDevice=new ExperienceCenterDevice();
+        mLocalConnectmanager = LocalConnectmanager.getInstance();
+        mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this, AppConstant.BIND_APP_MAC);
+        mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
+        mRoomManager = RoomManager.getInstance();
+        mRoomManager.initRoomManager();
+
+        mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
+        mExperienceCenterDeviceList = new ArrayList<>();
+        ExperienceCenterDevice oneDevice = new ExperienceCenterDevice();
         oneDevice.setDeviceName("智能门锁");
         oneDevice.setOnline(true);
         mExperienceCenterDeviceList.add(oneDevice);
-        oneDevice=new ExperienceCenterDevice();
+        oneDevice = new ExperienceCenterDevice();
         oneDevice.setDeviceName("智能开关");
         oneDevice.setOnline(false);
         mExperienceCenterDeviceList.add(oneDevice);
-        oneDevice=new ExperienceCenterDevice();
+        oneDevice = new ExperienceCenterDevice();
         oneDevice.setDeviceName("智能网关");
         oneDevice.setOnline(false);
         mExperienceCenterDeviceList.add(oneDevice);
-        mExperienceCenterListAdapter=new ExperienceCenterListAdapter(this,mExperienceCenterDeviceList);
+        mExperienceCenterListAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDeviceList);
         listview_experience_center.setOnItemClickListener(mExperienceCenterListClickListener);
     }
-    private AdapterView.OnItemClickListener mExperienceCenterListClickListener=new AdapterView.OnItemClickListener() {
+
+    private AdapterView.OnItemClickListener mExperienceCenterListClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            switch (mExperienceCenterDeviceList.get(position).getDeviceName()){
+            switch (mExperienceCenterDeviceList.get(position).getDeviceName()) {
                 case "智能门锁":
                     Intent intent = new Intent(SmartHomeMainActivity.this, SmartLockActivity.class);
-                    intent.putExtra("isStartFromExperience",true);
+                    intent.putExtra("isStartFromExperience", true);
                     startActivity(intent);
                     break;
                 case "智能网关":
                     Intent intentGetwayDevice = new Intent(SmartHomeMainActivity.this, GetwayDeviceActivity.class);
-                    intentGetwayDevice.putExtra("isStartFromExperience",true);
+                    intentGetwayDevice.putExtra("isStartFromExperience", true);
                     startActivity(intentGetwayDevice);
                     break;
             }
         }
     };
+
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);

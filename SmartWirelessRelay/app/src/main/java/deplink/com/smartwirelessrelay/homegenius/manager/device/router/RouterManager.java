@@ -33,20 +33,7 @@ public class RouterManager  {
      */
     private static RouterManager instance;
     private Context mContext;
-    /**
-     * 添加设备时候，要往那个房间添加
-     */
-    private  String currentAddRoom;
     private SmartDev currentSelectedRouter;
-    public String getCurrentAddRoom() {
-        Log.i(TAG,"getCurrentAddRoom:"+currentAddRoom);
-        return currentAddRoom;
-    }
-
-    public void setCurrentAddRoom(String currentAddRoom) {
-        Log.i(TAG,"setCurrentAddRoom:"+currentAddRoom);
-        this.currentAddRoom = currentAddRoom;
-    }
 
     public SmartDev getCurrentSelectedRouter() {
         return currentSelectedRouter;
@@ -56,7 +43,26 @@ public class RouterManager  {
         Log.i(TAG,"设置当前选中的路由器 uid="+currentSelectedRouter.getUid());
         this.currentSelectedRouter = currentSelectedRouter;
     }
+    public void getRouterAtRooms(final Observer observer){
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                SmartDev dev= DataSupport.where("Uid = ?", currentSelectedRouter.getUid()).findFirst(SmartDev.class,true);
+               final List<Room>rooms= dev.getRoomList();
+                mObservable=Observable.create(new ObservableOnSubscribe() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                        e.onNext(rooms);
+                    }
+                });
+                mObservable.subscribe(observer);
+                Log.i(TAG, "所在房间列表大小=" + rooms.size());
+            }
+        });
 
+
+
+    }
     public static synchronized RouterManager getInstance() {
         if (instance == null) {
             instance = new RouterManager();

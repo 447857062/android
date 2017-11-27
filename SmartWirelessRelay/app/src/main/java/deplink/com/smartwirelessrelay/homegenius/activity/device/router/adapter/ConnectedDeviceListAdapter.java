@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deplink.sdk.android.sdk.json.DevicesOnline;
+
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.router.ConnectedDevices;
 import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.BaseSwipListAdapter;
 
 /**
@@ -20,9 +21,9 @@ import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.BaseSwip
 public class ConnectedDeviceListAdapter extends BaseSwipListAdapter {
     private static final String TAG ="DeviceListAdapter";
     private Context mContext;
-    private List<ConnectedDevices> mListData;
+    private List<DevicesOnline> mListData;
 
-    public ConnectedDeviceListAdapter(Context context, List<ConnectedDevices> listData) {
+    public ConnectedDeviceListAdapter(Context context, List<DevicesOnline> listData) {
         this.mContext = context;
         this.mListData = listData;
     }

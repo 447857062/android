@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:gravity="center_horizontal" >
+
+	<LinearLayout
+		android:id="@+id/llLoading"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@drawable/splash"
+		android:orientation="vertical"
+
+		android:paddingTop="15dp"
+		android:paddingBottom="15dp"
+		 >
+
+		<com.github.ybq.android.spinkit.SpinKitView
+			xmlns:app="http://schemas.android.com/apk/res-auto"
+			android:paddingLeft="48dp"
+			android:paddingRight="48dp"
+			android:layout_marginTop="200dp"
+			android:id="@+id/spin_kit"
+			style="@style/SpinKitView.Large.FadingCircle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			app:SpinKit_Color="@color/white" />
+		<TextView
+			android:id="@+id/textview_show_msg"
+			android:layout_marginTop="15dp"
+			android:singleLine="true"
+			android:textSize="18dp"
+			android:gravity="center_horizontal|center_vertical"
+			android:textColor="@color/color_B9E0D9"
+			android:text="登录中..."
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+
+
+
+</LinearLayout>

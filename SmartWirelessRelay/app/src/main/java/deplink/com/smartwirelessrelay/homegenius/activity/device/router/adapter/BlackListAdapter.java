@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deplink.sdk.android.sdk.json.BLACKLIST;
+
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.router.BLACKLIST;
 import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.BaseSwipListAdapter;
 
 /**

@@ -15,6 +15,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UserinfoActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
@@ -99,6 +100,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 break;
             case R.id.button_logout:
                 //TODO 退出登录
+                startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.user_head_portrait:
                 startActivity(new Intent(this, UserinfoActivity.class));

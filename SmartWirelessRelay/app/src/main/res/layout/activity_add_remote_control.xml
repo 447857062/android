@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.addRemoteControlActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.addRemoteControlActivity">
     <RelativeLayout
         android:id="@+id/layout_title"
         android:gravity="center_vertical"

@@ -32,4 +32,7 @@
     <color name="result_view">#b0ffffff</color>
     <color name="text_color_908F8F">#908F8F</color>
     <color name="read_fc5551">#fc5551</color>
+    <color name="color_B9E0D9">#B9E0D9</color>
+    <color name="memory_percent_text_color">#22AC3A</color>
+    <color name="cpu_percent_text_color">#DC5F5F</color>
 </resources>

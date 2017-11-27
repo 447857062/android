@@ -15,6 +15,10 @@ import android.widget.Toast;
 public class Perfence extends Application {
     private static final String TAG="Perfence";
     public static String PERFENCE_NAME = "PERFENCE_NAME";
+    public static String SDK_APP_KEY = "6bbe96ccf8a013eeac65beb76c8b6949";
+    //电话
+    public static String PERFENCE_PHONE = "PERFENCE_PHONE";
+    public static String USER_PASSWORD = "USER_PASSWORD";
     private static SharedPreferences sp;
     private static Context c;
     public static Handler handler;

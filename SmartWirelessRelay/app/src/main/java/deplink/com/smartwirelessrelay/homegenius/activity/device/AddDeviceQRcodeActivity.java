@@ -14,9 +14,11 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.ChooseBandActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SelectSwitchTypeActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
@@ -27,7 +29,6 @@ import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
 public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "AddDeviceQRcodeActivity";
     private Bundle mBundle;
-    private String mRoomName;
     private GridView mGridView;
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;
@@ -56,13 +57,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
-        mBundle = getIntent().getExtras();
-        Log.i(TAG, "mBundle!=null " + (mBundle != null));
-        if (mBundle != null) {
-            mRoomName = mBundle.getString("roomName");
-            GetwayManager.getInstance().setCurrentAddRoom(mRoomName);
-            Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
-        }
         mDeviceTypes = new ArrayList<>();
         mDeviceTypes.add("智能网关");
         mDeviceTypes.add("路由器");
@@ -89,7 +83,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
             case "智能网关":
                 intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AddGetwayNotifyActivity.class);
                 intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intentQrcodeSn.putExtra("mRoomName", mRoomName);
                 startActivity(intentQrcodeSn);
                 break;
             case "红外万能遥控":
@@ -101,6 +94,15 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 break;
             case "路由器":
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);
+                break;
+            case "智能电视遥控":
+                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddTvDeviceActivity.class));
+                break;
+            case "智能机顶盒遥控":
+                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddTopBoxActivity.class));
+                break;
+            case "智能开关":
+                startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
                 break;
             default:
                 startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_SN);
@@ -143,13 +145,11 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
             switch (requestCode) {
                 case REQUEST_CODE_DEVICE_SN:
                     if (qrCodeResult.contains("SMART_LOCK")) {
-                        intent.putExtra("mRoomName", mRoomName);
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", "SMART_LOCK");
                         startActivity(intent);
                     } else {
                         //TODO
-                        intent.putExtra("mRoomName", mRoomName);
                         String uid = "77685180654101946200316696479888";
                         intent.putExtra("currentAddDevice", uid);
                         intent.putExtra("DeviceType", "getway");
@@ -158,7 +158,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     break;
                 case REQUEST_ADD_INFRAED_UNIVERSAL_RC:
                     //{"org":"ismart","tp":"IRMOTE_V2","ad":"00-12-4b-00-08-93-55-bb","ver":"1"}
-                    intent.putExtra("mRoomName", mRoomName);
                     intent.putExtra("currentAddDevice", qrCodeResult);
                     intent.putExtra("DeviceType", "IRMOTE_V2");
                     startActivity(intent);
@@ -172,7 +171,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     //添加路由器
                     intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
                     intent.putExtra("routerSN", qrCodeResult);
-                    intent.putExtra("roomName", mRoomName);
                     startActivity(intent);
                     break;
             }

@@ -1,6 +1,5 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.room;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.litepal.crud.DataSupport;
@@ -27,12 +26,12 @@ public class RoomManager {
      * 这个类设计成单例
      */
     private static RoomManager instance;
-    private SQLiteDatabase db;
     private List<Room> mRooms;
     /**
      * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
      */
     private ExecutorService cachedThreadPool;
+    private Room currentSelectedRoom;
     /**
      * 获取房间列表
      *
@@ -41,6 +40,14 @@ public class RoomManager {
     public List<Room> getmRooms() {
 
         return mRooms;
+    }
+
+    public Room getCurrentSelectedRoom() {
+        return currentSelectedRoom;
+    }
+
+    public void setCurrentSelectedRoom(Room currentSelectedRoom) {
+        this.currentSelectedRoom = currentSelectedRoom;
     }
 
     /**

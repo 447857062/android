@@ -40,7 +40,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        textview_select_room_name.setText(mRouterManager.getCurrentAddRoom());
+        textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
     }
 
     private void initDatas() {

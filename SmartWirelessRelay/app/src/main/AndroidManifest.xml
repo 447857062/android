@@ -37,9 +37,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name="deplink.com.smartwirelessrelay.homegenius.application.AppDelegate"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -116,8 +120,8 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwaySettingOptionsActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.ChooseBandActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.air.addRemoteControlActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.addRemoteControlActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.QueryGetwaysActivity" />
@@ -126,7 +130,28 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterSettingActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterNameUpdateActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterNameUpdateActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.ConnectSettingActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.WiFiSettingActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.LanSettingActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.QosSettingActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.UpdateActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SelectSwitchTypeActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity" />
+        <activity
+            android:name=".ForgetPasswordActivity"
+            android:label="@string/title_activity_forget_password" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.RegistActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.ForgetPasswordActivity"></activity>
+        <service
+            android:name="com.deplink.sdk.android.sdk.mqtt.service.MqttService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

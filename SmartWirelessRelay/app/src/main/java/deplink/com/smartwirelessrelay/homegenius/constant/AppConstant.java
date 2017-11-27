@@ -4,6 +4,11 @@ package deplink.com.smartwirelessrelay.homegenius.constant;
  * Created by Administrator on 2017/10/31.
  */
 public class AppConstant {
+    public static final String USER_LOGIN="logged";
+    public interface DEVICE{
+        public static String CURRENT_DEVICE_KEY = "CURRENT_DEVICE_KEY";
+        public static String CURRENT_DEVICE_SN = "CURRENT_DEVICE_SN";
+    }
     /**
      * 数据包基本长度，不带数据
      */
