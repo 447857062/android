@@ -131,8 +131,8 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterSettingActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterNameUpdateActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.ConnectSettingActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.WiFiSettingActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.ConnectSettingActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WiFiSettingActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.LanSettingActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.QosSettingActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.UpdateActivity" />
@@ -157,7 +157,10 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.DialConnectActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.DynamicsActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.StaticConnectActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.WirelessRelayActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.WirelessRelayActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSettingCustom" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.SignalStrengthSetting"></activity>
     </application>
 
 </manifest>

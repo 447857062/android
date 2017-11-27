@@ -37,4 +37,5 @@
     <color name="cpu_percent_text_color">#DC5F5F</color>
     <!--灰色-->
     <color name="gray_DFDEDE">#DFDEDE</color>
+    <color name="main_interface_topbar_text_color">#F8FAFA</color>
 </resources>

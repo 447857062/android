@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.router;
 
 import android.app.Activity;
 import android.content.Intent;

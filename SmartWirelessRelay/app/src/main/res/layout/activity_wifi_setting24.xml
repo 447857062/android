@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24">
+
+    <RelativeLayout
+        android:id="@+id/layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue_add_new_router_title">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="15dp">
+
+            <FrameLayout
+                android:id="@+id/layout_back"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="20dp">
+
+                <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/arror_back" />
+            </FrameLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="2.4G WIFI设置"
+                android:textColor="@color/main_interface_topbar_text_color"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <!--无线WIFI-->
+    <RelativeLayout
+        android:id="@+id/layout_wireless_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_topbar"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="无线WIFI"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <CheckBox
+                android:id="@+id/checkbox_wireless_wifi"
+                android:layout_width="33dp"
+                android:layout_height="17dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/checkbox_wifi_selector" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--隐藏网络-->
+    <RelativeLayout
+        android:id="@+id/layout_hide_net"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_wireless_wifi"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="隐藏网络"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <CheckBox
+                android:id="@+id/checkbox_hide_net"
+                android:layout_width="33dp"
+                android:layout_height="17dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/checkbox_wifi_selector" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--WIFI名称-->
+    <RelativeLayout
+        android:id="@+id/layout_wifiname_setting"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_hide_net"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="WIFI名称"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <TextView
+                android:id="@+id/textview_wifi_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/imageview_wifi_name"
+                android:text="--"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_wifi_name"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arror_setting" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--加密方式-->
+    <RelativeLayout
+        android:id="@+id/layout_encryption"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_wifiname_setting"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="加密方式"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <TextView
+                android:id="@+id/textview_encryption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/imageview_encryption"
+                android:text="--"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_encryption"
+                android:layout_width="11dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arror_setting" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--密码-->
+    <RelativeLayout
+        android:id="@+id/layout_password"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_encryption"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="密码"
+                android:hint="********"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+
+
+            <ImageView
+                android:id="@+id/imageview_password"
+                android:layout_width="11dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arror_setting" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--模式-->
+    <RelativeLayout
+        android:id="@+id/layout_mode"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_password"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="模式"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <TextView
+                android:id="@+id/textview_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/imageview_mode"
+                android:text="--"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_mode"
+                android:layout_width="11dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arror_setting" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--信道-->
+    <RelativeLayout
+        android:id="@+id/layout_channel"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_mode"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="信道"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <TextView
+                android:id="@+id/textview_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/imageview_channel"
+                android:text="--"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_channel"
+                android:layout_width="11dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arror_setting" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--频宽-->
+    <RelativeLayout
+        android:id="@+id/layout_bandwidth"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/layout_channel"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="频宽"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <TextView
+                android:id="@+id/textview_bandwidth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/imageview_bandwidth"
+                android:text="--"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_bandwidth"
+                android:layout_width="11dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arror_setting" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <include
+        android:layout_width="@dimen/last_next_step_layout_width"
+        android:layout_height="@dimen/last_next_step_layout_height"
+        layout="@layout/layout_cancel_save"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="85dp"/>
+</RelativeLayout>
