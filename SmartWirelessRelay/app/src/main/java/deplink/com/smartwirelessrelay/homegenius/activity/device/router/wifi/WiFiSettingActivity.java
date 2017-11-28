@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -18,6 +17,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 
@@ -32,6 +32,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private EventCallback ec;
+    private RouterManager mRouterManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,8 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
         initEvents();
     }
     private void initDatas() {
+        mRouterManager=RouterManager.getInstance();
+        mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(WiFiSettingActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -82,15 +85,6 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
         };
     }
 
-    private void getRouterDevice() {
-        String currentDevcieKey = Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY);
-        if (currentDevcieKey.equals("")) {
-            if (manager.getDeviceList() != null && manager.getDeviceList().size() != 0) {
-                Perfence.setPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY, manager.getDeviceList().get(0).getDeviceKey());
-            }
-        }
-        routerDevice = (RouterDevice) manager.getDevice(Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY));
-    }
 
     private boolean deviceOnline;
 
@@ -99,8 +93,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
         super.onResume();
         Perfence.setContext(getApplicationContext());
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-
-        getRouterDevice();
+        routerDevice=mRouterManager.getRouterDevice();
         if (routerDevice != null) {
             deviceOnline = routerDevice.getOnline();
         }

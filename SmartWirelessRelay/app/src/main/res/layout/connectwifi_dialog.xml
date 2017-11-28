@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="1"
+    android:background="@drawable/addtoblack_dialog_background"
+    >
+    <TextView
+        android:id="@+id/textview_unbind_device_type"
+        android:textColor="@color/text_color_3A3A3A"
+        android:textSize="18dp"
+        android:layout_marginLeft="@dimen/makesure_dialog_text_margin"
+        android:layout_marginRight="@dimen/makesure_dialog_text_margin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="连接路由器WIFI"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+      android:layout_above="@+id/layout_button_bar"
+        android:layout_marginLeft="@dimen/makesure_dialog_text_margin"
+        android:layout_marginRight="@dimen/makesure_dialog_text_margin"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/textview_dialog_info"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+
+            android:textColor="@color/text_color_3A3A3A"
+            android:textSize="@dimen/text_size_xhdpi_15"
+            android:text="确保连接上路由器提供的wifi,现在跳转到设置wifi界面？"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_button_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dialog_unbind_device_button_marginbuttom"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/makesure_dialog_button_margin"
+        android:layout_marginRight="@dimen/makesure_dialog_button_margin"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="@dimen/dialog_button_unbind_device_width"
+            android:layout_height="@dimen/dialog_button_unbind_device_height"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/dialog_sure_cancel_button"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="取消"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/dialog_button_unbind_device_width"
+            android:layout_height="@dimen/dialog_button_unbind_device_height"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/dialog_sure_cancel_button"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="确认"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

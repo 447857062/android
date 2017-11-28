@@ -76,48 +76,12 @@
             android:layout_alignParentRight="true"
             android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/layout_device_number"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/layout_room_name"
-        android:layout_marginTop="5dp"
-        android:background="@color/gray"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:gravity="center_vertical"
-            android:text="设备数量" />
-
-        <TextView
-            android:text="3"
-            android:id="@+id/textview_device_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="80dp"
-            android:layout_centerVertical="true"
-            android:textColor="@color/gray" />
-
-        <ImageView
-            android:id="@+id/imageview_device_number_arror_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_getway"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/layout_device_number"
+        android:layout_below="@+id/layout_room_name"
         android:layout_marginTop="5dp"
         android:background="@color/gray"
         android:gravity="center_vertical">

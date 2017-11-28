@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,6 +41,11 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.popmenu.adapter.BaseRecyclerViewAdapter;
+import deplink.com.smartwirelessrelay.homegenius.view.popmenu.powerpopmenu.PowerPopMenu;
+import deplink.com.smartwirelessrelay.homegenius.view.popmenu.powerpopmenu.PowerPopMenuModel;
+import deplink.com.smartwirelessrelay.homegenius.view.popmenu.utils.ToastUtils;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -58,12 +64,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
      * 下面半部分列表的数据
      */
     private List<SmartDev> datasBottom;
-
     private ImageView imageview_add_device;
-
     private DeviceManager mDeviceManager;
     private SmartLockManager mSmartLockManager;
-
+    private RoomManager mRoomManager;
+    private LinearLayout layout_select_room_type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +90,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceManager.removeDeviceListener(this);
     }
 
-
+    private List<String>mRoomTypes=new ArrayList<>();
     private void initDatas() {
         runOnUiThread(new Runnable() {
             @Override
@@ -94,9 +99,19 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
                 mDeviceManager = DeviceManager.getInstance();
                 mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
+                mRoomManager=RoomManager.getInstance();
+                mRoomManager.initRoomManager();
+
             }
         });
-
+        mRoomTypes.addAll(mRoomManager.getRoomTypes());
+        mList = new ArrayList<>();
+        PowerPopMenuModel item ;
+        for(int i=0;i<mRoomTypes.size();i++){
+            item = new PowerPopMenuModel();
+            item.text =mRoomTypes.get(i);
+            mList.add(item);
+        }
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
         //使用数据库中的数据
@@ -153,6 +168,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
+        layout_select_room_type.setOnClickListener(this);
     }
 
     @Override
@@ -170,18 +186,32 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
         listview_devies = (ListView) findViewById(R.id.listview_devies);
         imageview_add_device = (ImageView) findViewById(R.id.imageview_add_device);
+        layout_select_room_type = (LinearLayout) findViewById(R.id.layout_select_room_type);
         //TODO 初始化设备列表
 
     }
+    private PowerPopMenu mPowerPopMenu;
+    private class OnItemClickLis implements BaseRecyclerViewAdapter.OnItemClickListener {
 
+        @Override
+        public void onItemClick(View view, int position) {
+            ToastUtils.showMessage(DevicesActivity.this, mList.get(position).text);
+            mPowerPopMenu.dismiss();
+        }
+    }
+    private List<PowerPopMenuModel> mList;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.layout_home_page:
                 startActivity(new Intent(this, SmartHomeMainActivity.class));
                 break;
-            case R.id.layout_devices:
-                // startActivity(new Intent(this,DevicesActivity.class));
+            case R.id.layout_select_room_type:
+                mPowerPopMenu = new PowerPopMenu(this, LinearLayoutManager.VERTICAL, PowerPopMenu.POP_UP_TO_DOWN);
+                mPowerPopMenu.setIsShowIcon(false);
+                mPowerPopMenu.setListResource(mList);
+                mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
+                mPowerPopMenu.show(v);
                 break;
             case R.id.layout_rooms:
                 startActivity(new Intent(this, RoomActivity.class));

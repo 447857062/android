@@ -36,6 +36,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.adapter.
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.adapter.ConnectedDeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
@@ -92,6 +93,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private TextView textview_memory_use;
     private TextView textview_upload_speed;
     private TextView textview_download_speend;
+    private RouterManager mRouterManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +135,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         super.onResume();
         manager.addEventCallback(ec);
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        getRouterDevice();
+        routerDevice=mRouterManager.getRouterDevice();
         startTimer();
         if (isUserLogin) {
             showQueryingDialog();
@@ -248,21 +250,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         }
     };
 
-    private void getRouterDevice() {
-        //TODO
-        String currentDevcieKey = Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY);
-        Log.i(TAG, "获取当前路由器 currentDevcieKey=" + currentDevcieKey);
-        // if (currentDevcieKey.equals("")) {
-        Log.i(TAG, "获取当前路由器 currentDevcieKey=empty , device size()=" + manager.getDeviceList().size());
-        if (manager.getDeviceList() != null && manager.getDeviceList().size() != 0) {
-            Perfence.setPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY, manager.getDeviceList().get(0).getDeviceKey());
-        }
-        //   }
-        routerDevice = (RouterDevice) manager.getDevice(Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY));
-        Log.i(TAG, "routerDevice!=null" + (routerDevice != null));
-    }
 
     private void initDatas() {
+        mRouterManager=RouterManager.getInstance();
+        mRouterManager.InitRouterManager(this);
         mConnectedDevices = new ArrayList<>();
         mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);
         mBlackListDatas = new ArrayList<>();

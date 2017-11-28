@@ -10,6 +10,25 @@ public class AppConstant {
         public static String CURRENT_DEVICE_SN = "CURRENT_DEVICE_SN";
     }
     /**
+     * wfii设置
+     */
+    public static interface WIFISETTING{
+        public static final String WIFI_TYPE="wifiType";
+        public static final String WIFI_TYPE_2G="wifiType2G";
+        public static final String WIFI_TYPE_VISITOR="wifiTypeVisitor";
+
+
+        public static final String WIFI_ENCRYPT_TYPE="EncryptType";
+        public static final String WIFI_MODE_TYPE="WIFI_MODE";
+        public static final String WIFI_CHANNEL_TYPE="CHANNEL";
+        public static final String WIFI_BANDWIDTH="BANDWIDTH";
+        public static final String WIFI_NAME="wifiname";
+        public static final String WIFI_PASSWORD="wifiPassword";
+        interface  WIFISETTING_CUSTOM{
+            public static final String WIFI_ENCRYPT_TYPE_CUSTOM="EncryptType_CUSTOM";
+        }
+    }
+    /**
      * 操作入口，是本地操作，还是websocket
      */
     public static final String OPERATION_TYPE="op_type";

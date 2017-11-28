@@ -38,4 +38,10 @@
     <!--灰色-->
     <color name="gray_DFDEDE">#DFDEDE</color>
     <color name="main_interface_topbar_text_color">#F8FAFA</color>
+    <!--白色-->
+    <color name="white_DDEBFC">#DDEBFC</color>
+    <!--蓝色-->
+    <color name="color_2B89F3">#2B89F3</color>
+    <color name="modify_password_text_color">#3A3A3A</color>
+    <color name="littlegray">#EEEEEE</color>
 </resources>

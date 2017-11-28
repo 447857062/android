@@ -34,4 +34,6 @@
         completions."
     </string>
     <string name="rate_format">%.1f</string>
+    <string name="ip_address_digits">0123456789.</string>
+    <string name="firmware_upgrade">固件升级</string>
 </resources>

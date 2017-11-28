@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 
 public class ModifyRoomNameActivity extends Activity implements View.OnClickListener {
@@ -24,7 +25,7 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     }
 
     private void initDatas() {
-        String hintRoomName=getIntent().getStringExtra("roomname");
+        String hintRoomName= RoomManager.getInstance().getCurrentSelectedRoom().getRoomName();
         clearEditText.setHint(hintRoomName);
     }
 

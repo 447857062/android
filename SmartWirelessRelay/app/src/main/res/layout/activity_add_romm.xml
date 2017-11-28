@@ -53,21 +53,21 @@
         android:textColorHint="@color/blue" />
 
     <RelativeLayout
-        android:layout_marginTop="5dp"
         android:id="@+id/layout_getway"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/edittext_room_name"
-        android:gravity="center_vertical"
-        android:background="@color/gray">
+        android:layout_marginTop="5dp"
+        android:background="@color/gray"
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:gravity="center_vertical"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
+            android:gravity="center_vertical"
             android:text="网关：家里的网关" />
 
         <ImageView
@@ -77,4 +77,31 @@
             android:layout_marginRight="20dp"
             android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textview_select_room_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_getway"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:text="请选择以下房间类型"
+        android:textColor="@color/black" />
+
+    <GridView
+        android:id="@+id/gridview_room_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_select_room_type"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:gravity="center"
+        android:horizontalSpacing="10dip"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dip"></GridView>
 </RelativeLayout>

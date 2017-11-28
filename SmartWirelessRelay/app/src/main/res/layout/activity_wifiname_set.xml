@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifinameSetActivity">
+    <RelativeLayout
+        android:id="@+id/layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue_add_new_router_title">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="15dp">
+
+            <FrameLayout
+                android:id="@+id/layout_back"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="20dp">
+
+                <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/arror_back" />
+            </FrameLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="WIFI名称"
+                android:textColor="@color/main_interface_topbar_text_color"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <!--无线WIFI-->
+    <RelativeLayout
+        android:id="@+id/layout_wireless_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/connect_setting_item_height"
+        android:layout_below="@+id/layout_topbar"
+        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
+        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
+        <EditText
+            android:id="@+id/edittext_wifi_name"
+            android:layout_width="match_parent"
+            android:background="@null"
+            android:textColor="@color/text_color_3A3A3A"
+            android:textSize="@dimen/text_size_xhdpi_15"
+            android:hint="请输入wifi名称"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittext_wifi_name"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <include
+        android:layout_width="@dimen/last_next_step_layout_width"
+        android:layout_height="@dimen/last_next_step_layout_height"
+        layout="@layout/layout_cancel_save"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="85dp"/>
+</RelativeLayout>

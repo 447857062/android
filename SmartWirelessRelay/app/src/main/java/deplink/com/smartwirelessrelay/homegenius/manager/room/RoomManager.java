@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -71,11 +72,26 @@ public class RoomManager {
             }
         });
         for (int i = 0; i < mRooms.size(); i++) {
-            Log.i(TAG, "房间" + i + "是：" + mRooms.get(i).toString());
+            Log.i(TAG, "房间" + i + "是：" + mRooms.get(i).toString()+"房间类型="+mRooms.get(i).getRoomType());
+            addRoomTypes(mRooms.get(i).getRoomType());
         }
         return mRooms;
     }
+    private List<String>roomTypes;
 
+    public List<String> getRoomTypes() {
+        Log.i(TAG,"获取房间类型种类="+roomTypes.size());
+        for(int i=0;i<roomTypes.size();i++){
+            Log.i(TAG,"获取房间类型种类="+roomTypes.get(i));
+        }
+        return roomTypes;
+    }
+
+    public void addRoomTypes(String roomType) {
+        if( roomType!=null&& ! roomType.equals("null") && !roomTypes.contains(roomType)){
+            roomTypes.add(roomType);
+        }
+    }
 
     private RoomManager() {
     }
@@ -110,6 +126,10 @@ public class RoomManager {
      */
     public void initRoomManager() {
         cachedThreadPool = Executors.newCachedThreadPool();
+        if(roomTypes==null){
+            roomTypes=new ArrayList<>();
+            roomTypes.add("全部");
+        }
     }
 
     /**
@@ -119,19 +139,21 @@ public class RoomManager {
         mRooms = DataSupport.findAll(Room.class,true);
         if (mRooms.size() == 0) {
             Room temp = new Room();
-            temp.setRoomName("客厅");
+            temp.setRoomName("客厅的房间");
             temp.setRoomOrdinalNumber(0);
-
+            temp.setRoomType("客厅");
             mRooms.add(temp);
 
             temp = new Room();
-            temp.setRoomName("卧室");
+            temp.setRoomName("卧室的房间");
+            temp.setRoomType("卧室");
             temp.setRoomOrdinalNumber(1);
             temp.save();
             mRooms.add(temp);
 
             temp = new Room();
-            temp.setRoomName("厨房");
+            temp.setRoomName("厨房的房间");
+            temp.setRoomType("厨房");
             temp.setRoomOrdinalNumber(2);
             temp.save();
             mRooms.add(temp);
@@ -213,13 +235,13 @@ public class RoomManager {
      * @param roomName
      * @return
      */
-    public void addRoom(final String roomName, final Observer observer) {
+    public void addRoom(final String roomType,final String roomName, final Observer observer) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 Room temp = new Room();
                 temp.setRoomName(roomName);
-
+                temp.setRoomType(roomType);
                 temp.setRoomOrdinalNumber(mRooms.size() + 1);
                 final boolean optionResult;
                 optionResult =  temp.save();

@@ -113,4 +113,8 @@
 
         　　
     </style>
+    <style name="popupwindow_fade">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
 </resources>

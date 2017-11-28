@@ -421,8 +421,8 @@
             android:src="@drawable/connect_setting_line" />
     </RelativeLayout>
     <include
-        android:layout_width="@dimen/last_next_step_layout_width"
-        android:layout_height="@dimen/last_next_step_layout_height"
+        android:layout_width="208dp"
+        android:layout_height="35dp"
         layout="@layout/layout_cancel_save"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"

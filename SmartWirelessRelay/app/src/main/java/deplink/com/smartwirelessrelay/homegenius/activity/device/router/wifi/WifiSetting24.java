@@ -26,6 +26,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
@@ -68,6 +69,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     private Button button_cancel;
     private Button button_save;
     private MakeSureDialog connectLostDialog;
+    private RouterManager mRouterManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,8 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     }
 
     private void initDatas() {
+        mRouterManager=RouterManager.getInstance();
+        mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(WifiSetting24.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -239,7 +243,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        getRouterDevice();
+        routerDevice=mRouterManager.getRouterDevice();
         manager.addEventCallback(ec);
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         // setWifiNameText();
@@ -273,15 +277,6 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     }
 
 
-    private void getRouterDevice() {
-        String currentDevcieKey = Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY);
-        if (currentDevcieKey.equals("")) {
-            if (manager.getDeviceList() != null && manager.getDeviceList().size() != 0) {
-                Perfence.setPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY, manager.getDeviceList().get(0).getDeviceKey());
-            }
-        }
-        routerDevice = (RouterDevice) manager.getDevice(Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY));
-    }
 
     @Override
     protected void onPause() {
@@ -421,45 +416,45 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                 }
                 break;
             case R.id.layout_encryption:
-                //TODO
-             /*   Intent intent = new Intent(WifiSetting24.this, EncryptTypeActivity.class);
+
+              Intent intent = new Intent(WifiSetting24.this, EncryptTypeActivity.class);
                 intent.putExtra(AppConstant.WIFISETTING.WIFI_ENCRYPT_TYPE, encryptionType);
                 intent.putExtra(AppConstant.WIFISETTING.WIFI_TYPE, AppConstant.WIFISETTING.WIFI_TYPE_2G);
-                startActivityForResult(intent, REQUEST_ENCRYPTION);*/
+                startActivityForResult(intent, REQUEST_ENCRYPTION);
                 break;
             case R.id.layout_mode:
-                //TODO
-              /*  Intent intentModeSelect = new Intent(WifiSetting24.this, ModeSelectActivity.class);
+
+               Intent intentModeSelect = new Intent(WifiSetting24.this, ModeSelectActivity.class);
                 intentModeSelect.putExtra(AppConstant.WIFISETTING.WIFI_MODE_TYPE, mode);
                 intentModeSelect.putExtra(AppConstant.WIFISETTING.WIFI_TYPE, AppConstant.WIFISETTING.WIFI_TYPE_2G);
-                startActivityForResult(intentModeSelect, REQUEST_MODEL);*/
+                startActivityForResult(intentModeSelect, REQUEST_MODEL);
                 break;
             case R.id.layout_channel:
-                //TODO
-              /*  Intent intentChannel = new Intent(WifiSetting24.this, ChannelActivity.class);
+
+              Intent intentChannel = new Intent(WifiSetting24.this, ChannelActivity.class);
                 intentChannel.putExtra(AppConstant.WIFISETTING.WIFI_CHANNEL_TYPE, channel);
                 intentChannel.putExtra(AppConstant.WIFISETTING.WIFI_TYPE, AppConstant.WIFISETTING.WIFI_TYPE_2G);
-                startActivityForResult(intentChannel, REQUEST_CHANNEL);*/
+                startActivityForResult(intentChannel, REQUEST_CHANNEL);
                 break;
             case R.id.layout_bandwidth:
-                //TODO
-              /*  Intent intentBandwidth = new Intent(WifiSetting24.this, BandwidthActivity.class);
+
+               Intent intentBandwidth = new Intent(WifiSetting24.this, BandwidthActivity.class);
                 intentBandwidth.putExtra(AppConstant.WIFISETTING.WIFI_BANDWIDTH, bandwidth);
                 intentBandwidth.putExtra(AppConstant.WIFISETTING.WIFI_TYPE, AppConstant.WIFISETTING.WIFI_TYPE_2G);
-                startActivityForResult(intentBandwidth, REQUEST_BANDWIDTH);*/
+                startActivityForResult(intentBandwidth, REQUEST_BANDWIDTH);
                 break;
             case R.id.layout_password:
-                //TODO
-              /*  Intent intentAlertPassword = new Intent(WifiSetting24.this, AlertWifiPasswordActivity.class);
+
+               Intent intentAlertPassword = new Intent(WifiSetting24.this, AlertWifiPasswordActivity.class);
                 intentAlertPassword.putExtra(AppConstant.WIFISETTING.WIFI_TYPE, AppConstant.WIFISETTING.WIFI_TYPE_2G);
-                startActivityForResult(intentAlertPassword, REQUEST_WIFIPASSWORD);*/
+                startActivityForResult(intentAlertPassword, REQUEST_WIFIPASSWORD);
                 break;
             case R.id.layout_wifiname_setting:
-                //TODO
-              /*  Intent intentWifiname = new Intent(WifiSetting24.this, WifinameSetActivity.class);
+
+             Intent intentWifiname = new Intent(WifiSetting24.this, WifinameSetActivity.class);
                 intentWifiname.putExtra(AppConstant.WIFISETTING.WIFI_NAME, wifiname);
                 intentWifiname.putExtra(AppConstant.WIFISETTING.WIFI_TYPE, AppConstant.WIFISETTING.WIFI_TYPE_2G);
-                startActivityForResult(intentWifiname, REQUEST_WIFINAME);*/
+                startActivityForResult(intentWifiname, REQUEST_WIFINAME);
                 break;
         }
     }

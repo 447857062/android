@@ -3,8 +3,6 @@ package deplink.com.smartwirelessrelay.homegenius.activity.room;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -37,6 +35,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private RoomManager mRoomManager;
     private List<Room> mRooms = new ArrayList<>();
     private ImageView imageview_addroom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,15 +65,9 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         mRoomsAdapter = new GridViewAdapter(this, mRooms);
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);
+
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-
-        }
-        return super.onKeyDown(keyCode, event);
-    }
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
@@ -104,15 +97,9 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         mDragGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //最大值，最后一个，添加房间
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomName", RoomManager.getInstance().getmRooms().get(position).getRoomName());
-                    bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
-                    Intent intent = new Intent(RoomActivity.this, ManageRoomActivity.class);
-                    Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + RoomManager.getInstance().getmRooms().get(position));
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, REQUEST_MODIFY_ROOM);
+                mRoomManager.setCurrentSelectedRoom(mRoomManager.getmRooms().get(position));
+                Intent intent = new Intent(RoomActivity.this, DeviceNumberActivity.class);
+                startActivityForResult(intent, REQUEST_MODIFY_ROOM);
 
             }
         });

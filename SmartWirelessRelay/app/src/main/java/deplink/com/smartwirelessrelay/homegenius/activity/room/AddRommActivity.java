@@ -5,14 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.SmartGetwayActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -24,6 +30,10 @@ public class AddRommActivity extends Activity implements View.OnClickListener{
     private ImageView image_back;
     private RelativeLayout layout_getway;
     private EditText edittext_room_name;
+    private GridView gridview_room_type;
+    private GridViewRommTypeAdapter mGridViewRommTypeAdapter;
+    private RoomManager roomManager;
+    private List<String> listTop=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +45,31 @@ public class AddRommActivity extends Activity implements View.OnClickListener{
 
     private void initDatas() {
         roomManager=RoomManager.getInstance();
+        mGridViewRommTypeAdapter=new GridViewRommTypeAdapter(this);
+        listTop.add("客厅");
+        listTop.add("卧室");
+        listTop.add("厨房");
+        listTop.add("书房");
+        listTop.add("储物室");
+        listTop.add("洗手间");
+        listTop.add("饭厅");
+        roomType="客厅";
     }
 
     private void initEvents() {
         textview_add_room_complement.setOnClickListener(this);
         image_back.setOnClickListener(this);
         layout_getway.setOnClickListener(this);
+        gridview_room_type.setAdapter(mGridViewRommTypeAdapter);
+       gridview_room_type.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                roomType=listTop.get(position);
+                mGridViewRommTypeAdapter.setSelectedPosition(position);
+                mGridViewRommTypeAdapter.notifyDataSetInvalidated();
+            }
+        });
+
     }
 
     private void initViews() {
@@ -48,8 +77,9 @@ public class AddRommActivity extends Activity implements View.OnClickListener{
         image_back= (ImageView) findViewById(R.id.image_back);
         layout_getway= (RelativeLayout) findViewById(R.id.layout_getway);
         edittext_room_name= (EditText) findViewById(R.id.edittext_room_name);
+        gridview_room_type= (GridView) findViewById(R.id.gridview_room_type);
     }
-    private RoomManager roomManager;
+    private String roomType;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -57,7 +87,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener{
             case  R.id.textview_add_room_complement:
                 String roomName=edittext_room_name.getText().toString();
                 if(!roomName.equals("")){
-                    roomManager.addRoom(roomName, new Observer() {
+                    roomManager.addRoom(roomType,roomName, new Observer() {
                         @Override
                         public void onSubscribe(@NonNull Disposable d) {
 

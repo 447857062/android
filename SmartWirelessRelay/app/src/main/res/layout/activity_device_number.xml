@@ -27,6 +27,16 @@
             android:text="设备数量"
             android:textColor="@android:color/white"
             android:textSize="15dp" />
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/textview_edit_room"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="编辑"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
     </RelativeLayout>
 
     <ListView

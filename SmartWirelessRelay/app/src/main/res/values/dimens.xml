@@ -19,4 +19,24 @@
     <dimen name="text_size_xhdpi_15">15dp</dimen>
     <dimen name="button_sure_width">131dp</dimen>
     <dimen name="button_register_height">36dp</dimen>
+    <dimen name="connect_setting_item_height">48dp</dimen>
+    <dimen name="connect_setting_layout_padding_left_right">25dp</dimen>
+    <dimen name="wifi_checkbox_width">33dp</dimen>
+    <dimen name="wifi_checkbox_height">17dp</dimen>
+    <dimen name="last_next_step_layout_width">208dp</dimen>
+    <dimen name="last_next_step_layout_height">35dp</dimen>
+    <dimen name="connect_setting_arrorright_image_width">11dp</dimen>
+    <dimen name="connect_setting_arrorright_image_height">20dp</dimen>
+    <dimen name="static_ip_left_text_title_minwidth">130dp</dimen>
+    <dimen name="mian_interface_topbar_text_size">18dp</dimen>
+    <dimen name="firmware_upgrade_text_margin_image">27dp</dimen>
+    <dimen name="last_next_step_text_size">15dp</dimen>
+    <dimen name="last_next_step_margin">20dp</dimen>
+    <dimen name="makesure_dialog_text_margin">34dp</dimen>
+    <dimen name="dialog_unbind_device_button_marginbuttom">25dp</dimen>
+    <dimen name="makesure_dialog_button_margin">28dp</dimen>
+    <dimen name="dialog_button_unbind_device_width">75dp</dimen>
+    <dimen name="dialog_button_unbind_device_height">30dp</dimen>
+    <dimen name="wireless_relay_item_margin_left_right">20dp</dimen>
+    <dimen name="wireless_relay_item_height">48dp</dimen>
 </resources>

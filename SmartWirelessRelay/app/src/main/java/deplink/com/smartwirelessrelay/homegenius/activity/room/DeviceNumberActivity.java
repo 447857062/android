@@ -1,12 +1,14 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.room;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +34,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
 
     private ListView listview_getway_devices;
     private RoomGetwayDevicesListAdapter mRoomGetwayDevicesListAdapter;
-    /**
-     * 房间排序号
-     */
-    private int roomOrdinalNumber;
-
+    private TextView textview_edit_room;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +47,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private void initEvents() {
         image_back.setOnClickListener(this);
         listview_devices.setOnItemClickListener(this);
+        textview_edit_room.setOnClickListener(this);
     }
 
     private List<SmartDev> mDevices = new ArrayList<>();
@@ -58,22 +57,17 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private DeviceManager mDeviceManager;
     private GetwayManager mGetwayManager;
     private void initDatas() {
-        String hintRoomName = getIntent().getStringExtra("roomname");
         mRoomManager = RoomManager.getInstance();
-
         mDeviceManager=DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this,null);
-
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,null);
-
+        String hintRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
         currentRoom=mRoomManager.findRoom(hintRoomName,true);
-
         mDevices = currentRoom.getmDevices();
         mRoomDevicesAdapter = new RoomDevicesListAdapter(this, mDevices,currentRoom,mDeviceManager);
         listview_devices.setAdapter(mRoomDevicesAdapter);
         mRoomDevicesAdapter.notifyDataSetChanged();
-
         mGetwayDevices= currentRoom.getmGetwayDevices();
         mRoomGetwayDevicesListAdapter=new RoomGetwayDevicesListAdapter(this,mGetwayDevices,currentRoom,mGetwayManager);
         listview_getway_devices.setAdapter(mRoomGetwayDevicesListAdapter);
@@ -85,6 +79,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         image_back = (ImageView) findViewById(R.id.image_back);
         listview_devices = (ListView) findViewById(R.id.listview_devices);
         listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
+        textview_edit_room = (TextView) findViewById(R.id.textview_edit_room);
     }
 
     @Override
@@ -92,6 +87,9 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.textview_edit_room:
+               startActivity(new Intent(this,ManageRoomActivity.class));
                 break;
         }
     }

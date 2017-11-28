@@ -20,6 +20,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.SelectConnectTypeDialog;
@@ -63,37 +64,25 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     private TextView textview_netmask;
     private TextView textview_dhcp_status;
     private MakeSureDialog connectLostDialog;
+    private RouterManager mRouterManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_setting);
         initViews();
-        initEvents();
         initDatas();
+        initEvents();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getRouterDevice();
+        routerDevice=mRouterManager.getRouterDevice();
         manager.addEventCallback(ec);
         if (routerDevice != null) {
             routerDevice.queryWan();
             routerDevice.queryLan();
         }
-    }
-    /**
-     * 获取当前的设备
-     */
-    private void getRouterDevice() {
-        String currentDevcieKey = Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY);
-        if (currentDevcieKey.equals("")) {
-            if (manager.getDeviceList() != null && manager.getDeviceList().size() > 0) {
-                Perfence.setPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY, manager.getDeviceList().get(0).getDeviceKey());
-            }
-        }
-        routerDevice = (RouterDevice) manager.getDevice(Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY));
-
     }
 
     @Override
@@ -103,6 +92,8 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     }
 
     private void initDatas() {
+        mRouterManager=RouterManager.getInstance();
+        mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(ConnectSettingActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {

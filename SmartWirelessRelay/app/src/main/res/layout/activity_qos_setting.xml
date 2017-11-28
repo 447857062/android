@@ -3,37 +3,217 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.QosSettingActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.qos.QosSettingActivity">
+
     <RelativeLayout
-        android:id="@+id/layout_title"
+        android:id="@+id/layout_topbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_vertical">
+        android:layout_alignParentTop="true"
+        android:background="@color/blue_add_new_router_title">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="15dp">
+
+            <FrameLayout
+                android:id="@+id/layout_back"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="20dp">
+
+                <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:src="@drawable/arror_back" />
+            </FrameLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="智能分配类型选择"
+                android:textColor="@color/main_interface_topbar_text_color"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <!--QOS开关-->
+    <RelativeLayout
+        android:id="@+id/layout_qos_switch"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/connect_setting_item_height"
+        android:layout_below="@+id/layout_topbar"
+        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
+        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="QOS开关"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+            <CheckBox
+                android:id="@+id/checkbox_qos_switch"
+                android:layout_width="@dimen/wifi_checkbox_width"
+                android:layout_height="@dimen/wifi_checkbox_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/checkbox_wifi_selector"
+                />
+        </RelativeLayout>
 
         <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="智能分配类型选择"
-            android:textColor="@android:color/white" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:textSize="12sp"
-            android:text="保存"
-            android:textColor="@android:color/white" />
-
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
     </RelativeLayout>
+    <!--A-->
+    <RelativeLayout
+        android:id="@+id/layout_model_A"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/connect_setting_item_height"
+        android:layout_below="@+id/layout_qos_switch"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
+        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="智能分配"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_model_a"
+                android:layout_width="@dimen/wifi_checkbox_width"
+                android:layout_height="@dimen/wifi_checkbox_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/checkbox_style_imagelevel"
+                />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--B-->
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/layout_model_B"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/connect_setting_item_height"
+        android:layout_below="@+id/layout_model_A"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
+        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="上网优先"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_model_b"
+                android:layout_width="@dimen/wifi_checkbox_width"
+                android:layout_height="@dimen/wifi_checkbox_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/checkbox_style_imagelevel"
+                />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+    <!--B-->
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/layout_model_download"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/connect_setting_item_height"
+        android:layout_below="@+id/layout_model_B"
+        android:background="@drawable/connect_setting_button_drawable"
+        android:clickable="true"
+        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
+        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="下载优先"
+                android:textColor="@color/text_color_3A3A3A"
+                android:textSize="@dimen/text_size_xhdpi_15" />
+
+            <ImageView
+                android:id="@+id/imageview_model_download"
+                android:layout_width="@dimen/wifi_checkbox_width"
+                android:layout_height="@dimen/wifi_checkbox_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/checkbox_style_imagelevel"
+                />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/connect_setting_line" />
+    </RelativeLayout>
+
+    <include
+        android:layout_width="@dimen/last_next_step_layout_width"
+        android:layout_height="@dimen/last_next_step_layout_height"
+        layout="@layout/layout_cancel_save"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="85dp"/>
 </RelativeLayout>

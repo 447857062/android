@@ -28,6 +28,16 @@ public class Room extends DataSupport implements Serializable{
      * 房间序号（用于显示的时候排序）
      */
     private int roomOrdinalNumber;
+    private String roomType;
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
+    }
+
     /**
      * 智能设备和房间是多对对的关系
      */

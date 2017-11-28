@@ -10,6 +10,7 @@
         android:background="@android:color/holo_blue_light"
         android:layout_height="60dp">
         <LinearLayout
+            android:id="@+id/layout_select_room_type"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
