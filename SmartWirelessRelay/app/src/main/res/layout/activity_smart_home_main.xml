@@ -78,110 +78,119 @@
         <!--  TODO 测试，删除-->
     </RelativeLayout>
 
-
-    <!--水平滚动的房间-->
     <RelativeLayout
-        android:id="@+id/layout_room_show"
+        android:background="@drawable/homebackground"
+        android:layout_below="@+id/layout_top_bar"
+        android:id="@+id/layout_middle_content"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/layout_top_bar">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_buttonbar">
 
+        <!--水平滚动的房间-->
         <RelativeLayout
-            android:id="@+id/layout_room_top"
+            android:id="@+id/layout_room_show"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_height="200dp"
+            >
 
-            <ImageView
-                android:id="@+id/imageview_room"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:id="@+id/textview_room"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/imageview_room"
-                android:text="房间" />
-
-            <ImageView
-                android:id="@+id/imageview_arror_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher" />
-        </RelativeLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_room_top"
-            android:layout_margin="5dp"
-            android:scrollbars="none">
-
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/layout_room_top"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp">
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
-                <GridView
-                    android:id="@+id/grid"
+                <ImageView
+                    android:id="@+id/imageview_room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/textview_room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/imageview_room"
+                    android:text="房间" />
+
+                <ImageView
+                    android:id="@+id/imageview_arror_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_launcher" />
+            </RelativeLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_room_top"
+                android:layout_margin="5dp"
+                android:scrollbars="none">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:numColumns="auto_fit"
-                    android:stretchMode="spacingWidthUniform" />
-            </LinearLayout>
-        </HorizontalScrollView>
+                    android:layout_margin="10dp">
+
+                    <GridView
+                        android:id="@+id/grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:numColumns="auto_fit"
+                        android:stretchMode="spacingWidthUniform" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_below="@+id/layout_room_show"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/layout_experience_center_top"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <ImageView
+                    android:id="@+id/imageview_experience_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/textview_experience_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/imageview_experience_center"
+                    android:text="体验中心" />
+
+                <ImageView
+                    android:id="@+id/imageview_experience_center_arror_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_launcher" />
+            </RelativeLayout>
+            <ListView
+                android:layout_below="@+id/layout_experience_center_top"
+                android:id="@+id/listview_experience_center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ListView>
+        </RelativeLayout>
     </RelativeLayout>
-<RelativeLayout
-    android:layout_above="@+id/layout_buttonbar"
-    android:layout_below="@+id/layout_room_show"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <RelativeLayout
-        android:id="@+id/layout_experience_center_top"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
 
-        <ImageView
-            android:id="@+id/imageview_experience_center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:src="@mipmap/ic_launcher" />
 
-        <TextView
-            android:id="@+id/textview_experience_center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/imageview_experience_center"
-            android:text="体验中心" />
-
-        <ImageView
-            android:id="@+id/imageview_experience_center_arror_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_launcher" />
-    </RelativeLayout>
-    <ListView
-        android:layout_below="@+id/layout_experience_center_top"
-        android:id="@+id/listview_experience_center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
-</RelativeLayout>
 
 
 
