@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -28,8 +29,12 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-    private Button button_logout;
+    private TextView button_logout;
     private CircleImageView user_head_portrait;
+    private ImageView imageview_devices;
+    private ImageView imageview_home_page;
+    private ImageView imageview_rooms;
+    private ImageView imageview_personal_center;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +56,17 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
+        imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
+        imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
+        imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
+        imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
         layout_getway_check = (RelativeLayout) findViewById(R.id.layout_getway_check);
         layout_experience_center = (RelativeLayout) findViewById(R.id.layout_experience_center);
         layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);
         layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
         layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
-        button_logout = (Button) findViewById(R.id.button_logout);
+        button_logout = (TextView) findViewById(R.id.button_logout);
         user_head_portrait = (CircleImageView) findViewById(R.id.user_head_portrait);
     }
 
@@ -78,6 +87,15 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        imageview_home_page.setImageResource(R.drawable.nocheckthehome);
+        imageview_devices.setImageResource(R.drawable.nocheckthedevice);
+        imageview_rooms.setImageResource(R.drawable.nochecktheroom);
+        imageview_personal_center.setImageResource(R.drawable.checkthemine);
     }
 
     @Override

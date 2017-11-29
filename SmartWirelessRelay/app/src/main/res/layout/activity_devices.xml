@@ -3,152 +3,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/equipmentbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity">
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_blue_light"
-        android:layout_height="60dp">
-        <LinearLayout
-            android:id="@+id/layout_select_room_type"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:text="全部"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageView
-                android:src="@mipmap/ic_launcher"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
-        </LinearLayout>
-        <TextView
-            android:id="@+id/textview_title"
+        android:layout_height="@dimen/title_bar_height">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="设备"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
-        <ImageView
-            android:layout_centerVertical="true"
-            android:id="@+id/imageview_add_device"
-            android:src="@mipmap/ic_launcher"
-            android:layout_alignParentRight="true"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
+            <LinearLayout
+                android:id="@+id/layout_select_room_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="全部"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_small" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/device_page_arror_down_marginleft"
+                    android:src="@drawable/dropdownicon" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="设备"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+            <ImageView
+                android:id="@+id/imageview_add_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/addicon" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <ListView
-        android:layout_below="@+id/layout_title"
         android:id="@+id/listview_devies"
-        android:dividerHeight="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
-
-
-
-    <LinearLayout
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4">
+        android:layout_above="@+id/layout_buttom_bar"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/device_page_devicelist_margintop"
+        android:divider="@null"
+        android:dividerHeight="@dimen/device_item_divider_height"/>
 
-        <LinearLayout
-            android:id="@+id/layout_home_page"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+    <include
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="首页"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-
-
-
-        <LinearLayout
-            android:id="@+id/layout_devices"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="设备"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_rooms"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="房间"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_personal_center"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="我的"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-    </LinearLayout>
+        android:id="@+id/layout_buttom_bar"
+        layout="@layout/layout_buttom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_buton_bar_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

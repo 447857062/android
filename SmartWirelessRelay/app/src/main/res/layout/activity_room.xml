@@ -3,148 +3,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/roombackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity">
+
     <RelativeLayout
         android:id="@+id/layout_title"
-
         android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <TextView
-            android:id="@+id/textview_title"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/title_bg">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/holo_blue_light"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="房间"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
-        <ImageView
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:id="@+id/imageview_addroom"
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="房间"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+            <ImageView
+                android:id="@+id/imageview_addroom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/addicon" />
+        </RelativeLayout>
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/textview_option_explan"
-        android:layout_below="@+id/layout_title"
-        android:text="我的房间(长按可排序，点击编辑房间)"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="20dp"
-        android:gravity="center_vertical"
-        android:layout_height="40dp" />
-    <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
-        android:layout_below="@+id/textview_option_explan"
-        android:layout_above="@+id/layout_button_bar"
-        android:id="@+id/dragGridView"
-        android:listSelector="@android:color/transparent"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cacheColorHint="@android:color/transparent"
-        android:verticalSpacing="10dip"
-        android:horizontalSpacing="10dip"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
-        android:numColumns="3" >
-    </deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView>
-    <LinearLayout
-        android:id="@+id/layout_button_bar"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/layout_title"
+
+        android:layout_above="@+id/layout_buttom_bar">
+
+        <TextView
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/white"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/textview_option_explan"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:text="我的房间(长按可排序，点击编辑房间)" />
+
+        <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
+            android:id="@+id/dragGridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/textview_option_explan"
+            android:cacheColorHint="@android:color/transparent"
+            android:gravity="center"
+            android:horizontalSpacing="10dip"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dip" />
+    </RelativeLayout>
+
+
+    <include
+        android:id="@+id/layout_buttom_bar"
+        layout="@layout/layout_buttom_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <LinearLayout
-            android:id="@+id/layout_home_page"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="首页"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_devices"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="设备"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_rooms"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="房间"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_personal_center"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="我的"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_height="@dimen/layout_buton_bar_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

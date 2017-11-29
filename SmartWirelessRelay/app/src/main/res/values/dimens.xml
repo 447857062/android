@@ -39,4 +39,43 @@
     <dimen name="dialog_button_unbind_device_height">30dp</dimen>
     <dimen name="wireless_relay_item_margin_left_right">20dp</dimen>
     <dimen name="wireless_relay_item_height">48dp</dimen>
+    <!--底部导航栏高度-->
+    <!--新app ui尺寸-->
+    <dimen name="layout_buton_bar_height">49dp</dimen>
+    <dimen name="layout_buton_bar_item_text_size">10dp</dimen>
+    <dimen name="layout_top_bar_item_text_size">18dp</dimen>
+    <dimen name="title_bar_height">64dp</dimen>
+    <dimen name="title_bar_content_height">44dp</dimen>
+    <dimen name="title_bar_content_margin_top">20dp</dimen>
+    <dimen name="layout_content_margin_left_right">15dp</dimen>
+    <dimen name="layout_room_content_margin_top">15dp</dimen>
+    <dimen name="layout_addroom_horizontalSpacing">15dp</dimen>
+    <dimen name="room_type_item_text_margin_button">30dp</dimen>
+    <dimen name="homepage_room_type_item_text_margin_button">20dp</dimen>
+    <dimen name="homepage_room_type_margin_button">15dp</dimen>
+    <dimen name="homepage_room_type_margin_top">15dp</dimen>
+    <dimen name="homepage_room_title_marginleft_room_smallimage">10dp</dimen>
+    <dimen name="text_size_small">14dp</dimen>
+    <dimen name="text_size_smallest">12dp</dimen>
+    <dimen name="room_list_item_margin_top">5dp</dimen>
+    <dimen name="list_item_textview_margin_left">5dp</dimen>
+    <dimen name="list_item_imageview_onlinestatu_margin_right">10dp</dimen>
+    <dimen name="mine_page_user_image_margintop">117dp</dimen>
+    <dimen name="mine_page_user_image_ridus">60dp</dimen>
+    <dimen name="mine_page_logout_margitop">60dp</dimen>
+    <dimen name="device_page_arror_down_marginleft">5dp</dimen>
+    <dimen name="experience_center_listitem_height">75dp</dimen>
+    <dimen name="experience_center_listitem_devicetype_marginleft">10dp</dimen>
+    <dimen name="device_item_background_ridus">8dp</dimen>
+    <dimen name="device_item_divider_height">5dp</dimen>
+    <dimen name="device_page_devicelist_margintop">15dp</dimen>
+    <dimen name="home_page_roomselect_height">145dp</dimen>
+    <dimen name="home_page_roomselect_top_height">35dp</dimen>
+    <dimen name="home_page_roomselect_top_change_show_type_textview_marginright">15dp</dimen>
+
+    <dimen name="doorlock_operation_layout_margin_left_right">25dp</dimen>
+    <dimen name="doorlock_operation_one_padding_hor_other">20dp</dimen>
+    <dimen name="doorlock_operation_one_padding_ver_other">30dp</dimen>
+    <dimen name="doorlock_operation_textview_margin_imageview_top">10dp</dimen>
+
 </resources>

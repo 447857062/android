@@ -19,6 +19,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -46,14 +47,14 @@ public class AddRommActivity extends Activity implements View.OnClickListener{
     private void initDatas() {
         roomManager=RoomManager.getInstance();
         mGridViewRommTypeAdapter=new GridViewRommTypeAdapter(this);
-        listTop.add("客厅");
-        listTop.add("卧室");
-        listTop.add("厨房");
-        listTop.add("书房");
-        listTop.add("储物室");
-        listTop.add("洗手间");
-        listTop.add("饭厅");
-        roomType="客厅";
+        listTop.add(AppConstant.ROOMTYPE.TYPE_LIVING);
+        listTop.add(AppConstant.ROOMTYPE.TYPE_BED);
+        listTop.add(AppConstant.ROOMTYPE.TYPE_KITCHEN);
+        listTop.add(AppConstant.ROOMTYPE.TYPE_STUDY);
+        listTop.add(AppConstant.ROOMTYPE.TYPE_STORAGE);
+        listTop.add(AppConstant.ROOMTYPE.TYPE_TOILET);
+        listTop.add(AppConstant.ROOMTYPE.TYPE_DINING);
+        roomType=AppConstant.ROOMTYPE.TYPE_LIVING;
     }
 
     private void initEvents() {

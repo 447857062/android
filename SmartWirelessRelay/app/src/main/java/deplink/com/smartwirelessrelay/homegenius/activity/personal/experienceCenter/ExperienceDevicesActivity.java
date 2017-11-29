@@ -16,6 +16,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.Experience
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 
 public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener {
     private static final String TAG = "EDActivity";
@@ -40,35 +41,39 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
     private void initDatas() {
         mExperienceCenterDevices = new ArrayList<>();
         ExperienceCenterDevice device = new ExperienceCenterDevice();
-        device.setDeviceName("智能网关");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_SMART_GETWAY);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("路由器");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_ROUTER);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("智能密码门锁");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_LOCK);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("智能门铃");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_MENLING);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("智能开关");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_SWITCH);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("智能遥控");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("电视遥控");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_TV_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName("空调遥控");
+        device.setDeviceName(AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL);
+        device.setOnline(true);
+        mExperienceCenterDevices.add(device);
+        device = new ExperienceCenterDevice();
+        device.setDeviceName(AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL);
         device.setOnline(true);
         mAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDevices);
     }

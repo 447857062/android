@@ -429,7 +429,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 // set item title font color
                 deleteItem.setTitleColor(Color.WHITE);
                 // set a icon
-                // deleteItem.setIcon(R.drawable.arror_back);
                 // add to menu
                 menu.addMenuItem(deleteItem);
             }

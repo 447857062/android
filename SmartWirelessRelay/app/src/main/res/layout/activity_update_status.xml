@@ -12,7 +12,7 @@
         android:layout_height="50dp">
         <ImageView
             android:id="@+id/image_back"
-            android:src="@drawable/arror_back"
+            android:src="@drawable/returnicon"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"

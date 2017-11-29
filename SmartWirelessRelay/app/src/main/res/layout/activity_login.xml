@@ -3,199 +3,232 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/loginbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_vertical">
+        android:layout_height="@dimen/title_bar_height"
+        >
 
-        <ImageView
-            android:id="@+id/imageview_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="登录"
-            android:textColor="@android:color/white" />
+            <ImageView
+                android:id="@+id/imageview_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/dontlogin" />
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="登录"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+        </RelativeLayout>
     </RelativeLayout>
 
+
     <RelativeLayout
-        android:layout_marginTop="50dp"
-        android:layout_below="@+id/layout_title"
         android:id="@+id/layout_input_phone_number_outer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginTop="50dp">
 
         <RelativeLayout
             android:id="@+id/layout_input_phone_number_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/image_person"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@null"
-                android:hint="请输入手机号"
+                android:src="@mipmap/ic_launcher" />
+
+            <EditText
                 android:id="@+id/edittext_input_phone_number"
-                android:gravity="center_vertical"
-                android:layout_toRightOf="@+id/image_person"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/image_person"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="请输入手机号" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@android:color/black"
             android:layout_below="@+id/layout_input_phone_number_inner"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:background="@android:color/black" />
     </RelativeLayout>
+
     <RelativeLayout
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/layout_input_phone_number_outer"
         android:id="@+id/layout_input_password_outer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_input_phone_number_outer"
+        android:layout_marginTop="20dp">
 
         <RelativeLayout
             android:id="@+id/layout_input_password_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/image_password"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="请输入密码"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@null"
+                android:src="@mipmap/ic_launcher" />
+
+            <EditText
                 android:id="@+id/edittext_input_password"
-                android:gravity="center_vertical"
-                android:layout_toRightOf="@+id/image_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/image_password"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="请输入密码" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@android:color/black"
             android:layout_below="@+id/layout_input_password_inner"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:background="@android:color/black" />
     </RelativeLayout>
+
     <Button
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/layout_input_password_outer"
         android:id="@+id/button_login"
-        android:text="登录"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_input_password_outer"
         android:layout_marginTop="20dp"
+        android:text="登录" />
+
+    <RelativeLayout
         android:id="@+id/layout_forget_password"
-        android:layout_below="@+id/button_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_login"
+        android:layout_marginTop="20dp">
+
         <TextView
             android:id="@+id/textview_forget_password"
-            android:text="忘记密码"
-            android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="忘记密码" />
+
         <TextView
             android:id="@+id/textview_regist_now"
-            android:text="现在注册"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="现在注册" />
 
     </RelativeLayout>
+
     <RelativeLayout
-        android:layout_marginTop="200dp"
-        android:layout_below="@+id/button_login"
         android:id="@+id/layout_login_other_type"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_login"
+        android:layout_marginTop="200dp">
+
         <ImageView
             android:id="@+id/iamgeview_left_line"
-            android:layout_centerVertical="true"
-            android:background="@color/black"
             android:layout_width="100dp"
-            android:layout_height="2dp" />
+            android:layout_height="2dp"
+            android:layout_centerVertical="true"
+            android:background="@color/black" />
+
         <TextView
-            android:text="其他方式登录"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="其他方式登录" />
+
         <ImageView
             android:id="@+id/iamgeview_right_line"
-            android:layout_centerVertical="true"
-            android:background="@color/black"
-            android:layout_alignParentRight="true"
             android:layout_width="100dp"
-            android:layout_height="2dp" />
+            android:layout_height="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/black" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/layout_other_login_type_select"
-        android:layout_below="@+id/layout_login_other_type"
         android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_login_other_type"
+        android:gravity="center_horizontal">
+
         <ImageView
             android:id="@+id/imageview_login_type_1"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher" />
+
         <ImageView
+            android:id="@+id/imageview_login_type_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="50dp"
             android:layout_toRightOf="@+id/imageview_login_type_1"
-            android:id="@+id/imageview_login_type_2"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:src="@mipmap/ic_launcher" />
+
         <ImageView
+            android:id="@+id/imageview_login_type_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="50dp"
             android:layout_toRightOf="@+id/imageview_login_type_2"
-            android:id="@+id/imageview_login_type_3"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
+
     <RelativeLayout
-        android:layout_below="@+id/layout_other_login_type_select"
         android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_other_login_type_select"
+        android:gravity="center_horizontal">
+
         <TextView
             android:id="@+id/textview_i_read"
-            android:text="我已阅读并同意"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="我已阅读并同意" />
+
         <TextView
-            android:textColor="@color/blue"
-            android:layout_toRightOf="@+id/textview_i_read"
             android:id="@+id/textview_protocal"
-            android:text="《智能家居协议条款》"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/textview_i_read"
+            android:text="《智能家居协议条款》"
+            android:textColor="@color/blue" />
     </RelativeLayout>
 </RelativeLayout>

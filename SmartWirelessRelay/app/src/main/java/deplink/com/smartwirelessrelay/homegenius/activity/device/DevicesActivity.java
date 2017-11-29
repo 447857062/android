@@ -69,6 +69,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private SmartLockManager mSmartLockManager;
     private RoomManager mRoomManager;
     private LinearLayout layout_select_room_type;
+    private ImageView imageview_devices;
+    private ImageView imageview_home_page;
+    private ImageView imageview_rooms;
+    private ImageView imageview_personal_center;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     @Override
     protected void onResume() {
         super.onResume();
+        imageview_home_page.setImageResource(R.drawable.nocheckthehome);
+        imageview_devices.setImageResource(R.drawable.checkthedevice);
+        imageview_rooms.setImageResource(R.drawable.nochecktheroom);
+        imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
         mDeviceManager.queryDeviceList();
     }
 
@@ -187,6 +195,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         listview_devies = (ListView) findViewById(R.id.listview_devies);
         imageview_add_device = (ImageView) findViewById(R.id.imageview_add_device);
         layout_select_room_type = (LinearLayout) findViewById(R.id.layout_select_room_type);
+        imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
+        imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
+        imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
+        imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
         //TODO 初始化设备列表
 
     }

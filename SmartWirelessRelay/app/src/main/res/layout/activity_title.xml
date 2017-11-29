@@ -9,7 +9,7 @@
         android:id="@+id/image_back"
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"
-        android:background="@drawable/arror_back"
+        android:background="@drawable/returnicon"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp" />
 

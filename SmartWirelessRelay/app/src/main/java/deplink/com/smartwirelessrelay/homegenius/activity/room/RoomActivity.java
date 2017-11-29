@@ -35,7 +35,10 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private RoomManager mRoomManager;
     private List<Room> mRooms = new ArrayList<>();
     private ImageView imageview_addroom;
-
+    private ImageView imageview_devices;
+    private ImageView imageview_home_page;
+    private ImageView imageview_rooms;
+    private ImageView imageview_personal_center;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,10 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        imageview_home_page.setImageResource(R.drawable.nocheckthehome);
+        imageview_devices.setImageResource(R.drawable.nocheckthedevice);
+        imageview_rooms.setImageResource(R.drawable.checktheroom);
+        imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
         mRooms = mRoomManager.getDatabaseRooms();
         mRoomsAdapter = new GridViewAdapter(this, mRooms);
         //房间适配器
@@ -114,6 +121,10 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
         mDragGridView = (DragGridView) findViewById(R.id.dragGridView);
         imageview_addroom = (ImageView) findViewById(R.id.imageview_addroom);
+        imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
+        imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
+        imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
+        imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
     }
 
     @Override

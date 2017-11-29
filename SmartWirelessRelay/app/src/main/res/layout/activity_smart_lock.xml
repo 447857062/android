@@ -3,53 +3,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity">
 
     <RelativeLayout
-        android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:background="@drawable/doorbackground">
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
+        <RelativeLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_height">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="智能门锁"
-            android:textColor="@android:color/white" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/title_bar_content_height"
+                android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+                android:layout_marginRight="@dimen/layout_content_margin_left_right"
 
-        <TextView
-            android:id="@+id/textview_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="编辑"
-            android:textColor="@android:color/white" />
+                android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
+                <ImageView
+                    android:id="@+id/image_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/returnicon" />
+
+                <TextView
+                    android:id="@+id/textview_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="智能门锁"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+                <TextView
+                    android:id="@+id/textview_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/text_size_small"
+                    android:textColor="@color/white"
+                    android:layout_centerVertical="true"
+                    android:text="编辑" />
+            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/doorlock_operation_layout_margin_left_right"
+        android:layout_marginRight="@dimen/doorlock_operation_layout_margin_left_right">
 
         <RelativeLayout
             android:id="@+id/layout_alert_record"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true">
 
             <ImageView
@@ -57,21 +75,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/alarmrecord" />
 
             <TextView
-                android:layout_below="@+id/imageview_alert_record"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/imageview_alert_record"
                 android:layout_centerHorizontal="true"
-                android:text="报警记录" />
+                android:layout_marginTop="@dimen/doorlock_operation_textview_margin_imageview_top"
+                android:text="报警记录"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/layout_lock_record"
-            android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/doorlock_operation_one_padding_hor_other"
             android:layout_toRightOf="@+id/layout_alert_record">
 
             <ImageView
@@ -79,21 +100,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/unlockrecord" />
 
             <TextView
-                android:layout_below="@+id/imageview_lock_record"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/doorlock_operation_textview_margin_imageview_top"
+                android:layout_below="@+id/imageview_lock_record"
                 android:layout_centerHorizontal="true"
-                android:text="开锁记录" />
+                android:text="开锁记录"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/layout_password_not_save"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/doorlock_operation_one_padding_hor_other"
             android:layout_toRightOf="@+id/layout_lock_record">
 
             <ImageView
@@ -101,21 +125,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/passwordisnotsaved" />
 
             <TextView
-                android:layout_below="@+id/imageview_password_not_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/imageview_password_not_save"
                 android:layout_centerHorizontal="true"
-                android:text="密码不保存" />
+                android:layout_marginTop="@dimen/doorlock_operation_textview_margin_imageview_top"
+                android:text="密码不保存"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/layout_auth"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/doorlock_operation_one_padding_hor_other"
             android:layout_toRightOf="@+id/layout_password_not_save">
 
             <ImageView
@@ -123,37 +150,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/authorized" />
 
             <TextView
-                android:layout_below="@+id/imageview_auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/imageview_auth"
                 android:layout_centerHorizontal="true"
-                android:text="授权" />
+                android:layout_marginTop="@dimen/doorlock_operation_textview_margin_imageview_top"
+                android:text="授权"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/layout_open"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/layout_alert_record">
+            android:layout_below="@+id/layout_alert_record"
+            android:layout_marginTop="@dimen/doorlock_operation_one_padding_ver_other">
 
             <ImageView
                 android:id="@+id/iamgeview_option_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/clearhistory" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iamgeview_option_open"
                 android:layout_centerHorizontal="true"
-                android:text="开锁" />
+                android:layout_marginTop="@dimen/doorlock_operation_textview_margin_imageview_top"
+                android:text="开锁"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
     </RelativeLayout>
 

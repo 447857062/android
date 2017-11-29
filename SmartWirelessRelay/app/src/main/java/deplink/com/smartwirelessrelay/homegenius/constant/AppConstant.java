@@ -28,6 +28,27 @@ public class AppConstant {
             public static final String WIFI_ENCRYPT_TYPE_CUSTOM="EncryptType_CUSTOM";
         }
     }
+
+    public interface ROOMTYPE{
+        String TYPE_BED = "卧室";
+        String TYPE_DINING = "饭厅";
+        String TYPE_KITCHEN = "厨房";
+        String TYPE_LIVING = "客厅";
+        String TYPE_STORAGE = "储物室";
+        String TYPE_STUDY = "书房";
+        String TYPE_TOILET = "洗手间";
+    }
+    public interface DEVICES{
+        String TYPE_SMART_GETWAY = "智能网关";
+        String TYPE_ROUTER = "路由器";
+        String TYPE_LOCK = "智能密码门锁";
+        String TYPE_MENLING = "智能门铃";
+        String TYPE_SWITCH = "智能开关";
+        String TYPE_REMOTECONTROL = "智能遥控";
+        String TYPE_TV_REMOTECONTROL = "电视遥控";
+        String TYPE_AIR_REMOTECONTROL = "空调遥控";
+        String TYPE_TVBOX_REMOTECONTROL = "机顶盒遥控";
+    }
     /**
      * 操作入口，是本地操作，还是websocket
      */

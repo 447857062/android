@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.json.DevicesOnline;
@@ -22,7 +21,6 @@ public class ConnectedDeviceListAdapter extends BaseSwipListAdapter {
     private static final String TAG ="DeviceListAdapter";
     private Context mContext;
     private List<DevicesOnline> mListData;
-
     public ConnectedDeviceListAdapter(Context context, List<DevicesOnline> listData) {
         this.mContext = context;
         this.mListData = listData;
@@ -48,7 +46,6 @@ public class ConnectedDeviceListAdapter extends BaseSwipListAdapter {
         if(convertView==null){
             vh=new ViewHolder();
             convertView= LayoutInflater.from(mContext).inflate(R.layout.connected_devicelist_item,null);
-            vh.device_type= (ImageView) convertView.findViewById(R.id.imageview_devicetype);
             vh.device_name= (TextView) convertView.findViewById(R.id.textview_device_name);
             vh.device_mac = (TextView) convertView.findViewById(R.id.textview_device_time);
             vh.tx= (TextView) convertView.findViewById(R.id.textview_uploadspeed);
@@ -77,7 +74,6 @@ public class ConnectedDeviceListAdapter extends BaseSwipListAdapter {
     }
 
     private static class ViewHolder{
-        ImageView device_type;
         TextView device_name;
         TextView device_mac;
         TextView rx;

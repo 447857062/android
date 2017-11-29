@@ -57,7 +57,20 @@ public class SwitchTypeAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.textview_band_name.setText(mTypeNames.get(position));
-
+        switch (mTypeNames.get(position)){
+            case "一路开关":
+                viewHolder.imageview_type.setImageResource(R.drawable.switchalltheway);
+                break;
+            case "二路开关":
+                viewHolder.imageview_type.setImageResource(R.drawable.roadswitch);
+                break;
+            case "三路开关":
+                viewHolder.imageview_type.setImageResource(R.drawable.threewayswitch);
+                break;
+            case "四路开关":
+                viewHolder.imageview_type.setImageResource(R.drawable.fourwayswitch);
+                break;
+        }
 
         return convertView;
     }

@@ -4,191 +4,134 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity">
 
-    <TextView
-        android:id="@+id/textview_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="我的"
-        android:textColor="@android:color/white"
-        android:textSize="15dp" />
-
     <RelativeLayout
+        android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@+id/textview_title">
+        android:layout_height="wrap_content"
+        android:background="@drawable/minebackground">
+
+        <RelativeLayout
+            android:id="@+id/title_top_text"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="我的"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+        </RelativeLayout>
 
         <deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView
             android:id="@+id/user_head_portrait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/mine_page_user_image_ridus"
+            android:layout_height="@dimen/mine_page_user_image_ridus"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/mine_page_user_image_margintop"
             android:src="@mipmap/ic_launcher"
             app:border_color="@color/white"
-            app:border_width="0dp" />
+            app:border_width="1dp" />
+
+        <TextView
+            android:id="@+id/user_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_head_portrait"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/room_list_item_margin_top"
+            android:gravity="center_horizontal"
+            android:text="Clamdown"
+            android:textColor="@color/white" />
     </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/layout_getway_check"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textview_title"
-        android:layout_marginTop="150dp"
-        android:background="@android:color/darker_gray"
+        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="50dp"
-            android:text="网关检查" />
+            android:text="网关检查"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/directionicon" />
     </RelativeLayout>
 
 
     <RelativeLayout
         android:id="@+id/layout_experience_center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/title_bar_content_height"
         android:layout_below="@+id/layout_getway_check"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/darker_gray"
+        android:layout_marginTop="@dimen/room_list_item_margin_top"
+        android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="50dp"
-            android:text="体验中心" />
+            android:text="体验中心"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/directionicon" />
     </RelativeLayout>
     <!--退出登录-->
-    <Button
+    <TextView
         android:id="@+id/button_logout"
-        android:textColor="@android:color/holo_red_light"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="退出登录"
-        android:layout_marginTop="80dp"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="@dimen/title_bar_content_height"
         android:layout_below="@+id/layout_experience_center"
+        android:layout_marginTop="@dimen/mine_page_logout_margitop"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="@dimen/text_size_small"
+        android:text="退出登录"
+        android:textColor="@color/read_fc5551" />
+
+    <include
+        layout="@layout/layout_buttom_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <LinearLayout
+        android:layout_height="@dimen/layout_buton_bar_height"
         android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <LinearLayout
-            android:id="@+id/layout_home_page"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="首页"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_devices"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="设备"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_rooms"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="房间"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_personal_center"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="我的"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

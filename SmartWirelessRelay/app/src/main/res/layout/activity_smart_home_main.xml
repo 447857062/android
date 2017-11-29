@@ -3,27 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/homebackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity">
 
     <RelativeLayout
-        android:id="@+id/layout_top_bar"
+        android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="@android:color/holo_blue_light">
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/title_bg">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp">
-
+            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
             <TextView
                 android:id="@+id/textview_title"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="首页"
-                android:textColor="@android:color/white"
-                android:textSize="15dp" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
 
             <ImageView
                 android:id="@+id/imageview_setting"
@@ -31,263 +35,146 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/settingicon" />
         </RelativeLayout>
-      <!--  //TODO 测试，删除-->
-        <LinearLayout
-            android:layout_alignParentBottom="true"
-            android:weightSum="4"
+    </RelativeLayout>
+
+
+    <!--水平滚动的房间-->
+    <RelativeLayout
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:background="@drawable/homepage_roomselect_layout_background"
+        android:id="@+id/layout_room_show"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_page_roomselect_height"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/layout_title">
+
+        <RelativeLayout
+            android:id="@+id/layout_room_top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/btn_up_h"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="Up、H"/>
+            android:gravity="center_vertical"
+            android:layout_height="@dimen/home_page_roomselect_top_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
-            <Button
-                android:id="@+id/btn_up_v"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <ImageView
+                android:id="@+id/imageview_room"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/smallroomicon" />
+
+            <TextView
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:id="@+id/textview_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/homepage_room_title_marginleft_room_smallimage"
+                android:layout_toRightOf="@+id/imageview_room"
+                android:text="房间" />
+            <TextView
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:id="@+id/textview_change_show_type"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="0dp"
-                android:text="Up、V"/>
+                android:layout_marginRight="@dimen/home_page_roomselect_top_change_show_type_textview_marginright"
+                android:text="视图切换" />
 
-            <Button
-                android:id="@+id/btn_down_h"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:text="Down、H"/>
+        </RelativeLayout>
 
-            <Button
-                android:id="@+id/btn_down_v"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="20dp"
-                android:text="Down、V"/>
-        </LinearLayout>
-        <!--  TODO 测试，删除-->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_room_top"
+            android:scrollbars="none">
+            <LinearLayout
+                android:layout_width="match_parent"
+
+                android:layout_height="match_parent"
+                >
+                <GridView
+                    android:layout_marginTop="@dimen/homepage_room_type_margin_top"
+                    android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:numColumns="auto_fit"
+                    android:stretchMode="spacingWidthUniform" />
+            </LinearLayout>
+        </HorizontalScrollView>
     </RelativeLayout>
 
     <RelativeLayout
-        android:background="@drawable/homebackground"
-        android:layout_below="@+id/layout_top_bar"
-        android:id="@+id/layout_middle_content"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:background="@drawable/homepage_roomselect_layout_background"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/layout_buttonbar">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_buttonbar"
+        android:layout_below="@+id/layout_room_show">
 
-        <!--水平滚动的房间-->
         <RelativeLayout
-            android:id="@+id/layout_room_show"
+            android:id="@+id/layout_experience_center_top"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/home_page_roomselect_top_height"
             >
 
-            <RelativeLayout
-                android:id="@+id/layout_room_top"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-
-                <ImageView
-                    android:id="@+id/imageview_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:src="@mipmap/ic_launcher" />
-
-                <TextView
-                    android:id="@+id/textview_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/imageview_room"
-                    android:text="房间" />
-
-                <ImageView
-                    android:id="@+id/imageview_arror_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:src="@mipmap/ic_launcher" />
-            </RelativeLayout>
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageview_experience_center"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_room_top"
-                android:layout_margin="5dp"
-                android:scrollbars="none">
+                android:layout_marginLeft="@dimen/experience_center_listitem_devicetype_marginleft"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/experiencecentericon" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp">
+            <TextView
+                android:id="@+id/textview_experience_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/homepage_room_title_marginleft_room_smallimage"
+                android:layout_toRightOf="@+id/imageview_experience_center"
+                android:text="体验中心" />
 
-                    <GridView
-                        android:id="@+id/grid"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:numColumns="auto_fit"
-                        android:stretchMode="spacingWidthUniform" />
-                </LinearLayout>
-            </HorizontalScrollView>
+            <ImageView
+                android:layout_marginRight="@dimen/home_page_roomselect_top_change_show_type_textview_marginright"
+                android:layout_centerVertical="true"
+                android:id="@+id/imageview_experience_center_arror_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/directionicon" />
         </RelativeLayout>
-        <RelativeLayout
-            android:layout_below="@+id/layout_room_show"
+
+        <ListView
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/homepage_room_type_margin_top"
+            android:scrollbars="none"
+            android:id="@+id/listview_experience_center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:id="@+id/layout_experience_center_top"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-
-                <ImageView
-                    android:id="@+id/imageview_experience_center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:src="@mipmap/ic_launcher" />
-
-                <TextView
-                    android:id="@+id/textview_experience_center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/imageview_experience_center"
-                    android:text="体验中心" />
-
-                <ImageView
-                    android:id="@+id/imageview_experience_center_arror_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:src="@mipmap/ic_launcher" />
-            </RelativeLayout>
-            <ListView
-                android:layout_below="@+id/layout_experience_center_top"
-                android:id="@+id/listview_experience_center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </ListView>
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_experience_center_top"></ListView>
     </RelativeLayout>
 
 
-
-
-
-    <LinearLayout
+    <include
         android:id="@+id/layout_buttonbar"
+        layout="@layout/layout_buttom_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_buton_bar_height"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <LinearLayout
-            android:id="@+id/layout_home_page"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="首页"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_devices"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="设备"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_rooms"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="房间"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_personal_center"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="我的"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

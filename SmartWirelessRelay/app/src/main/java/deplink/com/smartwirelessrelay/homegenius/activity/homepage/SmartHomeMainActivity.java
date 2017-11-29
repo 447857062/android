@@ -1,20 +1,18 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.homepage;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,6 +27,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDe
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
@@ -36,10 +35,6 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.adapter.BaseRecyclerViewAdapter;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.powerpopmenu.PowerPopMenu;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.powerpopmenu.PowerPopMenuModel;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.utils.ToastUtils;
 
 /**
  * 智能家居主页
@@ -50,7 +45,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-
+    private ImageView imageview_devices;
+    private ImageView imageview_home_page;
+    private ImageView imageview_rooms;
+    private ImageView imageview_personal_center;
     private LocalConnectmanager mLocalConnectmanager;
     private ImageView imageview_setting;
 
@@ -60,7 +58,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private ListView listview_experience_center;
     private ExperienceCenterListAdapter mExperienceCenterListAdapter;
     private List<ExperienceCenterDevice> mExperienceCenterDeviceList;
-
+    private RelativeLayout layout_experience_center_top;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,13 +67,15 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
     private RoomManager mRoomManager;
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        imageview_home_page.setImageResource(R.drawable.checkthehome);
+        imageview_devices.setImageResource(R.drawable.nocheckthedevice);
+        imageview_rooms.setImageResource(R.drawable.nochecktheroom);
+        imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
         mRoomList.clear();
         mRoomList.addAll(mRoomManager.getDatabaseRooms());
         int size = mRoomList.size();
@@ -144,6 +144,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
+        layout_experience_center_top.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
         layout_personal_center.setOnClickListener(this);
@@ -164,24 +165,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     }
 
-    //TODO
-    private Button mUpHBtn;
-    private Button mUpVBtn;
-    private Button mDownHBtn;
-    private Button mDownVBtn;
-    private LinearLayout mEmptyView;
-    private PowerPopMenu mPowerPopMenu;
-    private Context mContext;
-    private List<PowerPopMenuModel> mList;
-    private class OnItemClickLis implements BaseRecyclerViewAdapter.OnItemClickListener {
 
-        @Override
-        public void onItemClick(View view, int position) {
-            ToastUtils.showMessage(mContext, mList.get(position).text);
-            mPowerPopMenu.dismiss();
-        }
-    }
-    //TODO 测试，删除
     private void initViews() {
         layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);
         layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
@@ -190,31 +174,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         imageview_setting = (ImageView) findViewById(R.id.imageview_setting);
         roomGridView = (GridView) findViewById(R.id.grid);
         listview_experience_center = (ListView) findViewById(R.id.listview_experience_center);
-        //TODO
-        mContext = this;
-        mList = new ArrayList<>();
-        PowerPopMenuModel item1 = new PowerPopMenuModel();
-        item1.text = "aaa";
-        item1.resid = R.mipmap.icon1;
-        mList.add(item1);
-        PowerPopMenuModel item2 = new PowerPopMenuModel();
-        item2.text = "bbb";
-        item2.resid = R.mipmap.icon2;
-        mList.add(item2);
-        PowerPopMenuModel item3 = new PowerPopMenuModel();
-        item3.text = "ccc";
-        mList.add(item3);
-        mUpHBtn = (Button) findViewById(R.id.btn_up_h);
-        mUpVBtn = (Button) findViewById(R.id.btn_up_v);
-        mDownHBtn = (Button) findViewById(R.id.btn_down_h);
-        mDownVBtn = (Button) findViewById(R.id.btn_down_v);
-        mEmptyView = (LinearLayout) View.inflate(mContext, R.layout.view_empty, null);
+        imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
+        imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
+        imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
+        imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
+        layout_experience_center_top = (RelativeLayout) findViewById(R.id.layout_experience_center_top);
 
-        mUpHBtn.setOnClickListener(this);
-        mUpVBtn.setOnClickListener(this);
-        mDownHBtn.setOnClickListener(this);
-        mDownVBtn.setOnClickListener(this);
-        //TODO 测试，删除
     }
 
     @Override
@@ -249,10 +214,15 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             case R.id.layout_home_page:
 
                 break;
+            case R.id.layout_experience_center_top:
+                startActivity(new Intent(this, ExperienceDevicesActivity.class));
+                break;
             case R.id.imageview_setting:
+
                 startActivity(new Intent(SmartHomeMainActivity.this, HomePageSettingActivity.class));
                 break;
             case R.id.layout_devices:
+
                 startActivity(new Intent(this, DevicesActivity.class));
                 break;
             case R.id.layout_rooms:
@@ -261,43 +231,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             case R.id.layout_personal_center:
                 startActivity(new Intent(this, PersonalCenterActivity.class));
                 break;
-            //TODO 测试，删除
-            case R.id.btn_up_h:
-                mPowerPopMenu = new PowerPopMenu(mContext, LinearLayoutManager.HORIZONTAL, PowerPopMenu
-                        .POP_UP_TO_DOWN);
-                //必须放在setListResource之前
-                mPowerPopMenu.setIsShowIcon(true);
-                mPowerPopMenu.setListResource(mList);
-                mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
-                mPowerPopMenu.addView(mEmptyView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams
-                        .MATCH_PARENT, 50));
-                mPowerPopMenu.show();
 
-                break;
-            case R.id.btn_up_v:
-                mPowerPopMenu = new PowerPopMenu(mContext, LinearLayoutManager.VERTICAL, PowerPopMenu.POP_UP_TO_DOWN);
-                mPowerPopMenu.setIsShowIcon(false);
-                mPowerPopMenu.setListResource(mList);
-                mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
-                mPowerPopMenu.show(v);
-                break;
-            case R.id.btn_down_h:
-                mPowerPopMenu = new PowerPopMenu(mContext, LinearLayoutManager.HORIZONTAL, PowerPopMenu.POP_DOWN_TO_UP);
-                mPowerPopMenu.setIsShowIcon(true);
-                mPowerPopMenu.setListResource(mList);
-                mPowerPopMenu.addView(mEmptyView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams
-                        .MATCH_PARENT, 50));
-                mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
-                mPowerPopMenu.show(v);
-                break;
-            case R.id.btn_down_v:
-                mPowerPopMenu = new PowerPopMenu(mContext, LinearLayoutManager.VERTICAL, PowerPopMenu.POP_DOWN_TO_UP);
-                mPowerPopMenu.setIsShowIcon(true);
-                mPowerPopMenu.setListResource(mList);
-                mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
-                mPowerPopMenu.show(v);
-                break;
-            //TODO 测试，删除
         }
     }
 

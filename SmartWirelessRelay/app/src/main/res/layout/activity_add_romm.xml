@@ -3,105 +3,144 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_vertical">
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/title_bg">
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
 
-        <TextView
-            android:id="@+id/textview_add_type"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="添加房间"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
+            <ImageView
+                android:id="@+id/image_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/returnicon" />
 
-        <TextView
-            android:id="@+id/textview_add_room_complement"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:text="完成"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="添加房间"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
 
+            <TextView
+                android:id="@+id/textview_add_room_complement"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="完成"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_small" />
+
+        </RelativeLayout>
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/edittext_room_name"
+    <RelativeLayout
+        android:id="@+id/layout_room_name"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/title_bar_content_height"
         android:layout_below="@+id/layout_title"
-        android:background="@color/gray"
-        android:hint="例如：书房（名称最多5个字）"
-        android:maxLength="5"
-        android:textColorHint="@color/blue" />
+        android:background="@color/white"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right">
+
+        <TextView
+            android:id="@+id/textview_example_room_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="例如："
+            android:textColor="@color/room_type_text" />
+
+        <EditText
+            android:id="@+id/edittext_room_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/room_list_item_margin_top"
+            android:layout_toRightOf="@+id/textview_example_room_name"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="书房（名称最多5个字）"
+            android:maxLength="5"
+            android:textColorHint="@color/huise" />
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/layout_getway"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/edittext_room_name"
-        android:layout_marginTop="5dp"
-        android:background="@color/gray"
-        android:gravity="center_vertical">
+        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_below="@+id/layout_room_name"
+        android:layout_marginTop="@dimen/room_list_item_margin_top"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
             android:gravity="center_vertical"
-            android:text="网关：家里的网关" />
+            android:text="网关：家里的网关"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/directionicon" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/textview_select_room_type"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/title_bar_content_height"
         android:layout_below="@+id/layout_getway"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:text="请选择以下房间类型"
-        android:textColor="@color/black" />
+        android:textColor="@color/huise" />
 
     <GridView
         android:id="@+id/gridview_room_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textview_select_room_type"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:cacheColorHint="@android:color/transparent"
         android:gravity="center"
-        android:horizontalSpacing="10dip"
+        android:scrollbars="none"
+        android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
         android:listSelector="@android:color/transparent"
         android:numColumns="3"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dip"></GridView>
+        android:verticalSpacing="10dip"/>
 </RelativeLayout>
