@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -29,7 +30,8 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
      * wifi名称密码设置成功，后面要重启了
      */
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private String wifiname;
     private Button button_cancel;
     private Button button_save;
@@ -65,6 +67,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     }
 
     private void initDatas() {
+        textview_title.setText("WIFI名称");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -134,13 +137,15 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     }
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
     }
 
     private void initViews() {
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
+
         button_cancel = (Button) findViewById(R.id.button_cancel);
         button_save = (Button) findViewById(R.id.button_save);
         edittext_wifi_name = (EditText) findViewById(R.id.edittext_wifi_name);
@@ -153,7 +158,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_cancel:

@@ -6,9 +6,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -33,7 +33,9 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     private ImageView imageview_mix;
     private ImageView imageview_none;
     private String currentSelectEncryptType;
-    private FrameLayout layout_back;
+
+    private TextView textview_title;
+    private ImageView image_back;
     private String wifiType;
     private SDKManager manager;
     private EventCallback ec;
@@ -48,6 +50,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     }
 
     private void initDatas() {
+        textview_title.setText("加密方式");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(EncryptTypeActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -138,7 +141,8 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
         layout_type_strong.setOnClickListener(this);
         layout_type_mix.setOnClickListener(this);
         layout_type_none.setOnClickListener(this);
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
+
     }
 
     private void initViews() {
@@ -150,7 +154,9 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
         imageview_strong = (ImageView) findViewById(R.id.imageview_strong);
         imageview_mix = (ImageView) findViewById(R.id.imageview_mix);
         imageview_none = (ImageView) findViewById(R.id.imageview_none);
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
+
     }
 
     @Override
@@ -159,7 +165,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
             case R.id.button_cancel:
                 onBackPressed();
                 break;
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_save:

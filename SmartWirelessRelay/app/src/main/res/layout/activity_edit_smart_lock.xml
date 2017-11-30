@@ -4,38 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.EditSmartLockActivity">
-    <RelativeLayout
-        android:id="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:background="@android:color/holo_blue_light"
-        android:layout_height="60dp"
-        android:gravity="center_vertical">
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="编辑"
-            android:textColor="@android:color/white" />
-
-        <TextView
-            android:id="@+id/textview_edit_complement"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="完成"
-            android:textColor="@android:color/white" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_device_name"

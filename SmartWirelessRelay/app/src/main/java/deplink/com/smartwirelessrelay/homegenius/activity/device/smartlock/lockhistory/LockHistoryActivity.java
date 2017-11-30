@@ -27,15 +27,18 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 /**
  * 开锁记录界面
  */
-public class LockHistoryActivity extends Activity implements SmartLockListener,View.OnClickListener{
+public class LockHistoryActivity extends Activity implements SmartLockListener, View.OnClickListener {
     private static final String TAG = "LockHistory";
     private ListView dev_list;
     private List<LockHistory> mRecordList;
     private LockHistoryAdapter recordAdapter;
     private SmartLockManager mSmartLockManager;
-    private ImageView imageview_back;
-    private TextView textview_update_id;
     private boolean isStartFromExperience;
+
+    private TextView textview_edit;
+    private TextView textview_title;
+    private ImageView image_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,18 +51,20 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isStartFromExperience){
+        if (!isStartFromExperience) {
             mSmartLockManager.removeSmartLockListener(this);
         }
     }
 
     private void initEvents() {
         dev_list.setAdapter(recordAdapter);
-        textview_update_id.setOnClickListener(this);
-        imageview_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
     }
 
     private void initData() {
+        textview_title.setText("开锁记录");
+        textview_edit.setText("修改ID名称");
         isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         mRecordList = new ArrayList<>();
         recordAdapter = new LockHistoryAdapter(this, mRecordList);
@@ -67,8 +72,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
 
     private void initViews() {
         dev_list = (ListView) findViewById(R.id.list_lock_histroy);
-        imageview_back = (ImageView) findViewById(R.id.imageview_back);
-        textview_update_id = (TextView) findViewById(R.id.textview_update_id);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (ImageView) findViewById(R.id.image_back);
 
     }
 
@@ -76,25 +82,25 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
     @Override
     protected void onResume() {
         super.onResume();
-        if(isStartFromExperience){
+        if (isStartFromExperience) {
             mRecordList.clear();
-            LockHistory temp=new LockHistory();
+            LockHistory temp = new LockHistory();
             temp.setTime("2017-11-23 12:35:23");
             temp.setUserid("001");
             mRecordList.add(temp);
-            temp=new LockHistory();
+            temp = new LockHistory();
             temp.setTime("2017-11-24 12:35:23");
             temp.setUserid("002");
             mRecordList.add(temp);
-            temp=new LockHistory();
+            temp = new LockHistory();
             temp.setTime("2017-11-25 12:35:23");
             temp.setUserid("003");
             mRecordList.add(temp);
-            temp=new LockHistory();
+            temp = new LockHistory();
             temp.setTime("2017-11-26 12:35:23");
             temp.setUserid("004");
             mRecordList.add(temp);
-        }else{
+        } else {
             mSmartLockManager = SmartLockManager.getInstance();
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
@@ -176,12 +182,13 @@ public class LockHistoryActivity extends Activity implements SmartLockListener,V
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.imageview_back:
+        switch (v.getId()) {
+            case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.textview_update_id:
-                startActivity(new Intent(LockHistoryActivity.this,UpdateSmartLockUserIdActivity.class));
+
+            case R.id.textview_edit:
+                startActivity(new Intent(LockHistoryActivity.this, UpdateSmartLockUserIdActivity.class));
                 break;
         }
     }

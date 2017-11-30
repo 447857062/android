@@ -32,6 +32,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
+    private TextView textview_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     }
 
     private void initDatas() {
+        textview_title.setText("固件升级");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         connectLostDialog = new MakeSureDialog(UpdateStatusActivity.this);
@@ -136,6 +138,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
 
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
         button_sure = (Button) findViewById(R.id.button_sure);
         textview_updateing = (TextView) findViewById(R.id.textview_updateing);
     }

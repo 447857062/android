@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -28,7 +30,8 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
     private static final String TAG="GetwaySettingOptions";
     private Button button_save;
     private EditText edittext_input_devie_name;
-
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +43,14 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     private void initEvents() {
         button_save.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
         button_save = (Button) findViewById(R.id.button_save);
         edittext_input_devie_name = (EditText) findViewById(R.id.edittext_input_devie_name);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     /**
@@ -58,6 +64,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         Log.i(TAG,"mRoomName="+mRoomName);
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,this);
+        textview_title.setText("网关");
     }
 
     private GetwayManager mGetwayManager;
@@ -68,6 +75,9 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
                 if (currentAddDevice != null) {
                     mGetwayManager.bindDevice(currentAddDevice);
                 }
+                break;
+            case R.id.image_back:
+               onBackPressed();
                 break;
         }
     }

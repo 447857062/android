@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -26,22 +27,24 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     private RelativeLayout layout_wifi_24;
     private RelativeLayout layout_wifi_custom;
     private RelativeLayout layout_signal_strength;
-    private ImageView image_back;
     private boolean isUserLogin;
     private SDKManager manager;
     private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private EventCallback ec;
     private RouterManager mRouterManager;
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wi_fi_setting);
+        setContentView(R.layout.activity_wifi_setting);
         initViews();
         initDatas();
         initEvents();
     }
     private void initDatas() {
+        textview_title.setText("WIFi设置");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -122,6 +125,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
         image_back = (ImageView) findViewById(R.id.image_back);
         layout_wifi_24 = (RelativeLayout) findViewById(R.id.layout_wifi_24);
         layout_wifi_custom = (RelativeLayout) findViewById(R.id.layout_wifi_custom);

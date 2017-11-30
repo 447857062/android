@@ -4,33 +4,44 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class ForgetPasswordActivity extends Activity implements View.OnClickListener{
-    private ImageView imageview_back;
+public class ForgetPasswordActivity extends Activity implements View.OnClickListener {
+
+    private TextView textview_title;
+    private ImageView image_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
         initViews();
+        initDatas();
         initEvents();
     }
 
+    private void initDatas() {
+        textview_title.setText("找回密码");
+    }
+
     private void initEvents() {
-        imageview_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
-        imageview_back= (ImageView) findViewById(R.id.imageview_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (ImageView) findViewById(R.id.image_back);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.imageview_back:
+        switch (v.getId()) {
+            case R.id.image_back:
                 onBackPressed();
                 break;
+
         }
     }
 }

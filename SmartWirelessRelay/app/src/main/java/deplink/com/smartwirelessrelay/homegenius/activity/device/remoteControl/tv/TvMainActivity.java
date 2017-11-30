@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -15,22 +16,32 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private Button button_control_number;
     private RelativeLayout layout_control_base;
     private RelativeLayout layout_control_number;
-
+    private TextView textview_title;
+    private ImageView image_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_main);
         initViews();
+        initDatas();
         initEvents();
+    }
+
+    private void initDatas() {
+        textview_title.setText("电视遥控");
+        image_setting.setImageResource(R.drawable.menuicon);
     }
 
     private void initEvents() {
         image_back.setOnClickListener(this);
+        image_setting.setOnClickListener(this);
         button_control_base.setOnClickListener(this);
         button_control_number.setOnClickListener(this);
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_setting= (ImageView) findViewById(R.id.image_setting);
         image_back = (ImageView) findViewById(R.id.image_back);
         button_control_base = (Button) findViewById(R.id.button_control_base);
         button_control_number = (Button) findViewById(R.id.button_control_number);
@@ -43,6 +54,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.image_setting:
                 break;
             case R.id.button_control_base:
                 layout_control_base.setVisibility(View.VISIBLE);

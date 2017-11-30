@@ -29,6 +29,8 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private RelativeLayout layout_getway;
     private RoomManager mRoomManager;
 
+    private TextView textview_title;
+    private ImageView image_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,8 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     }
 
     private void initDatas() {
+        textview_title.setText("编辑");
+        image_setting.setImageResource(R.drawable.addicon);
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
         mRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
@@ -52,10 +56,13 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         button_delete_room.setOnClickListener(this);
         layout_room_name.setOnClickListener(this);
         layout_getway.setOnClickListener(this);
+        image_setting.setOnClickListener(this);
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
         image_back = (ImageView) findViewById(R.id.image_back);
+        image_setting = (ImageView) findViewById(R.id.image_setting);
         button_delete_room = (Button) findViewById(R.id.button_delete_room);
         textview_room_name = (TextView) findViewById(R.id.textview_room_name);
         layout_room_name = (RelativeLayout) findViewById(R.id.layout_room_name);
@@ -67,6 +74,11 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
+
+
+            case R.id.image_setting:
+
+                break;
             case R.id.image_back:
                 onBackPressed();
                 break;

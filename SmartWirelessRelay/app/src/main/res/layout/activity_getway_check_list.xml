@@ -6,35 +6,16 @@
 
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity">
 
-    <RelativeLayout
+    <include
         android:id="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light">
+        layout="@layout/layout_title_with_back_center_titletext" />
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:id="@+id/textview_title_getway_check"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="网关检测"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
-    </RelativeLayout>
     <!--网关检查结果是一个网关设备系列表-->
     <ListView
-        android:layout_below="@+id/layout_title"
         android:id="@+id/listview_getway_devices"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title">
 
     </ListView>
 </RelativeLayout>

@@ -12,8 +12,8 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -31,10 +31,9 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
-public class AlertWifiPasswordActivity extends Activity implements View.OnClickListener{
+public class AlertWifiPasswordActivity extends Activity implements View.OnClickListener {
     private Button button_cancel;
     private Button button_save;
-    private FrameLayout layout_back;
     private EditText edittext_password;
     private EditText edittext_password_again;
     private SDKManager manager;
@@ -44,12 +43,15 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private ImageView image_input_eye_password;
     private ImageView image_input_eye_password_again;
     private String password;
+    private TextView textview_title;
+    private ImageView image_back;
     /**
      * wifi名称密码设置成功，后面要重启了
      */
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,8 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     }
 
     private void initDatas() {
-        mRouterManager=RouterManager.getInstance();
+        textview_title.setText("更改WIFI密码");
+        mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(AlertWifiPasswordActivity.this);
@@ -129,7 +132,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private void initEvents() {
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         image_input_eye_password.setOnClickListener(this);
         image_input_eye_password_again.setOnClickListener(this);
     }
@@ -139,7 +142,8 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
         button_save = (Button) findViewById(R.id.button_save);
         image_input_eye_password = (ImageView) findViewById(R.id.image_input_eye_password);
         image_input_eye_password_again = (ImageView) findViewById(R.id.image_input_eye_password_again);
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (ImageView) findViewById(R.id.image_back);
         edittext_password = (EditText) findViewById(R.id.edittext_password);
         edittext_password_again = (EditText) findViewById(R.id.edittext_password_again);
     }
@@ -153,7 +157,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
         manager.addEventCallback(ec);
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isLogin) {
-            routerDevice=mRouterManager.getRouterDevice();
+            routerDevice = mRouterManager.getRouterDevice();
         }
 
     }
@@ -235,9 +239,10 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
 
                 }
                 break;
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
+
         }
     }
 

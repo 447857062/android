@@ -4,49 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.lan.LanSettingActivity">
-    <RelativeLayout
-        android:id="@+id/layout_topbar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/blue_add_new_router_title">
+    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="15dp">
-
-            <FrameLayout
-                android:id="@+id/layout_back"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="20dp">
-
-                <ImageView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:src="@drawable/returnicon" />
-            </FrameLayout>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="LAN设置"
-                android:textColor="@color/main_interface_topbar_text_color"
-                android:textSize="18dp" />
-
-
-        </RelativeLayout>
-    </RelativeLayout>
     <!--IP地址-->
     <RelativeLayout
         android:id="@+id/layout_ip_address"

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -26,7 +26,6 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 
 public class UpdateImmediatelyActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "UpdateImmediately";
-    private FrameLayout layout_back;
     private Button button_cancel;
     private Button button_update;
     private SDKManager manager;
@@ -37,6 +36,9 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     private TextView textview_update_what;
     private MakeSureDialog connectLostDialog;
 
+
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,7 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     }
 
     private void initDatas() {
+        textview_title.setText("固件升级");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -139,7 +142,7 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     private RouterManager mRouterManager;
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         button_cancel.setOnClickListener(this);
         button_update.setOnClickListener(this);
     }
@@ -147,7 +150,8 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     private void initViews() {
         button_cancel = (Button) findViewById(R.id.button_cancel);
         button_update = (Button) findViewById(R.id.button_update);
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         textview_version_code = (TextView) findViewById(R.id.textview_version_code);
         textview_file_size = (TextView) findViewById(R.id.textview_file_size);
         textview_update_what = (TextView) findViewById(R.id.textview_update_what);
@@ -156,9 +160,10 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
+
             case R.id.button_cancel:
                 onBackPressed();
                 break;

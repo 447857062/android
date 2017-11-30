@@ -8,68 +8,45 @@
     <RelativeLayout
         android:id="@+id/layout_top_content"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:background="@color/blue_add_new_router_title">
+        android:layout_height="@dimen/aircondition_open_background_height"
+        android:background="@drawable/airconditioningon">
 
-        <RelativeLayout
+        <include
             android:id="@+id/layout_title"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@android:color/holo_blue_light"
-            android:gravity="center_vertical">
+            layout="@layout/layout_title_with_right_have_image_no_textbackground" />
 
-            <ImageView
-                android:id="@+id/image_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="智能空调遥控"
-                android:textColor="@android:color/white" />
-
-            <ImageView
-                android:id="@+id/imageview_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher" />
-        </RelativeLayout>
         <FrameLayout
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
+            android:id="@+id/frameLayout"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:id="@+id/frameLayout">
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+
             <ImageView
-                android:src="@mipmap/ic_launcher"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_launcher" />
+
             <RelativeLayout
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:gravity="center_vertical|center_horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center_vertical|center_horizontal">
+
                 <TextView
-                    android:text="23℃"
-                    android:textSize="30dp"
                     android:id="@+id/textview_temperature"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="23℃"
+                    android:textSize="30dp" />
+
                 <TextView
-                    android:text="室内温度20℃"
-                    android:textSize="12dp"
-                    android:layout_below="@+id/textview_temperature"
                     android:id="@+id/textview_temperature_inner"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textview_temperature"
+                    android:text="室内温度20℃"
+                    android:textSize="12dp" />
             </RelativeLayout>
         </FrameLayout>
 
@@ -78,73 +55,81 @@
 
     <RelativeLayout
         android:id="@+id/layout_temperature_control"
-        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_top_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="30dp">
+
         <ImageView
             android:id="@+id/imageview_temperature_reduce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:src="@mipmap/ic_launcher" />
+
         <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_toRightOf="@+id/imageview_temperature_reduce"
-            android:layout_toLeftOf="@+id/imageview_temperature_plus"
-            android:layout_width="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
             android:id="@+id/progressBar"
-            android:layout_centerHorizontal="true" />
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/imageview_temperature_plus"
+            android:layout_toRightOf="@+id/imageview_temperature_reduce" />
+
         <ImageView
             android:id="@+id/imageview_temperature_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
+
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_temperature_control"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="30dp"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/layout_temperature_control"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:gravity="center_horizontal">
+
         <ImageView
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
             android:id="@+id/imageview_power"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageView
-            android:layout_marginLeft="40dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_toRightOf="@+id/imageview_power"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
             android:id="@+id/imageview_auto_model"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageView
-            android:layout_marginLeft="40dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@+id/imageview_power"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
             android:id="@+id/imageview_auto_wind_speed"
-            android:layout_toRightOf="@+id/imageview_auto_model"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <ImageView
-            android:layout_marginLeft="40dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@+id/imageview_auto_model"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
             android:id="@+id/imageview_wind_center"
-            android:layout_toRightOf="@+id/imageview_auto_wind_speed"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:layout_toRightOf="@+id/imageview_auto_wind_speed"
+            android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
 </RelativeLayout>

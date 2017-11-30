@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.inter
  */
 public class GetwayCheckActivity extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener,UdpManagerGetIPLintener {
     private static final String TAG = "GetwayCheckActivity";
+
+    private TextView textview_title;
     private ImageView image_back;
     private UdpManager mUdpmanager;
     private ListView listview_getway_devices;
@@ -41,6 +44,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
     }
 
     private void initDatas() {
+        textview_title.setText("网关检测");
         mUdpmanager = UdpManager.getInstance();
         mUdpmanager.InitUdpConnect(this, this);
         mDevices=new ArrayList<>();
@@ -56,6 +60,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
 
     private void initViews() {
         image_back = (ImageView) findViewById(R.id.image_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
         listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
     }
 

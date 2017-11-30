@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -27,7 +28,8 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class DialConnectActivity extends Activity implements View.OnClickListener{
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private EditText edittext_account;
     private EditText edittext_password;
     private EditText edittext_dns;
@@ -50,6 +52,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     }
 
     private void initDatas() {
+        textview_title.setText("宽带拨号");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -117,13 +120,14 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     }
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
     }
 
     private void initViews() {
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         edittext_account = (EditText) findViewById(R.id.edittext_account);
         edittext_password = (EditText) findViewById(R.id.edittext_password);
         edittext_dns = (EditText) findViewById(R.id.edittext_dns);
@@ -151,7 +155,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_cancel:
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_save:

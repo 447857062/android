@@ -35,7 +35,8 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     private Button button_ng;
     private Button button_ok;
     private RemoteControlManager mRemoteControlManager;
-
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,6 +167,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
         button_test.setOnClickListener(this);
         button_ng.setOnClickListener(this);
         button_ok.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -175,12 +177,15 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
         button_test = (Button) findViewById(R.id.button_test);
         button_ng = (Button) findViewById(R.id.button_ng);
         button_ok = (Button) findViewById(R.id.button_ok);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     private String bandName;
     private String type;
 
     private void initDatas() {
+        textview_title.setText("添加空调遥控器");
         bandName = getIntent().getStringExtra("bandname");
         type = getIntent().getStringExtra("type");
         mRemoteControlManager = RemoteControlManager.getInstance();
@@ -191,7 +196,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.imageview_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_ng:

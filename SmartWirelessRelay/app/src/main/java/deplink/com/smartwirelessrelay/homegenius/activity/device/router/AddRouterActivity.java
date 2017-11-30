@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     private RouterManager mRouterManager;
     private EditText edittext_add_device_input_name;
     private TextView textview_select_room_name;
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     }
 
     private void initDatas() {
+        textview_title.setText("添加路由器");
         currentAddRoom = getIntent().getStringExtra("roomName");
         routerSN = getIntent().getStringExtra("routerSN");
         mRouterManager = RouterManager.getInstance();
@@ -52,12 +56,15 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
 
     private void initEvents() {
         button_add_device_sure.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
         button_add_device_sure = (Button) findViewById(R.id.button_add_device_sure);
         edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     private static final int MSG_ADD_ROUTER_FAIL = 100;
@@ -86,6 +93,9 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.image_back:
+                onBackPressed();
+                break;
             case R.id.button_add_device_sure:
                 //TODO 添加添加路由器
                 SmartDev routerDev = new SmartDev();

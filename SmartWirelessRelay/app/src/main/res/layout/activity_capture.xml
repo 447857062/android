@@ -33,6 +33,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/layout_top_bar_item_text_size"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content" />
 </RelativeLayout>
 

@@ -10,8 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -33,7 +34,8 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class StaticConnectActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "StaticConnectActivity";
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private Button button_cancel;
     private Button button_save;
 
@@ -67,6 +69,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
+        textview_title.setText("静态IP");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(StaticConnectActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -161,14 +164,15 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
     }
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
     }
 
     private void initViews() {
         op_type = getIntent().getStringExtra(AppConstant.OPERATION_TYPE);
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         button_cancel = (Button) findViewById(R.id.button_cancel);
         button_save = (Button) findViewById(R.id.button_save);
         ip_address = (EditText) findViewById(R.id.edittext_ip_address);
@@ -187,7 +191,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_cancel:

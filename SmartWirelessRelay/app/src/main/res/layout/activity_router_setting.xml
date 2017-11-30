@@ -4,28 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterSettingActivity">
-    <RelativeLayout
-        android:id="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
+    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:id="@+id/textview_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="路由器设置"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
-    </RelativeLayout>
     <!--路由器名称-->
     <RelativeLayout
         android:id="@+id/layout_router_name_out"

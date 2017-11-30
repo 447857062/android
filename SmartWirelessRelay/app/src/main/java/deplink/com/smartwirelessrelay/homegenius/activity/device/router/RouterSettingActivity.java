@@ -64,7 +64,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private SDKManager manager;
     private EventCallback ec;
     private boolean deviceOnline;
-
+    private TextView textview_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +126,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
+        textview_title.setText("路由器设置");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -195,6 +196,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
         image_back = (ImageView) findViewById(R.id.image_back);
         layout_router_name_out = (RelativeLayout) findViewById(R.id.layout_router_name_out);
         layout_room_select_out = (RelativeLayout) findViewById(R.id.layout_room_select_out);

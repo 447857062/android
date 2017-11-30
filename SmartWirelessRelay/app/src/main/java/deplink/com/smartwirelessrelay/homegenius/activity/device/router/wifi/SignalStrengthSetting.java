@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -56,7 +56,9 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
     private Button button_cancel;
     private Button button_save;
     private String currentWifiMode;
-    private FrameLayout layout_back;
+
+    private TextView textview_title;
+    private ImageView image_back;
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
@@ -107,6 +109,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
+        textview_title.setText("2.4G信号强度设置");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(SignalStrengthSetting.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -192,7 +195,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
         layout_model_balance.setOnClickListener(this);
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
     private boolean  isSetSignalStreng;
     private void initViews() {
@@ -204,15 +207,17 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
         imageview_model_balance = (ImageView) findViewById(R.id.imageview_model_balance);
         button_cancel = (Button) findViewById(R.id.button_cancel);
         button_save = (Button) findViewById(R.id.button_save);
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
+
             case R.id.layout_model_pregnant:
                 imageview_model_pregnant.setImageLevel(1);
                 imageview_model_walls.setImageLevel(0);

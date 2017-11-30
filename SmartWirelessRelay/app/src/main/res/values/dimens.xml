@@ -1,6 +1,5 @@
 <resources>
 
-    <dimen name="activity_title_head_height">50dp</dimen>
     <dimen name="main_bottom_four_testview_size">18sp</dimen>
     <dimen name="main_bottom_four_testview_padding">15dp</dimen>
     <dimen name="child_dev_firstitem_testview_size">20sp</dimen>
@@ -94,6 +93,7 @@
 
     <!--个人中心界面尺寸-->
     <dimen name="mine_page_user_image_margintop">117dp</dimen>
+    <dimen name="mine_page_top_background_height">212dp</dimen>
     <dimen name="mine_page_user_image_ridus">60dp</dimen>
     <dimen name="mine_page_logout_margitop">60dp</dimen>
     <dimen name="experience_center_listitem_height">75dp</dimen>
@@ -122,6 +122,8 @@
     <dimen name="adddevice_qrcode_scan_textview2_margin_top">4dp</dimen>
 
     <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">109dp</dimen>
-
-
+    <!--空调界面尺寸-->
+    <dimen name="aircondition_open_background_height">317dp</dimen>
+    <!--路由器界面尺寸-->
+    <dimen name="router_device_page_background_height">186dp</dimen>
 </resources>

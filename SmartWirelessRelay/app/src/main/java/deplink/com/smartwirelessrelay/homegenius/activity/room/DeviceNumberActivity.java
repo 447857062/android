@@ -34,7 +34,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
 
     private ListView listview_getway_devices;
     private RoomGetwayDevicesListAdapter mRoomGetwayDevicesListAdapter;
-    private TextView textview_edit_room;
+    private TextView textview_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private void initEvents() {
         image_back.setOnClickListener(this);
         listview_devices.setOnItemClickListener(this);
-        textview_edit_room.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
     }
 
     private List<SmartDev> mDevices = new ArrayList<>();
@@ -79,7 +79,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         image_back = (ImageView) findViewById(R.id.image_back);
         listview_devices = (ListView) findViewById(R.id.listview_devices);
         listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
-        textview_edit_room = (TextView) findViewById(R.id.textview_edit_room);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.textview_edit_room:
+            case R.id.textview_edit:
                startActivity(new Intent(this,ManageRoomActivity.class));
                 break;
         }

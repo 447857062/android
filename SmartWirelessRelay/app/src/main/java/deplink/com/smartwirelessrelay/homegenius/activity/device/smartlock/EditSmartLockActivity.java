@@ -34,7 +34,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private TextView textview_edit_complement;
     private TextView textview_select_room_name;
     private RelativeLayout layout_select_room;
+    private TextView textview_title;
 
+    private TextView textview_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,21 +47,24 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     }
 
     private void initEvents() {
-
         image_back.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
         textview_edit_complement.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
     }
     private boolean isStartFromExperience;
     private void initDatas() {
+        textview_title.setText("编辑");
+        textview_edit.setText("完成");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
     }
 
     private void initViews() {
-
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        textview_edit= (TextView) findViewById(R.id.textview_edit);
         image_back = (ImageView) findViewById(R.id.image_back);
         button_delete_device = (Button) findViewById(R.id.button_delete_device);
         textview_edit_complement = (TextView) findViewById(R.id.textview_edit_complement);
@@ -85,7 +90,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.textview_edit_complement:
+            case R.id.textview_edit:
                 onBackPressed();
                 break;
             case R.id.layout_select_room:

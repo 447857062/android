@@ -3,7 +3,7 @@
     android:id="@+id/layout_title"
     android:layout_width="match_parent"
     android:layout_height="@dimen/title_bar_height"
-    android:background="@color/title_bg">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,9 +27,17 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center_horizontal|center_vertical"
-            android:text="扫一扫"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+        <ImageView
+            android:id="@+id/image_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/menuicon" />
     </RelativeLayout>
 </RelativeLayout>
 

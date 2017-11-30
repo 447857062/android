@@ -59,8 +59,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
      * 竖向滑动这么多距离就开始刷新
      */
     public static final int HEIGHT_MARK_TO_REFRESH = 250;
+
+    private TextView textview_title;
     private ImageView image_back;
-    private ImageView imageview_setting;
+    private ImageView image_setting;
     /**
      * 已连接设备
      */
@@ -252,6 +254,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
 
     private void initDatas() {
+        textview_title.setText("路由器");
+        image_setting.setImageResource(R.drawable.settingicon);
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         mConnectedDevices = new ArrayList<>();
@@ -408,7 +412,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         image_back.setOnClickListener(this);
         button_connected_devices.setOnClickListener(this);
         button_blak_list.setOnClickListener(this);
-        imageview_setting.setOnClickListener(this);
+        image_setting.setOnClickListener(this);
         listview_device_list.setAdapter(mAdapter);
 
 
@@ -576,7 +580,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
     private void initViews() {
         image_back = (ImageView) findViewById(R.id.image_back);
-        imageview_setting = (ImageView) findViewById(R.id.imageview_setting);
+        image_setting = (ImageView) findViewById(R.id.image_setting);
+        textview_title= (TextView) findViewById(R.id.textview_title);
         listview_device_list = (SwipeMenuListView) findViewById(R.id.listview_device_list);
         button_connected_devices = (Button) findViewById(R.id.button_connected_devices);
         button_blak_list = (Button) findViewById(R.id.button_blak_list);
@@ -607,7 +612,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 frame_blacklist_content.setVisibility(View.VISIBLE);
                 showQueryingDialog();
                 break;
-            case R.id.imageview_setting:
+            case R.id.image_setting:
                 startActivity(new Intent(this, RouterSettingActivity.class));
                 break;
         }

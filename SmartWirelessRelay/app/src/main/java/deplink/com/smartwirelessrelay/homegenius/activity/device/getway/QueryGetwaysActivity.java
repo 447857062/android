@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,9 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     private String currentAddDevice;
     private TextView textview_cancel;
     private UdpManager mUdpmanager;
+
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +45,19 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     }
 
     private void initEvents() {
+        image_back.setOnClickListener(this);
         textview_cancel.setOnClickListener(this);
     }
 
     private void initViews() {
         textview_cancel= (TextView) findViewById(R.id.textview_cancel);
+
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     private void initDatas() {
+        textview_title.setText("网关");
         currentAddDevice=getIntent().getStringExtra("currentAddDevice");
         GetwayManager.getInstance().setCurrentAddDevice(currentAddDevice);
         mUdpmanager = UdpManager.getInstance();
@@ -59,6 +68,9 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.image_back:
+                onBackPressed();
+                break;
             case R.id.textview_cancel:
                 startActivity(new Intent(this, DevicesActivity.class));
                 break;

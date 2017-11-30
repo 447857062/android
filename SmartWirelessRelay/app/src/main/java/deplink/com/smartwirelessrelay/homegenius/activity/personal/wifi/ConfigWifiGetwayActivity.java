@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 
 public class ConfigWifiGetwayActivity extends Activity implements View.OnClickListener,DeviceListener{
     private static final String TAG="ConfigWifiGetwayActivity";
+    private TextView textview_title;
     private ImageView image_back;
     private Button button_connect_right_now;
     private EditText edittext_input_wifi_password;
@@ -39,6 +41,7 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     private String setApCliAuthMode;
     private String setChannel;
     private void initDatas() {
+        textview_title.setText("配置WiFi网关");
         setApCliSsid=getIntent().getStringExtra("setApCliSsid");
         setApCliEncrypType=getIntent().getStringExtra("setApCliEncrypType");
         setApCliAuthMode=getIntent().getStringExtra("setApCliAuthMode");
@@ -53,6 +56,7 @@ public class ConfigWifiGetwayActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
         button_connect_right_now= (Button) findViewById(R.id.button_connect_right_now);
         edittext_input_wifi_password= (EditText) findViewById(R.id.edittext_input_wifi_password);

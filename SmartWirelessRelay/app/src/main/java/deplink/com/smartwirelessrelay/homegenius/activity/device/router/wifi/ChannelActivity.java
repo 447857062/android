@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -26,7 +26,6 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class ChannelActivity extends Activity implements View.OnClickListener{
     private static final String TAG="ChannelActivity";
-    private FrameLayout layout_back;
     private RelativeLayout layout_channel_auto;
     private RelativeLayout layout_channel_1;
     private RelativeLayout layout_channel_2;
@@ -62,6 +61,9 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
         initEvents();
     }
     private void initDatas() {
+        textview_title.setText("信道");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(ChannelActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -180,7 +183,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     private void initEvents() {
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         layout_channel_auto.setOnClickListener(this);
         layout_channel_1.setOnClickListener(this);
         layout_channel_2.setOnClickListener(this);
@@ -198,6 +201,8 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         button_cancel= (Button) findViewById(R.id.button_cancel);
         button_save= (Button) findViewById(R.id.button_save);
         layout_channel_auto= (RelativeLayout) findViewById(R.id.layout_channel_auto);
@@ -228,7 +233,6 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
         imageview_channel_11= (ImageView) findViewById(R.id.imageview_channel_11);
         imageview_channel_12= (ImageView) findViewById(R.id.imageview_channel_12);
         imageview_channel_13= (ImageView) findViewById(R.id.imageview_channel_13);
-        layout_back= (FrameLayout) findViewById(R.id.layout_back);
     }
 
     @Override
@@ -246,7 +250,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_cancel:

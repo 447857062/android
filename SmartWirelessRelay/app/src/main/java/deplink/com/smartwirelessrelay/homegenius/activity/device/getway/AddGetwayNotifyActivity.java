@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 
 public class AddGetwayNotifyActivity extends Activity implements View.OnClickListener{
     private Button button_next_step;
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,13 +26,17 @@ public class AddGetwayNotifyActivity extends Activity implements View.OnClickLis
 
     private void initEvents() {
         button_next_step.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
         button_next_step= (Button) findViewById(R.id.button_next_step);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     private void initDatas() {
+        textview_title.setText("网关");
     }
     public final static int REQUEST_CODE_GETWAY = 3;
     @Override
@@ -40,6 +48,9 @@ public class AddGetwayNotifyActivity extends Activity implements View.OnClickLis
                 intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intentQrcodeSn.putExtra("requestType", REQUEST_CODE_GETWAY);
                 startActivity(intentQrcodeSn);
+                break;
+            case R.id.image_back:
+                onBackPressed();
                 break;
         }
     }

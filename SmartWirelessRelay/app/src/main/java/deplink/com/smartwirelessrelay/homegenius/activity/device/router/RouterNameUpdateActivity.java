@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +18,10 @@ import io.reactivex.disposables.Disposable;
 
 public class RouterNameUpdateActivity extends Activity implements View.OnClickListener{
     private ClearEditText edittext_router_name;
-    private TextView textview_complement;
     private RouterManager mRouterManager;
+    private TextView textview_title;
+    private TextView textview_edit;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,23 +32,33 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     }
 
     private void initDatas() {
+        textview_title.setText("修改名称");
+        textview_edit.setText("完成");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
     }
 
     private void initEvents() {
-        textview_complement.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
         edittext_router_name= (ClearEditText) findViewById(R.id.edittext_router_name);
-        textview_complement= (TextView) findViewById(R.id.textview_complement);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        textview_edit= (TextView) findViewById(R.id.textview_edit);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.textview_complement:
+
+            case R.id.image_back:
+                onBackPressed();
+                break;
+
+            case R.id.textview_edit:
                 final String routerName=edittext_router_name.getText().toString();
                 if(!routerName.equals("")){
                     mRouterManager.updateRouterName(routerName, new Observer() {
@@ -56,14 +69,14 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
 
                         @Override
                         public void onNext(@NonNull Object o) {
-                                if((int)o>0){
-                                    mRouterManager.getCurrentSelectedRouter().setName(routerName);
+                            if((int)o>0){
+                                mRouterManager.getCurrentSelectedRouter().setName(routerName);
                                 RouterNameUpdateActivity.this.finish();
-                                }else{
-                                    Message msg=Message.obtain();
-                                    msg.what=MSG_UPDATE_NAME_FAIL;
-                                    mHandler.sendMessage(msg);
-                                }
+                            }else{
+                                Message msg=Message.obtain();
+                                msg.what=MSG_UPDATE_NAME_FAIL;
+                                mHandler.sendMessage(msg);
+                            }
                         }
 
                         @Override
@@ -77,6 +90,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
                         }
                     });
                 }
+
 
                 break;
         }

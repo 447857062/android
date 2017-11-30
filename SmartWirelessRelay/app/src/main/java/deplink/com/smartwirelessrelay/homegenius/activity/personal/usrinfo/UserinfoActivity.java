@@ -31,7 +31,8 @@ import deplink.com.smartwirelessrelay.homegenius.view.viewselector.SexSelector;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
 
 public class UserinfoActivity extends Activity implements View.OnClickListener {
-    private ImageView imageview_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private RelativeLayout layout_user_header_image;
     private RelativeLayout layout_update_user_nickname;
     private RelativeLayout layout_update_sex;
@@ -44,11 +45,17 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userinfo);
         initViews();
+        initDatas();
         initEvents();
     }
 
+    private void initDatas() {
+        textview_title.setText("个人信息");
+    }
+
     private void initViews() {
-        imageview_back = (ImageView) findViewById(R.id.imageview_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         layout_user_header_image = (RelativeLayout) findViewById(R.id.layout_user_header_image);
         layout_update_user_nickname = (RelativeLayout) findViewById(R.id.layout_update_user_nickname);
         layout_update_sex = (RelativeLayout) findViewById(R.id.layout_update_sex);
@@ -59,7 +66,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     }
 
     private void initEvents() {
-        imageview_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         layout_user_header_image.setOnClickListener(this);
         layout_update_user_nickname.setOnClickListener(this);
         layout_update_sex.setOnClickListener(this);

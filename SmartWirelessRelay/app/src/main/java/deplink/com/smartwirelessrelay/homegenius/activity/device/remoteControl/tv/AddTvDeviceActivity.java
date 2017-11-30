@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ public class AddTvDeviceActivity extends Activity implements View.OnClickListene
     private BandListAdapter mBandListAdapter;
     private ListView listview_band;
     private List<String> bands;
-    private ImageView imageview_back;
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +62,11 @@ public class AddTvDeviceActivity extends Activity implements View.OnClickListene
     private void initEvents() {
         listview_band.setAdapter(mBandListAdapter);
         listview_band.setOnItemClickListener(this);
-        imageview_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initDatas() {
+        textview_title.setText("品牌选择");
         bands=new ArrayList<>();
         mBandListAdapter=new BandListAdapter(this,bands);
 
@@ -72,7 +75,8 @@ public class AddTvDeviceActivity extends Activity implements View.OnClickListene
 
     private void initViews() {
         listview_band= (ListView) findViewById(R.id.listview_band);
-        imageview_back= (ImageView) findViewById(R.id.imageview_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
     }
 
     @Override
@@ -86,7 +90,7 @@ public class AddTvDeviceActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.imageview_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
         }

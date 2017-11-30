@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/mine_page_top_background_height"
         android:background="@drawable/minebackground">
 
         <RelativeLayout
@@ -24,7 +24,7 @@
             <TextView
                 android:id="@+id/textview_title"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/layout_item_content_height"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_horizontal|center_vertical"

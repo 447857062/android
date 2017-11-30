@@ -4,31 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WiFiSettingActivity">
-    <RelativeLayout
-        android:id="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center_vertical">
+    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="WIFi设置"
-            android:textColor="@android:color/white" />
-
-
-    </RelativeLayout>
     <!--2.4G WIFI设置-->
     <RelativeLayout
         android:id="@+id/layout_wifi_24"

@@ -4,35 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UpdateNicknameActivity">
-    <RelativeLayout
-        android:id="@+id/layout_title"
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
 
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-        <ImageView
-            android:id="@+id/imageview_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="修改昵称" />
-        <TextView
-            android:id="@+id/textview_complement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="完成" />
-
-    </RelativeLayout>
     <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
         android:layout_marginTop="15dp"
         android:layout_below="@+id/layout_title"

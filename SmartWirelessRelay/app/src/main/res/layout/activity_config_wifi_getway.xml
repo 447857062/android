@@ -6,29 +6,10 @@
 
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ConfigWifiGetwayActivity">
 
-    <RelativeLayout
+    <include
         android:id="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/holo_blue_light">
+        layout="@layout/layout_title_with_back_center_titletext" />
 
-        <ImageView
-            android:id="@+id/image_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:id="@+id/textview_title_device_number"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="配置WiFi网关"
-            android:textColor="@android:color/white"
-            android:textSize="15dp" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_explan_info"
@@ -68,11 +49,11 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:minWidth="100dp"
             android:id="@+id/textview_wifi_name_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:minWidth="100dp"
             android:text="WiFi名称" />
 
         <TextView
@@ -81,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/textview_wifi_name_title" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/layout_password"
         android:layout_width="match_parent"
@@ -93,29 +75,30 @@
         <TextView
             android:id="@+id/textview_getway_name"
             android:layout_width="wrap_content"
-            android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:minWidth="100dp"
             android:text="输入WiFI密码" />
 
         <EditText
-            android:hint="请输入WiFi密码"
-            android:background="@null"
-            android:gravity="center_vertical"
             android:id="@+id/edittext_input_wifi_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/textview_getway_name" />
+            android:layout_toRightOf="@+id/textview_getway_name"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="请输入WiFi密码" />
     </RelativeLayout>
+
     <Button
-        android:background="@color/blue"
-        android:layout_marginTop="30dp"
+        android:id="@+id/button_connect_right_now"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/layout_password"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/layout_password"
-        android:id="@+id/button_connect_right_now"
-        android:text="立即连接"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_marginTop="30dp"
+        android:background="@color/blue"
+        android:text="立即连接" />
 </RelativeLayout>

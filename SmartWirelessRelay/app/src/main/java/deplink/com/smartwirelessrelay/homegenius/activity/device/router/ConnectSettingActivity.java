@@ -27,7 +27,6 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.SelectConnectTypeDi
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class ConnectSettingActivity extends Activity implements View.OnClickListener{
-    private ImageView image_back;
     private RelativeLayout layout_connect_type_setting;
     private SDKManager manager;
     private EventCallback ec;
@@ -65,6 +64,9 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     private TextView textview_dhcp_status;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
+
+    private TextView textview_title;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     }
 
     private void initDatas() {
+        textview_title.setText("上网设置");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -338,7 +341,8 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        image_back = (ImageView) findViewById(R.id.image_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         layout_connect_type_setting = (RelativeLayout) findViewById(R.id.layout_connect_type_setting);
         textview_current_connect_type = (TextView) findViewById(R.id.textview_current_connect_type);
 

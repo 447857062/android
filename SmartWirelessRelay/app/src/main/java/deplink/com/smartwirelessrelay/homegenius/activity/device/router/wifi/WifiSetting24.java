@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,7 +46,8 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     private TextView textview_mode;
     private TextView textview_channel;
     private TextView textview_bandwidth;
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private CheckBox checkbox_wireless_wifi;
     private CheckBox checkbox_hide_net;
     private boolean isUserLogin;
@@ -81,6 +82,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     }
 
     private void initDatas() {
+        textview_title.setText("2.4G WIFI设置");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -290,7 +292,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         layout_mode.setOnClickListener(this);
         layout_channel.setOnClickListener(this);
         layout_bandwidth.setOnClickListener(this);
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         layout_wifiname_setting.setOnClickListener(this);
         button_cancel.setOnClickListener(this);
         button_save.setOnClickListener(this);
@@ -311,7 +313,8 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         layout_bandwidth = (RelativeLayout) findViewById(R.id.layout_bandwidth);
         textview_bandwidth = (TextView) findViewById(R.id.textview_bandwidth);
         textview_wifi_name = (TextView) findViewById(R.id.textview_wifi_name);
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         checkbox_wireless_wifi = (CheckBox) findViewById(R.id.checkbox_wireless_wifi);
         checkbox_hide_net = (CheckBox) findViewById(R.id.checkbox_hide_net);
         layout_wireless_wifi = (RelativeLayout) findViewById(R.id.layout_wireless_wifi);
@@ -351,7 +354,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.button_cancel:

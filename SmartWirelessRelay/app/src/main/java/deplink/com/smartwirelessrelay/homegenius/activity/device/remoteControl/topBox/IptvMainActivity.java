@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -15,12 +16,20 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     private Button button_control_number;
     private RelativeLayout layout_control_base;
     private RelativeLayout layout_control_number;
+    private TextView textview_title;
+    private ImageView image_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iptv_main);
         initViews();
+        initDatas();
         initEvents();
+    }
+
+    private void initDatas() {
+        textview_title.setText("机顶盒遥控");
+        image_setting.setImageResource(R.drawable.menuicon);
     }
 
     private void initEvents() {
@@ -30,6 +39,8 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     }
 
     private void initViews() {
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_setting= (ImageView) findViewById(R.id.image_setting);
         image_back= (ImageView) findViewById(R.id.image_back);
         button_control_base = (Button) findViewById(R.id.button_control_base);
         button_control_number = (Button) findViewById(R.id.button_control_number);
@@ -40,6 +51,8 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.image_setting:
+                break;
             case R.id.image_back:
                 onBackPressed();
                 break;

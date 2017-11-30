@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +29,8 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class FirmwareUpdateActivity extends Activity implements View.OnClickListener{
     private static final String TAG="FirmwareUpdateActivity";
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private RelativeLayout layout_update_immediately;
     private SDKManager manager;
     private EventCallback ec;
@@ -49,6 +50,7 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
     }
 
     private void initDatas() {
+        textview_title.setText("固件升级");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -145,7 +147,7 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
     }
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         layout_update_immediately.setOnClickListener(this);
         checkbox_auto_update.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -160,7 +162,8 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         layout_update_immediately = (RelativeLayout) findViewById(R.id.layout_update_immediately);
         checkbox_auto_update = (CheckBox) findViewById(R.id.checkbox_auto_update);
         textview_version_code = (TextView) findViewById(R.id.textview_version_code);
@@ -169,7 +172,7 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.layout_update_immediately:

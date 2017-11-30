@@ -9,8 +9,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -57,7 +58,8 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     private MakeSureDialog mqttSetWanDialogNoPassword;
     private WifiRelayInputDialog mqttSetWanDialogHasPassword;
     //MQTT接口 end
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private String op_type;
     //链接参数
     private String crypt = "";
@@ -89,6 +91,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
+        textview_title.setText("无线中继");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(WirelessRelayActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -522,7 +525,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     }
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         mPullToRefreshListView.getRefreshableView().setDivider(null);
         mPullToRefreshListView.getRefreshableView().setSelector(android.R.color.transparent);
         mPullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
@@ -642,7 +645,8 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     }
 
     private void initViews() {
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         mPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_wireless_relay_line);
 
     }
@@ -651,7 +655,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
         }

@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -29,7 +29,8 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class QosSettingActivity extends Activity implements View.OnClickListener{
-    private FrameLayout layout_back;
+    private TextView textview_title;
+    private ImageView image_back;
     private RelativeLayout layout_model_A;
     private RelativeLayout layout_model_B;
     private RelativeLayout layout_model_download;
@@ -58,6 +59,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     }
 
     private void initDatas() {
+        textview_title.setText("智能分配类型选择");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -176,7 +178,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     }
 
     private void initEvents() {
-        layout_back.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         layout_model_A.setOnClickListener(this);
         layout_model_B.setOnClickListener(this);
         layout_model_download.setOnClickListener(this);
@@ -199,7 +201,8 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     }
 
     private void initViews() {
-        layout_back = (FrameLayout) findViewById(R.id.layout_back);
+        textview_title= (TextView) findViewById(R.id.textview_title);
+        image_back= (ImageView) findViewById(R.id.image_back);
         layout_model_A = (RelativeLayout) findViewById(R.id.layout_model_A);
         layout_model_B = (RelativeLayout) findViewById(R.id.layout_model_B);
         layout_model_download = (RelativeLayout) findViewById(R.id.layout_model_download);
@@ -265,7 +268,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
 
                 currentQosMode = "3";
                 break;
-            case R.id.layout_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
         }
