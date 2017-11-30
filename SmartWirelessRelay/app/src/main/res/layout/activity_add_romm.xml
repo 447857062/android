@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
@@ -55,7 +55,7 @@
     <RelativeLayout
         android:id="@+id/layout_room_name"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_title"
         android:background="@color/white"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
@@ -88,7 +88,7 @@
     <RelativeLayout
         android:id="@+id/layout_getway"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_room_name"
         android:layout_marginTop="@dimen/room_list_item_margin_top"
         android:background="@color/white"
@@ -117,12 +117,11 @@
     <TextView
         android:id="@+id/textview_select_room_type"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_getway"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:background="@color/white"
         android:gravity="center_vertical"
         android:text="请选择以下房间类型"
         android:textColor="@color/huise" />

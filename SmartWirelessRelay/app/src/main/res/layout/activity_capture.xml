@@ -4,7 +4,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
     <SurfaceView
         android:id="@+id/preview_view"
         android:layout_width="fill_parent"
@@ -26,11 +25,14 @@
         android:text="将二维码/条码放入框内，即可自动扫描"
         android:textColor="@color/text_color_3A3A3A"
         android:textSize="@dimen/text_size_xhdpi_15" />
-    <include
-        android:id="@+id/include1"
-        layout="@layout/activity_title"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true" />
+    <TextView
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/adddevice_qrcode_capture_buttom_cancel_marginbuttom"
+        android:id="@id/textview_cancel"
+        android:text="取消"
+        android:textColor="@color/white"
+        android:textSize="@dimen/layout_top_bar_item_text_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </RelativeLayout>
 

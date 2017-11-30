@@ -74,6 +74,7 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
                 viewHolder.image_device_type.setImageResource(R.drawable.routericon);
                 break;
             case AppConstant.DEVICES.TYPE_LOCK:
+            case "智能门锁":
                 viewHolder.image_device_type.setImageResource(R.drawable.doorlockicon);
                 break;
             case AppConstant.DEVICES.TYPE_MENLING:

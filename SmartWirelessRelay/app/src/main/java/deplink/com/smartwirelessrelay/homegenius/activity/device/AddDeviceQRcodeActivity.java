@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.t
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SelectSwitchTypeActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
-import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
 
 /**
  * 扫码添加设备
@@ -32,7 +33,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private GridView mGridView;
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;
-    private CircleImageView imageview_scan_device;
+    private ImageView imageview_scan_device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
 
     private void initViews() {
         mGridView = (GridView) findViewById(R.id.gridview_add_device_type);
-        imageview_scan_device = (CircleImageView) findViewById(R.id.imageview_scan_device);
+        imageview_scan_device = (ImageView) findViewById(R.id.imageview_scan_device);
     }
 
     private List<String> mDeviceTypes;
@@ -58,15 +59,15 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
         mDeviceTypes = new ArrayList<>();
-        mDeviceTypes.add("智能网关");
-        mDeviceTypes.add("路由器");
-        mDeviceTypes.add("智能门锁");
-        mDeviceTypes.add("红外万能遥控");
-        mDeviceTypes.add("智能开关");
-        mDeviceTypes.add("智能电视遥控");
-        mDeviceTypes.add("智能空调遥控");
-        mDeviceTypes.add("智能机顶盒遥控");
-        mDeviceTypes.add("智能门铃");
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_SMART_GETWAY);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_ROUTER);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_LOCK);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_REMOTECONTROL);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_SWITCH);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_TV_REMOTECONTROL);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL);
+        mDeviceTypes.add(AppConstant.DEVICES.TYPE_MENLING);
         mAdapter = new AddDeviceTypeSelectAdapter(this, mDeviceTypes);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);

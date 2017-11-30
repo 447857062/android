@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +30,8 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private RelativeLayout layout_lock_record;
     private RelativeLayout layout_password_not_save;
     private RelativeLayout layout_auth;
-    private RelativeLayout layout_open;
+    private RelativeLayout layout_option_clear_record;
+    private ImageView imageview_unlock;
     private SmartLockManager mSmartLockManager;
     private AuthoriseDialog mAuthoriseDialog;
     private TextView textview_update;
@@ -40,6 +42,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private String savedManagePassword;
     private boolean isStartFromExperience;
     private boolean saveManagetPasswordExperience;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +57,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
         isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
-        saveManagetPasswordExperience=true;
+        saveManagetPasswordExperience = true;
     }
 
     @Override
@@ -99,8 +102,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         layout_lock_record.setOnClickListener(this);
         layout_password_not_save.setOnClickListener(this);
         layout_auth.setOnClickListener(this);
-        layout_open.setOnClickListener(this);
+        layout_option_clear_record.setOnClickListener(this);
         textview_update.setOnClickListener(this);
+        imageview_unlock.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -108,8 +113,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         layout_lock_record = (RelativeLayout) findViewById(R.id.layout_lock_record);
         layout_password_not_save = (RelativeLayout) findViewById(R.id.layout_password_not_save);
         layout_auth = (RelativeLayout) findViewById(R.id.layout_auth);
-        layout_open = (RelativeLayout) findViewById(R.id.layout_open);
+        layout_option_clear_record = (RelativeLayout) findViewById(R.id.layout_open);
         textview_update = (TextView) findViewById(R.id.textview_update);
+        imageview_unlock = (ImageView) findViewById(R.id.imageview_unlock);
+        image_back = (ImageView) findViewById(R.id.image_back);
     }
 
 
@@ -128,12 +135,12 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 startActivity(intentLockHistory);
                 break;
             case R.id.layout_password_not_save:
-                PasswordNotsaveDialog dialog=new PasswordNotsaveDialog(this);
+                PasswordNotsaveDialog dialog = new PasswordNotsaveDialog(this);
                 dialog.setmOnSureClick(new PasswordNotsaveDialog.PasswordNotsaveSureListener() {
                     @Override
                     public void onSureClick() {
                         if (isStartFromExperience) {
-                            saveManagetPasswordExperience=false;
+                            saveManagetPasswordExperience = false;
                             mHandler.sendEmptyMessage(MSG_SHOW_NOTSAVE_PASSWORD_DIALOG);
 
                         } else {
@@ -154,26 +161,34 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 mAuthoriseDialog.setGetDialogAuthtTypeTimeListener(this);
                 mAuthoriseDialog.show();
                 break;
-            case R.id.layout_open:
+            case R.id.image_back:
+               onBackPressed();
+                break;
+            case R.id.imageview_unlock:
                 //TODO
-                if(isStartFromExperience){
-                    if (saveManagetPasswordExperience ) {
+                if (isStartFromExperience) {
+                    if (saveManagetPasswordExperience) {
                         Toast.makeText(SmartLockActivity.this, "开门成功", Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent intentSetLockPwd=new Intent(this, SetLockPwdActivity.class);
+                        Intent intentSetLockPwd = new Intent(this, SetLockPwdActivity.class);
                         intentSetLockPwd.putExtra("isStartFromExperience", true);
                         startActivity(intentSetLockPwd);
                     }
-                }else{
+                } else {
                     if (saveManagetPassword && !savedManagePassword.equals("")) {
                         savedManagePassword = "123456";
                         mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
                     } else {
-                        Intent intentSetLockPwd=new Intent(this, SetLockPwdActivity.class);
+                        Intent intentSetLockPwd = new Intent(this, SetLockPwdActivity.class);
                         intentSetLockPwd.putExtra("isStartFromExperience", false);
                         startActivity(intentSetLockPwd);
                     }
                 }
+
+                break;
+            case R.id.layout_open:
+                //TODO
+
 
                 break;
             case R.id.textview_update:
@@ -224,19 +239,19 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     @Override
     public void onGetDialogAuthtTypeTime(String authType, String password, String limitTime) {
         Log.i(TAG, "authType=" + authType);
-        if(isStartFromExperience){
+        if (isStartFromExperience) {
             switch (authType) {
                 case SmartLockConstant.AUTH_TYPE_ONCE:
-                    Toast.makeText(SmartLockActivity.this,"单次授权成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SmartLockActivity.this, "单次授权成功", Toast.LENGTH_SHORT).show();
                     break;
                 case SmartLockConstant.AUTH_TYPE_PERPETUAL:
-                    Toast.makeText(SmartLockActivity.this,"永久授权成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SmartLockActivity.this, "永久授权成功", Toast.LENGTH_SHORT).show();
                     break;
                 case SmartLockConstant.AUTH_TYPE_TIME_LIMIT:
-                    Toast.makeText(SmartLockActivity.this,"限时授权成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SmartLockActivity.this, "限时授权成功", Toast.LENGTH_SHORT).show();
                     break;
             }
-        }else{
+        } else {
             switch (authType) {
                 case SmartLockConstant.AUTH_TYPE_ONCE:
                     mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, "003", "123456", password, null);

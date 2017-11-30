@@ -44,4 +44,6 @@
     <color name="huise">#999999</color>
     <color name="white_background">#f8f8f8</color>
     <color name="read_fc5551">#fc5551</color>
+    <color name="delete_button">#f55555</color>
+    <color name="add_device_text_show_explan">#666666</color>
 </resources>

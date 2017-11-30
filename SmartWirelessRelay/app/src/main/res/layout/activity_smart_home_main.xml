@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
@@ -52,12 +52,14 @@
         android:layout_below="@+id/layout_title">
 
         <RelativeLayout
+            android:alpha="1"
+            android:background="@color/white"
             android:id="@+id/layout_room_top"
             android:layout_width="match_parent"
             android:gravity="center_vertical"
             android:layout_height="@dimen/home_page_roomselect_top_height"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <ImageView
                 android:id="@+id/imageview_room"
@@ -92,18 +94,20 @@
         </RelativeLayout>
 
         <HorizontalScrollView
+            android:alpha="0.9"
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/layout_room_top"
             android:scrollbars="none">
             <LinearLayout
+                android:layout_marginTop="@dimen/homepage_room_type_margin_top"
+                android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
                 android:layout_width="match_parent"
-
+                android:gravity="center_vertical"
                 android:layout_height="match_parent"
                 >
                 <GridView
-                    android:layout_marginTop="@dimen/homepage_room_type_margin_top"
-                    android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
                     android:id="@+id/grid"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -120,13 +124,14 @@
         android:background="@drawable/homepage_roomselect_layout_background"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/layout_buttonbar"
+        android:layout_height="@dimen/home_page_layout_experience_center_height"
         android:layout_below="@+id/layout_room_show">
 
         <RelativeLayout
             android:id="@+id/layout_experience_center_top"
             android:layout_width="match_parent"
+            android:background="@color/white"
+            android:alpha="1"
             android:layout_height="@dimen/home_page_roomselect_top_height"
             >
 
@@ -159,9 +164,10 @@
         </RelativeLayout>
 
         <ListView
+            android:alpha="0.9"
+            android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_marginTop="@dimen/homepage_room_type_margin_top"
             android:scrollbars="none"
             android:id="@+id/listview_experience_center"
             android:layout_width="match_parent"

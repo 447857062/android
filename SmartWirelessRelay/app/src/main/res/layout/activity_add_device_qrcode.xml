@@ -4,63 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity">
 
     <RelativeLayout
         android:id="@+id/layout_top_area"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:background="@android:color/holo_blue_light">
-
+        android:layout_height="@dimen/adddevice_qrcode_background"
+        android:background="@drawable/sweepthebackground">
         <RelativeLayout
             android:id="@+id/layout_title"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentTop="true">
+            android:layout_height="@dimen/title_bar_height"
+            >
 
-            <ImageView
-                android:id="@+id/image_back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:id="@+id/textview_add_device"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="设备添加"
-                android:textColor="@android:color/white"
-                android:textSize="15dp" />
+                android:layout_height="@dimen/layout_item_content_height"
+                android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+                android:layout_marginRight="@dimen/layout_content_margin_left_right"
+                android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
+                <ImageView
+
+                    android:id="@+id/image_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/returnicon" />
+
+                <TextView
+                    android:id="@+id/textview_add_device"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="设备添加"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+
+            </RelativeLayout>
         </RelativeLayout>
 
-        <deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView
+
+        <ImageView
             android:id="@+id/imageview_scan_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/adddevice_qrcode_scan_margintop"
+            android:layout_width="@dimen/adddevice_qrcode_scan_width_height"
+            android:layout_height="@dimen/adddevice_qrcode_scan_width_height"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher"
-            app:border_color="@color/white"
-            app:border_width="0dp" />
+            android:src="@drawable/scanit"
+            />
 
         <TextView
             android:id="@+id/textview_scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageview_scan_device"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/adddevice_qrcode_scan_textview1_margin_top"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/white"
             android:gravity="center_horizontal"
             android:text="扫一扫" />
 
         <TextView
+            android:textSize="@dimen/text_size_smallest"
+            android:textColor="@color/white"
             android:id="@+id/textview_scan_extra_explan_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_scan"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/adddevice_qrcode_scan_textview2_margin_top"
             android:gravity="center_horizontal"
             android:text="设备，外包装或说明书上的二维码" />
     </RelativeLayout>
@@ -70,14 +88,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_top_area"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:cacheColorHint="@android:color/transparent"
         android:gravity="center"
-        android:horizontalSpacing="10dip"
+        android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
         android:listSelector="@android:color/transparent"
         android:numColumns="3"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dip"/>
+        android:verticalSpacing="@dimen/layout_addroom_Vertical_Spacing" />
 </RelativeLayout>

@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageview_room_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/room_item_room_image_width_height"
+        android:layout_height="@dimen/room_item_room_image_width_height"
         android:layout_gravity="center_vertical|center_horizontal"
         android:src="@drawable/roombedroom" />
 
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="@dimen/room_type_item_text_margin_button"
+        android:layout_marginBottom="@dimen/room_item_text_margin_button"
         android:gravity="center_horizontal"
         android:textColor="@color/room_type_text"
         android:textSize="@dimen/text_size_small" />

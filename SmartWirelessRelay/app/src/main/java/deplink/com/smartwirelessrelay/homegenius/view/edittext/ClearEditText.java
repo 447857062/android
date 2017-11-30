@@ -50,11 +50,10 @@ public class ClearEditText extends EditText implements
         //获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
         mClearDrawable = getCompoundDrawables()[2];
         if (mClearDrawable == null) {
-//          throw new NullPointerException("You can add drawableRight attribute in XML");
-            mClearDrawable = getResources().getDrawable(R.drawable.delete2);
+            mClearDrawable = getResources().getDrawable(R.drawable.deleteicon);
         }
 
-        mClearDrawable.setBounds(-30, 0, 30, 60);
+        mClearDrawable.setBounds(0, 0,50, 50);
         //默认设置隐藏图标
         setClearIconVisible(false);
         //设置焦点改变的监听

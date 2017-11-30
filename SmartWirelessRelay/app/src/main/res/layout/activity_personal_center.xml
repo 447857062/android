@@ -16,7 +16,7 @@
         <RelativeLayout
             android:id="@+id/title_top_text"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginTop="@dimen/title_bar_content_margin_top"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
@@ -60,7 +60,7 @@
     <RelativeLayout
         android:id="@+id/layout_getway_check"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_title"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:background="@color/white"
@@ -90,7 +90,7 @@
     <RelativeLayout
         android:id="@+id/layout_experience_center"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_getway_check"
         android:layout_marginTop="@dimen/room_list_item_margin_top"
         android:background="@color/white"
@@ -120,7 +120,7 @@
         android:id="@+id/button_logout"
         android:layout_width="match_parent"
         android:background="@color/white"
-        android:layout_height="@dimen/title_bar_content_height"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_experience_center"
         android:layout_marginTop="@dimen/mine_page_logout_margitop"
         android:gravity="center_horizontal|center_vertical"

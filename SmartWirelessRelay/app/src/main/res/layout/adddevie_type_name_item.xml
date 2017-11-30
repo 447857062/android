@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:background="@android:color/darker_gray"
-    android:layout_height="100dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
-    <TextView
-        android:gravity="center_vertical|center_horizontal"
-        android:id="@+id/textview_device_type_name"
-        android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
+    android:layout_width="@dimen/devices_grid_device_icon_width_height"
+    android:layout_height="@dimen/devices_grid_device_icon_width_height"
+    android:background="@drawable/adddevicepage_device_background"
+    android:minHeight="@dimen/devices_grid_device_icon_width_height"
+    android:minWidth="@dimen/devices_grid_device_icon_width_height">
+
+    <ImageView
+        android:id="@+id/device_type"
+        android:layout_width="@dimen/devices_list_device_icon_width_height"
+        android:layout_height="@dimen/devices_list_device_icon_width_height"
         android:layout_centerHorizontal="true"
-        android:layout_height="100dp" />
+        android:layout_marginTop="@dimen/devices_grid_device_icon_margin_top"
+        android:src="@drawable/gatewayicon" />
+
+    <TextView
+        android:id="@+id/textview_device_type_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/device_type"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/devices_grid_device_icon_margin_top"
+        android:textColor="@color/add_device_text_show_explan"
+        android:textSize="@dimen/text_size_small" />
 
 </RelativeLayout>

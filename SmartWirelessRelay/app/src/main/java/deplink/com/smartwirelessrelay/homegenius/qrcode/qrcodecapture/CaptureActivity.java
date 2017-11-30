@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
@@ -70,10 +69,8 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
 
-        ImageView tvBack = (ImageView) findViewById(R.id.image_back);
-        tvBack.setOnClickListener(this);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_title.setOnClickListener(this);
+        TextView textview_cancel = (TextView) findViewById(R.id.textview_cancel);
+        textview_cancel.setOnClickListener(this);
     }
 
 
@@ -187,12 +184,10 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.image_back:
+            case R.id.textview_cancel:
                 CaptureActivity.this.finish();
                 break;
-            case R.id.textview_title:
-                onBackPressed();
-                break;
+
         }
     }
 

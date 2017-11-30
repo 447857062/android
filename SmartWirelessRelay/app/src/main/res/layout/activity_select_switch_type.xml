@@ -13,7 +13,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_content_height"
+            android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">

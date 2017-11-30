@@ -3,64 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity">
-
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/framelayout_top_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/doorbackground">
-
+        android:layout_height="@dimen/doorlock_top_framelayout_height">
         <RelativeLayout
-            android:id="@+id/layout_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height">
+            android:layout_height="@dimen/doorlock_top_framelayout_inner_bg_height"
+            android:background="@drawable/doorbackground">
 
             <RelativeLayout
+                android:id="@+id/layout_title"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/title_bar_content_height"
-                android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-                android:layout_marginRight="@dimen/layout_content_margin_left_right"
+                android:layout_height="@dimen/title_bar_height">
 
-                android:layout_marginTop="@dimen/title_bar_content_margin_top">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_item_content_height"
+                    android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+                    android:layout_marginRight="@dimen/layout_content_margin_left_right"
+                    android:layout_marginTop="@dimen/title_bar_content_margin_top">
 
-                <ImageView
-                    android:id="@+id/image_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/returnicon" />
+                    <ImageView
+                        android:id="@+id/image_back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/returnicon" />
 
-                <TextView
-                    android:id="@+id/textview_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="智能门锁"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/layout_top_bar_item_text_size" />
+                    <TextView
+                        android:id="@+id/textview_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="智能门锁"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/layout_top_bar_item_text_size" />
 
-                <TextView
-                    android:id="@+id/textview_update"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/white"
-                    android:layout_centerVertical="true"
-                    android:text="编辑" />
+                    <TextView
+                        android:id="@+id/textview_update"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/white"
+                        android:layout_centerVertical="true"
+                        android:text="编辑" />
+                </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
+        <ImageView
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/unlock"
+            android:id="@+id/imageview_unlock"
+            android:layout_width="@dimen/doorlock_unlock_image_width_height"
+            android:layout_height="@dimen/doorlock_unlock_image_width_height" />
+    </FrameLayout>
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/framelayout_top_content"
+        android:layout_marginTop="@dimen/doorlock_top_margintop_framelayout"
         android:layout_marginLeft="@dimen/doorlock_operation_layout_margin_left_right"
         android:layout_marginRight="@dimen/doorlock_operation_layout_margin_left_right">
 
@@ -72,8 +81,9 @@
 
             <ImageView
                 android:id="@+id/imageview_alert_record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:layout_width="@dimen/doorlock_option_item_width_height"
+                android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/alarmrecord" />
 
@@ -97,8 +107,9 @@
 
             <ImageView
                 android:id="@+id/imageview_lock_record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:layout_width="@dimen/doorlock_option_item_width_height"
+                android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/unlockrecord" />
 
@@ -122,8 +133,9 @@
 
             <ImageView
                 android:id="@+id/imageview_password_not_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:layout_width="@dimen/doorlock_option_item_width_height"
+                android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/passwordisnotsaved" />
 
@@ -147,8 +159,8 @@
 
             <ImageView
                 android:id="@+id/imageview_auth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/doorlock_option_item_width_height"
+                android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/authorized" />
 
@@ -173,8 +185,9 @@
 
             <ImageView
                 android:id="@+id/iamgeview_option_open"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:layout_width="@dimen/doorlock_option_item_width_height"
+                android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/clearhistory" />
 
@@ -184,7 +197,7 @@
                 android:layout_below="@+id/iamgeview_option_open"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/doorlock_operation_textview_margin_imageview_top"
-                android:text="开锁"
+                android:text="清除记录"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
