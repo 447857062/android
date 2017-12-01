@@ -1,47 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical">
-    <!-- android:layout_marginTop="@dimen/recyclerview_righttext_margintop"-->
-    <ImageView
-        android:id="@+id/imageview_devicetype"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="28dp"
-        android:src="@drawable/default_device" />
+    android:background="@color/white_background"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/router_device_connect_devices_list_item_height">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="33dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="33dp"
-        android:layout_toRightOf="@+id/imageview_devicetype">
+        android:id="@+id/layout_device_name"
+        android:layout_width="@dimen/router_connectdevice_list_item_name_width"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right">
 
         <TextView
             android:id="@+id/textview_device_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="@color/text_color_3A3A3A"
-            android:textSize="@dimen/text_size_xhdpi_15" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:text="iPhone6s"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
 
         <TextView
             android:id="@+id/textview_device_time"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/textview_device_name"
+            android:layout_marginTop="@dimen/router_connectdevice_list_item_textview_margin_top"
             android:text="--"
-            android:textColor="@color/text_color_908F8F"
-            android:textSize="10dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/devicetype_line_driver" />
+            android:textColor="@color/huise"
+            android:textSize="@dimen/layout_buton_bar_item_text_size" />
     </RelativeLayout>
+
+
+
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/huise" />
 </RelativeLayout>

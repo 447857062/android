@@ -31,11 +31,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private ImageView image_back;
     private Button button_delete_device;
     private DeviceManager mDeviceManager;
-    private TextView textview_edit_complement;
     private TextView textview_select_room_name;
     private RelativeLayout layout_select_room;
     private TextView textview_title;
-
     private TextView textview_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +48,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
-        textview_edit_complement.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
     }
     private boolean isStartFromExperience;
@@ -67,7 +64,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         textview_edit= (TextView) findViewById(R.id.textview_edit);
         image_back = (ImageView) findViewById(R.id.image_back);
         button_delete_device = (Button) findViewById(R.id.button_delete_device);
-        textview_edit_complement = (TextView) findViewById(R.id.textview_edit_complement);
         layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
     }

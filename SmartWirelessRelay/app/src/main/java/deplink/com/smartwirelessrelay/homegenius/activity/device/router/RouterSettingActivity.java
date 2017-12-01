@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +53,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_QOS_setting_out;
     private RelativeLayout layout_update_out;
     private RelativeLayout layout_reboot_out;
-    private Button buttton_delete_router;
+    private TextView buttton_delete_router;
     private RouterManager mRouterManager;
     private TextView textview_room_select_2;
     private TextView textview_route_name_2;
@@ -206,7 +205,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_QOS_setting_out = (RelativeLayout) findViewById(R.id.layout_QOS_setting_out);
         layout_update_out = (RelativeLayout) findViewById(R.id.layout_update_out);
         layout_reboot_out = (RelativeLayout) findViewById(R.id.layout_reboot_out);
-        buttton_delete_router = (Button) findViewById(R.id.buttton_delete_router);
+        buttton_delete_router = (TextView) findViewById(R.id.buttton_delete_router);
         textview_room_select_2 = (TextView) findViewById(R.id.textview_room_select_2);
         textview_route_name_2 = (TextView) findViewById(R.id.textview_route_name_2);
     }

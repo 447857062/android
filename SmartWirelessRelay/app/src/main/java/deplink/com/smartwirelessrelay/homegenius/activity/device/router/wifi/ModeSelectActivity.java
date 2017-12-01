@@ -209,9 +209,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
             case R.id.layout_model_9:
                 setCurrentModel(R.id.layout_model_9);
                 break;
-            case R.id.layout_back:
-                onBackPressed();
-                break;
+
         }
     }
 

@@ -23,6 +23,8 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- true: status栏的图标和文字为黑色；false: sstatus栏的图标和文字为白色 -->
         <item name="android:windowLightStatusBar">true</item>
+
+
     </style>
     <style name="AuthoriseDialog" parent="android:style/Theme.Dialog">
         <!--背景颜色及和透明程度-->

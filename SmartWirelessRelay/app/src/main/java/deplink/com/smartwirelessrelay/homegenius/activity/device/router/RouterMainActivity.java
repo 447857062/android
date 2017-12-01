@@ -11,9 +11,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -72,8 +72,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private SwipeMenuListView listview_black_list;
     private List<BLACKLIST> mBlackListDatas;
     private BlackListAdapter mBlackListAdapter;
-    private Button button_connected_devices;
-    private Button button_blak_list;
+    private RelativeLayout layout_blak_list;
+    private RelativeLayout layout_connected_devices;
     private MakeSureDialog connectLostDialog;
     private TextView textview_show_query_device_result;
     private SDKManager manager;
@@ -96,6 +96,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private TextView textview_upload_speed;
     private TextView textview_download_speend;
     private RouterManager mRouterManager;
+    private View view_line_blak_list;
+    private View view_line_connected_devices;
+    private TextView textview_connected_devices;
+    private TextView textview_blak_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -392,14 +396,14 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 } else {
                     textview_memory_use.setTextColor(getResources().getColor(R.color.memory_percent_text_color));
                 }
-                textview_memory_use.setText(mem + "%");
+                textview_memory_use.setText(mem );
                 String cpu = routerDevice.getPerformance().getDevice().getCPU();
                 if (Integer.valueOf(cpu) > 80) {
                     textview_cpu_use.setTextColor(getResources().getColor(R.color.cpu_percent_text_color));
                 } else {
                     textview_cpu_use.setTextColor(getResources().getColor(R.color.memory_percent_text_color));
                 }
-                textview_cpu_use.setText(cpu + "%");
+                textview_cpu_use.setText(cpu );
 
                 textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
 
@@ -410,8 +414,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     }
     private void initEvents() {
         image_back.setOnClickListener(this);
-        button_connected_devices.setOnClickListener(this);
-        button_blak_list.setOnClickListener(this);
+        layout_connected_devices.setOnClickListener(this);
+        layout_blak_list.setOnClickListener(this);
         image_setting.setOnClickListener(this);
         listview_device_list.setAdapter(mAdapter);
 
@@ -579,12 +583,16 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
 
     private void initViews() {
+        textview_connected_devices= (TextView) findViewById(R.id.textview_connected_devices);
+        textview_blak_list= (TextView) findViewById(R.id.textview_blak_list);
+        view_line_connected_devices=findViewById(R.id.view_line_connected_devices);
+        view_line_blak_list=findViewById(R.id.view_line_blak_list);
         image_back = (ImageView) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
         textview_title= (TextView) findViewById(R.id.textview_title);
         listview_device_list = (SwipeMenuListView) findViewById(R.id.listview_device_list);
-        button_connected_devices = (Button) findViewById(R.id.button_connected_devices);
-        button_blak_list = (Button) findViewById(R.id.button_blak_list);
+        layout_connected_devices = (RelativeLayout) findViewById(R.id.layout_connected_devices);
+        layout_blak_list = (RelativeLayout) findViewById(R.id.layout_blak_list);
         listview_black_list = (SwipeMenuListView) findViewById(R.id.listview_black_list);
         textview_show_query_device_result = (TextView) findViewById(R.id.textview_show_query_device_result);
         textview_show_blacklist_device_result = (TextView) findViewById(R.id.textview_show_blacklist_device_result);
@@ -602,14 +610,22 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_connected_devices:
+            case R.id.layout_connected_devices:
                 frame_blacklist_content.setVisibility(View.GONE);
                 frame_devicelist_content_content.setVisibility(View.VISIBLE);
+                view_line_blak_list.setVisibility(View.GONE);
+                view_line_connected_devices.setVisibility(View.VISIBLE);
+                textview_connected_devices.setTextColor(getResources().getColor(R.color.title_bg));
+                textview_blak_list.setTextColor(getResources().getColor(R.color.room_type_text));
                 showQueryingDialog();
                 break;
-            case R.id.button_blak_list:
+            case R.id.layout_blak_list:
                 frame_devicelist_content_content.setVisibility(View.GONE);
                 frame_blacklist_content.setVisibility(View.VISIBLE);
+                view_line_blak_list.setVisibility(View.VISIBLE);
+                view_line_connected_devices.setVisibility(View.GONE);
+                textview_connected_devices.setTextColor(getResources().getColor(R.color.room_type_text));
+                textview_blak_list.setTextColor(getResources().getColor(R.color.title_bg));
                 showQueryingDialog();
                 break;
             case R.id.image_setting:

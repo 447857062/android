@@ -30,8 +30,8 @@
 
             <CheckBox
                 android:id="@+id/checkbox_wireless_wifi"
-                android:layout_width="33dp"
-                android:layout_height="17dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:button="@drawable/checkbox_wifi_selector" />
@@ -67,8 +67,8 @@
 
             <CheckBox
                 android:id="@+id/checkbox_hide_net"
-                android:layout_width="33dp"
-                android:layout_height="17dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:button="@drawable/checkbox_wifi_selector" />

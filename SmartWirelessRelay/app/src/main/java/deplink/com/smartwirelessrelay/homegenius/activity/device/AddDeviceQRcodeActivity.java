@@ -34,7 +34,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_scan_device;
-
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,11 +46,13 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
 
     private void initEvents() {
         imageview_scan_device.setOnClickListener(this);
+        image_back.setOnClickListener(this);
     }
 
     private void initViews() {
         mGridView = (GridView) findViewById(R.id.gridview_add_device_type);
         imageview_scan_device = (ImageView) findViewById(R.id.imageview_scan_device);
+        image_back = (ImageView) findViewById(R.id.image_back);
     }
 
     private List<String> mDeviceTypes;
@@ -81,31 +83,32 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
         switch (mDeviceTypes.get(position)) {
-            case "智能网关":
+            case AppConstant.DEVICES.TYPE_SMART_GETWAY:
                 intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AddGetwayNotifyActivity.class);
                 intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentQrcodeSn);
                 break;
-            case "红外万能遥控":
+            case AppConstant.DEVICES.TYPE_REMOTECONTROL:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
                 break;
-            case "智能空调遥控":
+            case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
                 intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, ChooseBandActivity.class);
                 startActivity(intentQrcodeSn);
                 break;
-            case "路由器":
+            case AppConstant.DEVICES.TYPE_ROUTER:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);
                 break;
-            case "智能电视遥控":
+            case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, AddTvDeviceActivity.class));
                 break;
-            case "智能机顶盒遥控":
+            case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, AddTopBoxActivity.class));
                 break;
-            case "智能开关":
+            case AppConstant.DEVICES.TYPE_SWITCH:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
                 break;
             default:
+                //智能门锁，等没有在case中的设备
                 startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_SN);
                 break;
         }
@@ -131,6 +134,10 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
                 startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_SN);
                 break;
+            case R.id.image_back:
+                onBackPressed();
+                break;
+
         }
     }
 
@@ -139,7 +146,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Intent intent = new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
-
         if (resultCode == RESULT_OK) {
             String qrCodeResult = data.getStringExtra("deviceSN");
             Log.i(TAG, "二维码扫码结果=" + qrCodeResult);

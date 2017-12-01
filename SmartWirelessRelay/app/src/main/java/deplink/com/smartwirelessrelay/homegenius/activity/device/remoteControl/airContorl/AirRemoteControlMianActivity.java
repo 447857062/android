@@ -33,10 +33,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     }
 
     private void initViews() {
-        image_back= (ImageView) findViewById(R.id.image_back);
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
-        image_setting= (ImageView) findViewById(R.id.image_back);
+        image_setting= (ImageView) findViewById(R.id.image_setting);
     }
 
     @Override

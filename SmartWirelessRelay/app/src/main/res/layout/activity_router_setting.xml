@@ -8,24 +8,31 @@
 
     <!--路由器名称-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_router_name_out"
         android:layout_below="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
             android:id="@+id/layout_router_name"
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="名称:"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_route_name_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="路由器"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/textview_route_name_1"
                 android:id="@+id/textview_route_name_2"
@@ -33,37 +40,46 @@
                 android:layout_height="wrap_content" />
             <ImageView
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
         <View
-            android:layout_below="@+id/layout_router_name"
-            android:background="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="1dp"/>
     </RelativeLayout>
     <!--房间分类-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_room_select_out"
         android:layout_below="@+id/layout_router_name_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
             android:id="@+id/layout_room_select"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="房间分类"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_room_select_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="全部"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/huise"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
                 android:layout_toLeftOf="@+id/imageview_room_select_arror_right"
                 android:id="@+id/textview_room_select_2"
                 android:layout_width="wrap_content"
@@ -71,61 +87,74 @@
             <ImageView
                 android:id="@+id/imageview_room_select_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
-        <View
-            android:layout_below="@+id/layout_room_select"
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+
+
     </RelativeLayout>
     <!--上网设置-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+
         android:id="@+id/layout_connect_type_select_out"
         android:layout_below="@+id/layout_room_select_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:layout_centerVertical="true"
             android:id="@+id/layout_connect_type_select"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="上网设置"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_connect_type_select"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <ImageView
+
                 android:id="@+id/imageview_connect_type_select_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
         <View
-            android:layout_below="@+id/layout_connect_type_select"
-            android:background="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="1dp"/>
+
     </RelativeLayout>
     <!--WIFi设置-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+
         android:id="@+id/layout_wifi_setting_out"
         android:layout_below="@+id/layout_connect_type_select_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:layout_centerVertical="true"
             android:id="@+id/layout_wifi_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="WIFi设置"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_wifi_setting"
                 android:layout_width="wrap_content"
@@ -133,30 +162,38 @@
             <ImageView
                 android:id="@+id/imageview_wifi_setting_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
         <View
-            android:layout_below="@+id/layout_wifi_setting"
-            android:background="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="1dp"/>
+
     </RelativeLayout>
     <!--LAN设置-->
     <RelativeLayout
+
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_lan_setting_out"
         android:layout_below="@+id/layout_wifi_setting_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
             android:id="@+id/layout_lan_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="LAN设置"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_lan_setting"
                 android:layout_width="wrap_content"
@@ -164,30 +201,33 @@
             <ImageView
                 android:id="@+id/imageview_lan_setting_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
-        <View
-            android:layout_below="@+id/layout_lan_setting"
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+
     </RelativeLayout>
     <!--QOS设置-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+
         android:id="@+id/layout_QOS_setting_out"
         android:layout_below="@+id/layout_lan_setting_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:layout_centerVertical="true"
             android:id="@+id/layout_QOS_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="QOS"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_QOS_setting"
                 android:layout_width="wrap_content"
@@ -195,30 +235,37 @@
             <ImageView
                 android:id="@+id/imageview_QOS_setting_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
         <View
-            android:layout_below="@+id/layout_QOS_setting"
-            android:background="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="1dp"/>
     </RelativeLayout>
     <!--固件升级-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+
         android:id="@+id/layout_update_out"
         android:layout_below="@+id/layout_QOS_setting_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:layout_centerVertical="true"
             android:id="@+id/layout_update_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="固件升级"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_update"
                 android:layout_width="wrap_content"
@@ -226,30 +273,36 @@
             <ImageView
                 android:id="@+id/imageview_update_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
         <View
-            android:layout_below="@+id/layout_update_setting"
-            android:background="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="1dp"/>
     </RelativeLayout>
     <!--重启路由器-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_reboot_out"
         android:layout_below="@+id/layout_update_out"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:id="@+id/layout_reboot"
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:text="重启路由器"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
                 android:id="@+id/textview_reboot"
                 android:layout_width="wrap_content"
@@ -257,22 +310,21 @@
             <ImageView
                 android:id="@+id/imageview_reboot_arror_right"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/directionicon"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
-        <View
-            android:layout_below="@+id/layout_reboot"
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
     </RelativeLayout>
-    <Button
-        android:layout_marginTop="40dp"
+    <TextView
+        android:background="@color/white_background"
+        android:layout_marginTop="@dimen/button_delete_button_margin_top"
         android:layout_below="@+id/layout_reboot_out"
         android:id="@+id/buttton_delete_router"
-        android:textColor="@android:color/holo_red_light"
+        android:textColor="@color/delete_button"
         android:text="删除设备"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="@dimen/delete_textview_size"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/layout_item_content_height" />
 </RelativeLayout>

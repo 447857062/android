@@ -8,122 +8,84 @@
 
     <!--2.4G WIFI设置-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_wifi_24"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
         android:layout_below="@+id/layout_title"
-        android:background="@drawable/connect_setting_button_drawable"
-        android:clickable="true"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
 
             <TextView
+                android:text="2.4G WIFI设置"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="2.4G WIFI设置"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
-
-            <ImageView
-                android:id="@+id/imageview_type_dial"
-                android:layout_width="11dp"
-                android:layout_height="20dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/arror_setting" />
+                android:src="@drawable/directionicon" />
 
-        </RelativeLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
     </RelativeLayout>
+
     <!--访客WIFI设置-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_wifi_custom"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
         android:layout_below="@+id/layout_wifi_24"
-        android:background="@drawable/connect_setting_button_drawable"
-        android:clickable="true"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
 
             <TextView
+                android:text="访客WIFI设置"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="访客WIFI设置"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
-
-            <ImageView
-                android:id="@+id/imageview_type_static_ip"
-                android:layout_width="11dp"
-                android:layout_height="20dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/arror_setting" />
+                android:src="@drawable/directionicon" />
 
-        </RelativeLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
     </RelativeLayout>
     <!--信号强度设置-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_signal_strength"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
         android:layout_below="@+id/layout_wifi_custom"
-        android:background="@drawable/connect_setting_button_drawable"
-        android:clickable="true"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
 
             <TextView
+                android:text="信号强度设置"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="信号强度设置"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
-
-            <ImageView
-                android:id="@+id/imageview_type_wireless_relay"
-                android:layout_width="11dp"
-                android:layout_height="20dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/arror_setting" />
+                android:src="@drawable/directionicon" />
 
-        </RelativeLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
     </RelativeLayout>
 </RelativeLayout>

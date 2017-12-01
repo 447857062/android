@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
@@ -28,8 +31,11 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
     private static UdpManager instance;
     private UdpPacket udpPacket;
     private UdpThread udpThread;
+    /**
+     * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
+     */
+    private ExecutorService cachedThreadPool;
     private UdpManagerGetIPLintener mUdpManagerGetIPLintener;
-
     private UdpManager() {
     }
 
@@ -45,8 +51,11 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
     /**
      * 初始化本地连接管理器
      */
-    public int InitUdpConnect(Context context, UdpManagerGetIPLintener listener) {
+    public int InitUdpConnect(final Context context, UdpManagerGetIPLintener listener) {
         this.mUdpManagerGetIPLintener = listener;
+        if(cachedThreadPool==null){
+            cachedThreadPool = Executors.newCachedThreadPool();
+        }
         this.mContext = context;
         if (listener == null) {
             Log.e(TAG, "InitUdpConnect 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
@@ -56,13 +65,19 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
         if (udpPacket == null) {
             udpPacket = new UdpPacket(context, this);
         }
-        udpPacket.start();
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                udpPacket.start();
 
-        //启动状态查询任务，连续发送udp探测设备
-        if (udpThread == null) {
-            udpThread = new UdpThread(context, udpPacket);
-        }
-        udpThread.open();
+                //启动状态查询任务，连续发送udp探测设备
+                if (udpThread == null) {
+                    udpThread = new UdpThread(context, udpPacket);
+                }
+                udpThread.open();
+            }
+        });
+
         return 0;
     }
 
