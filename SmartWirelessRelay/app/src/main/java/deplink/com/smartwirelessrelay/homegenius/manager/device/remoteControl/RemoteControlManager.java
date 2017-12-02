@@ -70,7 +70,9 @@ public class RemoteControlManager implements LocalConnecteListener {
         mRemoteControlDeviceList = new ArrayList<>();
         mRemoteControlDeviceList.addAll(DataSupport.where("Type=?", "IRMOTE_V2").find(SmartDev.class));
         //TODO 当前选中的遥控器
-        mRemoteControlDevice = mRemoteControlDeviceList.get(0);
+        if(mRemoteControlDeviceList.size()>0){
+            mRemoteControlDevice = mRemoteControlDeviceList.get(0);
+        }
     }
 
     public void study() {

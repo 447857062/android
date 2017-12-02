@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.json.BLACKLIST;
@@ -48,7 +47,6 @@ public class BlackListAdapter extends BaseSwipListAdapter {
         if(convertView==null){
             vh=new ViewHolder();
             convertView= LayoutInflater.from(mContext).inflate(R.layout.blacklist_item,null);
-            vh.device_type= (ImageView) convertView.findViewById(R.id.imageview_devicetype);
             vh.device_name= (TextView) convertView.findViewById(R.id.textview_device_name);
             vh.device_time= (TextView) convertView.findViewById(R.id.textview_device_time);
             convertView.setTag(vh);
@@ -61,7 +59,6 @@ public class BlackListAdapter extends BaseSwipListAdapter {
     }
 
     private static class ViewHolder{
-        ImageView device_type;
         TextView device_name;
         TextView device_time;
     }

@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/list_item_textview_margin_left"
+        android:layout_marginLeft="@dimen/list_item_textview_margin_top"
         android:layout_toRightOf="@+id/imageview_device_type"
         android:text="中继器"
         android:textColor="@color/room_type_text" />

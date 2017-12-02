@@ -28,7 +28,6 @@ import retrofit2.Response;
 
 public class addRemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener {
     private static final String TAG = "addRCActivity";
-    private ImageView imageview_back;
     private TextView textview_show;
     private RelativeLayout layout_device_response;
     private Button button_test;
@@ -163,7 +162,6 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private void initEvents() {
-        imageview_back.setOnClickListener(this);
         button_test.setOnClickListener(this);
         button_ng.setOnClickListener(this);
         button_ok.setOnClickListener(this);
@@ -171,7 +169,6 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
-        imageview_back = (ImageView) findViewById(R.id.imageview_back);
         textview_show = (TextView) findViewById(R.id.textview_show);
         layout_device_response = (RelativeLayout) findViewById(R.id.layout_device_response);
         button_test = (Button) findViewById(R.id.button_test);
@@ -236,6 +233,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
 
                             }
                         });
+                        break;
                     case "智能机顶盒遥控":
                         RestfulTools.getSingleton(this).downloadIrCode("IPTV", brandId, controlId, new Callback<QueryRCCodeResponse>() {
                             @Override

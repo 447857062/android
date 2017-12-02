@@ -32,6 +32,12 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private Button button_add_device_sure;
     private ImageView image_back;
     private EditText edittext_add_device_input_name;
+    /**
+     * 当前待添加设备
+     */
+    private QrcodeSmartDevice device;
+    private String deviceType;
+    private String switchqrcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +61,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         image_back = (ImageView) findViewById(R.id.image_back);
     }
 
-    /**
-     * 当前待添加设备
-     */
-    private QrcodeSmartDevice device;
-    private String deviceType;
-    private String switchqrcode;
 
     private void initDatas() {
         mDeviceManager = DeviceManager.getInstance();
@@ -128,7 +128,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
     }
-
     private String deviceName;
     private Room currentSelectedRoom;
 
@@ -222,11 +221,14 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switch (v.getId()) {
             case R.id.button_add_device_sure:
                 deviceName = edittext_add_device_input_name.getText().toString();
+                Gson gson = new Gson();
                 switch (deviceType) {
                     case "SMART_LOCK":
                         if (deviceName.equals("")) {
                             deviceName = "我家的门锁";
                         }
+                        device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
+                        Log.i(TAG, "deviceType=" + deviceType + "device=" + (device != null));
                         break;
                     case "智能开关":
                         if (deviceName.equals("")) {
@@ -237,6 +239,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         if (deviceName.equals("")) {
                             deviceName = "智能遥控";
                         }
+                        device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         break;
                     case "智能空调":
                         if (deviceName.equals("")) {
@@ -254,10 +257,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         }
                         break;
                 }
-
-                Gson gson = new Gson();
-                device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
-                Log.i(TAG, "deviceType=" + deviceType + "device=" + (device != null));
                 //TODO 调试
                 if (device == null) {
                     device = new QrcodeSmartDevice();

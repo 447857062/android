@@ -11,13 +11,14 @@
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"
         android:layout_marginTop="@dimen/title_bar_content_margin_top">
-
+        <!--扩大点击区域-->
         <ImageView
             android:id="@+id/image_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:scaleType="centerInside"
             android:src="@drawable/returnicon" />
 
         <TextView

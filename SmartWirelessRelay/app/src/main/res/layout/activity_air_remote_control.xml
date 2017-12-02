@@ -9,7 +9,7 @@
         android:id="@+id/layout_top_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/aircondition_open_background_height"
-        android:background="@drawable/airconditioningon">
+        android:background="@drawable/airconditioningoff">
 
         <include
             android:id="@+id/layout_title"
