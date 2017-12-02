@@ -3,9 +3,9 @@
 
     <!-- QR 二维码扫描 -->
     <color name="transparent">#00000000</color>
-    <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
+    <color name="viewfinder_laser">#60a3f6</color> <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#cb000000</color>
-    <color name="viewfinder_frame">#ff4EEE94</color><!-- #ff0000ff -->
+    <color name="viewfinder_frame">#ffffffff</color><!-- #ff0000ff -->
     <color name="viewfinder_backgroud">#ffffffff</color>
     <color name="line_bg">#CDCDCD</color>
     <color name="dialog_bg">#77000000</color>

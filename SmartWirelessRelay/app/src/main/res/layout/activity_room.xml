@@ -52,9 +52,10 @@
             android:textColor="@color/white"
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:id="@+id/textview_option_explan"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="我的房间(长按可排序，点击编辑房间)" />
 
@@ -68,6 +69,7 @@
             android:layout_below="@+id/textview_option_explan"
             android:cacheColorHint="@android:color/transparent"
             android:gravity="center"
+            android:scrollbars="none"
             android:horizontalSpacing="10dip"
             android:listSelector="@android:color/transparent"
             android:numColumns="3"

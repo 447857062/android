@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/equipmentbackground"
+    android:background="@drawable/roomequipmentbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity">
     <include layout="@layout/layout_title_with_right_have_text_no_textbackground" android:id="@+id/layout_title"/>
     <ListView

@@ -130,7 +130,7 @@
     <dimen name="adddevice_qrcode_scan_width_height">52dp</dimen>
     <dimen name="adddevice_qrcode_scan_textview1_margin_top">8dp</dimen>
     <dimen name="adddevice_qrcode_scan_textview2_margin_top">4dp</dimen>
-    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">109dp</dimen>
+
 
     <!--空调界面尺寸-->
     <dimen name="aircondition_open_background_height">427dp</dimen>
@@ -157,4 +157,8 @@
     <dimen name="otherway_login_text_marginbuttom">160dp</dimen>
     <dimen name="text_user_protocal_margin_buttom">30dp</dimen>
     <dimen name="vercode_buttom_height">30dp</dimen>
+
+    <!--二维码扫码界面-->
+    <dimen name="scan_view_textview_margintop">180dp</dimen>
+    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">120dp</dimen>
 </resources>
