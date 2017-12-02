@@ -47,7 +47,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title"
-        android:layout_marginTop="50dp">
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:layout_marginTop="@dimen/input_phonenumber_margintop">
 
         <RelativeLayout
             android:id="@+id/layout_input_phone_number_inner"
@@ -59,7 +61,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/accountnumbericon" />
 
             <EditText
                 android:id="@+id/edittext_input_phone_number"
@@ -68,24 +71,29 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/image_person"
                 android:background="@null"
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:gravity="center_vertical"
+                android:textColor="@color/input_hint"
                 android:hint="请输入手机号" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
+            android:alpha="0.6"
             android:layout_below="@+id/layout_input_phone_number_inner"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/black" />
+            android:layout_marginTop="@dimen/line_margintop_input"
+            android:background="@color/white" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_input_password_outer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
         android:layout_below="@+id/layout_input_phone_number_outer"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/password_layout_margin_account_top">
 
         <RelativeLayout
             android:id="@+id/layout_input_password_inner"
@@ -97,50 +105,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/passwordicon" />
 
             <EditText
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:id="@+id/edittext_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/image_password"
                 android:background="@null"
+                android:textColor="@color/input_hint"
                 android:gravity="center_vertical"
                 android:hint="请输入密码" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
+            android:alpha="0.6"
             android:layout_below="@+id/layout_input_password_inner"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/black" />
+            android:layout_marginTop="@dimen/line_margintop_input"
+            android:background="@color/white" />
     </RelativeLayout>
 
     <Button
         android:id="@+id/button_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_input_password_outer"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:textColor="@color/title_bg"
+        android:background="@drawable/login_button_background"
+        android:textSize="@dimen/login_button_text_size"
+        android:layout_marginTop="@dimen/password_layout_margin_account_top"
         android:text="登录" />
 
     <RelativeLayout
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
         android:id="@+id/layout_forget_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_login"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/forget_password_margintop">
 
         <TextView
             android:id="@+id/textview_forget_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_smallest"
             android:text="忘记密码" />
 
         <TextView
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_smallest"
             android:id="@+id/textview_regist_now"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -153,32 +175,42 @@
         android:id="@+id/layout_login_other_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button_login"
-        android:layout_marginTop="200dp">
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:layout_marginBottom="@dimen/otherway_login_text_marginbuttom">
 
         <ImageView
+            android:layout_toLeftOf="@+id/textview_otherway_login"
             android:id="@+id/iamgeview_left_line"
-            android:layout_width="100dp"
-            android:layout_height="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_centerVertical="true"
-            android:background="@color/black" />
+            android:background="@color/white" />
 
         <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/textview_otherway_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/white"
             android:text="其他方式登录" />
 
         <ImageView
+            android:layout_toRightOf="@+id/textview_otherway_login"
             android:id="@+id/iamgeview_right_line"
-            android:layout_width="100dp"
-            android:layout_height="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@color/black" />
+            android:background="@color/white" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/layout_other_login_type_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -212,15 +244,19 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/text_user_protocal_margin_buttom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_other_login_type_select"
         android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/textview_i_read"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_smallest"
+            android:textColor="@color/white"
             android:text="我已阅读并同意" />
 
         <TextView
@@ -229,6 +265,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/textview_i_read"
             android:text="《智能家居协议条款》"
-            android:textColor="@color/blue" />
+            android:textSize="@dimen/text_size_smallest"
+            android:textColor="@color/title_bg" />
     </RelativeLayout>
 </RelativeLayout>

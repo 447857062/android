@@ -3,20 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/equipmentbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity">
-    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
-
-
+    <include layout="@layout/layout_title_with_right_have_text_no_textbackground" android:id="@+id/layout_title"/>
     <ListView
-        android:id="@+id/listview_devices"
+        android:id="@+id/listview_devies"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_title"></ListView>
-    <ListView
-        android:layout_marginTop="20dp"
-        android:id="@+id/listview_getway_devices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/listview_devices"></ListView>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/device_page_devicelist_margintop"
+        android:divider="@null"
+        android:scrollbars="none"
+        android:dividerHeight="@dimen/device_item_divider_height"/>
+
 
 </RelativeLayout>

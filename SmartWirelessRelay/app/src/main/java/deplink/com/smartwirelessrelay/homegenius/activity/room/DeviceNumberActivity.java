@@ -15,12 +15,19 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.RoomDevicesListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.RoomGetwayDevicesListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
@@ -29,12 +36,19 @@ import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG="DeviceNumberActivity";
     private ImageView image_back;
-    private ListView listview_devices;
-    private RoomDevicesListAdapter mRoomDevicesAdapter;
 
-    private ListView listview_getway_devices;
-    private RoomGetwayDevicesListAdapter mRoomGetwayDevicesListAdapter;
     private TextView textview_edit;
+    private DeviceListAdapter mDeviceAdapter;
+    /**
+     * 上面半部分列表的数据
+     */
+    private List<Device> datasTop;
+    /**
+     * 下面半部分列表的数据
+     */
+    private List<SmartDev> datasBottom;
+
+    private ListView listview_devies;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +60,17 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        listview_devices.setOnItemClickListener(this);
+
         textview_edit.setOnClickListener(this);
     }
 
-    private List<SmartDev> mDevices = new ArrayList<>();
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private RoomManager mRoomManager;
-    private List<Device>mGetwayDevices=new ArrayList<>();
+
     private Room currentRoom;
     private DeviceManager mDeviceManager;
     private GetwayManager mGetwayManager;
@@ -64,22 +82,61 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mGetwayManager.InitGetwayManager(this,null);
         String hintRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
         currentRoom=mRoomManager.findRoom(hintRoomName,true);
-        mDevices = currentRoom.getmDevices();
-        mRoomDevicesAdapter = new RoomDevicesListAdapter(this, mDevices,currentRoom,mDeviceManager);
-        listview_devices.setAdapter(mRoomDevicesAdapter);
-        mRoomDevicesAdapter.notifyDataSetChanged();
-        mGetwayDevices= currentRoom.getmGetwayDevices();
-        mRoomGetwayDevicesListAdapter=new RoomGetwayDevicesListAdapter(this,mGetwayDevices,currentRoom,mGetwayManager);
-        listview_getway_devices.setAdapter(mRoomGetwayDevicesListAdapter);
-        mRoomGetwayDevicesListAdapter.notifyDataSetChanged();
-        Log.i(TAG,"初始化设备列表，智能设备="+mDevices.size()+"网关设备="+mGetwayDevices.size());
+
+        datasTop = new ArrayList<>();
+        datasBottom = new ArrayList<>();
+        //使用数据库中的数据
+        datasTop.addAll(currentRoom.getmGetwayDevices());
+        datasBottom .addAll(currentRoom.getmDevices());
+
+        mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
+        listview_devies.setAdapter(mDeviceAdapter);
+        listview_devies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (datasTop.size() < (position + 1)) {
+                    //智能设备
+                    String deviceType = datasBottom.get(position - datasTop.size()).getType();
+                    Log.i(TAG, "智能设备类型=" + deviceType);
+                    mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                    switch (deviceType) {
+                        case "SMART_LOCK":
+                            startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
+                            break;
+                        case "IRMOTE_V2":
+                            startActivity(new Intent(DeviceNumberActivity.this, RemoteControlActivity.class));
+                            break;
+                        case "智能空调":
+                            startActivity(new Intent(DeviceNumberActivity.this, AirRemoteControlMianActivity.class));
+                            break;
+                        case "路由器":
+                            RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
+                            startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
+                            break;
+                        case "智能电视":
+                            startActivity(new Intent(DeviceNumberActivity.this, TvMainActivity.class));
+                            break;
+                        case "智能机顶盒遥控":
+                            startActivity(new Intent(DeviceNumberActivity.this, IptvMainActivity.class));
+                            break;
+                        case "智能开关":
+                            // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));
+                            break;
+                    }
+                } else {
+                    //网关设备
+                    GetwayManager.getInstance().setCurrentSelectGetwayDevice(datasTop.get(position));
+                    startActivity(new Intent(DeviceNumberActivity.this, GetwayDeviceActivity.class));
+                }
+            }
+        });
     }
 
     private void initViews() {
         image_back = (ImageView) findViewById(R.id.image_back);
-        listview_devices = (ListView) findViewById(R.id.listview_devices);
-        listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
+
         textview_edit = (TextView) findViewById(R.id.textview_edit);
+        listview_devies=(ListView) findViewById(R.id.listview_devies);
     }
 
     @Override
