@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/textview_data_year_mouth_day"
-            android:gravity="right|bottom"
+            android:gravity="right"
             android:textColor="@color/huise"
             android:textSize="@dimen/text_size_smallest"
             android:layout_width="match_parent"

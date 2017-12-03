@@ -116,6 +116,7 @@
     <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
     <dimen name="login_button_ridus">20dp</dimen>
     <dimen name="vercode_button_ridus">8dp</dimen>
+    <dimen name="addrouter_button_ridus">16dp</dimen>
     <dimen name="room_name_margin_right_arror">15dp</dimen>
 
     <!--设备界面尺寸-->
@@ -137,6 +138,7 @@
     <dimen name="aircondition_open_background_height">427dp</dimen>
     <!--路由器界面尺寸-->
     <dimen name="router_device_page_background_height">205dp</dimen>
+    <dimen name="add_router_button_sure_margintop">48dp</dimen>
     <!--路由器cpu使用距离顶部-->
     <dimen name="router_device_cpu_use_layout_margin_top">88dp</dimen>
     <dimen name="router_device_cpu_use_marginleft_precent">15dp</dimen>

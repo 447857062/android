@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,10 +23,9 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
-public class BandwidthActivity extends Activity implements View.OnClickListener{
-    private static final String TAG="BandwidthActivity";
-    private Button button_cancel;
-    private Button button_save;
+public class BandwidthActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "BandwidthActivity";
+
     private RelativeLayout layout_bandwidth_20;
     private RelativeLayout layout_bandwidth_40;
     private ImageView imageview_bandwidth_20;
@@ -38,20 +36,23 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
     private MakeSureDialog connectLostDialog;
     private TextView textview_title;
     private ImageView image_back;
+    private TextView textview_edit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bandwidth);
 
-            initViews();
-            initDatas();
-            initEvents();
+        initViews();
+        initDatas();
+        initEvents();
 
 
     }
 
     private void initDatas() {
         textview_title.setText("频宽");
+        textview_edit.setText("保存");
         connectLostDialog = new MakeSureDialog(BandwidthActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
             @Override
@@ -86,7 +87,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op){
+                switch (op) {
                     case RouterDevice.OP_SUCCESS:
                         if (isSetBandWidth) {
                             ToastSingleShow.showText(BandwidthActivity.this, "设置成功");
@@ -108,7 +109,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
         if (currentBandwidth != null) {
             switch (currentBandwidth) {
                 case "0":
-                    Log.i(TAG,"currentBandwidth="+currentBandwidth);
+                    Log.i(TAG, "currentBandwidth=" + currentBandwidth);
                     setCurrentBandWidth(R.id.layout_bandwidth_20);
                     break;
                 case "1":
@@ -119,13 +120,14 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
             }
         }
     }
+
     private boolean isSetBandWidth;
+
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
     }
-
 
 
     @Override
@@ -135,22 +137,20 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
     }
 
     private void initEvents() {
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         layout_bandwidth_20.setOnClickListener(this);
         layout_bandwidth_40.setOnClickListener(this);
         image_back.setOnClickListener(this);
     }
 
     private void initViews() {
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         layout_bandwidth_20 = (RelativeLayout) findViewById(R.id.layout_bandwidth_20);
         layout_bandwidth_40 = (RelativeLayout) findViewById(R.id.layout_bandwidth_40);
         imageview_bandwidth_20 = (ImageView) findViewById(R.id.imageview_bandwidth_20);
         imageview_bandwidth_40 = (ImageView) findViewById(R.id.imageview_bandwidth_40);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (ImageView) findViewById(R.id.image_back);
     }
 
     @Override
@@ -159,10 +159,8 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+
+            case R.id.textview_edit:
 
                 if (!currentBandwidth.equals("")) {
                     Intent intent = new Intent();
@@ -183,7 +181,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener{
     }
 
     private void setCurrentBandWidth(int id) {
-        switch (id){
+        switch (id) {
             case R.id.layout_bandwidth_20:
                 imageview_bandwidth_20.setImageLevel(1);
                 imageview_bandwidth_40.setImageLevel(0);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,8 +23,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class EncryptTypeActivity extends Activity implements View.OnClickListener{
-    private Button button_cancel;
-    private Button button_save;
+
     private RelativeLayout layout_type_strong;
     private RelativeLayout layout_type_mix;
     private RelativeLayout layout_type_none;
@@ -33,7 +31,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     private ImageView imageview_mix;
     private ImageView imageview_none;
     private String currentSelectEncryptType;
-
+    private TextView textview_edit;
     private TextView textview_title;
     private ImageView image_back;
     private String wifiType;
@@ -51,6 +49,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
 
     private void initDatas() {
         textview_title.setText("加密方式");
+        textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(EncryptTypeActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -136,8 +135,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     }
 
     private void initEvents() {
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         layout_type_strong.setOnClickListener(this);
         layout_type_mix.setOnClickListener(this);
         layout_type_none.setOnClickListener(this);
@@ -146,8 +144,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         layout_type_strong = (RelativeLayout) findViewById(R.id.layout_type_strong);
         layout_type_mix = (RelativeLayout) findViewById(R.id.layout_type_mix);
         layout_type_none = (RelativeLayout) findViewById(R.id.layout_type_none);
@@ -162,13 +159,11 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
+
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 if (!currentSelectEncryptType.equals("")) {
                     isSetEncrypt = true;
                     // Wifi wifi = new Wifi();

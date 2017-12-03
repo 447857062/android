@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,8 +55,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     private ImageView imageview_channel_13;
 
     private String currentChannel;
-    private Button button_cancel;
-    private Button button_save;
+   private TextView textview_edit;
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
@@ -74,6 +72,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     }
     private void initDatas() {
         textview_title.setText("信道");
+        textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(ChannelActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -181,8 +180,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     }
     private  boolean isSetChannel;
     private void initEvents() {
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         image_back.setOnClickListener(this);
         layout_channel_auto.setOnClickListener(this);
         layout_channel_1.setOnClickListener(this);
@@ -203,8 +201,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
-        button_cancel= (Button) findViewById(R.id.button_cancel);
-        button_save= (Button) findViewById(R.id.button_save);
+        textview_edit= (TextView) findViewById(R.id.textview_edit);
         layout_channel_auto= (RelativeLayout) findViewById(R.id.layout_channel_auto);
         layout_channel_1= (RelativeLayout) findViewById(R.id.layout_channel_1);
         layout_channel_2= (RelativeLayout) findViewById(R.id.layout_channel_2);
@@ -253,10 +250,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 isSetChannel=true;
                 if(!currentChannel.equals("")){
                     Intent intent = new Intent();
