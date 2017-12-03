@@ -13,9 +13,10 @@
         android:layout_marginTop="@dimen/title_bar_content_margin_top">
 
         <ImageView
+            android:scaleType="centerInside"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
             android:id="@+id/image_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@drawable/returnicon" />
@@ -32,11 +33,11 @@
             android:textSize="@dimen/layout_top_bar_item_text_size" />
         <TextView
             android:id="@+id/textview_edit"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="right|center_vertical"
             android:text="编辑"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_small" />

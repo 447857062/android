@@ -24,15 +24,12 @@ import deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView;
 public class AddDeviceActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RoomActivity";
     private ImageView image_back;
-
     private DragGridView mDragGridView;
     private GridViewAdapter mRoomsAdapter;
     private RoomManager mRoomManager;
     private List<Room> mRooms = new ArrayList<>();
-
     private TextView textview_show_select_room;
     private TextView textview_skip_this_option;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

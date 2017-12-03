@@ -123,6 +123,7 @@
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:textSize="@dimen/text_size_small"
         android:gravity="center_vertical"
         android:text="请选择以下房间类型"
         android:textColor="@color/huise" />

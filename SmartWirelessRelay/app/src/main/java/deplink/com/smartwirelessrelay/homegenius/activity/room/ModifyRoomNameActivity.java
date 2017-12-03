@@ -15,8 +15,8 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     private ClearEditText clearEditText;
     private String roomName;
     private TextView textview_title;
-    private ImageView image_back;
     private TextView textview_edit;
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

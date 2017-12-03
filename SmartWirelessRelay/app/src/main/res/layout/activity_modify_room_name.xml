@@ -3,17 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.ModifyRoomNameActivity">
     <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
 
-
-    <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+    <RelativeLayout
         android:layout_below="@+id/layout_title"
-        android:id="@+id/clear"
-        android:paddingLeft="10dp"
-        android:hint="客厅"
-        android:background="@color/gray"
-
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:background="@color/white"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
+        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+           android:layout_centerVertical="true"
+            android:id="@+id/clear"
+            android:hint="客厅"
+            android:textSize="@dimen/text_size_small"
+            android:background="@null"
+            android:textColor="@color/room_type_text"
+            android:textColorHint="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
 </RelativeLayout>
