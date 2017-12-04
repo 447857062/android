@@ -162,6 +162,17 @@
     <!--TV 电视机顶盒界面-->
     <dimen name="first_frame_content_margintop">28dp</dimen>
     <dimen name="first_frame_content_margin_left_right">48dp</dimen>
+    <dimen name="basecontrol_frame_content_margin_top">28dp</dimen>
+    <dimen name="alllearn_button_width_height">222dp</dimen>
+    <dimen name="learn_button_updown_width">158dp</dimen>
+    <dimen name="learn_button_updown_height">77dp</dimen>
+    <dimen name="learn_button_leftright_width">77dp</dimen>
+    <dimen name="learn_button_leftright_height">158dp</dimen>
+    <dimen name="learn_ok_button_width_height">98dp</dimen>
+    <dimen name="learn_ch_volum_button_width_height">43dp</dimen>
+    <dimen name="learn_ch_volum_button_marginleft_to_other">30dp</dimen>
+    <dimen name="learn_mute_menu_return_button_width_height">57dp</dimen>
+    <dimen name="number_control_layout_except_first_line_margintop">25dp</dimen>
     <!--登录界面-->
     <dimen name="input_phonenumber_margintop">38dp</dimen>
     <dimen name="input_layout_marginleft_right">38dp</dimen>
