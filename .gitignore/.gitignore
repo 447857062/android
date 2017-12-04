@@ -64,3 +64,5 @@ freeline_project_description.json
 /captures
 .externalNativeBuild
 .idea
+src/androidTest
+src/test
