@@ -10,7 +10,6 @@ import android.os.Message;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,8 +31,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class AlertWifiPasswordActivity extends Activity implements View.OnClickListener {
-    private Button button_cancel;
-    private Button button_save;
+    private TextView textview_edit;
     private EditText edittext_password;
     private EditText edittext_password_again;
     private SDKManager manager;
@@ -64,6 +62,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
 
     private void initDatas() {
         textview_title.setText("更改WIFI密码");
+        textview_edit.setText("保存");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -130,16 +129,14 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private boolean isSetWifiPassword;
 
     private void initEvents() {
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         image_back.setOnClickListener(this);
         image_input_eye_password.setOnClickListener(this);
         image_input_eye_password_again.setOnClickListener(this);
     }
 
     private void initViews() {
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         image_input_eye_password = (ImageView) findViewById(R.id.image_input_eye_password);
         image_input_eye_password_again = (ImageView) findViewById(R.id.image_input_eye_password_again);
         textview_title = (TextView) findViewById(R.id.textview_title);
@@ -203,7 +200,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
                 }
 
                 break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 String password = edittext_password.getText().toString().trim();
                 String passwordAgain = edittext_password_again.getText().toString().trim();
                 if (password.length() < 8) {

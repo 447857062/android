@@ -8,8 +8,10 @@
 
 
     <ListView
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:id="@+id/list_alart_histroy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_title"></ListView>
+        android:scrollbars="none"
+        android:layout_below="@+id/layout_title"/>
 </RelativeLayout>

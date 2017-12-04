@@ -47,6 +47,8 @@
     <!--路由器设备，字体-->
     <dimen name="router_device_cpu_speed_text_big_size">25dp</dimen>
     <dimen name="router_device_cpu_speed_text_small_size">12dp</dimen>
+    <!--登录按钮字体大小-->
+    <dimen name="login_button_text_size">16dp</dimen>
     <!--底部导航栏尺寸-->
     <dimen name="layout_buton_bar_height">49dp</dimen>
     <!--顶部导航栏尺寸-->
@@ -107,13 +109,19 @@
     <dimen name="room_item_text_margin_button">26dp</dimen>
     <dimen name="room_type_addroom_item_text_margin_button">23dp</dimen>
     <dimen name="room_list_item_margin_top">5dp</dimen>
-    <dimen name="room_item_room_image_width_height">101dp</dimen>
+    <dimen name="room_item_room_image_width_height">98dp</dimen>
+
+    <!--图片圆弧角度-->
+    <dimen name="device_item_background_ridus">8dp</dimen>
+    <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
+    <dimen name="login_button_ridus">20dp</dimen>
+    <dimen name="vercode_button_ridus">8dp</dimen>
+    <dimen name="addrouter_button_ridus">16dp</dimen>
+    <dimen name="room_name_margin_right_arror">15dp</dimen>
 
     <!--设备界面尺寸-->
     <dimen name="list_item_imageview_onlinestatu_margin_right">10dp</dimen>
     <dimen name="device_page_arror_down_marginleft">5dp</dimen>
-    <dimen name="device_item_background_ridus">8dp</dimen>
-    <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
     <dimen name="device_item_divider_height">5dp</dimen>
     <dimen name="device_page_devicelist_margintop">15dp</dimen>
     <dimen name="devices_list_device_icon_width_height">39dp</dimen>
@@ -124,12 +132,13 @@
     <dimen name="adddevice_qrcode_scan_width_height">52dp</dimen>
     <dimen name="adddevice_qrcode_scan_textview1_margin_top">8dp</dimen>
     <dimen name="adddevice_qrcode_scan_textview2_margin_top">4dp</dimen>
-
-    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">109dp</dimen>
+    <!--智能开关，选择开关类型。开关类型名字距离左边开关图标距离-->
+    <dimen name="smart_switch_name_marginleft_typeImage">15dp</dimen>
     <!--空调界面尺寸-->
     <dimen name="aircondition_open_background_height">427dp</dimen>
     <!--路由器界面尺寸-->
     <dimen name="router_device_page_background_height">205dp</dimen>
+    <dimen name="add_router_button_sure_margintop">48dp</dimen>
     <!--路由器cpu使用距离顶部-->
     <dimen name="router_device_cpu_use_layout_margin_top">88dp</dimen>
     <dimen name="router_device_cpu_use_marginleft_precent">15dp</dimen>
@@ -141,4 +150,18 @@
     <dimen name="router_connectdevice_list_item_textview_margin_right">5dp</dimen>
     <dimen name="router_connectdevice_list_item_name_width">160dp</dimen>
     <dimen name="router_connectdevice_list_item_speedvalue_width">60dp</dimen>
+    <!--登录界面-->
+    <dimen name="input_phonenumber_margintop">38dp</dimen>
+    <dimen name="input_layout_marginleft_right">38dp</dimen>
+    <dimen name="input_layout_input_margin_left_image">15dp</dimen>
+    <dimen name="password_layout_margin_account_top">30dp</dimen>
+    <dimen name="line_margintop_input">5dp</dimen>
+    <dimen name="forget_password_margintop">20dp</dimen>
+    <dimen name="otherway_login_text_marginbuttom">160dp</dimen>
+    <dimen name="text_user_protocal_margin_buttom">30dp</dimen>
+    <dimen name="vercode_buttom_height">30dp</dimen>
+
+    <!--二维码扫码界面-->
+    <dimen name="scan_view_textview_margintop">180dp</dimen>
+    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">120dp</dimen>
 </resources>

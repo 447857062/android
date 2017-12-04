@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,8 +40,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
     private ImageView imageview_model_7;
     private ImageView imageview_model_9;
     private String currentMode;
-    private Button button_cancel;
-    private Button button_save;
+   private TextView textview_edit;
     private SDKManager manager;
     private EventCallback ec;
     private String wifiType;
@@ -70,6 +68,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
     }
     private void initDatas() {
         textview_title.setText("模式");
+        textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(ModeSelectActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -149,8 +148,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
         image_back.setOnClickListener(this);
         layout_model_AC.setOnClickListener(this);
         layout_model_N.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         layout_model_4.setOnClickListener(this);
         layout_model_7.setOnClickListener(this);
         layout_model_9.setOnClickListener(this);
@@ -169,8 +167,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
         imageview_model_4=(ImageView) findViewById(R.id.imageview_model_4);
         imageview_model_7=(ImageView) findViewById(R.id.imageview_model_7);
         imageview_model_9=(ImageView) findViewById(R.id.imageview_model_9);
-        button_cancel= (Button) findViewById(R.id.button_cancel);
-        button_save= (Button) findViewById(R.id.button_save);
+        textview_edit= (TextView) findViewById(R.id.textview_edit);
     }
 
     @Override
@@ -179,7 +176,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 if(!currentMode.equals("")){
                     isSetModel=true;
                     Wifi wifi=new Wifi();

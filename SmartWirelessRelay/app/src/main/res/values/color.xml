@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_bottom_black">#515151</color>
-    <color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
-    <color name="result_text">#ff000000</color>
+
     <!-- QR 二维码扫描 -->
     <color name="transparent">#00000000</color>
-    <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
+    <color name="viewfinder_laser">#60a3f6</color> <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#cb000000</color>
-    <color name="viewfinder_frame">#ff4EEE94</color><!-- #ff0000ff -->
+    <color name="viewfinder_frame">#ffffffff</color><!-- #ff0000ff -->
     <color name="viewfinder_backgroud">#ffffffff</color>
     <color name="line_bg">#CDCDCD</color>
     <color name="dialog_bg">#77000000</color>
@@ -15,7 +13,6 @@
     <color name="blue">#1C86EE</color>
     <color name="gray">#e4e4e4</color>
     <color name="black">#ff000000</color>
-
     <color name="green">#59BBFF</color>
     <color name="page_title_text_color">#F8FAFA</color>
     <color name="blue_add_new_router_title">#2B89F3</color>
@@ -24,7 +21,6 @@
     <color name="gray_919090">#919090</color>
     <color name="result_view">#b0ffffff</color>
     <color name="text_color_908F8F">#908F8F</color>
-
     <color name="color_B9E0D9">#B9E0D9</color>
     <color name="memory_percent_text_color">#22AC3A</color>
     <color name="cpu_percent_text_color">#DC5F5F</color>
@@ -37,11 +33,20 @@
     <color name="color_2B89F3">#2B89F3</color>
     <color name="modify_password_text_color">#3A3A3A</color>
     <color name="littlegray">#EEEEEE</color>
+
+
+
     <!--新app使用-->
+    <!--主题使用的颜色-->
+    <color name="main_bottom_black">#515151</color>
+    <color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
+    <color name="result_text">#ff000000</color>
+
     <color name="title_bg">#60a3f6</color>
-    <color name="room_type_text">#333334</color>
+    <color name="room_type_text">#333333</color>
     <color name="white">#ffffff</color>
     <color name="huise">#999999</color>
+    <color name="input_hint">#99ffffff</color>
     <color name="white_background">#f8f8f8</color>
     <color name="read_fc5551">#fc5551</color>
     <color name="delete_button">#f55555</color>

@@ -1,5 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp;
 
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.IOException;
@@ -94,9 +95,6 @@ public class UdpComm {
         return 0;
     }
 
-    /**
-     * 接收线程
-     */
     public class RecvThread extends Thread {
         boolean isRun = false;
 
@@ -104,9 +102,17 @@ public class UdpComm {
             isRun = false;
         }
 
+        /**
+         * 接收线程
+         */
+
         @Override
         public void run() {
             super.run();
+            Looper.prepare();
+
+            Looper.loop();
+
             byte[] data = new byte[10240];
             isRun = true;
             DatagramPacket packet = new DatagramPacket(data, 0, data.length);

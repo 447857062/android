@@ -3,117 +3,143 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/loginbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.RegistActivity">
     <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
 
     <RelativeLayout
-        android:layout_marginTop="50dp"
-        android:layout_below="@+id/layout_title"
         android:id="@+id/layout_input_phone_number_outer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:layout_marginTop="@dimen/input_phonenumber_margintop">
 
         <RelativeLayout
             android:id="@+id/layout_input_phone_number_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/image_person"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="请输入手机号"
-                android:background="@null"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/phonenumber" />
+
+            <EditText
                 android:id="@+id/edittext_input_phone_number"
-                android:gravity="center_vertical"
-                android:layout_toRightOf="@+id/image_person"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/image_person"
+                android:background="@null"
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
+                android:gravity="center_vertical"
+                android:textColor="@color/input_hint"
+                android:hint="请输入手机号" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/black"
+            android:layout_height="1dp"
+            android:alpha="0.6"
             android:layout_below="@+id/layout_input_phone_number_inner"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="@dimen/line_margintop_input"
+            android:background="@color/white" />
     </RelativeLayout>
+
     <RelativeLayout
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/layout_input_phone_number_outer"
         android:id="@+id/layout_verification_code_outer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:layout_below="@+id/layout_input_phone_number_outer"
+        android:layout_marginTop="@dimen/password_layout_margin_account_top">
 
         <RelativeLayout
-            android:id="@+id/layout_input_verification_code_inner"
+            android:id="@+id/layout_verification_code_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/image_verification_code"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:layout_toLeftOf="@+id/buton_get_verification_code"
-                android:hint="请输入验证码"
-                android:background="@null"
-                android:id="@+id/edittext_input_verification_code"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/image_verification_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <Button
+                android:src="@drawable/verificationcode" />
+
+            <EditText
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
+                android:id="@+id/edittext_verification_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/buton_get_verification_code"
+                android:background="@null"
+                android:textColor="@color/input_hint"
+                android:gravity="center_vertical"
+                android:hint="请输入验证码" />
+            <TextView
                 android:id="@+id/buton_get_verification_code"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:text="获取验证码"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="@dimen/text_size_smallest"
+                android:gravity="center_horizontal|center_vertical"
+                android:textColor="@color/white"
+                android:background="@drawable/get_vercode_button_background"
+                android:layout_width="80dp"
+                android:layout_height="@dimen/vercode_buttom_height" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/black"
-            android:layout_below="@+id/layout_input_verification_code_inner"
-            android:layout_marginTop="5dp" />
+            android:layout_height="1dp"
+            android:alpha="0.6"
+            android:layout_below="@+id/layout_verification_code_inner"
+            android:layout_marginTop="@dimen/line_margintop_input"
+            android:background="@color/white" />
     </RelativeLayout>
     <!--请设置密码-->
     <RelativeLayout
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/layout_verification_code_outer"
         android:id="@+id/layout_input_password_outer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:layout_below="@+id/layout_verification_code_outer"
+        android:layout_marginTop="@dimen/password_layout_margin_account_top">
 
         <RelativeLayout
             android:id="@+id/layout_input_password_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/image_input_password"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_launcher"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:layout_toLeftOf="@+id/imageview_eye"
-                android:hint="请设置密码"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@null"
+                android:src="@drawable/passwordicon" />
+
+            <EditText
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:id="@+id/edittext_input_password"
-                android:gravity="center_vertical"
-                android:layout_toRightOf="@+id/image_input_password"
+                android:layout_toLeftOf="@+id/imageview_eye"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/image_input_password"
+                android:background="@null"
+                android:textColor="@color/input_hint"
+                android:gravity="center_vertical"
+                android:hint="请设置密码" />
             <ImageView
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/displayicon"
                 android:id="@+id/imageview_eye"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
@@ -123,35 +149,47 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/black"
+            android:layout_height="1dp"
+            android:alpha="0.6"
             android:layout_below="@+id/layout_input_password_inner"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="@dimen/line_margintop_input"
+            android:background="@color/white" />
     </RelativeLayout>
     <Button
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/layout_input_password_outer"
         android:id="@+id/button_login"
-        android:text="注册"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_input_password_outer"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:textColor="@color/title_bg"
+        android:background="@drawable/login_button_background"
+        android:textSize="@dimen/login_button_text_size"
+        android:layout_marginTop="@dimen/password_layout_margin_account_top"
+        android:text="注册" />
     <RelativeLayout
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/text_user_protocal_margin_buttom"
         android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
         <TextView
             android:id="@+id/textview_i_read"
-            android:text="我已阅读并同意"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_smallest"
+            android:textColor="@color/white"
+            android:text="我已阅读并同意" />
+
         <TextView
-            android:textColor="@color/blue"
-            android:layout_toRightOf="@+id/textview_i_read"
             android:id="@+id/textview_protocal"
-            android:text="《智能家居协议条款》"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/textview_i_read"
+            android:text="《智能家居协议条款》"
+            android:textSize="@dimen/text_size_smallest"
+            android:textColor="@color/title_bg" />
     </RelativeLayout>
 </RelativeLayout>

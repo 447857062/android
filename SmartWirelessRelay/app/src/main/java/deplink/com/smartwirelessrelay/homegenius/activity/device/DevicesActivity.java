@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -179,13 +178,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_select_room_type.setOnClickListener(this);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     private void initViews() {
         layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);

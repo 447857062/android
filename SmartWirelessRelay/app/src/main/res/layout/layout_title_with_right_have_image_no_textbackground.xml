@@ -14,8 +14,9 @@
 
         <ImageView
             android:id="@+id/image_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@drawable/returnicon" />
@@ -32,9 +33,10 @@
             android:textSize="@dimen/layout_top_bar_item_text_size" />
 
         <ImageView
+            android:scaleType="centerInside"
             android:id="@+id/image_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/menuicon" />
