@@ -3,13 +3,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.WirelessRelayActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+
+    <include
+        android:id="@+id/layout_topbar"
+        layout="@layout/layout_title_with_back_center_titletext" />
+
+    <RelativeLayout
+        android:id="@+id/layout_select_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_topbar"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="选择待扩展的网络"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise" />
+    </RelativeLayout>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:layout_below="@+id/layout_topbar"
         android:id="@+id/list_wireless_relay_line"
+        android:layout_above="@+id/layout_reload_wifilist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"/>
+        android:layout_below="@+id/layout_select_wifi"
+        android:visibility="visible" />
+
+    <RelativeLayout
+       android:id="@+id/layout_reload_wifilist"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wifirelay_reload_wifilist_background_height">
+        <TextView
+            android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+            android:layout_marginRight="@dimen/input_layout_marginleft_right"
+            android:layout_marginTop="@dimen/wifirelay_reload_wifilist_button_margintop"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:background="@drawable/wifirelay_reload_button_background"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="重新扫描" />
+    </RelativeLayout>
 </RelativeLayout>

@@ -47,7 +47,6 @@
         android:layout_below="@+id/layout_versioninfo"
         android:id="@+id/textview_update_what"
         android:text="联客路由固件 2.2.10 包含问题修复以及对路 由器安全性的改进。"
-        android:textSize="@dimen/text_size_xhdpi_15"
         android:textColor="@color/color_2B89F3"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"

@@ -45,24 +45,18 @@ public class GetwayListDevicesAdapter extends BaseAdapter {
         if(convertView==null){
             vh=new ViewHolder();
             convertView= LayoutInflater.from(mContext).inflate(R.layout.getwaydevlistitem,null);
-            vh.textview_device_uid= (TextView) convertView.findViewById(R.id.textview_device_uid);
-            vh.textview_device_statu= (TextView) convertView.findViewById(R.id.textview_device_statu);
-            vh.textview_ipaddress= (TextView) convertView.findViewById(R.id.textview_ipaddress);
+            vh.textview_device_name= (TextView) convertView.findViewById(R.id.textview_device_name);
             convertView.setTag(vh);
         }else{
             vh = (ViewHolder) convertView.getTag();
         }
+        vh.textview_device_name.setText(mDev.get(position).getName());
 
-        vh.textview_device_uid.setText("设备识别码:"+mDev.get(position).getUid());
-        vh.textview_device_statu.setText("状态："+mDev.get(position).getStatus());
-        vh.textview_ipaddress.setText("网关IP地址："+mDev.get(position).getIpAddress());
 
         return convertView;
     }
 
     private static class ViewHolder{
-        TextView textview_device_uid;
-        TextView textview_device_statu;
-        TextView textview_ipaddress;
+        TextView textview_device_name;
     }
 }

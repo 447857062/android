@@ -25,8 +25,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="访客wifi开关"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+               />
 
             <CheckBox
                 android:id="@+id/checkbox_wifi_switch"
@@ -65,8 +64,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="WIFI名称"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                />
 
             <TextView
                 android:id="@+id/textview_wifi_name"
@@ -77,8 +75,7 @@
                 android:layout_toLeftOf="@+id/imageview_wifi_name"
                 android:text="--"
                 android:background="@null"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                 />
 
             <ImageView
                 android:id="@+id/imageview_wifi_name"
@@ -118,8 +115,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="加密方式"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                 />
 
             <TextView
                 android:id="@+id/textview_encryption"
@@ -129,8 +125,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/imageview_encryption"
                 android:text="--"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                />
 
             <ImageView
                 android:id="@+id/imageview_encryption"
@@ -170,8 +165,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="密码"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                />
 
             <TextView
                 android:id="@+id/textview_password"
@@ -181,8 +175,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/imageview_password"
                 android:text="--"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+               />
             <ImageView
                 android:id="@+id/imageview_password"
                 android:layout_width="@dimen/connect_setting_arrorright_image_width"

@@ -12,7 +12,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="title_text_size">18dp</dimen>
-    <dimen name="text_size_xhdpi_15">15dp</dimen>
     <dimen name="button_sure_width">131dp</dimen>
     <dimen name="button_register_height">36dp</dimen>
     <dimen name="connect_setting_item_height">48dp</dimen>
@@ -62,11 +61,15 @@
     <dimen name="homepage_room_title_marginleft_room_smallimage">10dp</dimen>
     <dimen name="home_page_roomselect_height">145dp</dimen>
     <dimen name="home_page_roomselect_top_height">35dp</dimen>
+    <dimen name="home_page_roomselect_normal_height">110dp</dimen>
     <dimen name="home_page_roomselect_top_change_show_type_textview_marginright">15dp</dimen>
     <dimen name="home_page_layout_experience_center_height">185dp</dimen>
 
     <!--主页房间图片默认排列，图片宽高-->
     <dimen name="home_room_image_width_height">77dp</dimen>
+    <dimen name="home_room_switch_image_width_height">57dp</dimen>
+    <dimen name="home_room_switch_layout_minheight">86dp</dimen>
+    <dimen name="home_room_switch_device_numbers_layout_width_height">18dp</dimen>
 
     <!--所有界面距离左右边界的距离-->
     <dimen name="layout_content_margin_left_right">15dp</dimen>
@@ -115,6 +118,7 @@
     <dimen name="device_item_background_ridus">8dp</dimen>
     <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
     <dimen name="login_button_ridus">20dp</dimen>
+    <dimen name="wifirelay_ridus">22dp</dimen>
     <dimen name="vercode_button_ridus">8dp</dimen>
     <dimen name="addrouter_button_ridus">16dp</dimen>
     <dimen name="room_name_margin_right_arror">15dp</dimen>
@@ -139,6 +143,8 @@
     <!--路由器界面尺寸-->
     <dimen name="router_device_page_background_height">205dp</dimen>
     <dimen name="add_router_button_sure_margintop">48dp</dimen>
+    <dimen name="router_connect_setting_edit_marginleft">10dp</dimen>
+    <dimen name="router_connect_setting_left_textview_minwidth">60dp</dimen>
     <!--路由器cpu使用距离顶部-->
     <dimen name="router_device_cpu_use_layout_margin_top">88dp</dimen>
     <dimen name="router_device_cpu_use_marginleft_precent">15dp</dimen>
@@ -150,6 +156,8 @@
     <dimen name="router_connectdevice_list_item_textview_margin_right">5dp</dimen>
     <dimen name="router_connectdevice_list_item_name_width">160dp</dimen>
     <dimen name="router_connectdevice_list_item_speedvalue_width">60dp</dimen>
+    <dimen name="wifirelay_reload_wifilist_background_height">171dp</dimen>
+    <dimen name="wifirelay_reload_wifilist_button_margintop">60dp</dimen>
     <!--登录界面-->
     <dimen name="input_phonenumber_margintop">38dp</dimen>
     <dimen name="input_layout_marginleft_right">38dp</dimen>

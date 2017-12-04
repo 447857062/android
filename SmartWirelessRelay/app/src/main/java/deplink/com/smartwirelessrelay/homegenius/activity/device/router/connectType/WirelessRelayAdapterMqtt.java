@@ -65,6 +65,7 @@ public class WirelessRelayAdapterMqtt extends BaseAdapter {
             vh.tv = (TextView) convertView.findViewById(R.id.list_text_show_name);
             vh.image = (ImageView) convertView.findViewById(R.id.iamge_item);
             vh.encryption_type = (TextView) convertView.findViewById(R.id.encryption_type);
+            vh.iamge_item_jiami = (ImageView) convertView.findViewById(R.id.iamge_item_jiami);
             convertView.setTag(vh);
         } else {
             vh = (ViewHolder) convertView.getTag();
@@ -74,12 +75,9 @@ public class WirelessRelayAdapterMqtt extends BaseAdapter {
             quality=Integer.parseInt(mData.get(position).getQuality().substring(0,mData.get(position).getQuality().indexOf("/")));
             Log.i(TAG,"quality="+quality);
         }
-
-        //设只wifi信号图片
+        //wifi信号图片
         if (!encryption.equalsIgnoreCase("none")) {
-            vh.image.setImageResource(R.drawable.wifi_signal_encryption);
-        } else {
-            vh.image.setImageResource(R.drawable.wifi_signal_no_encryption);
+            vh.iamge_item_jiami.setImageResource(R.drawable.wifipassword);
         }
         if (quality < 33) {
             vh.image.setImageLevel(0);
@@ -99,6 +97,7 @@ public class WirelessRelayAdapterMqtt extends BaseAdapter {
         TextView tv;
         TextView encryption_type;
         ImageView image;
+        ImageView iamge_item_jiami;
     }
 
 }

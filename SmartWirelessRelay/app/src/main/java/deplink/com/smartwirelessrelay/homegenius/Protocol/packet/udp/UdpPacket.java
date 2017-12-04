@@ -66,9 +66,10 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
             udpPacketThread.stopThis();
             udpPacketThread = null;
         }
-        if(netUdp!=null){
+        //TODO
+      /*  if(netUdp!=null){
             netUdp.stopServer();
-        }
+        }*/
 
         sendNetPakcetList.clear();
     }
@@ -94,7 +95,6 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
             super.run();
             Log.i(TAG,"UdpPacketThread is Run");
             isRun = true;
-
             while (isRun) {
                 for (int i = 0; i < sendNetPakcetList.size(); i++) {
                     BasicPacket tmp = sendNetPakcetList.get(i);

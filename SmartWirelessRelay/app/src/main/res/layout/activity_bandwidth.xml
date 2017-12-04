@@ -20,7 +20,6 @@
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:background="@color/white"
         android:clickable="true"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
 
         <RelativeLayout
@@ -63,7 +62,6 @@
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:background="@color/white"
         android:clickable="true"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
 
 

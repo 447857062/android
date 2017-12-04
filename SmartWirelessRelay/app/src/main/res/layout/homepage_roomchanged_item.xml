@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="@dimen/layout_content_margin_left_right"
+    android:paddingRight="@dimen/layout_content_margin_left_right"
+    android:background="@android:color/white"
+    android:minHeight="@dimen/home_room_switch_layout_minheight"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_centerVertical="true"
+        android:id="@+id/imageview_room_type"
+        android:layout_width="@dimen/home_room_switch_image_width_height"
+        android:layout_height="@dimen/home_room_switch_image_width_height"
+        android:src="@drawable/viewswitchlivingroom" />
+
+    <TextView
+        android:layout_toRightOf="@+id/imageview_room_type"
+        android:layout_marginLeft="@dimen/homepage_room_title_marginleft_room_smallimage"
+        android:id="@+id/textview_room_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/room_type_text"
+        android:textSize="@dimen/text_size_smallest" />
+
+    <TextView
+        android:textSize="@dimen/layout_buton_bar_item_text_size"
+        android:textColor="@color/white"
+        android:id="@+id/device_number"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_toLeftOf="@+id/arror_right"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/homepage_room_title_marginleft_room_smallimage"
+        android:background="@drawable/homepage_roomselect_ovel_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+      <ImageView
+          android:layout_centerVertical="true"
+          android:id="@+id/arror_right"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/directionicon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+    <View
+        android:background="@color/huise"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+</RelativeLayout>

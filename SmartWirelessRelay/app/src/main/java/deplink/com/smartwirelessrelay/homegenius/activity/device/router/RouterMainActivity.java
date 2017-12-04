@@ -428,12 +428,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.black_3a3a3a)));
-                deleteItem.setWidth((int) Perfence.dp2px(RouterMainActivity.this, 80));
+                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.read_f55555)));
+                deleteItem.setWidth((int) Perfence.dp2px(RouterMainActivity.this, 70));
                 //  deleteItem.setBackground(R.layout.listview_deleteitem_layout);
                 // set item width
                 deleteItem.setTitle("拉黑");
-                deleteItem.setTitleSize(18);
+                deleteItem.setTitleSize(14);
                 // set item title font color
                 deleteItem.setTitleColor(Color.WHITE);
                 // set a icon
@@ -508,13 +508,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 SwipeMenuItem openItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                openItem.setBackground(new ColorDrawable(getResources().getColor(R.color.read_fc5551)));
+                openItem.setBackground(new ColorDrawable(getResources().getColor(R.color.read_f55555)));
                 // set item width
-                openItem.setWidth((int) Perfence.dp2px(RouterMainActivity.this, 80));
+                openItem.setWidth((int) Perfence.dp2px(RouterMainActivity.this, 70));
                 // set item title
                 openItem.setTitle("恢复上网");
                 // set item title fontsize
-                openItem.setTitleSize(18);
+                openItem.setTitleSize(14);
                 // set item title font color
                 openItem.setTitleColor(Color.WHITE);
                 // add to menu

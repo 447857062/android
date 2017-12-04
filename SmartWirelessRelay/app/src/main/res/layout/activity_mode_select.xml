@@ -12,7 +12,6 @@
 
     <!--AC-->
     <RelativeLayout
-
         android:id="@+id/layout_model_AC"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height"
@@ -20,7 +19,6 @@
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:background="@color/white"
         android:clickable="true"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
         <TextView
             android:layout_width="wrap_content"
@@ -56,7 +54,6 @@
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:background="@color/white"
         android:clickable="true"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
         <TextView
             android:layout_width="wrap_content"
@@ -93,7 +90,6 @@
         android:background="@color/white"
         android:clickable="true"
         android:visibility="gone"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
         <TextView
             android:layout_width="wrap_content"
@@ -130,7 +126,6 @@
         android:background="@color/white"
         android:clickable="true"
         android:visibility="gone"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
         <TextView
             android:layout_width="wrap_content"
@@ -165,7 +160,6 @@
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:background="@color/white"
         android:clickable="true"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/layout_content_margin_left_right">
         <TextView
             android:layout_width="wrap_content"
