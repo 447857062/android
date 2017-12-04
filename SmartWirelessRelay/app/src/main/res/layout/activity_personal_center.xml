@@ -18,12 +18,13 @@
             android:id="@+id/title_top_text"
             android:layout_width="match_parent"
             android:background="@color/title_bg"
-            android:layout_height="@dimen/layout_item_content_height"
-            android:layout_marginTop="@dimen/title_bar_content_margin_top"
+            android:layout_height="@dimen/title_bar_height"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
             <TextView
+                android:layout_marginTop="@dimen/title_bar_content_margin_top"
+                android:paddingTop="@dimen/title_bar_content_margin_top"
                 android:id="@+id/textview_title"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/layout_item_content_height"

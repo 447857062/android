@@ -158,6 +158,10 @@
     <dimen name="router_connectdevice_list_item_speedvalue_width">60dp</dimen>
     <dimen name="wifirelay_reload_wifilist_background_height">171dp</dimen>
     <dimen name="wifirelay_reload_wifilist_button_margintop">60dp</dimen>
+
+    <!--TV 电视机顶盒界面-->
+    <dimen name="first_frame_content_margintop">28dp</dimen>
+    <dimen name="first_frame_content_margin_left_right">48dp</dimen>
     <!--登录界面-->
     <dimen name="input_phonenumber_margintop">38dp</dimen>
     <dimen name="input_layout_marginleft_right">38dp</dimen>
