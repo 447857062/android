@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,12 +24,12 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 /**
  * 配置wifi网关
  */
-public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener {
+public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener,View.OnClickListener {
     private static final String TAG="ScanWifiListActivity";
     private DeviceManager mDeviceManager;
     private ListView listview_wifi_list;
     private WifiListAdapter mWifiListAdapter;
-
+    private ImageView image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +41,13 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
 
     private void initEvents() {
         listview_wifi_list.setOnItemClickListener(this);
+        image_back.setOnClickListener(this);
         listview_wifi_list.setAdapter(mWifiListAdapter);
     }
 
     private void initViews() {
         listview_wifi_list = (ListView) findViewById(R.id.listview_wifi_list);
+        image_back = (ImageView) findViewById(R.id.image_back);
     }
 
     @Override
@@ -55,6 +58,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
 
     private List<SSIDList> mDatas;
     private void initDatas() {
+
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         mDatas = new ArrayList<>();
@@ -127,5 +131,14 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.image_back:
+                onBackPressed();
+                break;
+        }
     }
 }

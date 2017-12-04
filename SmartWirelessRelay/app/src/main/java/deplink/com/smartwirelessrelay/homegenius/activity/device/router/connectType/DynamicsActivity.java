@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,11 +28,9 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class DynamicsActivity extends Activity implements View.OnClickListener{
     private static final  String TAG="DynamicsActivity";
-
+    private TextView textview_edit;
     private TextView textview_title;
     private ImageView image_back;
-    private Button button_cancel;
-    private Button button_save;
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
@@ -66,6 +63,7 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
 
     private void initDatas() {
         textview_title.setText("动态IP");
+        textview_edit.setText("保存");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -130,16 +128,13 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
     }
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
-        button_save.setText("设置");
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         edittext_mtu = (EditText) findViewById(R.id.edittext_mtu);
         edittext_dns1 = (EditText) findViewById(R.id.edittext_dns1);
         edittext_dns2 = (EditText) findViewById(R.id.edittext_dns2);
@@ -148,11 +143,10 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_cancel:
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 if(NetUtil.isNetAvailable(this)){
                     String mtu=edittext_mtu.getText().toString().trim();
                     String dns1=edittext_dns1.getText().toString().trim();

@@ -14,8 +14,10 @@
         android:background="@drawable/minebackground">
 
         <RelativeLayout
+            android:alpha="0.9"
             android:id="@+id/title_top_text"
             android:layout_width="match_parent"
+            android:background="@color/title_bg"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginTop="@dimen/title_bar_content_margin_top"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
@@ -126,7 +128,7 @@
         android:gravity="center_horizontal|center_vertical"
         android:textSize="@dimen/text_size_small"
         android:text="退出登录"
-        android:textColor="@color/read_fc5551" />
+        android:textColor="@color/read_f55555" />
 
     <include
         layout="@layout/layout_buttom_bar"

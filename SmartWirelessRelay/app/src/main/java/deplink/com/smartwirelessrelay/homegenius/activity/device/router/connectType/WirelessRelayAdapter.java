@@ -78,9 +78,7 @@ public class WirelessRelayAdapter extends BaseAdapter {
         if (!encryption.equalsIgnoreCase("OPEN")) {
             // vh.image.setImageResource(R.drawable.wifi_signal_encryption);
 
-            vh.image.setImageResource(R.drawable.wifi_signal_encryption);
-        } else {
-            vh.image.setImageResource(R.drawable.wifi_signal_no_encryption);
+            vh.image.setImageResource(R.drawable.wifi_signal_strength);
         }
         if (quality < 33) {
             vh.image.setImageLevel(0);

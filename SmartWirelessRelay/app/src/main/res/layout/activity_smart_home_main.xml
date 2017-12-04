@@ -47,7 +47,7 @@
         android:background="@drawable/homepage_roomselect_layout_background"
         android:id="@+id/layout_room_show"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/home_page_roomselect_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:layout_below="@+id/layout_title">
 
@@ -92,30 +92,44 @@
                 android:text="视图切换" />
 
         </RelativeLayout>
-
-        <HorizontalScrollView
-            android:alpha="0.9"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <FrameLayout
             android:layout_below="@+id/layout_room_top"
-            android:scrollbars="none">
-            <LinearLayout
-                android:layout_marginTop="@dimen/homepage_room_type_margin_top"
-                android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <HorizontalScrollView
+                android:id="@+id/layout_roomselect_normal"
+                android:alpha="0.9"
+                android:background="@color/white"
                 android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent"
-                >
-                <GridView
-                    android:id="@+id/grid"
+                android:layout_height="@dimen/home_page_roomselect_normal_height"
+
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_marginTop="@dimen/homepage_room_type_margin_top"
+                    android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
                     android:layout_width="match_parent"
+                    android:gravity="center_vertical"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:numColumns="auto_fit"
-                    android:stretchMode="spacingWidthUniform" />
-            </LinearLayout>
-        </HorizontalScrollView>
+                    >
+                    <GridView
+                        android:id="@+id/grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:numColumns="auto_fit"
+                        android:stretchMode="spacingWidthUniform" />
+                </LinearLayout>
+            </HorizontalScrollView>
+            <ListView
+                android:visibility="gone"
+                android:divider="@null"
+                android:id="@+id/layout_roomselect_changed_ype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
+        </FrameLayout>
+
     </RelativeLayout>
 
     <RelativeLayout

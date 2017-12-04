@@ -25,8 +25,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="QOS开关"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                />
             <CheckBox
                 android:id="@+id/checkbox_qos_switch"
                 android:layout_width="@dimen/wifi_checkbox_width"
@@ -65,8 +64,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="智能分配"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+               />
 
             <ImageView
                 android:id="@+id/imageview_model_a"
@@ -106,8 +104,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="上网优先"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+               />
 
             <ImageView
                 android:id="@+id/imageview_model_b"
@@ -147,8 +144,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="下载优先"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
+                />
 
             <ImageView
                 android:id="@+id/imageview_model_download"

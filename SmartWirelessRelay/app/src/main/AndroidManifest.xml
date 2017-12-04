@@ -170,7 +170,7 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.lan.LanSettingActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.UpdateImmediatelyActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.UpdateStatusActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.UpdateStatusActivity" />
     </application>
 
 </manifest>

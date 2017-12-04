@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/wireless_relay_item_height"
+    android:layout_height="@dimen/layout_item_content_height"
+    android:minHeight="@dimen/layout_item_content_height"
+    android:paddingLeft="@dimen/layout_content_margin_left_right"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical"
     >
@@ -10,17 +13,22 @@
         android:id="@+id/layout_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/wireless_relay_item_margin_left_right"
-        android:layout_marginRight="@dimen/wireless_relay_item_margin_left_right"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
         android:gravity="center_vertical|left"
-        android:orientation="horizontal">
-
+        >
+        <ImageView
+            android:id="@+id/iamge_item"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/wifi_signal_strength"
+            android:layout_alignParentLeft="true"
+           />
         <LinearLayout
+            android:layout_toLeftOf="@+id/iamge_item_jiami"
+            android:layout_toRightOf="@+id/iamge_item"
+            android:layout_marginLeft="@dimen/arror_right_left_textview_margin_right"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/iamge_item"
             android:orientation="vertical">
 
             <TextView
@@ -29,10 +37,10 @@
                 android:layout_height="0dp"
                 android:layout_weight="2"
                 android:gravity="left"
-                android:paddingLeft="10dp"
+
                 android:text="linkWord"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
 
             <TextView
                 android:id="@+id/encryption_type"
@@ -40,19 +48,20 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:paddingLeft="10dp"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_smallest"
+                />
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/iamge_item"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="end"
-            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/iamge_item_jiami"
+            android:alpha="1"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp" />
+            />
     </RelativeLayout>
 
 

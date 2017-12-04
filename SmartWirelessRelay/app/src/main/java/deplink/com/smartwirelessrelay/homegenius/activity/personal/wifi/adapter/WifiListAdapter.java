@@ -6,12 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 
 /**
  * Created by Administrator on 2017/8/29.
@@ -19,8 +19,12 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDL
 public class WifiListAdapter extends BaseAdapter {
     private static final String TAG = "WifiListAdapter";
     private Context mContext;
-    private List<SSIDList> mData;
+    private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList> mData;
+    //链接参数
+    private String crypt = "";
+    private String encryption = "";
 
+    private int quality = 0;
 
     @Override
     public int getCount() {
@@ -39,7 +43,7 @@ public class WifiListAdapter extends BaseAdapter {
     }
 
 
-    public WifiListAdapter(Context context, List<SSIDList> list) {
+    public WifiListAdapter(Context context, List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList> list) {
         this.mContext = context;
         this.mData = list;
     }
@@ -55,24 +59,42 @@ public class WifiListAdapter extends BaseAdapter {
         ViewHolder vh;
         if (convertView == null) {
             vh = new ViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.wifi_list_item, null);
-            vh.textview_wifi_name = (TextView) convertView.findViewById(R.id.textview_wifi_name);
-            vh.textview_password = (TextView) convertView.findViewById(R.id.textview_password);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.listitem_wireless_relay, null);
+            vh.tv = (TextView) convertView.findViewById(R.id.list_text_show_name);
+            vh.image = (ImageView) convertView.findViewById(R.id.iamge_item);
+            vh.encryption_type = (TextView) convertView.findViewById(R.id.encryption_type);
+            vh.iamge_item_jiami = (ImageView) convertView.findViewById(R.id.iamge_item_jiami);
             convertView.setTag(vh);
         } else {
             vh = (ViewHolder) convertView.getTag();
         }
-
-        vh.textview_wifi_name.setText(mData.get(position).getSSID());
-        vh.textview_password.setText(mData.get(position).getEncryption());
+        encryption=mData.get(position).getEncryption();
+        if(mData.get(position).getQuality().contains("/")){
+            quality=Integer.parseInt(mData.get(position).getQuality().substring(0,mData.get(position).getQuality().indexOf("/")));
+            Log.i(TAG,"quality="+quality);
+        }
+        //wifi信号图片
+        if (!encryption.equalsIgnoreCase("none")) {
+            vh.iamge_item_jiami.setImageResource(R.drawable.wifipassword);
+        }
+        if (quality < 33) {
+            vh.image.setImageLevel(0);
+        } else if (quality >= 33 && quality < 66) {
+            vh.image.setImageLevel(1);
+        } else if (quality >= 66) {
+            vh.image.setImageLevel(2);
+        }
+        vh.tv.setText(mData.get(position).getSSID());
+        vh.encryption_type.setText(mData.get(position).getEncryption());
         return convertView;
     }
 
 
 
     private static class ViewHolder {
-        TextView textview_wifi_name;
-        TextView textview_password;
+        TextView tv;
+        TextView encryption_type;
+        ImageView image;
+        ImageView iamge_item_jiami;
     }
-
 }

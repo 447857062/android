@@ -4,152 +4,133 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.DynamicsActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
 
     <!--mtu-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_mtu"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
         android:layout_below="@+id/layout_topbar"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
-
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textview_mtu_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:text="MTU:"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
-                android:text="MTU"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <EditText
-                android:layout_toRightOf="@+id/textview_mtu_title"
+                android:hint="非必须参数（可不填写）"
+                android:textColorHint="@color/huise"
+                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
                 android:id="@+id/edittext_mtu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="10dp"
-                android:layout_centerVertical="true"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15"
-                android:hint="非必须参数（可以不用填写）"
+                android:layout_toRightOf="@+id/textview_mtu_title"
                 android:background="@null"
+                android:layout_centerVertical="true"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:text=""
                 />
-
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <View
             android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
+            android:background="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     </RelativeLayout>
     <!--dns1-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_dns1"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
         android:layout_below="@+id/layout_mtu"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
-
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textview_dns1_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:text="DNS1:"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
-                android:text="DNS1"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <EditText
-                android:layout_toRightOf="@+id/textview_dns1_title"
+                android:hint="非必须参数（可不填写）"
+                android:textColorHint="@color/huise"
+                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
                 android:id="@+id/edittext_dns1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="10dp"
-                android:layout_centerVertical="true"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15"
-                android:hint="非必须参数（可以不用填写）"
+                android:layout_toRightOf="@+id/textview_dns1_title"
                 android:background="@null"
+                android:layout_centerVertical="true"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:text=""
                 />
-
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <View
             android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
+            android:background="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     </RelativeLayout>
     <!--dns2-->
     <RelativeLayout
+        android:background="@color/white_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_dns2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
         android:layout_below="@+id/layout_dns1"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
-
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_height="@dimen/layout_item_content_height">
         <RelativeLayout
+            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textview_dns2_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:text="DNS2:"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
                 android:layout_centerVertical="true"
-                android:text="DNS2"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15" />
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <EditText
-                android:layout_toRightOf="@+id/textview_dns2_title"
+                android:hint="非必须参数（可不填写）"
+                android:textColorHint="@color/huise"
+                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
                 android:id="@+id/edittext_dns2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="10dp"
-                android:layout_centerVertical="true"
-                android:textColor="@color/text_color_3A3A3A"
-                android:textSize="@dimen/text_size_xhdpi_15"
-                android:hint="非必须参数（可以不用填写）"
+                android:layout_toRightOf="@+id/textview_dns2_title"
                 android:background="@null"
+                android:layout_centerVertical="true"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:text=""
                 />
-
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <View
             android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
+            android:background="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     </RelativeLayout>
 
-    <include
-        android:layout_width="@dimen/last_next_step_layout_width"
-        android:layout_height="@dimen/last_next_step_layout_height"
-        layout="@layout/layout_cancel_save"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="85dp"/>
 </RelativeLayout>

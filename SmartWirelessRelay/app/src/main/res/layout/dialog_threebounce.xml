@@ -20,7 +20,7 @@
         android:id="@+id/textview_msg"
         android:layout_below="@+id/spin_kit"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/text_size_xhdpi_15"
+
         android:textColor="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

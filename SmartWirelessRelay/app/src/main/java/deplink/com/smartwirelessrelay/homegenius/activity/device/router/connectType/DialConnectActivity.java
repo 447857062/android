@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,9 +34,8 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     private EditText edittext_dns;
     private EditText edittext_mtu;
     private EditText edittext_mac;
-    private Button button_cancel;
-    private Button button_save;
     private SDKManager manager;
+    private TextView textview_edit;
     private EventCallback ec;
     private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
@@ -53,6 +51,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
 
     private void initDatas() {
         textview_title.setText("宽带拨号");
+        textview_edit.setText("保存");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -121,8 +120,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -133,8 +131,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
         edittext_dns = (EditText) findViewById(R.id.edittext_dns);
         edittext_mtu = (EditText) findViewById(R.id.edittext_mtu);
         edittext_mac = (EditText) findViewById(R.id.edittext_mac);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
 
     @Override
@@ -154,11 +151,10 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_cancel:
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 String account = edittext_account.getText().toString().trim();
                 String password = edittext_password.getText().toString();
                 String dns = edittext_dns.getText().toString();

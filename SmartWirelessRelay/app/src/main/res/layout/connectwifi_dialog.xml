@@ -7,7 +7,6 @@
     >
     <TextView
         android:id="@+id/textview_unbind_device_type"
-        android:textColor="@color/text_color_3A3A3A"
         android:textSize="18dp"
         android:layout_marginLeft="@dimen/makesure_dialog_text_margin"
         android:layout_marginRight="@dimen/makesure_dialog_text_margin"
@@ -27,9 +26,6 @@
             android:id="@+id/textview_dialog_info"
             android:layout_centerVertical="true"
             android:gravity="center_horizontal"
-
-            android:textColor="@color/text_color_3A3A3A"
-            android:textSize="@dimen/text_size_xhdpi_15"
             android:text="确保连接上路由器提供的wifi,现在跳转到设置wifi界面？"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

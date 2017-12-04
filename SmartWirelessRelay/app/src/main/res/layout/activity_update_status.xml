@@ -29,7 +29,6 @@
         android:visibility="gone"
         android:text="确定"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_xhdpi_15"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/textview_updateing"
         android:layout_marginTop="200dp"

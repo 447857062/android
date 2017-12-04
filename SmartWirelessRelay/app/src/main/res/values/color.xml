@@ -17,7 +17,6 @@
     <color name="page_title_text_color">#F8FAFA</color>
     <color name="blue_add_new_router_title">#2B89F3</color>
     <color name="black_3a3a3a">#3a3a3a</color>
-    <color name="text_color_3A3A3A">#3A3A3A</color>
     <color name="gray_919090">#919090</color>
     <color name="result_view">#b0ffffff</color>
     <color name="text_color_908F8F">#908F8F</color>
@@ -48,7 +47,7 @@
     <color name="huise">#999999</color>
     <color name="input_hint">#99ffffff</color>
     <color name="white_background">#f8f8f8</color>
-    <color name="read_fc5551">#fc5551</color>
+    <color name="read_f55555">#f55555</color>
     <color name="delete_button">#f55555</color>
     <color name="add_device_text_show_explan">#666666</color>
 </resources>

@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -36,9 +35,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
     private static final String TAG = "StaticConnectActivity";
     private TextView textview_title;
     private ImageView image_back;
-    private Button button_cancel;
-    private Button button_save;
-
+    private TextView textview_edit;
     private EditText ip_address;
     private EditText edittext_submask;
     private EditText edittext_getway;
@@ -70,6 +67,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
 
     private void initDatas() {
         textview_title.setText("静态IP");
+        textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(StaticConnectActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -165,16 +163,14 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
     }
 
     private void initViews() {
         op_type = getIntent().getStringExtra(AppConstant.OPERATION_TYPE);
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         ip_address = (EditText) findViewById(R.id.edittext_ip_address);
         edittext_submask = (EditText) findViewById(R.id.edittext_submask);
         edittext_getway = (EditText) findViewById(R.id.edittext_getway);
@@ -194,10 +190,8 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+
+            case R.id.textview_edit:
                 ipaddress = ip_address.getText().toString().trim();
                 submask = edittext_submask.getText().toString().trim();
                 getway = edittext_getway.getText().toString().trim();
