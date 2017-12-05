@@ -68,7 +68,7 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
                 layout_control_number.setVisibility(View.GONE);
                 view_control_base.setVisibility(View.VISIBLE);
                 view_control_number.setVisibility(View.GONE);
-                textview_control_base.setTextColor(getResources().getColor(R.color.title_bg));
+                textview_control_base.setTextColor(getResources().getColor(R.color.title_blue_bg));
                 textview_control_number.setTextColor(getResources().getColor(R.color.huise));
                 break;
             case R.id.layout_title_control_number:
@@ -77,7 +77,7 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
                 view_control_base.setVisibility(View.GONE);
                 view_control_number.setVisibility(View.VISIBLE);
                 textview_control_base.setTextColor(getResources().getColor(R.color.huise));
-                textview_control_number.setTextColor(getResources().getColor(R.color.title_bg));
+                textview_control_number.setTextColor(getResources().getColor(R.color.title_blue_bg));
                 break;
         }
     }

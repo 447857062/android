@@ -19,12 +19,12 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
  * Created by Administrator on 2017/7/25.
  * 长度限制 SN 20  MAC,序列号 12
  */
-public class Aircondition_mode_select_Dialog extends Dialog implements View.OnClickListener {
+public class LockdeviceClearRecordDialog extends Dialog implements View.OnClickListener {
     private Context mContext;
 
 
 
-    public Aircondition_mode_select_Dialog(Context context) {
+    public LockdeviceClearRecordDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
     }
@@ -35,8 +35,9 @@ public class Aircondition_mode_select_Dialog extends Dialog implements View.OnCl
         WindowManager.LayoutParams p = new WindowManager.LayoutParams();
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        p.width = (int) Perfence.dp2px(mContext,283);
-        View view = LayoutInflater.from(mContext).inflate(R.layout.aircondition_mode_select_dialog, null);
+
+        p.width = (int) Perfence.dp2px(mContext,290);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.lock_clear_record_dialog, null);
         setContentView(view, p);
         //初始化界面控件
         initView();
@@ -72,7 +73,7 @@ public class Aircondition_mode_select_Dialog extends Dialog implements View.OnCl
     @Override
     public void show() {
         Window dialogWindow = this.getWindow();
-        dialogWindow.setGravity( Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+        dialogWindow.setGravity( Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         super.show();
 
     }

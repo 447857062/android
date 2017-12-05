@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -38,7 +39,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private QrcodeSmartDevice device;
     private String deviceType;
     private String switchqrcode;
-
+    private TextView textview_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +60,12 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         button_add_device_sure = (Button) findViewById(R.id.button_add_device_sure);
         edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
         image_back = (ImageView) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
     }
 
 
     private void initDatas() {
+
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         //getintent data
@@ -71,24 +74,31 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switchqrcode = getIntent().getStringExtra("switchqrcode");
         //get current room
         currentSelectedRoom = RoomManager.getInstance().getCurrentSelectedRoom();
+
         switch (deviceType) {
             case "SMART_LOCK":
                 edittext_add_device_input_name.setHint("例如:我家的门锁（最多5个字）");
+                textview_title.setText("智能门锁");
                 break;
             case "IRMOTE_V2":
                 edittext_add_device_input_name.setHint("例如:智能遥控（最多5个字）");
+                textview_title.setText("智能遥控");
                 break;
             case "智能空调":
                 edittext_add_device_input_name.setHint("例如:智能空调（最多5个字）");
+                textview_title.setText("智能空调遥控器");
                 break;
             case "智能电视":
                 edittext_add_device_input_name.setHint("例如:智能电视（最多5个字）");
+                textview_title.setText("智能电视遥控器");
                 break;
             case "智能机顶盒遥控":
                 edittext_add_device_input_name.setHint("例如:智能机顶盒遥控（最多5个字）");
+                textview_title.setText("智能机顶盒遥控");
                 break;
             case "智能开关":
                 edittext_add_device_input_name.setHint("例如:智能开关（最多5个字）");
+                textview_title.setText("智能开关");
                 break;
         }
 

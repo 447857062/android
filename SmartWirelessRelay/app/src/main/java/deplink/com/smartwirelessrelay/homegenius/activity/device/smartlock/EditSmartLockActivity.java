@@ -25,6 +25,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 
 public class EditSmartLockActivity extends Activity implements View.OnClickListener, DeviceListener {
 
@@ -35,6 +36,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_select_room;
     private TextView textview_title;
     private TextView textview_edit;
+    private ClearEditText edittext_input_devie_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +68,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         button_delete_device = (Button) findViewById(R.id.button_delete_device);
         layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
+        edittext_input_devie_name = (ClearEditText) findViewById(R.id.edittext_input_devie_name);
     }
 
     @Override
@@ -87,6 +90,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
+               String devciename= edittext_input_devie_name.getText().toString();
                 onBackPressed();
                 break;
             case R.id.layout_select_room:

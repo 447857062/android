@@ -22,6 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.AuthoriseDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.LockdeviceClearRecordDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.PasswordNotsaveDialog;
 
 public class SmartLockActivity extends Activity implements View.OnClickListener, SmartLockListener, AuthoriseDialog.GetDialogAuthtTypeTimeListener {
@@ -43,6 +44,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private boolean isStartFromExperience;
     private boolean saveManagetPasswordExperience;
     private ImageView image_back;
+    private LockdeviceClearRecordDialog clearRecordDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         mSmartLockManager.InitSmartLockManager(this);
         isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         saveManagetPasswordExperience = true;
+        clearRecordDialog=new LockdeviceClearRecordDialog(this);
     }
 
     @Override
@@ -188,7 +191,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.layout_open:
                 //TODO
-
+                clearRecordDialog.show();
 
                 break;
             case R.id.textview_update:

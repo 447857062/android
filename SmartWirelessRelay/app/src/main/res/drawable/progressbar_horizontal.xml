@@ -12,7 +12,7 @@
         <clip>
             <shape>
                 <corners android:radius="8dp" />
-                <solid android:color="@color/title_bg"/>
+                <solid android:color="@color/title_blue_bg"/>
             </shape>
         </clip>
     </item>
@@ -21,7 +21,7 @@
         <clip>
             <shape>
                 <corners android:radius="8dp" />
-                <solid android:color="@color/title_bg"/>
+                <solid android:color="@color/title_blue_bg"/>
             </shape>
         </clip>
     </item>

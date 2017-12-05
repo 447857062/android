@@ -30,7 +30,7 @@
             android:textSize="@dimen/text_size_small"
             android:layout_toRightOf="@+id/textview_smart_lock"
             android:text=""
-            android:textColor="@color/title_bg" />
+            android:textColor="@color/title_blue_bg" />
 
         <TextView
             android:layout_centerVertical="true"

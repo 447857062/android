@@ -615,7 +615,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 frame_devicelist_content_content.setVisibility(View.VISIBLE);
                 view_line_blak_list.setVisibility(View.GONE);
                 view_line_connected_devices.setVisibility(View.VISIBLE);
-                textview_connected_devices.setTextColor(getResources().getColor(R.color.title_bg));
+                textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
                 textview_blak_list.setTextColor(getResources().getColor(R.color.room_type_text));
                 showQueryingDialog();
                 break;
@@ -625,7 +625,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 view_line_blak_list.setVisibility(View.VISIBLE);
                 view_line_connected_devices.setVisibility(View.GONE);
                 textview_connected_devices.setTextColor(getResources().getColor(R.color.room_type_text));
-                textview_blak_list.setTextColor(getResources().getColor(R.color.title_bg));
+                textview_blak_list.setTextColor(getResources().getColor(R.color.title_blue_bg));
                 showQueryingDialog();
                 break;
             case R.id.image_setting:

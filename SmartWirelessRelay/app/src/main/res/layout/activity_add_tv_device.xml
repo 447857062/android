@@ -4,19 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/layout_title_with_back_center_titletext" />
 
-    <EditText
-        android:layout_below="@+id/layout_title"
-        android:id="@+id/edittext_band_name"
+    <RelativeLayout
+        android:layout_marginTop="@dimen/search_band_layout_margintop"
+        android:id="@+id/layout_search_band"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:background="@drawable/band_select_input_layout_bg">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/icon_search_band"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/search_band_icon_marginleft"
+            android:src="@drawable/searchbrand" />
+
+        <EditText
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/icon_search_band"
+            android:id="@+id/edittext_band_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_marginLeft="@dimen/search_band_icon_marginright" />
+    </RelativeLayout>
+
 
     <ListView
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/listview_band"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edittext_band_name">
+        android:layout_below="@+id/layout_search_band">
 
     </ListView>
 </RelativeLayout>

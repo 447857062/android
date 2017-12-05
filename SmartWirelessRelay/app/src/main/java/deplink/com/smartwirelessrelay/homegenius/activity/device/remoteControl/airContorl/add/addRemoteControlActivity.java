@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -16,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryRCCodeResponse;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryTestCodeResponse;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import retrofit2.Call;
@@ -28,7 +29,6 @@ import retrofit2.Response;
 
 public class addRemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener {
     private static final String TAG = "addRCActivity";
-    private TextView textview_show;
     private RelativeLayout layout_device_response;
     private Button button_test;
     private Button button_ng;
@@ -39,6 +39,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setContentView(R.layout.activity_add_remote_control);
         initViews();
         initDatas();
@@ -59,37 +60,28 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
             switch (msg.what){
                 case MSG_SHOW_GET_KT_CODE:
                      code = (QueryTestCodeResponse) msg.obj;
-                    textview_show.setText("遥控器型号:" + code.getValue().get(0).getCodeID());
+
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
                     codeDatas.clear();
 
-                    for (int i = 0; i < code.getValue().size(); i++) {
-                        codeDatas.add(code.getValue().get(i).getCodeData());
-                        textview_show.append("按键编号:" + code.getValue().get(i).getKeyName() + "红外数据:" + code.getValue().get(i).getCodeData() + "\n");
-                    }
+
                     break;
                 case MSG_SHOW_GET_TV_CODE:
                      code = (QueryTestCodeResponse) msg.obj;
-                    textview_show.setText("电视型号:" + code.getValue().get(0).getCodeID());
+
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
                     codeDatas.clear();
-                    for (int i = 0; i < code.getValue().size(); i++) {
-                        codeDatas.add(code.getValue().get(i).getCodeData());
-                        textview_show.append("电视按键编号:" + code.getValue().get(i).getKeyName() + "电视红外数据:" + code.getValue().get(i).getCodeData() + "\n");
-                    }
+
                     break;
                 case MSG_SHOW_GET_IPTV_CODE:
                      code = (QueryTestCodeResponse) msg.obj;
-                    textview_show.setText("机顶盒遥控:" + code.getValue().get(0).getCodeID());
+
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
                     codeDatas.clear();
-                    for (int i = 0; i < code.getValue().size(); i++) {
-                        codeDatas.add(code.getValue().get(i).getCodeData());
-                        textview_show.append("机顶盒遥控按键编号:" + code.getValue().get(i).getKeyName() + "机顶盒遥控红外数据:" + code.getValue().get(i).getCodeData() + "\n");
-                    }
+
                     break;
                 case MSG_SEND_CODE:
                     if(currentTestCodeIndex<codeDatas.size()){
@@ -169,7 +161,6 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
-        textview_show = (TextView) findViewById(R.id.textview_show);
         layout_device_response = (RelativeLayout) findViewById(R.id.layout_device_response);
         button_test = (Button) findViewById(R.id.button_test);
         button_ng = (Button) findViewById(R.id.button_ng);
@@ -198,6 +189,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
                 break;
             case R.id.button_ng:
                 currentTestCodeIndex=0;
+                layout_device_response.setVisibility(View.GONE);
                 break;
             case R.id.button_ok:
                 Log.i(TAG, "下载码表 type="+type+"brandId=" + brandId+"controlId="+controlId);
@@ -257,8 +249,6 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
                 layout_device_response.setVisibility(View.VISIBLE);
                 //发送测试码
                 startSend();
-
-
                 break;
         }
     }

@@ -14,12 +14,12 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.SecurityPasswordEditText;
 
 /**
@@ -28,8 +28,8 @@ import deplink.com.smartwirelessrelay.homegenius.view.edittext.SecurityPasswordE
 public class AuthoriseDialog extends Dialog implements View.OnClickListener ,TextView.OnEditorActionListener{
     private static final String TAG = "AuthoriseDialog";
     private Context mContext;
-    private LinearLayout linelayout_select_auth_type;
-    private LinearLayout linelayout_auth_type_time_limit;
+    private RelativeLayout linelayout_select_auth_type;
+    private RelativeLayout linelayout_auth_type_time_limit;
 
     private GetDialogAuthtTypeTimeListener mGetDialogAuthtTypeTimeListener;
 
@@ -40,12 +40,12 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
     /**
      * 单次授权的线性布局
      */
-    private LinearLayout linelayout_auth_type_once;
+    private RelativeLayout linelayout_auth_type_once;
     /**
      * 永久授权的线性布局
      *
      */
-    private LinearLayout linelayout_auth_type_permanent;
+    private RelativeLayout linelayout_auth_type_permanent;
     /**
      * 对话框标题
      */
@@ -61,9 +61,9 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
     private TextView textview_current_auth_type;
 
 
-    private LinearLayout linelayout_time_limit_2_hours;
-    private LinearLayout linelayout_time_limit_12_hours;
-    private LinearLayout linelayout_time_limit_custom;
+    private RelativeLayout linelayout_time_limit_2_hours;
+    private RelativeLayout linelayout_time_limit_12_hours;
+    private RelativeLayout linelayout_time_limit_custom;
     private String currentAuthType;
     private String timeLimitAuthTypeTime;
 
@@ -82,10 +82,8 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        int screenWidth = dm.widthPixels;
-        int screenHeigh = dm.heightPixels;
-        p.height = (int) (screenHeigh * 0.35);
-        p.width = (int) (screenWidth * 0.9);
+       // p.height = (int) Perfence.dp2px(mContext,180);
+        p.width = (int) Perfence.dp2px(mContext,290);
         View view;
 
         view = LayoutInflater.from(mContext).inflate(R.layout.authorise_dialog, null);
@@ -149,20 +147,20 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
     private void initView() {
 
         edt_pwd = (SecurityPasswordEditText) findViewById(R.id.edt_pwd);
-        linelayout_select_auth_type = (LinearLayout) findViewById(R.id.linelayout_select_auth_type);
-        linelayout_auth_type_time_limit = (LinearLayout) findViewById(R.id.linelayout_auth_type_time_limit);
+        linelayout_select_auth_type = (RelativeLayout) findViewById(R.id.linelayout_select_auth_type);
+        linelayout_auth_type_time_limit = (RelativeLayout) findViewById(R.id.linelayout_auth_type_time_limit);
         layout_content_one = (RelativeLayout) findViewById(R.id.layout_content_one);
         layout_content_two = (RelativeLayout) findViewById(R.id.layout_content_two);
         layout_content_three = (RelativeLayout) findViewById(R.id.layout_content_three);
 
         textview_title = (TextView) findViewById(R.id.textview_title);
         iamgeview_delete = (ImageView) findViewById(R.id.iamgeview_delete);
-        linelayout_auth_type_once = (LinearLayout) findViewById(R.id.linelayout_auth_type_once);
-        linelayout_auth_type_permanent = (LinearLayout) findViewById(R.id.linelayout_auth_type_permanent);
+        linelayout_auth_type_once = (RelativeLayout) findViewById(R.id.linelayout_auth_type_once);
+        linelayout_auth_type_permanent = (RelativeLayout) findViewById(R.id.linelayout_auth_type_permanent);
         textview_current_auth_type = (TextView) findViewById(R.id.textview_current_auth_type);
-        linelayout_time_limit_2_hours = (LinearLayout) findViewById(R.id.linelayout_time_limit_2_hours);
-        linelayout_time_limit_12_hours = (LinearLayout) findViewById(R.id.linelayout_time_limit_12_hours);
-        linelayout_time_limit_custom = (LinearLayout) findViewById(R.id.linelayout_time_limit_custom);
+        linelayout_time_limit_2_hours = (RelativeLayout) findViewById(R.id.linelayout_time_limit_2_hours);
+        linelayout_time_limit_12_hours = (RelativeLayout) findViewById(R.id.linelayout_time_limit_12_hours);
+        linelayout_time_limit_custom = (RelativeLayout) findViewById(R.id.linelayout_time_limit_custom);
         edittext_time_limit_custom = (EditText) findViewById(R.id.edittext_time_limit_custom);
         edittext_time_limit_custom.setOnEditorActionListener(this);
     }
