@@ -7,6 +7,8 @@
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity">
     <RelativeLayout
         android:id="@+id/layout_title"
+        android:background="@color/title_bg"
+        android:alpha="0.9"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height">
 

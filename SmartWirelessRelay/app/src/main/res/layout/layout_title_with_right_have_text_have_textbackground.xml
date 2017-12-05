@@ -34,12 +34,14 @@
             android:textSize="@dimen/layout_top_bar_item_text_size" />
         <TextView
             android:id="@+id/textview_edit"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
+            android:minWidth="48dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="right|center_vertical"
             android:text="编辑"
+
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_small" />
 

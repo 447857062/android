@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -67,10 +66,9 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
      * wifi名称密码设置成功，后面要重启了
      */
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
-    private Button button_cancel;
-    private Button button_save;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
+    private TextView textview_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +81,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
 
     private void initDatas() {
         textview_title.setText("2.4G WIFI设置");
+        textview_edit.setText("保存");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -294,9 +293,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         layout_bandwidth.setOnClickListener(this);
         image_back.setOnClickListener(this);
         layout_wifiname_setting.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
-        button_save.setText("设置");
+        textview_edit.setOnClickListener(this);
     }
 
 
@@ -319,8 +316,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         checkbox_hide_net = (CheckBox) findViewById(R.id.checkbox_hide_net);
         layout_wireless_wifi = (RelativeLayout) findViewById(R.id.layout_wireless_wifi);
         layout_hide_net = (RelativeLayout) findViewById(R.id.layout_hide_net);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
 
 
@@ -357,10 +353,8 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+
+            case R.id.textview_edit:
                 if (isUserLogin && routerDevice != null && routerDevice.getOnline()) {
                     isSetWifi2G = true;
                     Wifi_2G wifi_2g=new Wifi_2G();

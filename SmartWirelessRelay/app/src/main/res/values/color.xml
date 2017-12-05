@@ -45,9 +45,11 @@
     <color name="room_type_text">#333333</color>
     <color name="white">#ffffff</color>
     <color name="huise">#999999</color>
+    <color name="seekbar_horiz">#f1f1f1</color>
+    <color name="aircondition_mode">#666666</color>
     <color name="input_hint">#99ffffff</color>
     <color name="white_background">#f8f8f8</color>
-    <color name="read_f55555">#f55555</color>
     <color name="delete_button">#f55555</color>
     <color name="add_device_text_show_explan">#666666</color>
+    <color name="line_clolor">#cccccc</color>
 </resources>

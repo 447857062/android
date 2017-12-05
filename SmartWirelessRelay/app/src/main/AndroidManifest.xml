@@ -109,9 +109,6 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ConfigWifiGetwayActivity"
-            android:screenOrientation="portrait" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity" />
