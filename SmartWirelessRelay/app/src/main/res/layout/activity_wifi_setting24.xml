@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
 
     <!--无线WIFI-->
     <RelativeLayout
@@ -365,11 +365,5 @@
             android:layout_alignParentBottom="true"
             android:src="@drawable/connect_setting_line" />
     </RelativeLayout>
-    <include
-        android:layout_width="208dp"
-        android:layout_height="35dp"
-        layout="@layout/layout_cancel_save"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="85dp"/>
+
 </RelativeLayout>
