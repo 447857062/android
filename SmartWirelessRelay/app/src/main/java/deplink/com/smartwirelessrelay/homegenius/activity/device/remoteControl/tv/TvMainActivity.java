@@ -3,7 +3,6 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,12 +11,16 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class TvMainActivity extends Activity implements View.OnClickListener {
     private ImageView image_back;
-    private Button button_control_base;
-    private Button button_control_number;
     private RelativeLayout layout_control_base;
     private RelativeLayout layout_control_number;
     private TextView textview_title;
     private ImageView image_setting;
+    private RelativeLayout layout_title_control_base;
+    private RelativeLayout layout_title_control_number;
+    private View view_control_base;
+    private View view_control_number;
+    private TextView textview_control_base;
+    private TextView textview_control_number;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,18 +38,22 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private void initEvents() {
         image_back.setOnClickListener(this);
         image_setting.setOnClickListener(this);
-        button_control_base.setOnClickListener(this);
-        button_control_number.setOnClickListener(this);
+        layout_title_control_base.setOnClickListener(this);
+        layout_title_control_number.setOnClickListener(this);
     }
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_setting= (ImageView) findViewById(R.id.image_setting);
         image_back = (ImageView) findViewById(R.id.image_back);
-        button_control_base = (Button) findViewById(R.id.button_control_base);
-        button_control_number = (Button) findViewById(R.id.button_control_number);
+        layout_title_control_base = (RelativeLayout) findViewById(R.id.layout_title_control_base);
+        layout_title_control_number = (RelativeLayout) findViewById(R.id.layout_title_control_number);
         layout_control_base = (RelativeLayout) findViewById(R.id.layout_control_base);
         layout_control_number = (RelativeLayout) findViewById(R.id.layout_control_number);
+        view_control_base =  findViewById(R.id.view_control_base);
+        view_control_number =  findViewById(R.id.view_control_number);
+        textview_control_base = (TextView) findViewById(R.id.textview_control_base);
+        textview_control_number = (TextView) findViewById(R.id.textview_control_number);
     }
 
     @Override
@@ -57,13 +64,21 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.image_setting:
                 break;
-            case R.id.button_control_base:
+            case R.id.layout_title_control_base:
                 layout_control_base.setVisibility(View.VISIBLE);
                 layout_control_number.setVisibility(View.GONE);
+                view_control_base.setVisibility(View.VISIBLE);
+                view_control_number.setVisibility(View.GONE);
+                textview_control_base.setTextColor(getResources().getColor(R.color.title_bg));
+                textview_control_number.setTextColor(getResources().getColor(R.color.huise));
                 break;
-            case R.id.button_control_number:
+            case R.id.layout_title_control_number:
                 layout_control_base.setVisibility(View.GONE);
                 layout_control_number.setVisibility(View.VISIBLE);
+                view_control_base.setVisibility(View.GONE);
+                view_control_number.setVisibility(View.VISIBLE);
+                textview_control_base.setTextColor(getResources().getColor(R.color.huise));
+                textview_control_number.setTextColor(getResources().getColor(R.color.title_bg));
                 break;
         }
     }
