@@ -428,7 +428,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.read_f55555)));
+                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.delete_button)));
                 deleteItem.setWidth((int) Perfence.dp2px(RouterMainActivity.this, 70));
                 //  deleteItem.setBackground(R.layout.listview_deleteitem_layout);
                 // set item width
@@ -508,7 +508,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 SwipeMenuItem openItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                openItem.setBackground(new ColorDrawable(getResources().getColor(R.color.read_f55555)));
+                openItem.setBackground(new ColorDrawable(getResources().getColor(R.color.delete_button)));
                 // set item width
                 openItem.setWidth((int) Perfence.dp2px(RouterMainActivity.this, 70));
                 // set item title

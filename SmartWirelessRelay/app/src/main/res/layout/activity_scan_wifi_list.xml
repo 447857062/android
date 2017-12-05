@@ -43,28 +43,29 @@
 
     <ListView
         android:id="@+id/listview_wifi_list"
-        android:layout_above="@+id/layout_reload_wifilist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
+        android:layout_above="@+id/layout_reload_wifilist"
         android:layout_below="@+id/layout_select_wifi"
+        android:divider="@null"
         android:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/layout_reload_wifilist"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/wifirelay_reload_wifilist_background_height">
+        android:layout_height="@dimen/wifirelay_reload_wifilist_background_height"
+        android:layout_alignParentBottom="true">
+
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/input_layout_marginleft_right"
             android:layout_marginRight="@dimen/input_layout_marginleft_right"
             android:layout_marginTop="@dimen/wifirelay_reload_wifilist_button_margintop"
-            android:layout_centerHorizontal="true"
-            android:layout_width="match_parent"
-            android:textColor="@color/white"
-            android:layout_height="@dimen/layout_item_content_height"
             android:background="@drawable/wifirelay_reload_button_background"
             android:gravity="center_horizontal|center_vertical"
-            android:text="重新扫描" />
+            android:text="重新扫描"
+            android:textColor="@color/white" />
     </RelativeLayout>
 </RelativeLayout>

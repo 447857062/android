@@ -2,24 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:background="@android:color/darker_gray"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:minHeight="@dimen/layout_item_content_height"
+    >
 
 
     <TextView
+        android:background="@color/white_background"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/room_type_text"
         android:id="@+id/textview_band_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp" />
+        />
 
     <View
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/textview_band_name"
+        android:background="@color/line_clolor"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="1dp"/>
 </RelativeLayout>

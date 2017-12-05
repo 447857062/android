@@ -216,6 +216,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 mPowerPopMenu.setIsShowIcon(false);
                 mPowerPopMenu.setListResource(mList);
                 mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
+                mPowerPopMenu.setPopMenuBackgroundResource(R.drawable.nextmenu);
                 mPowerPopMenu.show(v);
                 break;
             case R.id.layout_rooms:

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+   <!-- <&#45;&#45;这是进度条背景&ndash;&gt;-->
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="8dp" />
+            <solid android:color="@color/seekbar_horiz"/>
+        </shape>
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape>
+                <corners android:radius="8dp" />
+                <solid android:color="@color/title_bg"/>
+            </shape>
+        </clip>
+    </item>
+  <!--  <&#45;&#45;这是第1进度条背景&ndash;&gt;-->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="8dp" />
+                <solid android:color="@color/title_bg"/>
+            </shape>
+        </clip>
+    </item>
+</layer-list>

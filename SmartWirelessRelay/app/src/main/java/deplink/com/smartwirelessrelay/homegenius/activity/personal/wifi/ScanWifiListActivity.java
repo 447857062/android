@@ -1,7 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +30,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private ListView listview_wifi_list;
     private WifiListAdapter mWifiListAdapter;
     private ImageView image_back;
+    private TextView textview_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
 
     private void initViews() {
         listview_wifi_list = (ListView) findViewById(R.id.listview_wifi_list);
+        textview_title = (TextView) findViewById(R.id.textview_title);
         image_back = (ImageView) findViewById(R.id.image_back);
     }
 
@@ -58,7 +60,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
 
     private List<SSIDList> mDatas;
     private void initDatas() {
-
+        textview_title.setText("配置WiFi网关");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         mDatas = new ArrayList<>();
@@ -123,12 +125,8 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
             setCmd.setApCliWPAPSK("");
             mDeviceManager.setWifiRelay(setCmd);
         }else{
-            Intent intent=new Intent(ScanWifiListActivity.this,ConfigWifiGetwayActivity.class);
-            intent.putExtra(setApCliSsid,setApCliSsid);
-            intent.putExtra(setApCliEncrypType,setApCliEncrypType);
-            intent.putExtra(setApCliAuthMode,setApCliAuthMode);
-            intent.putExtra(setChannel,setChannel);
-            startActivity(intent);
+            //TODO 弹框提示连接
+
         }
 
     }
