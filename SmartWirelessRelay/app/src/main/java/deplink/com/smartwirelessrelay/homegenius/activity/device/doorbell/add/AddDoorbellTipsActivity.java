@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.add;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,28 +9,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 
-public class ApModeActivity extends Activity implements View.OnClickListener{
+public class AddDoorbellTipsActivity extends Activity implements View.OnClickListener {
     private ImageView image_back;
     private TextView textview_title;
     private Button button_next_step;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ap_mode);
+        setContentView(R.layout.activity_add_doorbell_tips);
         initViews();
         initEvents();
         initDatas();
     }
 
-    private void initDatas() {
-        textview_title.setText("启动AP模式");
-    }
     private void initEvents() {
         image_back.setOnClickListener(this);
         button_next_step.setOnClickListener(this);
+    }
+
+    private void initDatas() {
+        textview_title.setText("连接门铃热点");
     }
 
     private void initViews() {
@@ -46,9 +45,7 @@ public class ApModeActivity extends Activity implements View.OnClickListener{
                 onBackPressed();
                 break;
             case R.id.button_next_step:
-                Intent intent=new Intent(this,AddDeviceNameActivity.class);
-                intent.putExtra("DeviceType", AppConstant.DEVICES.TYPE_MENLING);
-                startActivity(intent);
+               startActivity(new Intent(this,WifipasswordInputActivity.class));
                 break;
         }
     }

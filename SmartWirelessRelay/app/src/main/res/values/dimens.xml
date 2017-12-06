@@ -157,9 +157,11 @@
     <!--智能门铃设备-->
     <!--size-->
     <dimen name="add_doorbell_imageview_height">240dp</dimen>
+    <dimen name="doorbell_mainview_imageview_height">187dp</dimen>
 
     <!---->
     <dimen name="add_doorbell_buttom_button_marginbuttom">58dp</dimen>
+    <dimen name="doorbell_mainview_button_margintop">58dp</dimen>
     <dimen name="add_doorbell_buttom_button_width">283dp</dimen>
     <dimen name="add_doorbell_buttom_button_height">44dp</dimen>
     <dimen name="add_doorbell_tips_textview_padding_left">60dp</dimen>

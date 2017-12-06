@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.add;
 
 import android.app.Activity;
 import android.content.Intent;

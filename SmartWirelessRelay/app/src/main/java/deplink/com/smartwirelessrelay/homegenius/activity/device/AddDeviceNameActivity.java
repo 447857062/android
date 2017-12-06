@@ -20,12 +20,17 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 public class AddDeviceNameActivity extends Activity implements DeviceListener, View.OnClickListener {
     private static final String TAG = "AddDeviceNameActivity";
@@ -41,6 +46,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private String deviceType;
     private String switchqrcode;
     private TextView textview_title;
+    private DoorbeelManager mDoorbeelManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +73,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
 
     private void initDatas() {
-
+        mDoorbeelManager = DoorbeelManager.getInstance();
+        mDoorbeelManager.InitDoorbeelManager(this);
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         //getintent data
@@ -116,6 +124,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
     private static final int MSG_ADD_DEVICE_RESULT = 100;
     private static final int MSG_FINISH_ACTIVITY = 101;
+    private static final int MSG_UPDATE_ROOM_FAIL = 102;
+    private static final int MSG_ADD_DOORBEEL_FAIL = 103;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -134,6 +144,12 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 case MSG_FINISH_ACTIVITY:
                     startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
                     break;
+                case MSG_UPDATE_ROOM_FAIL:
+                    Toast.makeText(AddDeviceNameActivity.this, "更新智能门铃所在房间失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case MSG_ADD_DOORBEEL_FAIL:
+                    Toast.makeText(AddDeviceNameActivity.this, "添加智能门铃失败", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };
@@ -143,6 +159,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
     }
+
     private String deviceName;
     private Room currentSelectedRoom;
 
@@ -341,18 +358,76 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         });
                         break;
                     case AppConstant.DEVICES.TYPE_MENLING:
-                      //TODO
-                        break;
-                    default:
-                        break;
+                        //TODO
+                        SmartDev doorbeelDev = new SmartDev();
+                        doorbeelDev.setUid("testuid智能门铃");
+                        doorbeelDev.setType("智能门铃");
+                        mDoorbeelManager.saveDoorbeel(doorbeelDev, new Observer() {
+
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(@NonNull Object o) {
+                                if ((boolean) o) {
+                                    if (deviceName.equals("")) {
+                                        deviceName = "智能门铃";
+                                    }
+                                    mDoorbeelManager.updateDeviceInWhatRoom(currentSelectedRoom, "testuid智能门铃", deviceName, new Observer() {
+                                        @Override
+                                        public void onSubscribe(@NonNull Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(@NonNull Object o) {
+                                            if ((boolean) o) {
+                                                startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                                            } else {
+                                                Message msg = Message.obtain();
+                                                msg.what = MSG_UPDATE_ROOM_FAIL;
+                                                mHandler.sendMessage(msg);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(@NonNull Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+                                } else {
+                                    Message msg = Message.obtain();
+                                    msg.what = MSG_ADD_DOORBEEL_FAIL;
+                                    mHandler.sendMessage(msg);
+                                }
+
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+
+                        });
                 }
+                        break;
+                    case R.id.image_back:
+                        onBackPressed();
+                        break;
 
-
-                break;
-            case R.id.image_back:
-                onBackPressed();
-                break;
-
+                }
         }
     }
-}

@@ -23,6 +23,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -146,6 +147,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             break;
                         case "智能开关":
                            // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));
+                            break;
+                        case "智能门铃":
+                            startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
                             break;
                     }
                 } else {
