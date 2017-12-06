@@ -3,52 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="1"
-    android:background="@drawable/addtoblack_dialog_background"
-    >
+    android:background="@drawable/addtoblack_dialog_background">
+
     <TextView
         android:id="@+id/textview_unbind_device_type"
-        android:textSize="18dp"
-        android:paddingLeft="34dp"
-        android:paddingRight="34dp"
-
-        android:layout_centerHorizontal="true"
-        android:gravity="center_vertical|left"
-        android:layout_marginTop="35dp"
-        android:text="您将解绑路由器"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:textColor="@color/huise"
+        android:textSize="@dimen/layout_top_bar_item_text_size" />
+
     <TextView
         android:id="@+id/textivew_msg"
+        android:layout_below="@+id/textview_unbind_device_type"
         android:gravity="center_vertical|center_horizontal"
         android:layout_width="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/layout_item_content_height" />
+
     <RelativeLayout
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25dp"
+        android:layout_below="@+id/textivew_msg"
+        android:layout_marginTop="@dimen/wifirelay_connect_button_margintop"
         android:layout_width="match_parent"
-        android:layout_marginLeft="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/router_wifirelay_connectdialogs_button_height"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right">
+
         <Button
             android:id="@+id/btn_cancel"
-            android:layout_width="75dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/dialog_sure_cancel_button"
+            android:layout_width="@dimen/router_wifirelay_connectdialogs_button_width"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/wifirelay_connect_button_ng_bg"
             android:gravity="center_vertical|center_horizontal"
             android:text="取消"
-            android:layout_alignParentLeft="true"
-            android:textColor="@color/white"
+            android:textColor="@color/title_blue_bg"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/btn_sure"
+            android:layout_width="@dimen/router_wifirelay_connectdialogs_button_width"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_width="75dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/dialog_sure_cancel_button"
+            android:layout_centerVertical="true"
+            android:background="@drawable/wifirelay_connect_button_yes_bg"
             android:gravity="center_vertical|center_horizontal"
             android:text="确认"
             android:textColor="@color/white"

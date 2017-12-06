@@ -121,7 +121,7 @@
 
     </RelativeLayout>
     <Button
-        android:background="@drawable/button_radius22_bg_blue_background"
+        android:background="@drawable/radius22_bg_blue_background"
         android:layout_marginTop="@dimen/adddevice_surebutton_margintop"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/layout_getway_select"

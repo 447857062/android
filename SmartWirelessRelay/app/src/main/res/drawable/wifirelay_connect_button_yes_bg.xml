@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle"
+    android:useLevel="false">
+    <!--圆角弧度-->
+    <corners android:radius="@dimen/router_wifirelay_connect_button_ridus"/>
+    <!-- 实心 -->
+    <solid android:color="@color/title_blue_bg"/>
+
+    <size
+        android:height="@dimen/router_wifirelay_connectdialogs_button_height"/>
+</shape>

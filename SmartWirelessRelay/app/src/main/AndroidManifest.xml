@@ -168,6 +168,9 @@
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.UpdateImmediatelyActivity" />
         <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.UpdateStatusActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.AddDoorbellTipsActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.WifipasswordInputActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.ApModeActivity"></activity>
     </application>
 
 </manifest>

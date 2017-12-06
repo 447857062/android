@@ -48,9 +48,6 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
         int screenHeigh = dm.heightPixels;
         p.height = (int)(screenHeigh*0.25);
         p.width = (int)(screenWidth*0.9);
-      //  p.height = (int) (Perfence.dp2px(getContext(), mContext.getResources().getDimension(R.dimen.makesure_dialog_height)));
-      //  p.width = (int) (Perfence.dp2px(getContext(), mContext.getResources().getDimension(R.dimen.makesure_dialog_width)));
-
         View view = LayoutInflater.from(mContext).inflate(R.layout.makesure_dialog, null);
         setContentView(view, p);
         //初始化界面控件

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
+
+    <View
+        android:id="@+id/view_mode_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/view_mode_menu"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/nextmenu" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textview_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="编辑" />
+
+            <View
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/view_line_edit"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/textview_edit"
+                android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                android:background="@color/huise"
+                 />
+
+            <TextView
+                android:id="@+id/textview_quick_learn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_line_edit"
+                android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="快速学习" />
+
+            <View
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/view_line_quick_learn"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/textview_quick_learn"
+                android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                android:background="@color/huise" />
+
+            <TextView
+                android:id="@+id/textview_hand_learn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_line_quick_learn"
+                android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="手动学习" />
+            <View
+                android:id="@+id/view_line_hand_learn"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/textview_hand_learn"
+                android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                android:background="@color/white" />
+        </RelativeLayout>
+    </FrameLayout>
+
+
+</RelativeLayout>

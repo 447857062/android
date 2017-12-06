@@ -14,6 +14,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.AddDoorbellTipsActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
@@ -106,6 +107,9 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
+                break;
+            case AppConstant.DEVICES.TYPE_MENLING:
+                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddDoorbellTipsActivity.class));
                 break;
             default:
                 //智能门锁，等没有在case中的设备

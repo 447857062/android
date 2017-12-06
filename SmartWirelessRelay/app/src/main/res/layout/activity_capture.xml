@@ -4,41 +4,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
     <SurfaceView
         android:id="@+id/preview_view"
-        android:background="@color/transparent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:background="@color/transparent" />
+
+        <deplink.com.smartwirelessrelay.homegenius.qrcode.ViewfinderView
+            android:id="@+id/viewfinder_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
 
     <TextView
         android:id="@+id/textview_show_scan_explan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="请将扫描框对准设备或者产品包装上的二维码"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/scan_view_textview_margintop"
+        android:text="请将扫描框对准设备或者产品包装上的二维码"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_small" />
-    <deplink.com.smartwirelessrelay.homegenius.qrcode.ViewfinderView
-        android:id="@+id/viewfinder_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/adddevice_qrcode_capture_buttom_cancel_marginbuttom"
-            android:layout_marginLeft="@dimen/input_layout_marginleft_right"
-            android:layout_marginRight="@dimen/input_layout_marginleft_right"
-            android:id="@id/textview_cancel"
-            android:text="取消"
-            android:background="@drawable/qrcode_cancel_button_background"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_top_bar_item_text_size"
-            android:layout_width="match_parent"
-            android:gravity="center_horizontal|center_vertical"
-            android:layout_height="@dimen/layout_item_content_height" />
+
+    <TextView
+        android:id="@id/textview_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/adddevice_qrcode_capture_buttom_cancel_marginbuttom"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:background="@drawable/qrcode_cancel_button_background"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="取消"
+        android:textColor="@color/white"
+        android:textSize="@dimen/layout_top_bar_item_text_size" />
 
 </RelativeLayout>
 

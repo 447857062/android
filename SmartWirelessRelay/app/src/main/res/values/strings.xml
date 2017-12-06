@@ -20,6 +20,7 @@
     <string name="add_wifi_select_btn2">配置设备</string>
     <string name="change">修改</string>
     <string name="title_activity_forget_password">Sign in</string>
+    <string name="doorbell_add_tips_2">WIFI以"EIIE"或"SmartBell"开头</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

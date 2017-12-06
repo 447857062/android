@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,10 +40,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayMan
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.adapter.BaseRecyclerViewAdapter;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.powerpopmenu.PowerPopMenu;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.powerpopmenu.PowerPopMenuModel;
-import deplink.com.smartwirelessrelay.homegenius.view.popmenu.utils.ToastUtils;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -112,13 +108,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
         mRoomTypes.addAll(mRoomManager.getRoomTypes());
-        mList = new ArrayList<>();
-        PowerPopMenuModel item ;
-        for(int i=0;i<mRoomTypes.size();i++){
-            item = new PowerPopMenuModel();
-            item.text =mRoomTypes.get(i);
-            mList.add(item);
-        }
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
         //使用数据库中的数据
@@ -195,16 +184,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         //TODO 初始化设备列表
 
     }
-    private PowerPopMenu mPowerPopMenu;
-    private class OnItemClickLis implements BaseRecyclerViewAdapter.OnItemClickListener {
-
-        @Override
-        public void onItemClick(View view, int position) {
-            ToastUtils.showMessage(DevicesActivity.this, mList.get(position).text);
-            mPowerPopMenu.dismiss();
-        }
-    }
-    private List<PowerPopMenuModel> mList;
+    private DeviceAtRoomDialog roomTypeDialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -212,12 +192,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 startActivity(new Intent(this, SmartHomeMainActivity.class));
                 break;
             case R.id.layout_select_room_type:
-                mPowerPopMenu = new PowerPopMenu(this, LinearLayoutManager.VERTICAL, PowerPopMenu.POP_UP_TO_DOWN);
-                mPowerPopMenu.setIsShowIcon(false);
-                mPowerPopMenu.setListResource(mList);
-                mPowerPopMenu.setOnItemClickListener(new OnItemClickLis());
-                mPowerPopMenu.setPopMenuBackgroundResource(R.drawable.nextmenu);
-                mPowerPopMenu.show(v);
+                roomTypeDialog=new DeviceAtRoomDialog(this,mRoomTypes);
+                roomTypeDialog.show();
                 break;
             case R.id.layout_rooms:
                 startActivity(new Intent(this, RoomActivity.class));

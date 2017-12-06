@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.util.permission.PerUtils;
 
 
@@ -239,18 +240,21 @@ public final class CameraManager {
             }
             return null;
         }
-        int width = screenResolution.x * 3 / 4;
-        if (width < MIN_FRAME_WIDTH) {
+     //   int width = screenResolution.x * 3 / 4;
+       int width =(int) Perfence.dp2px(mContext,250);
+
+       /* if (width < MIN_FRAME_WIDTH) {
             width = MIN_FRAME_WIDTH;
         } else if (width > MAX_FRAME_WIDTH) {
             width = MAX_FRAME_WIDTH;
-        }
-        int height = screenResolution.y * 3 / 4;
-        if (height < MIN_FRAME_HEIGHT) {
+        }*/
+       // int height = screenResolution.y * 3 / 4;
+        int height =(int) Perfence.dp2px(mContext,250);
+       /* if (height < MIN_FRAME_HEIGHT) {
             height = MIN_FRAME_HEIGHT;
         } else if (height > MAX_FRAME_HEIGHT) {
             height = MAX_FRAME_HEIGHT;
-        }
+        }*/
         int leftOffset = (screenResolution.x - width) / 2;
         int topOffset = (screenResolution.y - height) / 2;
         framingRect2 = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);

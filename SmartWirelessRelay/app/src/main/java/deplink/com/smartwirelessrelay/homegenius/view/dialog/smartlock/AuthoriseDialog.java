@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view.dialog;
+package deplink.com.smartwirelessrelay.homegenius.view.dialog.smartlock;
 
 import android.app.Activity;
 import android.app.Dialog;

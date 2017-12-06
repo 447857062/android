@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/devices_grid_device_icon_width_height"
     android:layout_height="@dimen/devices_grid_device_icon_width_height"
-    android:background="@drawable/adddevicepage_device_background"
+    android:background="@drawable/radius4_white_background"
     android:minHeight="@dimen/devices_grid_device_icon_width_height"
     android:minWidth="@dimen/devices_grid_device_icon_width_height">
 

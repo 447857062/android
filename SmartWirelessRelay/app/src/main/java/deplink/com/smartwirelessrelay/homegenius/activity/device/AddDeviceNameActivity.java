@@ -22,6 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -99,6 +100,10 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             case "智能开关":
                 edittext_add_device_input_name.setHint("例如:智能开关（最多5个字）");
                 textview_title.setText("智能开关");
+                break;
+            case AppConstant.DEVICES.TYPE_MENLING:
+                edittext_add_device_input_name.setHint("例如:智能门铃（最多5个字）");
+                textview_title.setText("智能门铃");
                 break;
         }
 
@@ -266,6 +271,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             deviceName = "智能机顶盒遥控";
                         }
                         break;
+                    case AppConstant.DEVICES.TYPE_MENLING:
+                        if (deviceName.equals("")) {
+                            deviceName = "智能门铃";
+                        }
+                        break;
                 }
                 //TODO 调试
                 if (device == null) {
@@ -329,6 +339,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                                 mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, "智能机顶盒遥控序列号001", deviceName);
                             }
                         });
+                        break;
+                    case AppConstant.DEVICES.TYPE_MENLING:
+                      //TODO
                         break;
                     default:
                         break;

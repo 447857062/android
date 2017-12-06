@@ -36,6 +36,7 @@
             android:scaleType="centerInside"
             android:id="@+id/image_setting"
             android:layout_width="48dp"
+            android:paddingLeft="5dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

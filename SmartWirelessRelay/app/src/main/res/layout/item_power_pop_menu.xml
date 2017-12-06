@@ -39,8 +39,8 @@
                 android:layout_marginLeft="7dip"
                 android:layout_toRightOf="@id/iv_icon"
                 android:text="text"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"/>
         </RelativeLayout>
 
         <View
@@ -49,14 +49,14 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:background="#EEEEEE"/>
+            android:background="@color/huise"/>
     </LinearLayout>
 
     <View
         android:id="@+id/h_line"
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
-        android:layout_marginTop="0dp"
-        android:background="#EEEEEE"/>
+        android:layout_marginTop="15dp"
+        android:background="@color/huise"/>
 
 </LinearLayout>

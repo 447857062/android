@@ -383,7 +383,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             }
         });
         mqttSetWanDialogHasPassword.show();
-        mqttSetWanDialogHasPassword.setTitleText("请输入wifi密码来连接:" + mDatasMqtt.get(position - 1).getSSID());
+        mqttSetWanDialogHasPassword.setTitleText("连接:" + mDatasMqtt.get(position - 1).getSSID());
     }
 
     /**
@@ -420,7 +420,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             }
         });
         mqttSetWanDialogNoPassword.show();
-        mqttSetWanDialogNoPassword.setTitleText("确定连接？" + mDatasMqtt.get(position - 1).getSSID());
+        mqttSetWanDialogNoPassword.setTitleText("连接：" + mDatasMqtt.get(position - 1).getSSID());
     }
 
     /**
@@ -447,7 +447,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                         }
                     });
                     dialog.show();
-                    dialog.setTitleText("请输入wifi密码来连接:" + mDatas.get(position - 1).getSsid());
+                    dialog.setTitleText("连接:" + mDatas.get(position - 1).getSsid());
                 } else {
                     MakeSureDialog dialog = new MakeSureDialog(WirelessRelayActivity.this);
                     dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -459,7 +459,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                         }
                     });
                     dialog.show();
-                    dialog.setTitleText("确定连接？" + mDatas.get(position - 1).getSsid());
+                    dialog.setTitleText("连接：" + mDatas.get(position - 1).getSsid());
                 }
             }
         }

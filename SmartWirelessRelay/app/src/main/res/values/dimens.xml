@@ -92,7 +92,6 @@
     <dimen name="button_delete_button_margin_top">57dp</dimen>
 
 
-
     <!--个人中心界面尺寸-->
     <dimen name="mine_page_user_image_margintop">117dp</dimen>
     <dimen name="mine_page_top_background_height">234dp</dimen>
@@ -114,6 +113,7 @@
     <dimen name="ridus2">2dp</dimen>
     <dimen name="vercode_button_ridus">8dp</dimen>
     <dimen name="addrouter_button_ridus">16dp</dimen>
+    <dimen name="router_wifirelay_connect_button_ridus">15dp</dimen>
     <dimen name="room_name_margin_right_arror">15dp</dimen>
 
     <!--设备界面尺寸-->
@@ -154,7 +154,15 @@
 
     <!--智能开关，选择开关类型。开关类型名字距离左边开关图标距离-->
     <dimen name="smart_switch_name_marginleft_typeImage">15dp</dimen>
+    <!--智能门铃设备-->
+    <!--size-->
+    <dimen name="add_doorbell_imageview_height">240dp</dimen>
 
+    <!---->
+    <dimen name="add_doorbell_buttom_button_marginbuttom">58dp</dimen>
+    <dimen name="add_doorbell_buttom_button_width">283dp</dimen>
+    <dimen name="add_doorbell_buttom_button_height">44dp</dimen>
+    <dimen name="add_doorbell_tips_textview_padding_left">60dp</dimen>
     <!--空调界面尺寸-->
     <!--size-->
     <dimen name="startthetestbutton_size">96dp</dimen>
@@ -162,6 +170,7 @@
     <dimen name="aircondition_circle_width_height">221dp</dimen>
     <dimen name="aircondition_control_reduce_plus_width_height">38dp</dimen>
     <dimen name="aircondition_control_buttom_control_icon_width_height">58dp</dimen>
+    <dimen name="aircondition_popwindow_width">120dp</dimen>
     <!---->
     <dimen name="aircondition_inner_temp_margin_top">10dp</dimen>
     <dimen name="aircondition_control_layout_margin_left_right">30dp</dimen>
@@ -182,6 +191,8 @@
     <dimen name="add_router_button_sure_margintop">48dp</dimen>
     <dimen name="router_connect_setting_edit_marginleft">10dp</dimen>
     <dimen name="router_connect_setting_left_textview_minwidth">60dp</dimen>
+    <dimen name="router_wifirelay_connectdialogs_button_height">30dp</dimen>
+    <dimen name="router_wifirelay_connectdialogs_button_width">125dp</dimen>
     <!--路由器cpu使用距离顶部-->
     <dimen name="router_device_cpu_use_layout_margin_top">88dp</dimen>
     <dimen name="router_device_cpu_use_marginleft_precent">15dp</dimen>
@@ -195,6 +206,7 @@
     <dimen name="router_connectdevice_list_item_speedvalue_width">60dp</dimen>
     <dimen name="wifirelay_reload_wifilist_background_height">171dp</dimen>
     <dimen name="wifirelay_reload_wifilist_button_margintop">60dp</dimen>
+    <dimen name="wifirelay_connect_button_margintop">30dp</dimen>
 
     <!--TV 电视机顶盒界面-->
     <dimen name="first_frame_content_margintop">28dp</dimen>
