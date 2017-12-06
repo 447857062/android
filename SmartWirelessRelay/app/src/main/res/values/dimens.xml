@@ -209,6 +209,7 @@
     <dimen name="wifirelay_reload_wifilist_background_height">171dp</dimen>
     <dimen name="wifirelay_reload_wifilist_button_margintop">60dp</dimen>
     <dimen name="wifirelay_connect_button_margintop">30dp</dimen>
+    <dimen name="lansetting_left_textview_minwidth">100dp</dimen>
 
     <!--TV 电视机顶盒界面-->
     <dimen name="first_frame_content_margintop">28dp</dimen>

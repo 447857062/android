@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -38,8 +37,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     private ImageView imageview_model_b;
     private ImageView imageview_model_download;
     private String currentQosMode;
-    private Button button_cancel;
-    private Button button_save;
+   private TextView textview_edit;
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
@@ -60,6 +58,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
 
     private void initDatas() {
         textview_title.setText("智能分配类型选择");
+        textview_edit.setText("保存");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -182,8 +181,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
         layout_model_A.setOnClickListener(this);
         layout_model_B.setOnClickListener(this);
         layout_model_download.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         checkbox_qos_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -209,18 +207,15 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
         imageview_model_a = (ImageView) findViewById(R.id.imageview_model_a);
         imageview_model_b = (ImageView) findViewById(R.id.imageview_model_b);
         imageview_model_download = (ImageView) findViewById(R.id.imageview_model_download);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         checkbox_qos_switch = (CheckBox) findViewById(R.id.checkbox_qos_switch);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+
+            case R.id.textview_edit:
                 try {
                     qos = new Qos();
                     qos.setCLASSIFY(currentQosMode);

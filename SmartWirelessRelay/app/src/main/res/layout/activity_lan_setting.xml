@@ -4,235 +4,257 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.lan.LanSettingActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
-
-    <!--IP地址-->
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
     <RelativeLayout
-        android:id="@+id/layout_ip_address"
+        android:background="@color/white_background"
         android:layout_below="@+id/layout_topbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right"
-        >
-
+        android:layout_height="match_parent">
+        <!--IP地址-->
         <RelativeLayout
+
+            android:id="@+id/layout_ip_address"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:background="@color/white"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
 
-            <TextView
-                android:id="@+id/textview_ip_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="IP地址"
-                android:minWidth="@dimen/static_ip_left_text_title_minwidth"
-               />
-            <EditText
-                android:background="@null"
-
-                android:inputType="phone"
-                android:digits="@string/ip_address_digits"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:paddingLeft="10dp"
-                android:layout_toRightOf="@+id/textview_ip_address"
-                android:id="@+id/edittext_ip_address"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/layout_content_margin_left_right">
 
+                <TextView
+                    android:id="@+id/textview_ip_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="IP地址"
+                    android:minWidth="@dimen/lansetting_left_textview_minwidth"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
 
+                <EditText
+                    android:background="@null"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small"
+                    android:inputType="phone"
+                    android:digits="@string/ip_address_digits"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:layout_toRightOf="@+id/textview_ip_address"
+                    android:id="@+id/edittext_ip_address"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content" />
 
-        </RelativeLayout>
+            </RelativeLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
-    </RelativeLayout>
-    <!--子网掩码-->
-    <RelativeLayout
-        android:id="@+id/layout_submask"
-        android:layout_below="@+id/layout_ip_address"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right"
-        >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textview_submask"
-                android:minWidth="@dimen/static_ip_left_text_title_minwidth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="子网掩码"
-               />
-            <EditText
-                android:paddingLeft="10dp"
-                android:layout_toRightOf="@+id/textview_submask"
-                android:id="@+id/edittext_submask"
-                android:background="@null"
-
-                android:inputType="phone"
-                android:digits="@string/ip_address_digits"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/huise" />
 
 
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
-    </RelativeLayout>
-    <!--起始IP-->
-    <RelativeLayout
-        android:id="@+id/layout_ip_addrss_start"
-        android:layout_below="@+id/layout_submask"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right"
-        >
-
+        <!--子网掩码-->
         <RelativeLayout
+            android:layout_below="@+id/layout_ip_address"
+            android:id="@+id/layout_submask"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:background="@color/white"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
 
-            <TextView
-                android:id="@+id/textview_start_ip_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="起始IP"
-
-                android:minWidth="@dimen/static_ip_left_text_title_minwidth"
-                 />
-            <EditText
-                android:paddingLeft="10dp"
-                android:layout_toRightOf="@+id/textview_start_ip_address"
-                android:id="@+id/edittext_ip_addrss_start"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:inputType="number"
-                android:hint="（数字1-254）"
-                android:maxLength="3"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@null"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/layout_content_margin_left_right">
 
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/textview_submask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="子网掩码"
+                    android:minWidth="@dimen/lansetting_left_textview_minwidth"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
 
+                <EditText
+                    android:background="@null"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small"
+                    android:inputType="phone"
+                    android:digits="@string/ip_address_digits"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:layout_toRightOf="@+id/textview_submask"
+                    android:id="@+id/edittext_submask"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content" />
 
+            </RelativeLayout>
 
-        </RelativeLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
-    </RelativeLayout>
-    <!--结束IP-->
-    <RelativeLayout
-        android:id="@+id/layout_ip_address_end"
-        android:layout_below="@+id/layout_ip_addrss_start"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right"
-        >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textview_end_ip_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="结束IP"
-                android:minWidth="@dimen/static_ip_left_text_title_minwidth"
-               />
-            <EditText
-                android:paddingLeft="10dp"
-                android:layout_toRightOf="@+id/textview_end_ip_address"
-                android:id="@+id/edittext_ip_address_end"
+            <View
                 android:layout_width="match_parent"
-                android:layout_alignParentRight="true"
-                android:background="@null"
-                android:inputType="number"
-                android:maxLength="3"
-                android:hint="（数字1-254）"
-
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content" />
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/huise" />
 
 
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
-    </RelativeLayout>
-    <!--DHCP开关-->
-    <RelativeLayout
-        android:id="@+id/layout_dhcp_switch"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/connect_setting_item_height"
-        android:layout_below="@+id/layout_ip_address_end"
-        android:paddingLeft="@dimen/connect_setting_layout_padding_left_right"
-        android:paddingRight="@dimen/connect_setting_layout_padding_left_right">
-
+        <!--起始IP-->
         <RelativeLayout
+            android:layout_below="@+id/layout_submask"
+            android:id="@+id/layout_ip_addrss_start"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:background="@color/white"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="DHCP开关"
-              />
-            <CheckBox
-                android:id="@+id/checkbox_dhcp_switch"
-                android:layout_width="@dimen/wifi_checkbox_width"
-                android:layout_height="@dimen/wifi_checkbox_height"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:button="@drawable/checkbox_wifi_selector"
-                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/layout_content_margin_left_right">
+
+                <TextView
+                    android:id="@+id/textview_start_ip_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="起始IP"
+                    android:minWidth="@dimen/lansetting_left_textview_minwidth"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:background="@null"
+                    android:hint="（数字1-254）"
+                    android:maxLength="3"
+                    android:inputType="number"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:layout_toRightOf="@+id/textview_start_ip_address"
+                    android:id="@+id/edittext_ip_addrss_start"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/huise" />
+
+
         </RelativeLayout>
-
-        <ImageView
+        <!--结束IP-->
+        <RelativeLayout
+            android:layout_below="@+id/layout_ip_addrss_start"
+            android:id="@+id/layout_ip_address_end"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/connect_setting_line" />
+            android:background="@color/white"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/layout_content_margin_left_right">
+
+                <TextView
+                    android:id="@+id/textview_end_ip_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="结束IP"
+                    android:minWidth="@dimen/lansetting_left_textview_minwidth"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:background="@null"
+                    android:hint="（数字1-254）"
+                    android:maxLength="3"
+                    android:inputType="number"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="10dp"
+                    android:layout_toRightOf="@+id/textview_end_ip_address"
+                    android:id="@+id/edittext_ip_address_end"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/huise" />
+
+
+        </RelativeLayout>
+        <!--DHCP开关-->
+        <RelativeLayout
+            android:layout_below="@+id/layout_ip_address_end"
+            android:id="@+id/layout_dhcp_switch"
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/layout_content_margin_left_right">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="DHCP开关"
+                    android:minWidth="@dimen/lansetting_left_textview_minwidth"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <CheckBox
+                    android:id="@+id/checkbox_dhcp_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:button="@drawable/checkbox_wifi_selector" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/huise" />
+
+
+        </RelativeLayout>
     </RelativeLayout>
-    <include
-        android:layout_width="@dimen/last_next_step_layout_width"
-        android:layout_height="@dimen/last_next_step_layout_height"
-        layout="@layout/layout_cancel_save"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="85dp"/>
+
+
 </RelativeLayout>

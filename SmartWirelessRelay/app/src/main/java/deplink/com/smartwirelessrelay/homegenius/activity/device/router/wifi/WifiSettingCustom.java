@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -48,8 +47,7 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
     private EventCallback ec;
     private RouterDevice routerDevice;
     private CheckBox checkbox_wifi_switch;
-    private Button button_cancel;
-    private Button button_save;
+  private TextView textview_edit;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
     @Override
@@ -65,6 +63,7 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
 
     private void initDatas() {
         textview_title.setText("访客WIFI设置");
+        textview_edit.setText("保存");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -197,9 +196,9 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
         layout_encryption.setOnClickListener(this);
         layout_password.setOnClickListener(this);
         image_back.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
-        button_save.setText("设置");
+        textview_edit.setOnClickListener(this);
+
+
         layout_wifiname_setting.setOnClickListener(this);
         checkbox_wifi_switch.setOnCheckedChangeListener(wifiSwitchCheckChangeListener);
     }
@@ -226,8 +225,7 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
         checkbox_wifi_switch = (CheckBox) findViewById(R.id.checkbox_wifi_switch);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
 
     /**
@@ -247,10 +245,8 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+
+            case R.id.textview_edit:
                 VISITOR visitor = new VISITOR();
                 Wifi content;
                 if (!wifiName.equals("")) {

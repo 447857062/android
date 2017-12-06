@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,8 +52,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
      * 当点击相对布局的时候，设置图片的iamgelevle，做成checkbox的样式，平衡模式
      */
     private ImageView imageview_model_balance;
-    private Button button_cancel;
-    private Button button_save;
+   private TextView textview_edit;
     private String currentWifiMode;
 
     private TextView textview_title;
@@ -110,6 +108,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
 
     private void initDatas() {
         textview_title.setText("2.4G信号强度设置");
+        textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(SignalStrengthSetting.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -193,8 +192,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
         layout_model_pregnant.setOnClickListener(this);
         layout_model_walls.setOnClickListener(this);
         layout_model_balance.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         image_back.setOnClickListener(this);
     }
     private boolean  isSetSignalStreng;
@@ -205,8 +203,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
         imageview_model_pregnant = (ImageView) findViewById(R.id.imageview_model_pregnant);
         imageview_model_walls = (ImageView) findViewById(R.id.imageview_model_walls);
         imageview_model_balance = (ImageView) findViewById(R.id.imageview_model_balance);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (ImageView) findViewById(R.id.image_back);
     }
@@ -236,10 +233,8 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
                 imageview_model_balance.setImageLevel(1);
                 currentWifiMode = "1";
                 break;
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
-            case R.id.button_save:
+
+            case R.id.textview_edit:
                 if (NetUtil.isNetAvailable(this)) {
                     isSetSignalStreng=true;
                     Wifi wifi = new Wifi();

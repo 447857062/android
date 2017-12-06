@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -32,6 +31,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class LanSettingActivity extends Activity implements View.OnClickListener{
     private TextView textview_title;
+    private TextView textview_edit;
     private ImageView image_back;
     private EditText edittext_ip_address;
     private EditText edittext_submask;
@@ -43,8 +43,7 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
-    private Button button_cancel;
-    private Button button_save;
+
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
     @Override
@@ -58,6 +57,7 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
 
     private void initDatas() {
         textview_title.setText("LAN设置");
+        textview_edit.setText("保存");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -172,8 +172,7 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
     private void initEvents() {
         image_back.setOnClickListener(this);
         checkbox_dhcp_switch.setOnCheckedChangeListener(dhcpCheckChangeListener);
-        button_cancel.setOnClickListener(this);
-        button_save.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
     }
     private String dhcpStatus;
     private CompoundButton.OnCheckedChangeListener dhcpCheckChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -197,18 +196,17 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
         checkbox_dhcp_switch = (CheckBox) findViewById(R.id.checkbox_dhcp_switch);
         layout_ip_addrss_start = (RelativeLayout) findViewById(R.id.layout_ip_addrss_start);
         layout_ip_address_end = (RelativeLayout) findViewById(R.id.layout_ip_address_end);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_save = (Button) findViewById(R.id.button_save);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_cancel:
+
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.button_save:
+            case R.id.textview_edit:
                 Lan lan=new Lan();
                 String lanIP=edittext_ip_address.getText().toString().trim();
                 String submask=edittext_submask.getText().toString().trim();
