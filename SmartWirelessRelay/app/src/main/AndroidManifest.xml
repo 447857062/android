@@ -51,6 +51,7 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity"
             android:launchMode="singleTask"
+            android:theme="@style/noAnimTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,12 +65,15 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity"
             android:launchMode="singleTop"
+            android:theme="@style/noAnimTheme"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity"
+            android:theme="@style/noAnimTheme"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity"
+            android:theme="@style/noAnimTheme"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity

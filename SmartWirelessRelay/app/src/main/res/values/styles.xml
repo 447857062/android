@@ -25,20 +25,40 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
+        <item name="android:windowAnimationStyle">@style/FeelyouWindowAnimTheme</item>
     </style>
-    <style name="Transparent" parent="AppBaseTheme">
+    <!--
+    当我们从 A1 启动 A2 时，A1 从屏幕上消失，这个动画叫做 android:activityOpenExitAnimation
+当我们从 A1 启动 A2 时，A2 出现在屏幕上，这个动画叫做 android:activityOpenEnterAnimation
+当我们从 A2 退出回到 A1 时，A2 从屏幕上消失，这个叫做 android:activityCloseExitAnimation
+当我们从 A2 退出回到 A1 时，A1 出现在屏幕上，这个叫做 android:activityCloseEnterAnimation-->
+    <style name="FeelyouWindowAnimTheme" parent="@android:style/Animation.Activity">
+        <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+    </style>
+    <!-- 取消界面转场动画使用-->
+    <style name="noAnimTheme" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/Animation</item>
+    </style>
+    <style name="Animation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
+    </style>
+
+    <style name="Transparent" parent="AppTheme">
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <!-- 使底部导航栏透明 -->
-        <item name="android:windowTranslucentNavigation">true</item>
-        <!-- 给status栏设置透明颜色 -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <!-- true: status栏的图标和文字为黑色；false: sstatus栏的图标和文字为白色 -->
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+
     </style>
     <style name="AuthoriseDialog" parent="android:style/Theme.Dialog">
         <!--背景颜色及和透明程度-->
@@ -129,10 +149,7 @@
 
         　　
     </style>
-    <style name="popupwindow_fade">
-        <item name="android:windowEnterAnimation">@anim/fade_in</item>
-        <item name="android:windowExitAnimation">@anim/fade_out</item>
-    </style>
+
 
 
 

@@ -130,11 +130,24 @@
         android:textSize="@dimen/text_size_small"
         android:text="退出登录"
         android:textColor="@color/delete_button" />
-
-    <include
-        layout="@layout/layout_buttom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_buton_bar_height"
+    <RelativeLayout
+        android:id="@+id/layout_buttom_bar"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_buton_bar_height">
+        <View
+            android:layout_alignParentTop="true"
+            android:id="@+id/view_line"
+            android:background="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <include
+            android:layout_below="@+id/view_line"
+            android:id="@+id/layout_buttonbar"
+            layout="@layout/layout_buttom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
 </RelativeLayout>

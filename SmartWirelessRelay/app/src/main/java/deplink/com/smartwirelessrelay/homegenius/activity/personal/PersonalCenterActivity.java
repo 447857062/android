@@ -35,6 +35,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private ImageView imageview_home_page;
     private ImageView imageview_rooms;
     private ImageView imageview_personal_center;
+    private TextView textview_home;
+    private TextView textview_device;
+    private TextView textview_room;
+    private TextView textview_mine;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,11 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
+
+        textview_home = (TextView) findViewById(R.id.textview_home);
+        textview_device = (TextView) findViewById(R.id.textview_device);
+        textview_room = (TextView) findViewById(R.id.textview_room);
+        textview_mine = (TextView) findViewById(R.id.textview_mine);
         imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
         imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
         imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
@@ -92,6 +101,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
+        textview_home.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_mine.setTextColor(getResources().getColor(R.color.title_blue_bg));
         imageview_home_page.setImageResource(R.drawable.nocheckthehome);
         imageview_devices.setImageResource(R.drawable.nocheckthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);

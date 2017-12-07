@@ -61,7 +61,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     public static final int HEIGHT_MARK_TO_REFRESH = 250;
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private ImageView image_setting;
     /**
      * 已连接设备
@@ -587,7 +587,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         textview_blak_list= (TextView) findViewById(R.id.textview_blak_list);
         view_line_connected_devices=findViewById(R.id.view_line_connected_devices);
         view_line_blak_list=findViewById(R.id.view_line_blak_list);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
         textview_title= (TextView) findViewById(R.id.textview_title);
         listview_device_list = (SwipeMenuListView) findViewById(R.id.listview_device_list);

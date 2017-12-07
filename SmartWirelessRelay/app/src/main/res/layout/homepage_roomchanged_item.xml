@@ -2,10 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/layout_content_margin_left_right"
     android:paddingRight="@dimen/layout_content_margin_left_right"
-    android:background="@android:color/white"
+    android:background="@color/transparent"
     android:minHeight="@dimen/home_room_switch_layout_minheight"
     android:orientation="vertical">
 
@@ -45,6 +44,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
     <View
+        android:id="@+id/view_line"
         android:background="@color/huise"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

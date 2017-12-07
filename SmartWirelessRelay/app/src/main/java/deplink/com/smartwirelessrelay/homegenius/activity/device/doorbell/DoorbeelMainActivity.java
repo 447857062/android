@@ -3,6 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,7 +11,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.doorbeel.Doorbeel_menu_Dialog;
 
 public class DoorbeelMainActivity extends Activity implements View.OnClickListener{
-    private ImageView image_back;
+    private FrameLayout image_back;
     private ImageView image_setting;
     private TextView textview_title;
     @Override
@@ -34,7 +35,7 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
 
     private void initViews() {
         textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
     }
     private Doorbeel_menu_Dialog doorbeelMenuDialog;

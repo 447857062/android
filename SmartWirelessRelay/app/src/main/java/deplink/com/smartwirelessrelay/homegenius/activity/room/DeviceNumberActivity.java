@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,7 +35,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
  */
 public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG="DeviceNumberActivity";
-    private ImageView image_back;
+    private FrameLayout image_back;
 
     private TextView textview_edit;
     private DeviceListAdapter mDeviceAdapter;
@@ -133,7 +133,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
 
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         listview_devies=(ListView) findViewById(R.id.listview_devies);

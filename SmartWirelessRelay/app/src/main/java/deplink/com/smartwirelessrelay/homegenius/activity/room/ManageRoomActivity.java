@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ import io.reactivex.disposables.Disposable;
 public class ManageRoomActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ManageRoomActivity";
     public static final int REQUEST_MODIFY_ROOM_NAME = 100;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private Button button_delete_room;
     private TextView textview_room_name;
     private String mRoomName;
@@ -61,7 +62,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
         button_delete_room = (Button) findViewById(R.id.button_delete_room);
         textview_room_name = (TextView) findViewById(R.id.textview_room_name);

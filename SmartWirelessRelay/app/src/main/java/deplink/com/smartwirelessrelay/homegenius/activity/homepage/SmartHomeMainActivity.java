@@ -64,6 +64,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private List<ExperienceCenterDevice> mExperienceCenterDeviceList;
     private RelativeLayout layout_experience_center_top;
     private TextView textview_change_show_type;
+    private TextView textview_home;
+    private TextView textview_device;
+    private TextView textview_room;
+    private TextView textview_mine;
 
     private HomepageRoomShowTypeChangedViewAdapter mRoomSelectTypeChangedAdapter;
     @Override
@@ -79,6 +83,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
+        textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_mine.setTextColor(getResources().getColor(android.R.color.darker_gray));
+
         imageview_home_page.setImageResource(R.drawable.checkthehome);
         imageview_devices.setImageResource(R.drawable.nocheckthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
@@ -192,6 +201,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
         layout_experience_center_top = (RelativeLayout) findViewById(R.id.layout_experience_center_top);
         textview_change_show_type = (TextView) findViewById(R.id.textview_change_show_type);
+        textview_home = (TextView) findViewById(R.id.textview_home);
+        textview_device = (TextView) findViewById(R.id.textview_device);
+        textview_room = (TextView) findViewById(R.id.textview_room);
+        textview_mine = (TextView) findViewById(R.id.textview_mine);
 
         layout_roomselect_normal= (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
         layout_roomselect_changed_ype= (ListView) findViewById(R.id.layout_roomselect_changed_ype);
@@ -200,6 +213,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+
         mLocalConnectmanager.removeLocalConnectListener(this);
         mRoomManager.updateRoomsOrdinalNumber();
     }

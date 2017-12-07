@@ -241,7 +241,7 @@ public final class CameraManager {
             return null;
         }
      //   int width = screenResolution.x * 3 / 4;
-       int width =(int) Perfence.dp2px(mContext,250);
+     //  int width =(int) Perfence.dp2px(mContext,250);
 
        /* if (width < MIN_FRAME_WIDTH) {
             width = MIN_FRAME_WIDTH;
@@ -249,6 +249,7 @@ public final class CameraManager {
             width = MAX_FRAME_WIDTH;
         }*/
        // int height = screenResolution.y * 3 / 4;
+        int width =(int) Perfence.dp2px(mContext,250);
         int height =(int) Perfence.dp2px(mContext,250);
        /* if (height < MIN_FRAME_HEIGHT) {
             height = MIN_FRAME_HEIGHT;
@@ -268,18 +269,20 @@ public final class CameraManager {
             if (camera == null) {
                 return null;
             }
-            int width = x * 3 / 4;
+       /*     int width = x *//** 3 / 4*//*;
             if (width < MIN_FRAME_WIDTH) {
                 width = MIN_FRAME_WIDTH;
             } else if (width > MAX_FRAME_WIDTH) {
                 width = MAX_FRAME_WIDTH;
             }
-            int height = y * 3 / 4;
+            int height = y *//** 3 / 4*//*;
             if (height < MIN_FRAME_HEIGHT) {
                 height = MIN_FRAME_HEIGHT;
             } else if (height > MAX_FRAME_HEIGHT) {
                 height = MAX_FRAME_HEIGHT;
-            }
+            }*/
+            int width =(int) Perfence.dp2px(mContext,250);
+            int height =(int) Perfence.dp2px(mContext,250);
             int leftOffset = (x - width) / 2;
             int topOffset = (y - height) / 2;
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);

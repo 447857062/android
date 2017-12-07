@@ -4,5 +4,5 @@
     <!--填充颜色-->
     <solid android:color="@color/title_blue_bg" />
     <!--圆角弧度-->
-    <corners android:radius="@dimen/vercode_button_ridus"/>
+    <corners android:radius="@dimen/ridus_8"/>
 </shape>

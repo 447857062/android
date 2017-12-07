@@ -51,7 +51,7 @@
     <!--登录按钮字体大小-->
     <dimen name="login_button_text_size">16dp</dimen>
     <!--底部导航栏尺寸-->
-    <dimen name="layout_buton_bar_height">49dp</dimen>
+    <dimen name="layout_buton_bar_height">50dp</dimen>
     <!--顶部导航栏尺寸-->
     <dimen name="title_bar_height">64dp</dimen>
     <dimen name="layout_item_content_height">44dp</dimen>
@@ -111,7 +111,7 @@
     <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
     <dimen name="ridus22">22dp</dimen>
     <dimen name="ridus2">2dp</dimen>
-    <dimen name="vercode_button_ridus">8dp</dimen>
+    <dimen name="ridus_8">8dp</dimen>
     <dimen name="addrouter_button_ridus">16dp</dimen>
     <dimen name="router_wifirelay_connect_button_ridus">15dp</dimen>
     <dimen name="room_name_margin_right_arror">15dp</dimen>

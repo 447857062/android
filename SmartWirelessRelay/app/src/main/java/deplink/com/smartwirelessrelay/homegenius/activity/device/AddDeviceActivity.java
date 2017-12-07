@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +23,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView;
 
 public class AddDeviceActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RoomActivity";
-    private ImageView image_back;
+    private FrameLayout image_back;
     private DragGridView mDragGridView;
     private GridViewAdapter mRoomsAdapter;
     private RoomManager mRoomManager;
@@ -106,7 +106,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     }
 
     private void initViews() {
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         mDragGridView = (DragGridView) findViewById(R.id.dragGridView);
         textview_show_select_room = (TextView) findViewById(R.id.textview_show_select_room);
         textview_skip_this_option = (TextView) findViewById(R.id.textview_skip_this_option);

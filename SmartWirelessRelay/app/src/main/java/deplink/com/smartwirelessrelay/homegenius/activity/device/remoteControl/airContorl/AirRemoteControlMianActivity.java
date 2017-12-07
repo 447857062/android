@@ -3,6 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.airco
 
 public class AirRemoteControlMianActivity extends Activity implements View.OnClickListener{
     private static final String TAG="ARCMianActivity";
-    private ImageView image_back;
+    private FrameLayout image_back;
     private TextView textview_title;
     private ImageView image_setting;
     private ImageView imageview_auto_model;
@@ -42,7 +43,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         image_setting= (ImageView) findViewById(R.id.image_setting);
         imageview_auto_model= (ImageView) findViewById(R.id.imageview_auto_model);
     }

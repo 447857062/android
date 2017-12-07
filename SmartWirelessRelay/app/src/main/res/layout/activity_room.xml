@@ -76,13 +76,26 @@
             android:stretchMode="columnWidth"
             android:verticalSpacing="10dip" />
     </RelativeLayout>
-
-
-    <include
+    <RelativeLayout
         android:id="@+id/layout_buttom_bar"
-        layout="@layout/layout_buttom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_buton_bar_height"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_buton_bar_height">
+        <View
+            android:layout_alignParentTop="true"
+            android:id="@+id/view_line"
+            android:background="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <include
+           android:layout_alignParentBottom="true"
+            android:id="@+id/layout_buttonbar"
+            layout="@layout/layout_buttom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+
+
 </RelativeLayout>

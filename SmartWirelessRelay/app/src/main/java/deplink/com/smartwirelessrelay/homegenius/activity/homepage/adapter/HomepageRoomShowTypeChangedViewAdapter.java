@@ -39,6 +39,8 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
                     .findViewById(R.id.device_number);
             viewHolder.imageview_room_type = (ImageView) convertView
                     .findViewById(R.id.imageview_room_type);
+            viewHolder.view_line = convertView
+                    .findViewById(R.id.view_line);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -52,6 +54,11 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
         }
         viewHolder.device_number.setText(""+devicesSize);
         setRoomTypeImageResource(position, viewHolder);
+        if(position==listTop.size()-1){
+            viewHolder.view_line.setVisibility(View.INVISIBLE);
+        }else{
+            viewHolder.view_line.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -125,5 +132,6 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
         TextView textview_room_item;
         TextView device_number;
         ImageView imageview_room_type;
+        View view_line;
     }
 }

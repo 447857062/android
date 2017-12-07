@@ -54,7 +54,7 @@
 
         <RelativeLayout
             android:alpha="1"
-            android:background="@color/white"
+            android:background="@drawable/homepage_halfrectangle_top_background"
             android:id="@+id/layout_room_top"
             android:layout_width="match_parent"
             android:gravity="center_vertical"
@@ -94,13 +94,14 @@
 
         </RelativeLayout>
         <FrameLayout
+            android:background="@drawable/homepage_halfrectangle_buttom_background"
+            android:alpha="0.9"
             android:layout_below="@+id/layout_room_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <HorizontalScrollView
                 android:id="@+id/layout_roomselect_normal"
-                android:alpha="0.9"
-                android:background="@color/white"
+
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/home_page_roomselect_normal_height"
 
@@ -122,6 +123,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
             <ListView
+
                 android:visibility="gone"
                 android:divider="@null"
                 android:id="@+id/layout_roomselect_changed_ype"
@@ -145,7 +147,7 @@
         <RelativeLayout
             android:id="@+id/layout_experience_center_top"
             android:layout_width="match_parent"
-            android:background="@color/white"
+            android:background="@drawable/homepage_halfrectangle_top_background"
             android:alpha="1"
             android:layout_height="@dimen/home_page_roomselect_top_height"
             >
@@ -180,7 +182,7 @@
 
         <ListView
             android:alpha="0.9"
-            android:background="@color/white"
+            android:background="@drawable/homepage_halfrectangle_buttom_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right"
             android:scrollbars="none"
@@ -190,12 +192,23 @@
             android:layout_below="@+id/layout_experience_center_top"></ListView>
     </RelativeLayout>
 
+    <RelativeLayout
 
-    <include
-        android:id="@+id/layout_buttonbar"
-        layout="@layout/layout_buttom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_buton_bar_height"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_buton_bar_height">
+        <View
+            android:id="@+id/view_line"
+            android:background="@color/huise"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <include
+            android:layout_below="@+id/view_line"
+            android:id="@+id/layout_buttonbar"
+            layout="@layout/layout_buttom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
 </RelativeLayout>
