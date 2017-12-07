@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -66,7 +66,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     private RouterManager mRouterManager;
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -342,7 +342,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         layout_connect_type_setting = (RelativeLayout) findViewById(R.id.layout_connect_type_setting);
         textview_current_connect_type = (TextView) findViewById(R.id.textview_current_connect_type);
 

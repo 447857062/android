@@ -8,7 +8,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class addRemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener {
+public class AddRemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener {
     private static final String TAG = "addRCActivity";
     private RelativeLayout layout_device_response;
     private Button button_test;
@@ -34,7 +34,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
     private Button button_ok;
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +164,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
         button_ng = (Button) findViewById(R.id.button_ng);
         button_ok = (Button) findViewById(R.id.button_ok);
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
     }
 
     private String bandName;
@@ -197,7 +197,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
-                                Intent intent=new Intent(addRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                Intent intent=new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType","智能电视");
                                 startActivity(intent);
                             }
@@ -213,7 +213,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
-                                Intent intent=new Intent(addRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                Intent intent=new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType","智能空调");
                                 startActivity(intent);
                             }
@@ -229,7 +229,7 @@ public class addRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
-                                Intent intent=new Intent(addRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                Intent intent=new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType","智能机顶盒遥控");
                                 startActivity(intent);
                             }

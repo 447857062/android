@@ -12,11 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/adddevice_qrcode_background"
         android:background="@drawable/sweepthebackground">
+
         <RelativeLayout
             android:id="@+id/layout_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height"
-            >
+            android:layout_height="@dimen/title_bar_height">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -25,15 +25,20 @@
                 android:layout_marginRight="@dimen/layout_content_margin_left_right"
                 android:layout_marginTop="@dimen/title_bar_content_margin_top">
 
-                <ImageView
-
+                <FrameLayout
                     android:id="@+id/image_back"
                     android:layout_width="48dp"
-                    android:scaleType="centerInside"
                     android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/returnicon" />
+                    android:layout_alignParentLeft="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center_vertical"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/returnicon" />
+                </FrameLayout>
+
 
                 <TextView
                     android:id="@+id/textview_add_device"
@@ -53,12 +58,11 @@
 
         <ImageView
             android:id="@+id/imageview_scan_device"
-            android:layout_marginTop="@dimen/adddevice_qrcode_scan_margintop"
             android:layout_width="@dimen/adddevice_qrcode_scan_width_height"
             android:layout_height="@dimen/adddevice_qrcode_scan_width_height"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/scanit"
-            />
+            android:layout_marginTop="@dimen/adddevice_qrcode_scan_margintop"
+            android:src="@drawable/scanit" />
 
         <TextView
             android:id="@+id/textview_scan"
@@ -66,21 +70,21 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageview_scan_device"
             android:layout_marginTop="@dimen/adddevice_qrcode_scan_textview1_margin_top"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/white"
             android:gravity="center_horizontal"
-            android:text="扫一扫" />
+            android:text="扫一扫"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small" />
 
         <TextView
-            android:textSize="@dimen/text_size_smallest"
-            android:textColor="@color/white"
             android:id="@+id/textview_scan_extra_explan_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_scan"
             android:layout_marginTop="@dimen/adddevice_qrcode_scan_textview2_margin_top"
             android:gravity="center_horizontal"
-            android:text="设备，外包装或说明书上的二维码" />
+            android:text="设备，外包装或说明书上的二维码"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_smallest" />
     </RelativeLayout>
 
     <GridView

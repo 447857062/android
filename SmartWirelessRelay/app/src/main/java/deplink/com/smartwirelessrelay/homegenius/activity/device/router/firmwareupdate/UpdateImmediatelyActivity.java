@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -38,7 +38,7 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
 
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +151,7 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
         button_cancel = (Button) findViewById(R.id.button_cancel);
         button_update = (Button) findViewById(R.id.button_update);
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         textview_version_code = (TextView) findViewById(R.id.textview_version_code);
         textview_file_size = (TextView) findViewById(R.id.textview_file_size);
         textview_update_what = (TextView) findViewById(R.id.textview_update_what);

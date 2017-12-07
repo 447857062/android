@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -30,7 +30,7 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
     private static final  String TAG="DynamicsActivity";
     private TextView textview_edit;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
@@ -133,7 +133,7 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         edittext_mtu = (EditText) findViewById(R.id.edittext_mtu);
         edittext_dns1 = (EditText) findViewById(R.id.edittext_dns1);

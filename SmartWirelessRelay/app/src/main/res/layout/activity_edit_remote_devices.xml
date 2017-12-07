@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity">
+    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <RelativeLayout
+        android:background="@color/white_background"
+        android:layout_below="@+id/layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/layout_update_device_name"
+            android:layout_below="@+id/layout_title"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
+            android:layout_height="@dimen/layout_item_content_height">
+            <TextView
+                android:text="名称："
+                android:gravity="left|center_vertical"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/textview_device_name_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:id="@+id/edittext_add_device_input_name"
+                android:hint="我家的遥控器"
+                android:textColorHint="@color/huise"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:layout_toRightOf="@+id/textview_device_name_left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+        <!--添加设备需要在这里加房间分类-->
+        <RelativeLayout
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/layout_room_select"
+            android:layout_below="@+id/layout_update_device_name"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_height="@dimen/layout_item_content_height">
+            <TextView
+                android:layout_centerVertical="true"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:id="@+id/textview_room_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="选择房间:" />
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/imageview_roomname_arror_right"
+                android:text="全部"
+                android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
+                android:gravity="center_vertical"
+                android:id="@+id/textview_select_room_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <ImageView
+                android:layout_centerVertical="true"
+                android:src="@drawable/directionicon"
+                android:layout_alignParentRight="true"
+                android:id="@+id/imageview_roomname_arror_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/layout_getway_select"
+            android:layout_below="@+id/layout_room_select"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_height="@dimen/layout_item_content_height">
+            <TextView
+                android:layout_centerVertical="true"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:id="@+id/textview_getway_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="网关:" />
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:text="我家的网关"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:layout_toRightOf="@+id/textview_getway_name"
+                android:gravity="center_vertical"
+                android:id="@+id/textview_select_getway_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <ImageView
+                android:layout_centerVertical="true"
+                android:src="@drawable/directionicon"
+                android:layout_alignParentRight="true"
+                android:id="@+id/imageview_getway_arror_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/button_delete_device"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_below="@+id/layout_getway_select"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="@color/delete_button"
+            android:textSize="@dimen/text_size_small"
+            android:layout_marginTop="@dimen/button_delete_button_margin_top"
+            android:background="@color/white"
+            android:text="删除设备" />
+    </RelativeLayout>
+</RelativeLayout>

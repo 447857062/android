@@ -9,57 +9,97 @@
         android:id="@+id/layout_title"
         layout="@layout/layout_title_with_back_center_titletext" />
 
-
     <RelativeLayout
-        android:id="@+id/layout_getway_name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:background="@color/white_background"
         android:layout_below="@+id/layout_title"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/textview_device_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:minWidth="100dp"
-            android:text="网关名称:" />
-
-        <EditText
-            android:id="@+id/edittext_input_devie_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/layout_getway_name"
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="50dp"
-            android:layout_toRightOf="@+id/textview_device_name"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="我家的网关" />
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
+            android:layout_height="@dimen/layout_item_content_height">
+            <TextView
+                android:text="网关名称："
+                android:gravity="left|center_vertical"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/room_type_text"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/textview_device_name_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+                android:maxLength="5"
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:id="@+id/edittext_input_devie_name"
+                android:hint="我家的网关"
+                android:textColorHint="@color/huise"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:layout_toRightOf="@+id/textview_device_name_left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/imageview_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_toRightOf="@+id/edittext_input_devie_name"
-            android:src="@mipmap/ic_launcher" />
+        </RelativeLayout>
+
+        <!--添加设备需要在这里加房间分类-->
+        <RelativeLayout
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:id="@+id/layout_room_select"
+            android:layout_below="@+id/layout_getway_name"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_height="@dimen/layout_item_content_height">
+            <TextView
+                android:layout_centerVertical="true"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:id="@+id/textview_room_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="选择房间:" />
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/imageview_roomname_arror_right"
+                android:text="全部"
+                android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
+                android:gravity="center_vertical"
+                android:id="@+id/textview_select_room_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <ImageView
+                android:layout_centerVertical="true"
+                android:src="@drawable/directionicon"
+                android:layout_alignParentRight="true"
+                android:id="@+id/imageview_roomname_arror_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <Button
+            android:background="@drawable/radius22_bg_blue_background"
+            android:layout_marginTop="@dimen/adddevice_surebutton_margintop"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/layout_room_select"
+            android:id="@+id/button_save"
+            android:text="保存"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            android:layout_width="@dimen/adddevice_surebutton_width"
+            android:layout_height="@dimen/layout_item_content_height" />
     </RelativeLayout>
 
-
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/layout_getway_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@color/blue"
-        android:text="保存" />
 
 </RelativeLayout>
 

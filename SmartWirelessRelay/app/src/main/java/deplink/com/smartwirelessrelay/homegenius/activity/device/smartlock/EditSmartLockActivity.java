@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +29,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 
 public class EditSmartLockActivity extends Activity implements View.OnClickListener, DeviceListener {
 
-    private ImageView image_back;
+    private FrameLayout image_back;
     private Button button_delete_device;
     private DeviceManager mDeviceManager;
     private TextView textview_select_room_name;
@@ -64,7 +64,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         textview_edit= (TextView) findViewById(R.id.textview_edit);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         button_delete_device = (Button) findViewById(R.id.button_delete_device);
         layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);

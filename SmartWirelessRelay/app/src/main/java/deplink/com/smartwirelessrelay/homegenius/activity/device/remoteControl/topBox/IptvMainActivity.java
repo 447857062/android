@@ -8,8 +8,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
 public class IptvMainActivity extends Activity implements View.OnClickListener{
+    private static final String TAG="IptvMainActivity";
     private ImageView image_back;
     private RelativeLayout layout_title_control_base;
     private RelativeLayout layout_title_control_number;
@@ -21,6 +23,7 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     private TextView textview_control_number;
     private TextView textview_title;
     private ImageView image_setting;
+    private RemoteControlMenuDialog menu_dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +35,13 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
 
     private void initDatas() {
         textview_title.setText("机顶盒遥控");
+        menu_dialog=new RemoteControlMenuDialog(this,RemoteControlMenuDialog.TYPE_TVBOX);
         image_setting.setImageResource(R.drawable.menuicon);
     }
 
     private void initEvents() {
         image_back.setOnClickListener(this);
+        image_setting.setOnClickListener(this);
         layout_title_control_base.setOnClickListener(this);
         layout_title_control_number.setOnClickListener(this);
     }
@@ -59,6 +64,7 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_setting:
+                menu_dialog.show();
                 break;
             case R.id.image_back:
                 onBackPressed();

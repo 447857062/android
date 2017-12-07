@@ -74,6 +74,7 @@ public class DeviceManager implements LocalConnecteListener {
             this.mDeviceListenerList.remove(listener);
         }
     }
+
     /**
      * 查询设备列表
      */
@@ -144,6 +145,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 中继连接
      */
     public void setWifiRelay(AP_CLIENT paramas) {
+        Log.i(TAG,"setWifiRelay");
         WifiRelaySet setCmd = new WifiRelaySet();
         setCmd.setTimestamp();
         Proto proto = new Proto();
@@ -193,7 +195,6 @@ public class DeviceManager implements LocalConnecteListener {
     }
 
 
-
     /**
      * 如果数据库中没有这个设备，需要修改数据库
      * 如果有这个设备就不处理
@@ -208,6 +209,7 @@ public class DeviceManager implements LocalConnecteListener {
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
             smartDev.setType(device.getTp());
+
             boolean addResult = smartDev.save();
             Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
             return addResult;
@@ -216,8 +218,6 @@ public class DeviceManager implements LocalConnecteListener {
         return false;
     }
 
-
-
     public SmartDev getCurrentSelectSmartDevice() {
         return currentSelectSmartDevice;
     }
@@ -225,6 +225,7 @@ public class DeviceManager implements LocalConnecteListener {
     public void setCurrentSelectSmartDevice(SmartDev currentSelectSmartDevice) {
         this.currentSelectSmartDevice = currentSelectSmartDevice;
     }
+
     /**
      * 查找所有的智能设备
      */
@@ -242,6 +243,7 @@ public class DeviceManager implements LocalConnecteListener {
         Log.i(TAG, "删除一个智能设备，删除影响的行数=" + affectcolumn);
         return affectcolumn;
     }
+
     /**
      * 解除绑定
      * 解除绑定后根据返回结果更新数据库
@@ -270,6 +272,7 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 更新设备所在房间
      */
@@ -293,6 +296,7 @@ public class DeviceManager implements LocalConnecteListener {
         });
 
     }
+
     public void deleteSmartDeviceInWhatRoom(final Room room, final String deviceUid) {
         cachedThreadPool.execute(new Runnable() {
             @Override
@@ -315,7 +319,6 @@ public class DeviceManager implements LocalConnecteListener {
         });
 
     }
-
 
 
     @Override
@@ -390,7 +393,7 @@ public class DeviceManager implements LocalConnecteListener {
                         }
                         //对比数据库和本地查询到的智能锁设备，如果数据库没有就添加到数据库中去
                         break;
-                  default:
+                    default:
 
                         break;
                 }
@@ -478,6 +481,7 @@ public class DeviceManager implements LocalConnecteListener {
 
     @Override
     public void onSetWifiRelayResult(String result) {
+        Log.i(TAG,"onSetWifiRelayResult="+result);
         Gson gson = new Gson();
         OpResult opResult = gson.fromJson(result, OpResult.class);
         if (opResult.getOP().equals("REPORT") && opResult.getMethod().equals("WIFI"))

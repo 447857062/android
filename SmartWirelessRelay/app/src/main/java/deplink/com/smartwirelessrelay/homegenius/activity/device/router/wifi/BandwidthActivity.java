@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,7 +36,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener 
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private TextView textview_edit;
 
     @Override
@@ -150,7 +151,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener 
         imageview_bandwidth_20 = (ImageView) findViewById(R.id.imageview_bandwidth_20);
         imageview_bandwidth_40 = (ImageView) findViewById(R.id.imageview_bandwidth_40);
         textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
     @Override

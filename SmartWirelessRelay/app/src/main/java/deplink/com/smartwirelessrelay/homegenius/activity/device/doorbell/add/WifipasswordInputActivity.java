@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class WifipasswordInputActivity extends Activity implements View.OnClickListener{
-    private ImageView image_back;
+    private FrameLayout image_back;
     private TextView textview_title;
     private Button button_next_step;
     @Override
@@ -33,7 +33,7 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
 
     private void initViews() {
         textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         button_next_step = (Button) findViewById(R.id.button_next_step);
     }
 

@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
 
 public class UserinfoActivity extends Activity implements View.OnClickListener {
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private RelativeLayout layout_user_header_image;
     private RelativeLayout layout_update_user_nickname;
     private RelativeLayout layout_update_sex;
@@ -55,7 +55,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         layout_user_header_image = (RelativeLayout) findViewById(R.id.layout_user_header_image);
         layout_update_user_nickname = (RelativeLayout) findViewById(R.id.layout_update_user_nickname);
         layout_update_sex = (RelativeLayout) findViewById(R.id.layout_update_sex);

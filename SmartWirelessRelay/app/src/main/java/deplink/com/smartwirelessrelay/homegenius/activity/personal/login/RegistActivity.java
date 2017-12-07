@@ -3,7 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.personal.login;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -12,7 +12,7 @@ public class RegistActivity extends Activity implements View.OnClickListener{
 
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ public class RegistActivity extends Activity implements View.OnClickListener{
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
     }
 
     @Override

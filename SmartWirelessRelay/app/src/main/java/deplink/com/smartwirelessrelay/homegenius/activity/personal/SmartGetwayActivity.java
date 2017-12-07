@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -17,7 +17,7 @@ public class SmartGetwayActivity extends Activity implements View.OnClickListene
     private Button button_sure;
     private ClearEditText clearEditText;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +39,7 @@ public class SmartGetwayActivity extends Activity implements View.OnClickListene
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         button_sure= (Button) findViewById(R.id.button_sure);
         clearEditText = (ClearEditText) findViewById(R.id.clear);
     }

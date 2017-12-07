@@ -12,8 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 
 /**
@@ -154,6 +154,8 @@ public class DeviceListAdapter extends BaseAdapter {
             viewHolder.imageview_device_type.setImageResource(R.drawable.gatewayicon);
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
+            String deviceSubType="";
+            deviceSubType= listBottom.get(position - TopCount).getSubType();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
             Log.i(TAG, "deviceType=" + deviceType + "deviceStatu=" + deviceStatu);
             if("SMART_LOCK".equals(deviceType)){
@@ -164,12 +166,12 @@ public class DeviceListAdapter extends BaseAdapter {
             }
             viewHolder.textview_device_name.setText(deviceType);
             viewHolder.textview_device_status.setText("状态:" + deviceStatu);
-            getDeviceTypeImage(viewHolder, deviceType);
+            getDeviceTypeImage(viewHolder, deviceType,deviceSubType);
         }
         return convertView;
     }
 
-    private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType) {
+    private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType,String deviceSubType) {
         switch (deviceType){
             case AppConstant.DEVICES.TYPE_ROUTER:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.routericon);
@@ -182,7 +184,21 @@ public class DeviceListAdapter extends BaseAdapter {
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
-                viewHolder.imageview_device_type.setImageResource(R.drawable.switchicon);
+                switch (deviceSubType){
+                    case "一路开关":
+                        viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
+                        break;
+                    case "二路开关":
+                        viewHolder.imageview_device_type.setImageResource(R.drawable.roadswitch);
+                        break;
+                    case "三路开关":
+                        viewHolder.imageview_device_type.setImageResource(R.drawable.threewayswitch);
+                        break;
+                    case "四路开关":
+                        viewHolder.imageview_device_type.setImageResource(R.drawable.fourwayswitch);
+                        break;
+                }
+
                 break;
             case AppConstant.DEVICES.TYPE_REMOTECONTROL:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.infraredremotecontrolicon);

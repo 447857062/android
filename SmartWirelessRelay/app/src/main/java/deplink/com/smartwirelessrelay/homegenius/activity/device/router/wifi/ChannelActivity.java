@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -61,7 +62,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     private MakeSureDialog connectLostDialog;
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,7 +201,7 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         textview_edit= (TextView) findViewById(R.id.textview_edit);
         layout_channel_auto= (RelativeLayout) findViewById(R.id.layout_channel_auto);
         layout_channel_1= (RelativeLayout) findViewById(R.id.layout_channel_1);

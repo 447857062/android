@@ -3,7 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.alar
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,7 +21,7 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
     private SmartLockManager mSmartLockManager;
     private boolean isStartFromExperience;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
     private void initViews() {
         list_alart_histroy = (ListView) findViewById(R.id.list_alart_histroy);
         textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
     private void initDatas() {

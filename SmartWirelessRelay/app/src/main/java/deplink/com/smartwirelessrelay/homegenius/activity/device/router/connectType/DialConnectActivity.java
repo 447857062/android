@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -28,7 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class DialConnectActivity extends Activity implements View.OnClickListener{
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private EditText edittext_account;
     private EditText edittext_password;
     private EditText edittext_dns;
@@ -125,7 +125,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         edittext_account = (EditText) findViewById(R.id.edittext_account);
         edittext_password = (EditText) findViewById(R.id.edittext_password);
         edittext_dns = (EditText) findViewById(R.id.edittext_dns);

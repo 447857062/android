@@ -10,7 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,7 +46,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     private TextView textview_channel;
     private TextView textview_bandwidth;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private CheckBox checkbox_wireless_wifi;
     private CheckBox checkbox_hide_net;
     private boolean isUserLogin;
@@ -311,7 +311,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         textview_bandwidth = (TextView) findViewById(R.id.textview_bandwidth);
         textview_wifi_name = (TextView) findViewById(R.id.textview_wifi_name);
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         checkbox_wireless_wifi = (CheckBox) findViewById(R.id.checkbox_wireless_wifi);
         checkbox_hide_net = (CheckBox) findViewById(R.id.checkbox_hide_net);
         layout_wireless_wifi = (RelativeLayout) findViewById(R.id.layout_wireless_wifi);

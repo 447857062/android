@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +27,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -36,8 +37,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private static final String TAG = "AddDeviceNameActivity";
     private String currentAddDevice;
     private DeviceManager mDeviceManager;
+    private SmartSwitchManager mSmartSwitchManager;
     private Button button_add_device_sure;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private EditText edittext_add_device_input_name;
     /**
      * 当前待添加设备
@@ -67,7 +69,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private void initViews() {
         button_add_device_sure = (Button) findViewById(R.id.button_add_device_sure);
         edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         textview_title = (TextView) findViewById(R.id.textview_title);
     }
 
@@ -75,6 +77,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private void initDatas() {
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDoorbeelManager.InitDoorbeelManager(this);
+        mSmartSwitchManager = SmartSwitchManager.getInstance();
+        mSmartSwitchManager.InitSmartSwitchManager(this);
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
         //getintent data
@@ -105,7 +109,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 edittext_add_device_input_name.setHint("例如:智能机顶盒遥控（最多5个字）");
                 textview_title.setText("智能机顶盒遥控");
                 break;
-            case "智能开关":
+            case AppConstant.DEVICES.TYPE_SWITCH:
                 edittext_add_device_input_name.setHint("例如:智能开关（最多5个字）");
                 textview_title.setText("智能开关");
                 break;
@@ -262,7 +266,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         Log.i(TAG, "deviceType=" + deviceType + "device=" + (device != null));
                         break;
-                    case "智能开关":
+                    case AppConstant.DEVICES.TYPE_SWITCH:
                         if (deviceName.equals("")) {
                             deviceName = "智能开关";
                         }
@@ -305,10 +309,14 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         Log.i(TAG, "绑定智能设备");
                         mDeviceManager.bindSmartDevList(device);
                         break;
-                    case "智能开关":
+                    case AppConstant.DEVICES.TYPE_SWITCH:
                         //TODO
                         device.setAd(switchqrcode);
+                       // device.setAd("智能开关uid");
+                        device.setTp(AppConstant.DEVICES.TYPE_SWITCH);
+                        mSmartSwitchManager.addDBSwitchDevice(device);
                         mDeviceManager.bindSmartDevList(device);
+
                         break;
                     case "IRMOTE_V2":
                         device.setAd("智能遥控序列号001");

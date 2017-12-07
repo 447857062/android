@@ -18,6 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;

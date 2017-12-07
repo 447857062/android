@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +44,7 @@ import io.reactivex.disposables.Disposable;
 
 public class RouterSettingActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RouterSettingActivity";
-    private ImageView image_back;
+    private FrameLayout image_back;
     private RelativeLayout layout_router_name_out;
     private RelativeLayout layout_room_select_out;
     private RelativeLayout layout_connect_type_select_out;
@@ -196,7 +196,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_router_name_out = (RelativeLayout) findViewById(R.id.layout_router_name_out);
         layout_room_select_out = (RelativeLayout) findViewById(R.id.layout_room_select_out);
         layout_connect_type_select_out = (RelativeLayout) findViewById(R.id.layout_connect_type_select_out);

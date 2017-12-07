@@ -3,7 +3,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -11,7 +11,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 public class UpdateSmartLockUserIdActivity extends Activity implements View.OnClickListener{
     private TextView textview_title;
     private TextView textview_edit;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         textview_edit= (TextView) findViewById(R.id.textview_edit);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
     }
 
     @Override

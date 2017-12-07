@@ -134,6 +134,8 @@
     <dimen name="adddevice_surebutton_margintop">48dp</dimen>
     <dimen name="adddevice_surebutton_width">284dp</dimen>
     <dimen name="delete_device_button_margintop">58dp</dimen>
+    <dimen name="remotecontrol_learn_byhand_info2_margintop">30dp</dimen>
+    <dimen name="remotecontrol_learn_byhand_cancelbutton_width">197dp</dimen>
 
     <!--门锁设备界面尺寸-->
     <!--size-->
@@ -144,7 +146,9 @@
     <dimen name="doorlock_top_framelayout_inner_bg_height">350dp</dimen>
     <dimen name="doorlock_auth_dialog_input_password_layout_width">260dp</dimen>
     <dimen name="point_black_width_height">15dp</dimen>
+    <dimen name="keybord_icon_size">72dp</dimen>
     <!---->
+    <dimen name="keybord_layout_margin_left_right">40dp</dimen>
     <dimen name="doorlock_operation_layout_margin_left_right">26dp</dimen>
     <dimen name="doorlock_operation_one_padding_hor_other">22dp</dimen>
     <dimen name="doorlock_operation_one_padding_ver_other">26dp</dimen>
@@ -154,6 +158,8 @@
 
     <!--智能开关，选择开关类型。开关类型名字距离左边开关图标距离-->
     <dimen name="smart_switch_name_marginleft_typeImage">15dp</dimen>
+    <dimen name="smart_switch_mainpage_center_image_margintop">60dp</dimen>
+    <dimen name="smart_switch_mainpage_center_image_width_height">240dp</dimen>
     <!--智能门铃设备-->
     <!--size-->
     <dimen name="add_doorbell_imageview_height">240dp</dimen>

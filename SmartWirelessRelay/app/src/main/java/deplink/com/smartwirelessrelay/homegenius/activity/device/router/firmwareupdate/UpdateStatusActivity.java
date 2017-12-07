@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -33,6 +34,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_title;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +143,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
         textview_title= (TextView) findViewById(R.id.textview_title);
         button_sure = (Button) findViewById(R.id.button_sure);
         textview_updateing = (TextView) findViewById(R.id.textview_updateing);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
 
@@ -150,6 +153,9 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
             case R.id.button_sure:
                 startActivity(new Intent(this, PersonalCenterActivity.class));
                 finish();
+                break;
+            case R.id.image_back:
+               onBackPressed();
                 break;
         }
     }

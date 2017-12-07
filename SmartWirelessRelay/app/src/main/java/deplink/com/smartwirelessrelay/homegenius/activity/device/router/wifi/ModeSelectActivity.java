@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
 
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private RelativeLayout layout_model_AC;
     private RelativeLayout layout_model_N;
     private RelativeLayout layout_model_4;
@@ -156,7 +157,7 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         layout_model_AC= (RelativeLayout) findViewById(R.id.layout_model_AC);
         layout_model_N= (RelativeLayout) findViewById(R.id.layout_model_N);
         layout_model_4= (RelativeLayout) findViewById(R.id.layout_model_4);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     private String currentSelectEncryptType;
     private TextView textview_edit;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private String wifiType;
     private SDKManager manager;
     private EventCallback ec;
@@ -152,7 +153,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
         imageview_mix = (ImageView) findViewById(R.id.imageview_mix);
         imageview_none = (ImageView) findViewById(R.id.imageview_none);
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
 
     }
 

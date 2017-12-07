@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity">
 
     <include
         android:id="@+id/layout_title"

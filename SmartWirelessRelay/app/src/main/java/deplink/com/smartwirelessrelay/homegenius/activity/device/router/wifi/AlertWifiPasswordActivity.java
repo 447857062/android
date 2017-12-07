@@ -11,6 +11,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,7 +43,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private ImageView image_input_eye_password_again;
     private String password;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     /**
      * wifi名称密码设置成功，后面要重启了
      */
@@ -140,7 +141,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
         image_input_eye_password = (ImageView) findViewById(R.id.image_input_eye_password);
         image_input_eye_password_again = (ImageView) findViewById(R.id.image_input_eye_password_again);
         textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         edittext_password = (EditText) findViewById(R.id.edittext_password);
         edittext_password_again = (EditText) findViewById(R.id.edittext_password_again);
     }

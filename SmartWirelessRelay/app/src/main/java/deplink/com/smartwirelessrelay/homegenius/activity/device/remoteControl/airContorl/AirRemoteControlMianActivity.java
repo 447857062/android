@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.aircondition.Aircondition_menu_Dialog;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.aircondition.Aircondition_mode_select_Dialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.aircondition.Aircondition_mode_select_Dialog;
 
 public class AirRemoteControlMianActivity extends Activity implements View.OnClickListener{
     private static final String TAG="ARCMianActivity";
@@ -17,7 +17,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private ImageView image_setting;
     private ImageView imageview_auto_model;
     private Aircondition_mode_select_Dialog modeDialog;
-    private Aircondition_menu_Dialog menu_dialog;
+    private RemoteControlMenuDialog menu_dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +29,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
 
     private void initDatas() {
         modeDialog=new Aircondition_mode_select_Dialog(this);
-        menu_dialog=new Aircondition_menu_Dialog(this);
+        menu_dialog=new RemoteControlMenuDialog(this,RemoteControlMenuDialog.TYPE_AIRCONDITION);
         textview_title.setText("智能空调遥控");
         image_setting.setImageResource(R.drawable.menuicon);
     }

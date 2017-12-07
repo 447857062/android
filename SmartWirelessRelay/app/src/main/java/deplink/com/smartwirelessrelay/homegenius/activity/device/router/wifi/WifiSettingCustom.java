@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,7 +38,7 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
     private TextView textview_wifi_name;
     private TextView textview_password;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private String encryptionType;
     private String password;
     private String wifiName;
@@ -223,7 +223,7 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
         textview_wifi_name = (TextView) findViewById(R.id.textview_wifi_name);
         textview_password = (TextView) findViewById(R.id.textview_password);
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         checkbox_wifi_switch = (CheckBox) findViewById(R.id.checkbox_wifi_switch);
         textview_edit = (TextView) findViewById(R.id.textview_edit);
     }

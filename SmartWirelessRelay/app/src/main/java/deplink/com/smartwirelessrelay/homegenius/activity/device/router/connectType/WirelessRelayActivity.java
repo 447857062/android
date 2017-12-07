@@ -9,7 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -59,7 +59,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     private WifiRelayInputDialog mqttSetWanDialogHasPassword;
     //MQTT接口 end
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private String op_type;
     //链接参数
     private String crypt = "";
@@ -646,7 +646,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         mPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_wireless_relay_line);
 
     }

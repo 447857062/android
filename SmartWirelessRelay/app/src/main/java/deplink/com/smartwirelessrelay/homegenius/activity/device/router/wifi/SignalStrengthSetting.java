@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,7 +57,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
     private String currentWifiMode;
 
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
@@ -205,7 +206,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
         imageview_model_balance = (ImageView) findViewById(R.id.imageview_model_balance);
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
     }
 
     @Override

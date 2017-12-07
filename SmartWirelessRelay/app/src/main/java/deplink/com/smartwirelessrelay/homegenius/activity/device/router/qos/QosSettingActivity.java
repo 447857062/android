@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class QosSettingActivity extends Activity implements View.OnClickListener{
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private RelativeLayout layout_model_A;
     private RelativeLayout layout_model_B;
     private RelativeLayout layout_model_download;
@@ -200,7 +201,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         layout_model_A = (RelativeLayout) findViewById(R.id.layout_model_A);
         layout_model_B = (RelativeLayout) findViewById(R.id.layout_model_B);
         layout_model_download = (RelativeLayout) findViewById(R.id.layout_model_download);

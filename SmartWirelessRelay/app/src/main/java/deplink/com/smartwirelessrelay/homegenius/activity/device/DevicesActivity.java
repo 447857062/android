@@ -30,11 +30,16 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.a
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchFourActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchThreeActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
@@ -123,6 +128,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 if (datasTop.size() < (position + 1)) {
                     //智能设备
                     String deviceType = datasBottom.get(position - datasTop.size()).getType();
+                    String deviceSubType = datasBottom.get(position - datasTop.size()).getSubType();
                     Log.i(TAG, "智能设备类型=" + deviceType);
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                     switch (deviceType) {
@@ -145,8 +151,22 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         case "智能机顶盒遥控":
                             startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
                             break;
-                        case "智能开关":
-                           // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));
+                        case AppConstant.DEVICES.TYPE_SWITCH:
+                            switch (deviceSubType){
+                                case "一路开关":
+                                    startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
+                                    break;
+                                case "二路开关":
+                                    startActivity(new Intent(DevicesActivity.this, SwitchTwoActivity.class));
+                                    break;
+                                case "三路开关":
+                                    startActivity(new Intent(DevicesActivity.this, SwitchThreeActivity.class));
+                                    break;
+                                case "四路开关":
+                                    startActivity(new Intent(DevicesActivity.this, SwitchFourActivity.class));
+                                    break;
+                            }
+
                             break;
                         case "智能门铃":
                             startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));

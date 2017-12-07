@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -30,7 +30,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
      */
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private String wifiname;
 
     private EditText edittext_wifi_name;
@@ -145,7 +145,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         textview_edit= (TextView) findViewById(R.id.textview_edit);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
 
         edittext_wifi_name = (EditText) findViewById(R.id.edittext_wifi_name);
 

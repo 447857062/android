@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -15,12 +16,12 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.add.AddDoorbellTipsActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwayNotifyActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SelectSwitchTypeActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
@@ -35,7 +36,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_scan_device;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +54,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private void initViews() {
         mGridView = (GridView) findViewById(R.id.gridview_add_device_type);
         imageview_scan_device = (ImageView) findViewById(R.id.imageview_scan_device);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
     private List<String> mDeviceTypes;
@@ -93,7 +94,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
                 break;
             case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
-                intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, ChooseBandActivity.class);
+                intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AirconditionChooseBandActivity.class);
                 startActivity(intentQrcodeSn);
                 break;
             case AppConstant.DEVICES.TYPE_ROUTER:

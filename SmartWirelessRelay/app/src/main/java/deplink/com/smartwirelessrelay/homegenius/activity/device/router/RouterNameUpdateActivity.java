@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +21,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     private RouterManager mRouterManager;
     private TextView textview_title;
     private TextView textview_edit;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
         edittext_router_name= (ClearEditText) findViewById(R.id.edittext_router_name);
         textview_title= (TextView) findViewById(R.id.textview_title);
         textview_edit= (TextView) findViewById(R.id.textview_edit);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
     }
 
     @Override

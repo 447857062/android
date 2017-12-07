@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
 public class TvMainActivity extends Activity implements View.OnClickListener {
     private ImageView image_back;
@@ -21,6 +22,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private View view_control_number;
     private TextView textview_control_base;
     private TextView textview_control_number;
+    private RemoteControlMenuDialog menu_dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         textview_title.setText("电视遥控");
+        menu_dialog=new RemoteControlMenuDialog(this,RemoteControlMenuDialog.TYPE_TV);
         image_setting.setImageResource(R.drawable.menuicon);
     }
 
@@ -63,6 +66,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.image_setting:
+                menu_dialog.show();
                 break;
             case R.id.layout_title_control_base:
                 layout_control_base.setVisibility(View.VISIBLE);

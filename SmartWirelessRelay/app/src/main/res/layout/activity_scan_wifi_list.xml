@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/layout_topbar"
-        layout="@layout/layout_title_with_back_center_titletext" />
+        layout="@layout/layout_title_with_right_have_text_have_textbackground" />
 
     <RelativeLayout
         android:id="@+id/layout_select_wifi"

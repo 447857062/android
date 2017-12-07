@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,7 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 public class LanSettingActivity extends Activity implements View.OnClickListener{
     private TextView textview_title;
     private TextView textview_edit;
-    private ImageView image_back;
+    private FrameLayout image_back;
     private EditText edittext_ip_address;
     private EditText edittext_submask;
     private EditText edittext_ip_addrss_start;
@@ -188,7 +188,7 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (ImageView) findViewById(R.id.image_back);
+        image_back= (FrameLayout) findViewById(R.id.image_back);
         edittext_ip_address = (EditText) findViewById(R.id.edittext_ip_address);
         edittext_submask = (EditText) findViewById(R.id.edittext_submask);
         edittext_ip_addrss_start = (EditText) findViewById(R.id.edittext_ip_addrss_start);

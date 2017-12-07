@@ -80,6 +80,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SetLockPwdActivity"
+            android:theme="@style/Transparent"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity"
@@ -113,7 +114,7 @@
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.GetwayCheckActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity"
@@ -128,25 +129,25 @@
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwaySettingOptionsActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.ChooseBandActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.addRemoteControlActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AddRemoteControlActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.AddGetwayNotifyActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwayNotifyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.QueryGetwaysActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.QueryGetwaysActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UserinfoActivity"
@@ -197,7 +198,7 @@
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SelectSwitchTypeActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity"
@@ -281,6 +282,17 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchTwoActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchThreeActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchFourActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.EditActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.EditDoorbellActivity" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.VistorHistoryActivity" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity"
+            android:theme="@style/Transparent" />
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity"></activity>
     </application>
 
 </manifest>

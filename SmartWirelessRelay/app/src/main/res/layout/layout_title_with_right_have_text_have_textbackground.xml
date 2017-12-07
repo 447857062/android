@@ -12,15 +12,18 @@
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"
         android:layout_marginTop="@dimen/title_bar_content_margin_top">
-
-        <ImageView
+        <FrameLayout
             android:id="@+id/image_back"
-            android:scaleType="centerInside"
             android:layout_width="48dp"
-            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/returnicon" />
+            android:layout_height="match_parent">
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="left|center_vertical"
+                android:src="@drawable/returnicon" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/textview_title"
@@ -41,7 +44,6 @@
             android:layout_centerVertical="true"
             android:gravity="right|center_vertical"
             android:text="编辑"
-
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_small" />
 

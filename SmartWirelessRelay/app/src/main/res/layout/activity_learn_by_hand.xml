@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/viewfinder_mask"
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity">
+    <TextView
+        android:id="@+id/textview_info_1"
+        android:layout_marginTop="@dimen/title_bar_height"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="设备学习中..."
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/iamgeview_instrution"
+        android:scaleType="centerInside"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/manuallearning"
+        android:layout_below="@+id/textview_info_1"
+        />
+    <TextView
+        android:id="@+id/textview_info_2"
+        android:layout_below="@+id/iamgeview_instrution"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/remotecontrol_learn_byhand_info2_margintop"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="请将遥控器对准智能遥控"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/textview_info_3"
+        android:layout_below="@+id/textview_info_2"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="按下按键完成按键的学习"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content" />
+    <Button
+        android:background="@drawable/qrcode_cancel_button_background"
+        android:id="@+id/button_cancel"
+        android:layout_width="@dimen/remotecontrol_learn_byhand_cancelbutton_width"
+        android:layout_centerHorizontal="true"
+        android:layout_height="@dimen/add_doorbell_buttom_button_height"
+        android:layout_below="@+id/textview_info_3"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/remotecontrol_learn_byhand_info2_margintop"
+        android:text="取消" />
+</RelativeLayout>

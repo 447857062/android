@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayCheckActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;

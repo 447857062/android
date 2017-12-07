@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,7 +34,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     private EventCallback ec;
     private RouterManager mRouterManager;
     private TextView textview_title;
-    private ImageView image_back;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +126,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_wifi_24 = (RelativeLayout) findViewById(R.id.layout_wifi_24);
         layout_wifi_custom = (RelativeLayout) findViewById(R.id.layout_wifi_custom);
         layout_signal_strength = (RelativeLayout) findViewById(R.id.layout_signal_strength);

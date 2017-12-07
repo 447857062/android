@@ -17,10 +17,21 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Uid;
     private String CtrUid;
     private String Type;
+    /*设备类型子类型，比如开关，下面又会分1,2,3，4,路开关*/
+    private String subType;
     private String Status;
     private String Org;
     private String Ver;
     private String name;
+
+    public String getSubType() {
+        return subType;
+    }
+
+    public void setSubType(String subType) {
+        this.subType = subType;
+    }
+
     /**
      * 数据库中的关联关系必须要初始化好列表
      */
