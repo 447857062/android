@@ -37,7 +37,7 @@
         android:src="@drawable/directionicon" />
     <View
         android:layout_alignParentBottom="true"
-        android:background="@color/huise"
+        android:background="@color/seekbar_horiz"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 </RelativeLayout>

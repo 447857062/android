@@ -22,7 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.smartlock.AuthoriseDialog;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.LockdeviceClearRecordDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.smartlock.LockdeviceClearRecordDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.smartlock.PasswordNotsaveDialog;
 
 public class SmartLockActivity extends Activity implements View.OnClickListener, SmartLockListener, AuthoriseDialog.GetDialogAuthtTypeTimeListener {
@@ -191,6 +191,12 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.layout_open:
                 //TODO
+                clearRecordDialog.setSureBtnClickListener(new LockdeviceClearRecordDialog.onSureBtnClickListener() {
+                    @Override
+                    public void onSureBtnClicked() {
+
+                    }
+                });
                 clearRecordDialog.show();
 
                 break;

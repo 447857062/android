@@ -12,6 +12,7 @@
 
     <!--网关检查结果是一个网关设备系列表-->
     <ListView
+        android:divider="@null"
         android:id="@+id/listview_getway_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

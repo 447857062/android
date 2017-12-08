@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/layout_item_content_height"
     android:minHeight="@dimen/layout_item_content_height"
-    android:paddingLeft="@dimen/layout_content_margin_left_right"
+
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical"
     >
 
     <RelativeLayout
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -69,5 +70,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
-        android:background="@color/gray_DFDEDE" />
+        android:background="@color/seekbar_horiz" />
 </LinearLayout>

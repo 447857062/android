@@ -3,7 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/layout_content_margin_left_right"
-    android:paddingRight="@dimen/layout_content_margin_left_right"
     android:background="@color/transparent"
     android:minHeight="@dimen/home_room_switch_layout_minheight"
     android:orientation="vertical">
@@ -41,11 +40,12 @@
           android:id="@+id/arror_right"
           android:layout_alignParentRight="true"
           android:src="@drawable/directionicon"
+          android:layout_marginRight="@dimen/layout_content_margin_left_right"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
     <View
         android:id="@+id/view_line"
-        android:background="@color/huise"
+        android:background="@color/line_clolor"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>

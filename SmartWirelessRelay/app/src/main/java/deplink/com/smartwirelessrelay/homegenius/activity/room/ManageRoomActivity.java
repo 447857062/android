@@ -32,6 +32,8 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
 
     private TextView textview_title;
     private ImageView image_setting;
+    private FrameLayout frame_setting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +63,15 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
+        textview_title = (TextView) findViewById(R.id.textview_title);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
         button_delete_room = (Button) findViewById(R.id.button_delete_room);
         textview_room_name = (TextView) findViewById(R.id.textview_room_name);
         layout_room_name = (RelativeLayout) findViewById(R.id.layout_room_name);
         layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
+
     }
 
 
@@ -77,7 +81,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         switch (v.getId()) {
 
 
-            case R.id.image_setting:
+            case R.id.frame_setting:
 
                 break;
             case R.id.image_back:
@@ -91,6 +95,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                         public void onSubscribe(@NonNull Disposable d) {
 
                         }
+
                         @Override
                         public void onNext(@NonNull Object o) {
                             Log.i(TAG, "删除房间，影响的行数=" + o);
@@ -100,6 +105,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                                 Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
                             }
                         }
+
                         @Override
                         public void onError(@NonNull Throwable e) {
 

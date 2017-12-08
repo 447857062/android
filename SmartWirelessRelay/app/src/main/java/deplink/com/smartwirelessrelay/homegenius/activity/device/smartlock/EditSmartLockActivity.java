@@ -22,9 +22,11 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 
 public class EditSmartLockActivity extends Activity implements View.OnClickListener, DeviceListener {
@@ -37,6 +39,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private TextView textview_title;
     private TextView textview_edit;
     private ClearEditText edittext_input_devie_name;
+    private DeleteDeviceDialog deleteDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +57,17 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     }
     private boolean isStartFromExperience;
     private void initDatas() {
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         textview_title.setText("编辑");
         textview_edit.setText("完成");
-        mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        if(isStartFromExperience){
+            edittext_input_devie_name.setText("我家的门锁");
+            edittext_input_devie_name.setSelection(5);
+        }else{
+            mDeviceManager = DeviceManager.getInstance();
+            mDeviceManager.InitDeviceManager(this, this);
+        }
+        deleteDialog=new DeleteDeviceDialog(this);
     }
 
     private void initViews() {
@@ -76,10 +85,13 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
             String roomName = data.getStringExtra("roomName");
-            Room room= RoomManager.getInstance().findRoom(roomName,true);
-            String deviceUid=mDeviceManager.getCurrentSelectSmartDevice().getUid();
-            String deviceName=mDeviceManager.getCurrentSelectSmartDevice().getName();
-            mDeviceManager.updateSmartDeviceInWhatRoom(room,deviceUid,deviceName);
+            if(!isStartFromExperience){
+                Room room= RoomManager.getInstance().findRoom(roomName,true);
+                String deviceUid=mDeviceManager.getCurrentSelectSmartDevice().getUid();
+                String deviceName=mDeviceManager.getCurrentSelectSmartDevice().getName();
+                mDeviceManager.updateSmartDeviceInWhatRoom(room,deviceUid,deviceName);
+            }
+
             textview_select_room_name.setText(roomName);
         }
     }
@@ -90,21 +102,29 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-               String devciename= edittext_input_devie_name.getText().toString();
+                String devciename= edittext_input_devie_name.getText().toString();
                 onBackPressed();
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
                 intent.putExtra("EditSmartLockActivity", true);
+                intent.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.button_delete_device:
                 //删除设备
-                if (!isStartFromExperience) {
-                    mDeviceManager.deleteSmartDevice();
-                } else {
-                    startActivity(new Intent(this, DevicesActivity.class));
-                }
+                deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+                    @Override
+                    public void onSureBtnClicked() {
+                        if (!isStartFromExperience) {
+                            mDeviceManager.deleteSmartDevice();
+                        } else {
+                            startActivity(new Intent(EditSmartLockActivity.this, ExperienceDevicesActivity.class));
+                        }
+                    }
+                });
+                deleteDialog.show();
+
 
                 break;
             case R.id.image_back:

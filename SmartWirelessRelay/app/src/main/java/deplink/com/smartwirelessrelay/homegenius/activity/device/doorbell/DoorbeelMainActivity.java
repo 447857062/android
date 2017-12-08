@@ -14,6 +14,7 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     private FrameLayout image_back;
     private ImageView image_setting;
     private TextView textview_title;
+    private FrameLayout frame_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +26,7 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     private void initEvents() {
         image_back.setOnClickListener(this);
         image_setting.setOnClickListener(this);
+        frame_setting.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -37,12 +39,13 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         textview_title = (TextView) findViewById(R.id.textview_title);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
     }
     private Doorbeel_menu_Dialog doorbeelMenuDialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.image_back:
+            case R.id.frame_setting:
                 onBackPressed();
                 break;
             case R.id.image_setting:

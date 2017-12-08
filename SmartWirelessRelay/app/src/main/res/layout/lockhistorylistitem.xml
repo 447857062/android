@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:paddingLeft="@dimen/layout_content_margin_left_right"
+    android:minHeight="@dimen/doorlock_alerthistory_itemheight"
     android:paddingRight="@dimen/layout_content_margin_left_right"
     android:orientation="vertical">
 
@@ -68,7 +70,7 @@
     </LinearLayout>
     <View
         android:layout_alignParentBottom="true"
-        android:background="@color/huise"
+        android:background="@color/seekbar_horiz"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 

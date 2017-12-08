@@ -36,6 +36,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterMan
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import io.reactivex.Observer;
@@ -64,6 +65,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private EventCallback ec;
     private boolean deviceOnline;
     private TextView textview_title;
+    private DeleteDeviceDialog deleteDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,10 +194,13 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_update_out.setOnClickListener(this);
         layout_reboot_out.setOnClickListener(this);
         buttton_delete_router.setOnClickListener(this);
+        buttton_delete_router.setOnClickListener(this);
     }
 
     private void initViews() {
+        deleteDialog=new DeleteDeviceDialog(this);
         textview_title= (TextView) findViewById(R.id.textview_title);
+        buttton_delete_router= (TextView) findViewById(R.id.buttton_delete_router);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_router_name_out = (RelativeLayout) findViewById(R.id.layout_router_name_out);
         layout_room_select_out = (RelativeLayout) findViewById(R.id.layout_room_select_out);
@@ -258,6 +263,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             case R.id.image_back:
                 onBackPressed();
                 break;
+
             case R.id.layout_router_name_out:
                 startActivity(new Intent(this, RouterNameUpdateActivity.class));
                 break;
@@ -306,34 +312,41 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 rebootRightNow.setTitleText("确定立即重启");
                 break;
             case R.id.buttton_delete_router:
-                mRouterManager.deleteRouter(mRouterManager.getCurrentSelectedRouter(), new Observer() {
+                deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
-                    public void onSubscribe(@NonNull Disposable d) {
+                    public void onSureBtnClicked() {
+                        mRouterManager.deleteRouter(mRouterManager.getCurrentSelectedRouter(), new Observer() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onNext(@NonNull Object o) {
-                        int affectColumn = (int) o;
-                        if (affectColumn > 0) {
-                            startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_DELETE_ROUTER_FAIL;
-                            mHandler.sendMessage(msg);
-                        }
-                    }
+                            @Override
+                            public void onNext(@NonNull Object o) {
+                                int affectColumn = (int) o;
+                                if (affectColumn > 0) {
+                                    startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
+                                } else {
+                                    Message msg = Message.obtain();
+                                    msg.what = MSG_DELETE_ROUTER_FAIL;
+                                    mHandler.sendMessage(msg);
+                                }
+                            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
+                            @Override
+                            public void onError(@NonNull Throwable e) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
+                            }
+                        });
                     }
                 });
+                deleteDialog.show();
+
                 break;
         }
     }

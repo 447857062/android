@@ -102,7 +102,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.imageview_back:
+            case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.layout_update_user_nickname:

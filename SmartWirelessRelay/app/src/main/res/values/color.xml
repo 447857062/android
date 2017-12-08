@@ -44,9 +44,11 @@
     <color name="title_blue_bg">#60a3f6</color>
     <color name="room_type_text">#333333</color>
     <color name="white">#ffffff</color>
+    <color name="white_alpha60">#99ffffff</color>
     <color name="huise">#999999</color>
     <color name="seekbar_horiz">#f1f1f1</color>
     <color name="aircondition_mode">#666666</color>
+    <color name="router_line_dirver">#cccccc</color>
     <color name="input_hint">#99ffffff</color>
     <color name="white_background">#f8f8f8</color>
     <color name="delete_button">#f55555</color>

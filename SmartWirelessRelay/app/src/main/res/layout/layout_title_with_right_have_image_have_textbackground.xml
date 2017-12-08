@@ -36,15 +36,21 @@
             android:text=""
             android:textColor="@color/white"
             android:textSize="@dimen/layout_top_bar_item_text_size" />
-
-        <ImageView
-            android:scaleType="centerInside"
-            android:id="@+id/image_setting"
+        <FrameLayout
+        android:id="@+id/frame_setting"
             android:layout_width="48dp"
-            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/menuicon" />
+            android:layout_height="match_parent">
+            <ImageView
+                android:scaleType="centerInside"
+                android:id="@+id/image_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+               android:layout_gravity="right"
+                android:layout_centerVertical="true"
+                android:src="@drawable/menuicon" />
+        </FrameLayout>
+
     </RelativeLayout>
 </RelativeLayout>
 

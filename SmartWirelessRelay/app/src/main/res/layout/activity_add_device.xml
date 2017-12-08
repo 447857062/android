@@ -22,14 +22,16 @@
                 android:layout_alignParentLeft="true"
                 android:id="@+id/image_back"
                 android:layout_width="48dp"
-                android:layout_height="match_parent"></FrameLayout>
-            <ImageView
+                android:layout_height="match_parent">
+                <ImageView
 
-                android:layout_width="wrap_content"
-                android:scaleType="centerInside"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:src="@drawable/returnicon" />
+                    android:layout_width="wrap_content"
+                    android:scaleType="centerInside"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/returnicon" />
+            </FrameLayout>
+
 
             <TextView
                 android:id="@+id/textview_title"

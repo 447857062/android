@@ -68,19 +68,22 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:text="例如："
+            android:text="名称："
+            android:textSize="@dimen/text_size_small"
             android:textColor="@color/room_type_text" />
 
-        <EditText
+        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
             android:id="@+id/edittext_room_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginTop="@dimen/room_list_item_margin_top"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small"
             android:layout_toRightOf="@+id/textview_example_room_name"
             android:background="@null"
             android:gravity="center_vertical"
-            android:hint="书房（名称最多5个字）"
+            android:hint="（名称最多5个字）"
             android:maxLength="5"
             android:textColorHint="@color/huise" />
     </RelativeLayout>
@@ -98,12 +101,23 @@
         android:paddingRight="@dimen/layout_content_margin_left_right">
 
         <TextView
+            android:id="@+id/textview_getway_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:text="网关：家里的网关"
+            android:text="网关："
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+        <TextView
+            android:id="@+id/textview_getway_name"
+            android:layout_toRightOf="@+id/textview_getway_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="家里的网关"
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small" />
 

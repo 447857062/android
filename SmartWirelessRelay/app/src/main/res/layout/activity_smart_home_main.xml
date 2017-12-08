@@ -184,12 +184,12 @@
             android:alpha="0.9"
             android:background="@drawable/homepage_halfrectangle_buttom_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
-            android:paddingRight="@dimen/layout_content_margin_left_right"
             android:scrollbars="none"
+            android:divider="@null"
             android:id="@+id/listview_experience_center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layout_experience_center_top"></ListView>
+            android:layout_below="@+id/layout_experience_center_top"/>
     </RelativeLayout>
 
     <RelativeLayout

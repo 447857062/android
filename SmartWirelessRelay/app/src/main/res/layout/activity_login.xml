@@ -172,6 +172,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:visibility="invisible"
         android:id="@+id/layout_login_other_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -244,6 +245,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:fitsSystemWindows="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/text_user_protocal_margin_buttom"

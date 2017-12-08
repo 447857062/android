@@ -5,12 +5,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 
 /**
  * 授权操作dialog
@@ -19,8 +22,8 @@ public class PasswordNotsaveDialog extends Dialog implements View.OnClickListene
     private static final String TAG = "PasswordNotsaveDialog";
     private Context mContext;
     private PasswordNotsaveSureListener mOnSureClick;
-    private Button button_cancel;
-    private Button button_sure;
+    private TextView button_cancel;
+    private TextView button_sure;
     public PasswordNotsaveDialog(Context context) {
         super(context, R.style.AuthoriseDialog);
         mContext = context;
@@ -34,11 +37,7 @@ public class PasswordNotsaveDialog extends Dialog implements View.OnClickListene
         WindowManager.LayoutParams p = new WindowManager.LayoutParams();
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        int screenWidth = dm.widthPixels;
-        int screenHeigh = dm.heightPixels;
-        p.height = (int) (screenHeigh * 0.35);
-        p.width = (int) (screenWidth * 0.9);
+        p.width = (int) Perfence.dp2px(mContext,290);
         View view;
 
         view = LayoutInflater.from(mContext).inflate(R.layout.password_notsave_dialog, null);
@@ -62,8 +61,8 @@ public class PasswordNotsaveDialog extends Dialog implements View.OnClickListene
 
 
     private void initView() {
-        button_cancel= (Button) findViewById(R.id.button_cancel);
-        button_sure= (Button) findViewById(R.id.button_sure);
+        button_cancel= (TextView) findViewById(R.id.button_cancel);
+        button_sure= (TextView) findViewById(R.id.button_sure);
 
     }
 
@@ -97,6 +96,8 @@ public class PasswordNotsaveDialog extends Dialog implements View.OnClickListene
 
     @Override
     public void show() {
+        Window dialogWindow = this.getWindow();
+        dialogWindow.setGravity( Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         super.show();
 
     }

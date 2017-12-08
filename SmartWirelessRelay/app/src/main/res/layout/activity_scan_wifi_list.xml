@@ -57,6 +57,7 @@
         android:layout_alignParentBottom="true">
 
         <TextView
+            android:id="@+id/textview_reload_wifilist"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_centerHorizontal="true"

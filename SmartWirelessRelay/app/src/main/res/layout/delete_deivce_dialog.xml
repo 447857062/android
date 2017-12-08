@@ -9,7 +9,7 @@
         android:id="@+id/textview_title"
         android:layout_marginTop="@dimen/doorlock_clear_record_dialog_title_margintop"
         android:textColor="@color/huise"
-        android:text="清除记录"
+        android:text="删除设备"
         android:gravity="center_horizontal|center_vertical"
         android:textSize="@dimen/layout_top_bar_item_text_size"
         android:layout_width="match_parent"
@@ -19,15 +19,15 @@
         android:layout_below="@+id/textview_title"
         android:layout_marginTop="@dimen/doorlock_clear_record_dialog_title_margintop"
         android:textColor="@color/room_type_text"
-        android:textSize="@dimen/text_size_small"
-        android:text="确定清除所有报警记录和开锁记录?"
+        android:textSize="@dimen/layout_top_bar_item_text_size"
+        android:text="确定删除设备?"
         android:gravity="center_horizontal|center_vertical"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <View
         android:id="@+id/view_line"
-        android:background="@color/seekbar_horiz"
+        android:background="@color/huise"
         android:layout_below="@+id/textview_makesure"
         android:layout_marginTop="@dimen/doorlock_clear_record_dialog_title_margintop"
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
             android:layout_height="match_parent" />
         <View
             android:layout_centerHorizontal="true"
-            android:background="@color/seekbar_horiz"
+            android:background="@color/huise"
             android:id="@+id/view_ver_line"
             android:layout_width="1dp"
             android:layout_height="match_parent"/>

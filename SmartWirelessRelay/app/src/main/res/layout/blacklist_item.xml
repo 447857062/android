@@ -1,8 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_background"
-    android:gravity="center_vertical"
     android:minHeight="@dimen/router_device_connect_devices_list_item_height">
 
     <RelativeLayout
@@ -37,13 +35,10 @@
     </RelativeLayout>
 
 
-
-
-
-
     <View
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/huise" />
+        android:background="@color/router_line_dirver" />
 </RelativeLayout>

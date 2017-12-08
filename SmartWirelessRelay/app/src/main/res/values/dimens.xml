@@ -93,9 +93,9 @@
 
 
     <!--个人中心界面尺寸-->
-    <dimen name="mine_page_user_image_margintop">117dp</dimen>
+    <dimen name="mine_page_user_image_margintop">112dp</dimen>
     <dimen name="mine_page_top_background_height">234dp</dimen>
-    <dimen name="mine_page_user_image_ridus">60dp</dimen>
+    <dimen name="mine_page_user_image_ridus">65dp</dimen>
     <dimen name="mine_page_logout_margitop">60dp</dimen>
     <dimen name="experience_center_listitem_height">75dp</dimen>
     <dimen name="experience_center_listitem_devicetype_marginleft">10dp</dimen>
@@ -109,6 +109,7 @@
     <!--图片圆弧角度-->
     <dimen name="device_item_background_ridus">8dp</dimen>
     <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
+    <dimen name="ridus30">30dp</dimen>
     <dimen name="ridus22">22dp</dimen>
     <dimen name="ridus2">2dp</dimen>
     <dimen name="ridus_8">8dp</dimen>
@@ -155,6 +156,7 @@
     <dimen name="doorlock_operation_textview_margin_imageview_top">8dp</dimen>
     <dimen name="doorlock_top_margintop_framelayout">15dp</dimen>
     <dimen name="doorlock_clear_record_dialog_title_margintop">15dp</dimen>
+    <dimen name="doorlock_alerthistory_itemheight">53dp</dimen>
 
     <!--智能开关，选择开关类型。开关类型名字距离左边开关图标距离-->
     <dimen name="smart_switch_name_marginleft_typeImage">15dp</dimen>
@@ -171,6 +173,7 @@
     <dimen name="add_doorbell_buttom_button_width">283dp</dimen>
     <dimen name="add_doorbell_buttom_button_height">44dp</dimen>
     <dimen name="add_doorbell_tips_textview_padding_left">60dp</dimen>
+    <dimen name="doorbell_novistor_image_margintop">53dp</dimen>
     <!--空调界面尺寸-->
     <!--size-->
     <dimen name="startthetestbutton_size">96dp</dimen>
@@ -243,6 +246,6 @@
     <dimen name="vercode_buttom_height">30dp</dimen>
 
     <!--二维码扫码界面-->
-    <dimen name="scan_view_textview_margintop">180dp</dimen>
-    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">120dp</dimen>
+    <dimen name="scan_view_textview_margintop">140dp</dimen>
+    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">100dp</dimen>
 </resources>

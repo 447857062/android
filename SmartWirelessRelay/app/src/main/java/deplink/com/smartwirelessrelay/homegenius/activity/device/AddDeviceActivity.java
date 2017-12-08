@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,11 +39,13 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     }
 
     private boolean isFromEditSmartLockActivity;
+    private boolean isStartFromExperience;
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
         isFromEditSmartLockActivity = getIntent().getBooleanExtra("EditSmartLockActivity", false);
+        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         if (isFromEditSmartLockActivity) {
             textview_show_select_room.setText("请选择设备所在的房间");
             textview_skip_this_option.setVisibility(View.GONE);
@@ -84,23 +85,29 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                 Room currentSelectedRoom=RoomManager.getInstance().getmRooms().get(position);
                 String currentAddRomm=currentSelectedRoom.getRoomName();
                 RoomManager.getInstance().setCurrentSelectedRoom(currentSelectedRoom);
-                if (isFromEditSmartLockActivity) {
-                    Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
-                    intentSeleteedRoom.putExtra("roomName", currentAddRomm);
-                    AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
-                    finish();
-                } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomName", currentAddRomm);
-                    bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
-                    Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
-                    Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + currentAddRomm);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                if(isStartFromExperience){
+                        Intent mIntent = new Intent();
+                        mIntent.putExtra("roomName", currentAddRomm);
+                        // 设置结果，并进行传送
+                        setResult(RESULT_OK, mIntent);
+
+                        finish();
+                }else{
+                    if (isFromEditSmartLockActivity) {
+                        Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
+                        intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                        AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("roomName", currentAddRomm);
+                        bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
+                        Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
+                        Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + currentAddRomm);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 }
 
-
-                Toast.makeText(AddDeviceActivity.this, "onclick position=" + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -115,7 +122,10 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onPause() {
         super.onPause();
-        mRoomManager.updateRoomsOrdinalNumber();
+        if(!isStartFromExperience){
+            mRoomManager.updateRoomsOrdinalNumber();
+        }
+
     }
 
     @Override
@@ -126,6 +136,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);
     }
+
 
     @Override
     public void onClick(View v) {

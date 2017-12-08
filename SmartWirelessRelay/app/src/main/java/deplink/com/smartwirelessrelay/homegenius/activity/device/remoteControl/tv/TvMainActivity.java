@@ -24,6 +24,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private TextView textview_control_base;
     private TextView textview_control_number;
     private RemoteControlMenuDialog menu_dialog;
+    private FrameLayout frame_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +45,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         image_setting.setOnClickListener(this);
         layout_title_control_base.setOnClickListener(this);
         layout_title_control_number.setOnClickListener(this);
+        frame_setting.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -58,16 +60,17 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         view_control_number =  findViewById(R.id.view_control_number);
         textview_control_base = (TextView) findViewById(R.id.textview_control_base);
         textview_control_number = (TextView) findViewById(R.id.textview_control_number);
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.frame_setting:
+                menu_dialog.show();
+                break;
             case R.id.image_back:
                 onBackPressed();
-                break;
-            case R.id.image_setting:
-                menu_dialog.show();
                 break;
             case R.id.layout_title_control_base:
                 layout_control_base.setVisibility(View.VISIBLE);

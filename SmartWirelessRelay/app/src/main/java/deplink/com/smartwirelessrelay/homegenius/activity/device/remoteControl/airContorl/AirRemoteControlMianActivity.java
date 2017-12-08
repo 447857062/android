@@ -19,6 +19,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private ImageView imageview_auto_model;
     private Aircondition_mode_select_Dialog modeDialog;
     private RemoteControlMenuDialog menu_dialog;
+    private FrameLayout frame_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +47,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         image_back= (FrameLayout) findViewById(R.id.image_back);
         image_setting= (ImageView) findViewById(R.id.image_setting);
         imageview_auto_model= (ImageView) findViewById(R.id.imageview_auto_model);
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.image_setting:
+            case R.id.frame_setting:
                     menu_dialog.show();
                 break;
             case R.id.imageview_auto_model:

@@ -36,6 +36,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private FrameLayout image_back;
     private TextView textview_title;
     private TextView textview_edit;
+    private TextView textview_reload_wifilist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         listview_wifi_list.setOnItemClickListener(this);
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
+        textview_reload_wifilist.setOnClickListener(this);
         listview_wifi_list.setAdapter(mWifiListAdapter);
     }
 
@@ -57,6 +59,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         textview_title = (TextView) findViewById(R.id.textview_title);
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         image_back = (FrameLayout) findViewById(R.id.image_back);
+        textview_reload_wifilist = (TextView) findViewById(R.id.textview_reload_wifilist);
     }
 
     @Override
@@ -156,6 +159,9 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         switch (v.getId()){
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.textview_reload_wifilist:
+                mDeviceManager.queryWifiList();
                 break;
             case R.id.textview_edit:
                startActivity(new Intent(this, AddGetwaySettingOptionsActivity.class));

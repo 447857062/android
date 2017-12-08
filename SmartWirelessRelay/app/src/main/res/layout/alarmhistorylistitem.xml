@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:paddingLeft="@dimen/layout_content_margin_left_right"
     android:paddingRight="@dimen/layout_content_margin_left_right"
+    android:minHeight="@dimen/doorlock_alerthistory_itemheight"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -46,6 +47,7 @@
 
         android:id="@+id/layout_time"
         android:layout_width="100dp"
+        android:layout_centerVertical="true"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:orientation="vertical">
@@ -71,7 +73,7 @@
 
     <View
         android:layout_alignParentBottom="true"
-        android:background="@color/huise"
+        android:background="@color/seekbar_horiz"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 </RelativeLayout>

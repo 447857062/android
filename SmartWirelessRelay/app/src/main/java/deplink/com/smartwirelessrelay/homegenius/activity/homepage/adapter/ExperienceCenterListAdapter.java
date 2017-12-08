@@ -87,10 +87,10 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
                 viewHolder.image_device_type.setImageResource(R.drawable.infraredremotecontrolicon);
                 break;
             case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
-                viewHolder.image_device_type.setImageResource(R.drawable.airconditioningicon);
+                viewHolder.image_device_type.setImageResource(R.drawable.tvicon);
                 break;
             case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
-                viewHolder.image_device_type.setImageResource(R.drawable.tvicon);
+                viewHolder.image_device_type.setImageResource(R.drawable.airconditioningicon);
                 break;
             case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
                 viewHolder.image_device_type.setImageResource(R.drawable.settopboxesicon);

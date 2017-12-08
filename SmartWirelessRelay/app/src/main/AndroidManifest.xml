@@ -80,7 +80,7 @@
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.UpdateSmartLockUserIdActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SetLockPwdActivity"

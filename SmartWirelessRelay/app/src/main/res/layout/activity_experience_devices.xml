@@ -4,40 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity">
-
-    <RelativeLayout
-        android:id="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        android:background="@color/title_blue_bg">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_item_content_height"
-            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-            android:layout_marginRight="@dimen/layout_content_margin_left_right"
-            android:layout_marginTop="@dimen/title_bar_content_margin_top">
-
-            <ImageView
-                android:id="@+id/imageview_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/returnicon" />
-
-            <TextView
-                android:id="@+id/textview_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="体验中心"
-                android:textColor="@color/white"
-                android:textSize="@dimen/layout_top_bar_item_text_size" />
-
-        </RelativeLayout>
-    </RelativeLayout>
+    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
 
     <ListView
         android:id="@+id/listview_experience_center"

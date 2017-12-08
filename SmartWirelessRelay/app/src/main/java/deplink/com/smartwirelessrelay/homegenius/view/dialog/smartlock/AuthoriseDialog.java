@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
@@ -25,7 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.edittext.SecurityPasswordE
 /**
  * 授权操作dialog
  */
-public class AuthoriseDialog extends Dialog implements View.OnClickListener ,TextView.OnEditorActionListener{
+public class AuthoriseDialog extends Dialog implements View.OnClickListener, TextView.OnEditorActionListener {
     private static final String TAG = "AuthoriseDialog";
     private Context mContext;
     private RelativeLayout linelayout_select_auth_type;
@@ -43,7 +46,6 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
     private RelativeLayout linelayout_auth_type_once;
     /**
      * 永久授权的线性布局
-     *
      */
     private RelativeLayout linelayout_auth_type_permanent;
     /**
@@ -68,11 +70,11 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
     private String timeLimitAuthTypeTime;
 
     private EditText edittext_time_limit_custom;
+
     public AuthoriseDialog(Context context) {
         super(context, R.style.AuthoriseDialog);
         mContext = context;
     }
-
 
 
     @Override
@@ -82,8 +84,8 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-       // p.height = (int) Perfence.dp2px(mContext,180);
-        p.width = (int) Perfence.dp2px(mContext,290);
+        // p.height = (int) Perfence.dp2px(mContext,180);
+        p.width = (int) Perfence.dp2px(mContext, 290);
         View view;
 
         view = LayoutInflater.from(mContext).inflate(R.layout.authorise_dialog, null);
@@ -100,26 +102,26 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
         layout_content_two.setVisibility(View.GONE);
         layout_content_three.setVisibility(View.GONE);
         textview_current_auth_type.setText("单次授权");
-        timeLimitAuthTypeTime="2";
-        currentAuthType= SmartLockConstant.AUTH_TYPE_ONCE;
+        timeLimitAuthTypeTime = "2";
+        currentAuthType = SmartLockConstant.AUTH_TYPE_ONCE;
     }
 
     private void initEvents() {
-        edt_pwd.setSecurityEditCompleListener(new SecurityPasswordEditText.SecurityEditCompleListener(){
+        edt_pwd.setSecurityEditCompleListener(new SecurityPasswordEditText.SecurityEditCompleListener() {
 
             @Override
             public void onNumCompleted(String num) {
-                Log.i(TAG,"输入密码是num="+num);
-                if(mGetDialogAuthtTypeTimeListener!=null){
-                    if(currentAuthType.equalsIgnoreCase(SmartLockConstant.AUTH_TYPE_TIME_LIMIT)){
-                        mGetDialogAuthtTypeTimeListener.onGetDialogAuthtTypeTime(SmartLockConstant.AUTH_TYPE_TIME_LIMIT,num,timeLimitAuthTypeTime);
-                    }else{
-                        mGetDialogAuthtTypeTimeListener.onGetDialogAuthtTypeTime(currentAuthType,num,null);
+                Log.i(TAG, "输入密码是num=" + num);
+                if (mGetDialogAuthtTypeTimeListener != null) {
+                    if (currentAuthType.equalsIgnoreCase(SmartLockConstant.AUTH_TYPE_TIME_LIMIT)) {
+                        mGetDialogAuthtTypeTimeListener.onGetDialogAuthtTypeTime(SmartLockConstant.AUTH_TYPE_TIME_LIMIT, num, timeLimitAuthTypeTime);
+                    } else {
+                        mGetDialogAuthtTypeTimeListener.onGetDialogAuthtTypeTime(currentAuthType, num, null);
                     }
 
                     AuthoriseDialog.this.dismiss();
-                }else{
-                    Log.i(TAG,"没有给dialog设置数据监听接口");
+                } else {
+                    Log.i(TAG, "没有给dialog设置数据监听接口");
                 }
 
             }
@@ -147,6 +149,7 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
     private void initView() {
 
         edt_pwd = (SecurityPasswordEditText) findViewById(R.id.edt_pwd);
+
         linelayout_select_auth_type = (RelativeLayout) findViewById(R.id.linelayout_select_auth_type);
         linelayout_auth_type_time_limit = (RelativeLayout) findViewById(R.id.linelayout_auth_type_time_limit);
         layout_content_one = (RelativeLayout) findViewById(R.id.layout_content_one);
@@ -185,11 +188,13 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
                 this.dismiss();
                 break;
             case R.id.linelayout_auth_type_once:
+
                 textview_current_auth_type.setText("单次授权");
                 layout_content_one.setVisibility(View.VISIBLE);
                 layout_content_two.setVisibility(View.GONE);
                 layout_content_three.setVisibility(View.GONE);
-                currentAuthType=SmartLockConstant.AUTH_TYPE_ONCE;
+                currentAuthType = SmartLockConstant.AUTH_TYPE_ONCE;
+                showInputmothed();
                 //TODO
                 break;
             case R.id.linelayout_auth_type_permanent:
@@ -197,27 +202,30 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
                 layout_content_two.setVisibility(View.GONE);
                 layout_content_three.setVisibility(View.GONE);
                 textview_current_auth_type.setText("永久授权");
-                currentAuthType=SmartLockConstant.AUTH_TYPE_PERPETUAL;
+                currentAuthType = SmartLockConstant.AUTH_TYPE_PERPETUAL;
+                showInputmothed();
                 break;
             case R.id.linelayout_time_limit_2_hours:
                 layout_content_one.setVisibility(View.VISIBLE);
                 layout_content_two.setVisibility(View.GONE);
                 layout_content_three.setVisibility(View.GONE);
                 textview_current_auth_type.setText("期限授权");
-                timeLimitAuthTypeTime="2";
-                currentAuthType=SmartLockConstant.AUTH_TYPE_TIME_LIMIT;
+                timeLimitAuthTypeTime = "2";
+                currentAuthType = SmartLockConstant.AUTH_TYPE_TIME_LIMIT;
+                showInputmothed();
                 break;
             case R.id.linelayout_time_limit_12_hours:
                 layout_content_one.setVisibility(View.VISIBLE);
                 layout_content_two.setVisibility(View.GONE);
                 layout_content_three.setVisibility(View.GONE);
                 textview_current_auth_type.setText("期限授权");
-                currentAuthType=SmartLockConstant.AUTH_TYPE_TIME_LIMIT;
-                timeLimitAuthTypeTime="12";
+                currentAuthType = SmartLockConstant.AUTH_TYPE_TIME_LIMIT;
+                timeLimitAuthTypeTime = "12";
+                showInputmothed();
                 break;
             case R.id.linelayout_time_limit_custom:
-
-               //TODO
+                showInputmothed();
+                //TODO
                 break;
 
         }
@@ -225,22 +233,21 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if(actionId == EditorInfo.IME_ACTION_DONE || actionId== EditorInfo.IME_ACTION_GO) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
 
-            InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             layout_content_one.setVisibility(View.VISIBLE);
             layout_content_two.setVisibility(View.GONE);
             layout_content_three.setVisibility(View.GONE);
             textview_current_auth_type.setText("期限授权");
-            currentAuthType=SmartLockConstant.AUTH_TYPE_TIME_LIMIT;
-            String tempLimitTime=edittext_time_limit_custom.getText().toString();
-            if(tempLimitTime.equals("自定义")|| tempLimitTime.equalsIgnoreCase("")){
-                timeLimitAuthTypeTime="12";
-            }else{
-                timeLimitAuthTypeTime=edittext_time_limit_custom.getText().toString();
+            currentAuthType = SmartLockConstant.AUTH_TYPE_TIME_LIMIT;
+            String tempLimitTime = edittext_time_limit_custom.getText().toString();
+            if (tempLimitTime.equals("自定义") || tempLimitTime.equalsIgnoreCase("")) {
+                timeLimitAuthTypeTime = "12";
+            } else {
+                timeLimitAuthTypeTime = edittext_time_limit_custom.getText().toString();
             }
-
 
 
         }
@@ -249,13 +256,28 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener ,Tex
 
 
     public interface GetDialogAuthtTypeTimeListener {
-        void onGetDialogAuthtTypeTime(String authType,String password,String limitTime);
+        void onGetDialogAuthtTypeTime(String authType, String password, String limitTime);
     }
+
 
     @Override
     public void show() {
         super.show();
+        /*弹出软件盘*/
+        showInputmothed();
+    }
 
+    private void showInputmothed() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+                           public void run() {
+
+                               InputMethodManager inputManager =
+                                       (InputMethodManager) edt_pwd.getSecurityEdit().getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                               inputManager.showSoftInput(edt_pwd.getSecurityEdit(), 0);
+                           }
+                       },
+                500);
     }
 
     public void setGetDialogAuthtTypeTimeListener(GetDialogAuthtTypeTimeListener mGetDialogAuthtTypeTimeListener) {

@@ -21,7 +21,7 @@
         android:layout_centerVertical="true"
         android:textSize="@dimen/text_size_small"
         android:textColor="@color/room_type_text"
-        android:layout_marginLeft="@dimen/experience_center_listitem_devicetype_marginleft"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
         android:layout_toRightOf="@+id/image_device_type" />
 
 
@@ -31,6 +31,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_centerVertical="true"
         android:src="@drawable/directionicon" />
+    <View
+        android:id="@+id/view_line"
+
+        android:background="@color/line_clolor"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 </RelativeLayout>

@@ -102,7 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/seekbar_horiz" />
 
             </RelativeLayout>
 
@@ -164,7 +164,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/seekbar_horiz" />
 
             </RelativeLayout>
             <RelativeLayout
@@ -206,7 +206,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/seekbar_horiz" />
 
             </RelativeLayout>
 
@@ -246,11 +246,6 @@
                         android:src="@drawable/directionicon" />
                 </RelativeLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
 
             </RelativeLayout>
 
@@ -304,7 +299,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/seekbar_horiz" />
 
             </RelativeLayout>
 
@@ -347,7 +342,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/seekbar_horiz" />
 
             </RelativeLayout>
 
@@ -401,11 +396,7 @@
                         android:src="@drawable/directionicon" />
                 </RelativeLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+
 
             </RelativeLayout>
 

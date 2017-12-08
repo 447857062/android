@@ -40,7 +40,7 @@
                 android:layout_height="1dp"
                 android:layout_below="@+id/textview_edit"
                 android:layout_marginTop="@dimen/layout_room_content_margin_top"
-                android:background="@color/huise"
+                android:background="@color/seekbar_horiz"
                  />
 
             <TextView

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.t
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
@@ -49,6 +51,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private List<SmartDev> datasBottom;
 
     private ListView listview_devies;
+    private RelativeLayout layout_device_number_root;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +84,31 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,null);
         String hintRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
-        currentRoom=mRoomManager.findRoom(hintRoomName,true);
-
+        currentRoom=mRoomManager.getCurrentSelectedRoom();
+        String roomType=currentRoom.getRoomType();
+        switch (roomType){
+            case AppConstant.ROOMTYPE.TYPE_LIVING:
+                layout_device_number_root.setBackgroundResource(R.drawable.livingroombackground);
+                break;
+            case AppConstant.ROOMTYPE.TYPE_BED:
+                layout_device_number_root.setBackgroundResource(R.drawable.bedroombackground);
+                break;
+            case AppConstant.ROOMTYPE.TYPE_KITCHEN:
+                layout_device_number_root.setBackgroundResource(R.drawable.kitchenbackground);
+                break;
+            case AppConstant.ROOMTYPE.TYPE_STUDY:
+                layout_device_number_root.setBackgroundResource(R.drawable.studybackground);
+                break;
+            case AppConstant.ROOMTYPE.TYPE_STORAGE:
+                layout_device_number_root.setBackgroundResource(R.drawable.storageroom);
+                break;
+            case AppConstant.ROOMTYPE.TYPE_TOILET:
+                layout_device_number_root.setBackgroundResource(R.drawable.toiletbackground);
+                break;
+            case AppConstant.ROOMTYPE.TYPE_DINING:
+                layout_device_number_root.setBackgroundResource(R.drawable.diningroombackground);
+                break;
+        }
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
         //使用数据库中的数据
@@ -137,6 +163,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
 
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         listview_devies=(ListView) findViewById(R.id.listview_devies);
+        layout_device_number_root=(RelativeLayout) findViewById(R.id.layout_device_number_root);
     }
 
     @Override

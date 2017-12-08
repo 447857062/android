@@ -3,8 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.UpdateSmartLockUserIdActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity">
     <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
+    <RelativeLayout
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right"
+        android:layout_below="@+id/layout_title"
+        android:background="@color/white_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/textview_userid"
+            android:gravity="left|center_vertical"
+            android:text="智能门锁用户ID"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/huise"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height" />
+        <ListView
+            android:divider="@null"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_below="@+id/textview_userid"
+            android:id="@+id/listview_update_ids"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+    </RelativeLayout>
 
 
 

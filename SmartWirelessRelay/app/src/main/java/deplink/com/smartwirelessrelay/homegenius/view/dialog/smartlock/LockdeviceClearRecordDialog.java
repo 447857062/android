@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view.dialog;
+package deplink.com.smartwirelessrelay.homegenius.view.dialog.smartlock;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
@@ -48,22 +49,38 @@ public class LockdeviceClearRecordDialog extends Dialog implements View.OnClickL
     }
 
 
+    private TextView textview_cancel;
+    private TextView textview_center;
     private void initView() {
-
+        textview_cancel= (TextView) findViewById(R.id.textview_cancel);
+        textview_center= (TextView) findViewById(R.id.textview_center);
 
     }
 
 
     private void initEvent() {
-
+        textview_cancel.setOnClickListener(this);
+        textview_center.setOnClickListener(this);
     }
 
 
+
+    private onSureBtnClickListener mOnSureBtnClickListener;
+    public void setSureBtnClickListener(onSureBtnClickListener mOnSureBtnClickListener) {
+
+        this.mOnSureBtnClickListener = mOnSureBtnClickListener;
+    }
+    public interface onSureBtnClickListener {
+        void onSureBtnClicked();
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.layout_cancel:
+            case R.id.textview_center:
+                this.dismiss();
+                mOnSureBtnClickListener.onSureBtnClicked();
+                break;
+            case R.id.textview_cancel:
                 this.dismiss();
                 break;
         }

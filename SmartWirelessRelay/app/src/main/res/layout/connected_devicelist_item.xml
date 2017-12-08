@@ -2,8 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-        android:background="@color/white_background"
-    android:gravity="center_vertical"
     android:minHeight="@dimen/router_device_connect_devices_list_item_height">
 
     <RelativeLayout
@@ -78,11 +76,11 @@
             android:src="@drawable/downloadspeed" />
 
         <TextView
-            android:layout_toRightOf="@+id/imageview_download_speed"
             android:id="@+id/textview_uploadspeed"
             android:layout_width="@dimen/router_connectdevice_list_item_speedvalue_width"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/router_connectdevice_list_item_textview_margin_right"
+            android:layout_toRightOf="@+id/imageview_download_speed"
             android:text="3 mb/s"
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_smallest" />
@@ -90,8 +88,9 @@
 
 
     <View
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/huise" />
+        android:background="@color/router_line_dirver" />
 </RelativeLayout>

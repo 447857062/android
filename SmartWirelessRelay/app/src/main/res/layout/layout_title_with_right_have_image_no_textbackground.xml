@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_title"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/title_bar_height"
-    >
+    android:layout_height="@dimen/title_bar_height">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,18 +10,20 @@
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"
         android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
         <FrameLayout
-            android:layout_alignParentLeft="true"
             android:id="@+id/image_back"
             android:layout_width="48dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true">
+
             <ImageView
 
-                android:scaleType="centerInside"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-
                 android:layout_centerVertical="true"
+
+                android:scaleType="centerInside"
                 android:src="@drawable/returnicon" />
         </FrameLayout>
 
@@ -38,15 +39,21 @@
             android:textColor="@color/white"
             android:textSize="@dimen/layout_top_bar_item_text_size" />
 
-        <ImageView
-            android:scaleType="centerInside"
-            android:id="@+id/image_setting"
+        <FrameLayout
+            android:id="@+id/frame_setting"
             android:layout_width="48dp"
-            android:paddingLeft="5dp"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/menuicon" />
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:id="@+id/image_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/menuicon" />
+        </FrameLayout>
+
     </RelativeLayout>
 </RelativeLayout>
 

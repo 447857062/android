@@ -25,6 +25,7 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     private TextView textview_title;
     private ImageView image_setting;
     private RemoteControlMenuDialog menu_dialog;
+    private FrameLayout frame_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +46,11 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
         image_setting.setOnClickListener(this);
         layout_title_control_base.setOnClickListener(this);
         layout_title_control_number.setOnClickListener(this);
+        frame_setting.setOnClickListener(this);
     }
 
     private void initViews() {
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_setting= (ImageView) findViewById(R.id.image_setting);
         image_back= (FrameLayout) findViewById(R.id.image_back);
@@ -64,7 +67,7 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.image_setting:
+            case R.id.frame_setting:
                 menu_dialog.show();
                 break;
             case R.id.image_back:

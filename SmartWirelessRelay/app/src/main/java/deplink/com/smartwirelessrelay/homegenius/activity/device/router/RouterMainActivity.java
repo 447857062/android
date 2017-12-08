@@ -100,6 +100,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private View view_line_connected_devices;
     private TextView textview_connected_devices;
     private TextView textview_blak_list;
+    private FrameLayout frame_setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -391,18 +392,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 refreshCount = 0;
                 //这里不用设置设备上线的字段，在routerdevice类里面设置了
                 String mem = routerDevice.getPerformance().getDevice().getMEM();
-                if (Integer.valueOf(mem) > 80) {
-                    textview_memory_use.setTextColor(getResources().getColor(R.color.cpu_percent_text_color));
-                } else {
-                    textview_memory_use.setTextColor(getResources().getColor(R.color.memory_percent_text_color));
-                }
+
                 textview_memory_use.setText(mem );
                 String cpu = routerDevice.getPerformance().getDevice().getCPU();
-                if (Integer.valueOf(cpu) > 80) {
-                    textview_cpu_use.setTextColor(getResources().getColor(R.color.cpu_percent_text_color));
-                } else {
-                    textview_cpu_use.setTextColor(getResources().getColor(R.color.memory_percent_text_color));
-                }
+
                 textview_cpu_use.setText(cpu );
 
                 textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
@@ -414,9 +407,9 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     }
     private void initEvents() {
         image_back.setOnClickListener(this);
+        frame_setting.setOnClickListener(this);
         layout_connected_devices.setOnClickListener(this);
         layout_blak_list.setOnClickListener(this);
-        image_setting.setOnClickListener(this);
         listview_device_list.setAdapter(mAdapter);
 
 
@@ -583,6 +576,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
 
     private void initViews() {
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
         textview_connected_devices= (TextView) findViewById(R.id.textview_connected_devices);
         textview_blak_list= (TextView) findViewById(R.id.textview_blak_list);
         view_line_connected_devices=findViewById(R.id.view_line_connected_devices);
@@ -628,7 +622,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 textview_blak_list.setTextColor(getResources().getColor(R.color.title_blue_bg));
                 showQueryingDialog();
                 break;
-            case R.id.image_setting:
+            case R.id.frame_setting:
                 startActivity(new Intent(this, RouterSettingActivity.class));
                 break;
         }
