@@ -26,7 +26,7 @@
             android:layout_marginLeft="@dimen/search_band_icon_marginleft"
             android:src="@drawable/searchbrand" />
 
-        <EditText
+        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/icon_search_band"
             android:id="@+id/edittext_band_name"
@@ -37,13 +37,36 @@
     </RelativeLayout>
 
 
-    <ListView
+    <FrameLayout
+        android:layout_below="@+id/layout_search_band"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"
-        android:id="@+id/listview_band"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_search_band">
+        android:layout_height="match_parent"
+        >
 
-    </ListView>
+        <ListView
+            android:id="@+id/listview_band"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:divider="@null"
+            />
+
+        <TextView
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30.0dip"
+            android:visibility="invisible" />
+        <deplink.com.smartwirelessrelay.homegenius.view.sortlistview.SideBar
+            android:id="@+id/sidrbar"
+            android:layout_width="30.0dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center" />
+
+    </FrameLayout>
 </RelativeLayout>

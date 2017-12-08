@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
@@ -55,7 +56,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-
     private ListView listview_devies;
     private DeviceListAdapter mDeviceAdapter;
     /**
@@ -79,6 +79,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_device;
     private TextView textview_room;
     private TextView textview_mine;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +101,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
         mDeviceManager.queryDeviceList();
+        datasTop.clear();
+        datasBottom.clear();
+        datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        datasBottom.addAll(DataSupport.findAll(SmartDev.class));
+        mDeviceAdapter.notifyDataSetChanged();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -108,7 +115,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceManager.removeDeviceListener(this);
     }
 
-    private List<String>mRoomTypes=new ArrayList<>();
+    private List<String> mRoomTypes = new ArrayList<>();
+
     private void initDatas() {
         runOnUiThread(new Runnable() {
             @Override
@@ -117,17 +125,15 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
                 mDeviceManager = DeviceManager.getInstance();
                 mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
-                mRoomManager=RoomManager.getInstance();
+                mRoomManager = RoomManager.getInstance();
                 mRoomManager.initRoomManager();
 
             }
         });
+        roomTypeDialog = new DeviceAtRoomDialog(this, mRoomTypes);
         mRoomTypes.addAll(mRoomManager.getRoomTypes());
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
-        //使用数据库中的数据
-        datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-        datasBottom = DataSupport.findAll(SmartDev.class);
 
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
@@ -151,7 +157,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case "路由器":
-                            RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
+                            RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                         case "智能电视":
@@ -161,7 +167,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
                             break;
                         case AppConstant.DEVICES.TYPE_SWITCH:
-                            switch (deviceSubType){
+                            switch (deviceSubType) {
                                 case "一路开关":
                                     startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
                                     break;
@@ -188,6 +194,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 }
             }
         });
+
+
     }
 
     private void initEvents() {
@@ -199,7 +207,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_add_device.setOnClickListener(this);
         layout_select_room_type.setOnClickListener(this);
     }
-
 
 
     private void initViews() {
@@ -221,7 +228,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         //TODO 初始化设备列表
 
     }
+
     private DeviceAtRoomDialog roomTypeDialog;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -229,8 +238,29 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 startActivity(new Intent(this, SmartHomeMainActivity.class));
                 break;
             case R.id.layout_select_room_type:
-                roomTypeDialog=new DeviceAtRoomDialog(this,mRoomTypes);
-                roomTypeDialog.show();
+
+                    roomTypeDialog.setRoomTypeItemClickListener(new DeviceAtRoomDialog.onItemClickListener() {
+                        @Override
+                        public void onItemClicked(int position) {
+                            datasTop.clear();
+                            datasBottom.clear();
+                            if (mRoomTypes.get(position).equals("全部")) {
+                                datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+                                datasBottom.addAll(DataSupport.findAll(SmartDev.class));
+
+                            } else {
+                                Room room = mRoomManager.findRoomByType(mRoomTypes.get(position), true);
+                                //使用数据库中的数据
+                                datasTop.addAll(room.getmGetwayDevices());
+                                datasBottom.addAll(room.getmDevices());
+
+                            }
+                            mDeviceAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    roomTypeDialog.show();
+
+
                 break;
             case R.id.layout_rooms:
                 startActivity(new Intent(this, RoomActivity.class));

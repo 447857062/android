@@ -188,8 +188,21 @@ public class RoomManager {
      * @return
      */
     public Room findRoom(String roomName,boolean queryRelativeTable) {
-        Room room =DataSupport.where("roomName = ?", roomName).find(Room.class,queryRelativeTable).get(0);
+        List<Room> rooms =DataSupport.where("roomName = ?", roomName).find(Room.class,queryRelativeTable);
+        Room room = null;
+        if(rooms.size()>0){
+            room=rooms.get(0);
+        }
         Log.i(TAG,"根据名字查询房间,查到房间"+room.toString());
+        return room;
+    }
+    public Room findRoomByType(String typeName,boolean queryRelativeTable) {
+        List<Room> rooms =DataSupport.where("roomType = ?", typeName).find(Room.class,queryRelativeTable);
+        Room room = null;
+        if(rooms.size()>0){
+            room=rooms.get(0);
+        }
+        Log.i(TAG,"根据类型查询房间,查到房间"+room.toString());
         return room;
     }
     private Observable mObservable;

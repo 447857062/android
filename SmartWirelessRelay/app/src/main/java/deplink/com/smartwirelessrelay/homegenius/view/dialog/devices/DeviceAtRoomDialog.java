@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -21,10 +22,10 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 /**
  * Created by Administrator on 2017/7/25.
  */
-public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener {
+public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener ,AdapterView.OnItemClickListener{
     private Context mContext;
 
-    private View view_mode_menu;
+    private View view_device_menu;
     private List<String>mRoomTypes;
     private ListView listview_room_types;
     private DeviceRoomTypeDialogAdapter mAdapter;
@@ -52,16 +53,17 @@ public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener {
 
 
     private void initView() {
-        view_mode_menu=findViewById(R.id.view_device_menu);
+        view_device_menu=findViewById(R.id.view_device_menu);
         listview_room_types= (ListView) findViewById(R.id.listview_room_types);
 
     }
 
 
     private void initEvent() {
-        view_mode_menu.setOnClickListener(this);
+        view_device_menu.setOnClickListener(this);
         mAdapter=new DeviceRoomTypeDialogAdapter(mContext,mRoomTypes);
         listview_room_types.setAdapter(mAdapter);
+        listview_room_types.setOnItemClickListener(this);
     }
 
 
@@ -69,7 +71,7 @@ public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.view_mode_menu:
+            case R.id.view_device_menu:
                 this.dismiss();
                 break;
         }
@@ -83,5 +85,16 @@ public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener {
         super.show();
 
     }
+    private onItemClickListener mOnItemClickListener;
+    public void setRoomTypeItemClickListener(onItemClickListener mOnItemClickListener) {
 
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
+    public interface onItemClickListener {
+        void onItemClicked(int position);
+    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            mOnItemClickListener.onItemClicked(position);
+    }
 }

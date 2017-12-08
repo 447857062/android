@@ -40,6 +40,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         image_back.setOnClickListener(this);
         image_setting.setOnClickListener(this);
         imageview_auto_model.setOnClickListener(this);
+        frame_setting.setOnClickListener(this);
     }
 
     private void initViews() {
