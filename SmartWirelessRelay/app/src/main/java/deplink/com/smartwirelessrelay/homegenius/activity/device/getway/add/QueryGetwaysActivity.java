@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     private static final String TAG = "QueryGetwaysActivity";
     private static final int MSG_CHECK_GETWAY_OK=100;
     private String currentAddDevice;
-    private TextView textview_cancel;
+    private Button textview_cancel;
     private UdpManager mUdpmanager;
 
     private TextView textview_title;
@@ -50,7 +51,7 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        textview_cancel= (TextView) findViewById(R.id.textview_cancel);
+        textview_cancel= (Button) findViewById(R.id.textview_cancel);
 
         textview_title= (TextView) findViewById(R.id.textview_title);
         image_back= (FrameLayout) findViewById(R.id.image_back);

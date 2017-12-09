@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 
 /**
  * Created by Administrator on 2017/10/30.
  * 智能锁设备
  */
 public class SmartLock extends SmartDev {
-    private List<LOCK_ALARM> alarmList = new ArrayList<>();
+    private List<Info> alarmList = new ArrayList<>();
 
-    public List<LOCK_ALARM> getAlarmList() {
+    public List<Info> getAlarmList() {
         return alarmList;
     }
 
-    public void setAlarmList(List<LOCK_ALARM> alarmList) {
+    public void setAlarmList(List<Info> alarmList) {
         this.alarmList = alarmList;
     }
 

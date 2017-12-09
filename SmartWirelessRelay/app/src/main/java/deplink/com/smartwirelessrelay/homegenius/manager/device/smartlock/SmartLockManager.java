@@ -1,5 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
@@ -16,8 +17,10 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -50,11 +53,18 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     private static SmartLockManager instance;
     private SmartLock mSmartLock;
-    // private SQLiteDatabase db;
     private String smartUid = "00-12-4b-00-0b-26-c2-15";
-
+    private SmartDev currentSelectLock;
     private SmartLockManager() {
 
+    }
+
+    public SmartDev getCurrentSelectLock() {
+        return currentSelectLock;
+    }
+
+    public void setCurrentSelectLock(SmartDev currentSelectLock) {
+        this.currentSelectLock = currentSelectLock;
     }
 
     public static synchronized SmartLockManager getInstance() {
@@ -84,7 +94,7 @@ public class SmartLockManager implements LocalConnecteListener {
             managerPassword.save();
         }
         packet = new GeneralPacket(mContext);
-        if(cachedThreadPool==null){
+        if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
 
@@ -118,10 +128,13 @@ public class SmartLockManager implements LocalConnecteListener {
     public void queryLockHistory() {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("QUERY");
-        queryCmd.setMethod("SmartLock-HisRecord");
+        queryCmd.setMethod("SmartLock");
+        queryCmd.setCommand("HisRecord");
+        queryCmd.setUserID("1001");
         Log.i(TAG, "查询开锁记录设备smartUid=" + smartUid);
         smartUid = "00-12-4b-00-0b-26-c2-15";
         queryCmd.setSmartUid(smartUid);
+        queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         packet.packOpenLockListData(text.getBytes());
@@ -131,6 +144,20 @@ public class SmartLockManager implements LocalConnecteListener {
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
+    }
+
+    public void updateSmartDeviceName(final String deviceName) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                ContentValues values = new ContentValues();
+                values.put("name", deviceName);
+                int effectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid = ?", currentSelectLock.getUid());
+
+                Log.i(TAG, "修改智能门锁设备名字=" + effectColumn);
+            }
+        });
+
     }
 
     /**
@@ -155,11 +182,11 @@ public class SmartLockManager implements LocalConnecteListener {
         }
 
         queryCmd.setUserID(userId);
-        queryCmd.setManagePasswd(managePasswd);
+        queryCmd.setManagePwd(managePasswd);
         if (limitedTime != null) {
-            queryCmd.setLimitedTime(limitedTime);
+            queryCmd.setTime(limitedTime);
         } else {
-            queryCmd.setLimitedTime("0");
+            queryCmd.setTime("0");
         }
 
 
@@ -202,8 +229,10 @@ public class SmartLockManager implements LocalConnecteListener {
     public void OnGetQueryresult(String result) {
         //TODO
         Log.i(TAG, "OnGetQueryresult=" + smartUid);
+        Gson gson = new Gson();
+
+        OpResult queryResult = gson.fromJson(result, OpResult.class);
         if (result.contains("DevList")) {
-            Gson gson = new Gson();
             DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
             if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
                 smartUid = aDeviceList.getSmartDev().get(0).getUid();
@@ -212,7 +241,7 @@ public class SmartLockManager implements LocalConnecteListener {
 
         }
         //SmartLock-HisRecord"
-        if (result.contains("SmartLock-HisRecord")) {
+        if (result.contains("HisRecord")) {
             for (int i = 0; i < mSmartLockListenerList.size(); i++) {
                 Log.i(TAG, "SmartLockListener ==" + mSmartLockListenerList.get(i).toString());
                 mSmartLockListenerList.get(i).responseQueryResult(result);
@@ -230,9 +259,9 @@ public class SmartLockManager implements LocalConnecteListener {
     public void OnGetSetresult(String setResult) {
         Gson gson = new Gson();
         ResultType type = gson.fromJson(setResult, ResultType.class);
-        if (type!=null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
+        if (type != null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
             OpResult result = gson.fromJson(setResult, OpResult.class);
-            switch (result.getCmd()) {
+            switch (result.getCommand()) {
                 case SmartLockConstant.CMD.OPEN:
                     switch (result.getResult()) {
                         case SmartLockConstant.OPENLOCK.TIMEOUT:
@@ -300,11 +329,11 @@ public class SmartLockManager implements LocalConnecteListener {
      * @param alarmList
      */
     @Override
-    public void onGetalarmRecord(List<LOCK_ALARM> alarmList) {
+    public void onGetalarmRecord(List<Info> alarmList) {
         //TODO 这里还要写入devuid，不然会报错，因为这个devuid是不为空的
         mSmartLock = DataSupport.findFirst(SmartLock.class);
         for (int i = 0; i < alarmList.size(); i++) {
-            LOCK_ALARM alarm;
+            Info alarm;
             alarm = alarmList.get(i);
             alarm.save();
 
@@ -324,7 +353,7 @@ public class SmartLockManager implements LocalConnecteListener {
         smartUid = "00-12-4b-00-0b-26-c2-15";
         List<SmartLock> mSmartDevices = DataSupport.where("Uid = ?", smartUid).find(SmartLock.class, true);
         if (mSmartDevices.size() > 0) {
-            List<LOCK_ALARM> newsList = mSmartDevices.get(0).getAlarmList();
+            List<Info> newsList = mSmartDevices.get(0).getAlarmList();
         }
 
         return null;

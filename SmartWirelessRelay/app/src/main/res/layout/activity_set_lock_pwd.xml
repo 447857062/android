@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/viewfinder_mask"
-    android:orientation="vertical" >
+    android:background="@color/viewfinder_mask">
 
 
     <TextView
-        android:text="请输入门锁的密码"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <LinearLayout
+        android:id="@+id/textview_please_input_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="55dp"
-        android:orientation="horizontal" >
+        android:layout_marginTop="45dp"
+        android:gravity="center_horizontal"
+        android:text="请输入门锁的密码"
+        android:textColor="@color/white"
+        android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+    <LinearLayout
+        android:id="@+id/layout_password_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_please_input_password"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/etPwdOne_setLockPwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:background="@drawable/ovel_15_bg"
             android:cursorVisible="false"
             android:ems="1"
             android:gravity="center"
             android:lines="1"
-            android:textSize="31sp" >
-        </EditText>
+            android:textSize="31sp"></EditText>
 
         <EditText
             android:id="@+id/etPwdTwo_setLockPwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@color/white"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/ovel_15_bg"
             android:cursorVisible="false"
             android:ems="1"
             android:gravity="center"
@@ -45,10 +51,10 @@
 
         <EditText
             android:id="@+id/etPwdThree_setLockPwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@color/white"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/ovel_15_bg"
             android:cursorVisible="false"
             android:ems="1"
             android:gravity="center"
@@ -56,30 +62,32 @@
 
         <EditText
             android:id="@+id/etPwdFour_setLockPwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@color/white"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/ovel_15_bg"
             android:cursorVisible="false"
             android:ems="1"
             android:gravity="center"
             android:textSize="31sp" />
+
         <EditText
             android:id="@+id/etPwdFive_setLockPwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@color/white"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/ovel_15_bg"
             android:cursorVisible="false"
             android:ems="1"
             android:gravity="center"
             android:textSize="31sp" />
+
         <EditText
             android:id="@+id/etPwdSix_setLockPwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@color/white"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/ovel_15_bg"
             android:cursorVisible="false"
             android:ems="1"
             android:gravity="center"
@@ -93,64 +101,59 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/layout_keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:layout_marginRight="25dp"
+        android:layout_below="@+id/layout_password_dots"
+        android:layout_marginTop="40dp"
+       >
 
         <android.inputmethodservice.KeyboardView
+            android:keyTextSize="30sp"
             android:id="@+id/keyboard_view"
-
-                android:background="@color/transparent"
-            android:layout_marginLeft="@dimen/keybord_layout_margin_left_right"
-            android:layout_marginRight="@dimen/keybord_layout_margin_left_right"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:keyBackground="@drawable/numberone"
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
             android:focusable="true"
             android:focusableInTouchMode="true"
-             />
-    </LinearLayout>
+            android:keyBackground="@drawable/keyboard_background" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:layout_height="60dp">
-        <View
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_keyboard"
+        android:layout_marginTop="40dp">
+
+        <RelativeLayout
             android:background="@color/white"
-            android:layout_alignParentTop="true"
+            android:alpha="0.2"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
-        <LinearLayout
+            android:layout_height="match_parent">
+        </RelativeLayout>
+
+        <TextView
+            android:paddingLeft="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingLeft="40dp"
-            android:paddingRight="30dp"
-            android:layout_height="50dp">
-            <TextView
-                android:text="保存密码"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            android:text="保存密码"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small" />
 
-            <Switch
-                android:id="@+id/switch_remond_managerpassword"
-                android:layout_marginLeft="160dp"
-                android:layout_gravity="center_vertical"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content" />
+        <ImageView
+            android:paddingRight="50dp"
+            android:id="@+id/switch_remond_managerpassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:src="@drawable/checkbox_style_imagelevel" />
 
-        </LinearLayout>
-        <View
-            android:background="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+
     </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

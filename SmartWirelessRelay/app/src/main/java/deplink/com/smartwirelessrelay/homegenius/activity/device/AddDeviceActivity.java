@@ -90,13 +90,13 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                         mIntent.putExtra("roomName", currentAddRomm);
                         // 设置结果，并进行传送
                         setResult(RESULT_OK, mIntent);
-
                         finish();
                 }else{
                     if (isFromEditSmartLockActivity) {
                         Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
                         intentSeleteedRoom.putExtra("roomName", currentAddRomm);
                         AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
+                        finish();
                     } else {
                         Bundle bundle = new Bundle();
                         bundle.putString("roomName", currentAddRomm);

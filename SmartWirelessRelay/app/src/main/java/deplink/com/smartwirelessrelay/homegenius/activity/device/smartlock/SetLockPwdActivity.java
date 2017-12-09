@@ -10,9 +10,9 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.CompoundButton;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
@@ -26,13 +26,13 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.keyboard.KeyboardUtil;
 
-public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelListener, CompoundButton.OnCheckedChangeListener, SmartLockListener {
+public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelListener, View.OnClickListener, SmartLockListener {
     private static final String TAG = "SetLockPwdActivity";
     private EditText etPwdOne, etPwdTwo, etPwdThree, etPwdFour, etPwdText;
     private EditText etPwdFive_setLockPwd, etPwdSix_setLockPwd;
     private KeyboardUtil kbUtil;
     private Handler mHandler;
-    private Switch switch_remond_managerpassword;
+    private ImageView switch_remond_managerpassword;
     private boolean isStartFromExperience;
 
     @Override
@@ -52,7 +52,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdFive_setLockPwd = (EditText) findViewById(R.id.etPwdFive_setLockPwd);
         etPwdSix_setLockPwd = (EditText) findViewById(R.id.etPwdSix_setLockPwd);
         etPwdText = (EditText) findViewById(R.id.etPwdText_setLockPwd);
-        switch_remond_managerpassword = (Switch) findViewById(R.id.switch_remond_managerpassword);
+        switch_remond_managerpassword = (ImageView) findViewById(R.id.switch_remond_managerpassword);
     }
 
     void setListener() {
@@ -60,6 +60,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2,
                                       int arg3) {
+
             }
 
             @Override
@@ -88,7 +89,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                 }
             }
         });
-        switch_remond_managerpassword.setOnCheckedChangeListener(this);
+        switch_remond_managerpassword.setOnClickListener(this);
     }
 
 
@@ -120,7 +121,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdSix_setLockPwd.setInputType(InputType.TYPE_NULL);
         MyHandle();
         boolean checked = DataSupport.findFirst(ManagerPassword.class).isRemenbEnable();
-        switch_remond_managerpassword.setChecked(checked);
+        switch_remond_managerpassword.setImageLevel(1);
     }
 
     void backToActivity() {
@@ -150,7 +151,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                             } else {
                                 mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
                             }
-
                             etPwdOne.setText("");
                             etPwdTwo.setText("");
                             etPwdThree.setText("");
@@ -171,13 +171,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         backToActivity();
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
-        managerPassword.setRemenbEnable(isChecked);
-        int updateAll = managerPassword.updateAll();
-        Log.i(TAG, "saveResult记住密码=" + updateAll);
-    }
 
     @Override
     public void responseQueryResult(String result) {
@@ -208,5 +201,18 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     @Override
     public void responseBind(String result) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.switch_remond_managerpassword:
+                ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
+                managerPassword.setRemenbEnable(true);
+                int updateAll = managerPassword.updateAll();
+                Log.i(TAG, "saveResult记住密码=" + updateAll);
+                break;
+
+        }
     }
 }

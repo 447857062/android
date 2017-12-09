@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.QueryWifiList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.QueryWifiListResult;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.Proto;
@@ -86,7 +86,7 @@ public class DeviceManager implements LocalConnecteListener {
         queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packQueryDevListData(text.getBytes());
+        packet.packQueryDevListData(text.getBytes(), false);
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -285,10 +285,7 @@ public class DeviceManager implements LocalConnecteListener {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
-                List<Room> roomList = new ArrayList<>();
-                roomList.addAll(smartDev.getRoomList());
-                roomList.add(room);
-                smartDev.setRoomList(roomList);
+                smartDev.setRoom(room);
                 smartDev.setName(deviceName);
                 boolean saveResult = smartDev.save();
                 Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
@@ -305,14 +302,14 @@ public class DeviceManager implements LocalConnecteListener {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
-                List<Room> roomList = new ArrayList<>();
+                /*List<Room> roomList = new ArrayList<>();
                 roomList.addAll(smartDev.getRoomList());
                 for (int i = 0; i < roomList.size(); i++) {
                     if (roomList.get(i).getRoomName().equals(room.getRoomName())) {
                         roomList.remove(i);
                     }
-                }
-                smartDev.setRoomList(roomList);
+                }*/
+                smartDev.setRoom(null);
                 boolean saveResult = smartDev.save();
                 Log.i(TAG, "deleteSmartDeviceInWhatRoom saveResult=" + saveResult);
             }
@@ -491,7 +488,7 @@ public class DeviceManager implements LocalConnecteListener {
     }
 
     @Override
-    public void onGetalarmRecord(List<LOCK_ALARM> alarmList) {
+    public void onGetalarmRecord(List<Info> alarmList) {
 
     }
 }

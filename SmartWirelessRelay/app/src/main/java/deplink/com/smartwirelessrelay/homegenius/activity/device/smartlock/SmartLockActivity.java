@@ -134,6 +134,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.layout_lock_record:
                 Intent intentLockHistory = new Intent(this, LockHistoryActivity.class);
+               // intentLockHistory.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intentLockHistory.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivity(intentLockHistory);
                 break;

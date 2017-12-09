@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.json.BLACKLIST;
 import com.deplink.sdk.android.sdk.json.DeviceControl;
@@ -141,12 +142,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
-        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        routerDevice=mRouterManager.getRouterDevice();
-        startTimer();
-        if (isUserLogin) {
+
+       // isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+
+        /*if (isUserLogin) {
             showQueryingDialog();
-        }
+        }*/
         frame_blacklist_content.setVisibility(View.GONE);
     }
 
@@ -175,7 +176,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             refreshTask = new TimerTask() {
                 @Override
                 public void run() {
-
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -187,6 +187,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         }
         if (refreshTimer != null) {
             //3秒钟发一次查询的命令
+
             refreshTimer.schedule(refreshTask, 0, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
         }
     }
@@ -259,6 +260,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
 
     private void initDatas() {
+
+
         textview_title.setText("路由器");
         image_setting.setImageResource(R.drawable.settingicon);
         mRouterManager=RouterManager.getInstance();
@@ -280,6 +283,21 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             @Override
             public void onSuccess(SDKAction action) {
                 switch (action) {
+                    case LOGIN:
+                        manager.connectMQTT(getApplicationContext());
+
+                        break;
+                    case CONNECTED:
+                      /*  isConnectedMqtt=true;*/
+                        isUserLogin=true;
+                        User user = manager.getUserInfo();
+                        Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
+                        Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
+                        Perfence.setPerfence(AppConstant.USER_LOGIN, true);
+                        routerDevice=mRouterManager.getRouterDevice();
+                        startTimer();
+                        Log.i(TAG, "onSuccess CONNECTED");
+                        break;
                     default:
                         break;
                 }
@@ -383,6 +401,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 }
             }
         };
+        String phoneNumber=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        String password="123456";
+        Log.i(TAG,"phoneNumber="+phoneNumber);
+        phoneNumber="13691876442";
+        manager.login(phoneNumber, password);
     }
 
     private void updatePerformance() {

@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistory;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.Record;
 import deplink.com.smartwirelessrelay.homegenius.util.DateUtil;
 
 /**
@@ -22,8 +22,8 @@ import deplink.com.smartwirelessrelay.homegenius.util.DateUtil;
 public class LockHistoryAdapter extends BaseAdapter{
     private static final String TAG="LockHistoryAdapter";
     private Context mContext;
-    private List<LockHistory>mDatas;
-    public LockHistoryAdapter(Context mContext, List<LockHistory>mDevices) {
+    private List<Record>mDatas;
+    public LockHistoryAdapter(Context mContext, List<Record>mDevices) {
         this.mContext=mContext;
         this.mDatas=mDevices;
     }
@@ -61,7 +61,7 @@ public class LockHistoryAdapter extends BaseAdapter{
         String yearMouthDay=DateUtil.getYearMothDayStringFromData(date);
         String hourMinuteSecond=DateUtil.getHourMinuteSecondStringFromData(date);
         Log.i(TAG,"yearMouthDay="+yearMouthDay+"hourMinuteSecond="+hourMinuteSecond);
-        vh.textview_userid.setText(mDatas.get(position).getUserid());
+        vh.textview_userid.setText(mDatas.get(position).getUserID());
         vh.textview_data_year_mouth_day.setText(yearMouthDay);
         vh.textview_data_hour_minute_second.setText(hourMinuteSecond);
         return convertView;

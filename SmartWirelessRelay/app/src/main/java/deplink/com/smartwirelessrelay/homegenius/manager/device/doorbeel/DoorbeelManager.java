@@ -6,8 +6,6 @@ import android.util.Log;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -53,7 +51,7 @@ public class DoorbeelManager {
             @Override
             public void run() {
                 SmartDev dev = DataSupport.where("Uid = ?", currentSelectedDoorbeel.getUid()).findFirst(SmartDev.class, true);
-                final List<Room> rooms = dev.getRoomList();
+                final Room rooms = dev.getRoom();
                 mObservable = Observable.create(new ObservableOnSubscribe() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter e) throws Exception {
@@ -61,7 +59,7 @@ public class DoorbeelManager {
                     }
                 });
                 mObservable.subscribe(observer);
-                Log.i(TAG, "所在房间列表大小=" + rooms.size());
+                Log.i(TAG, "所在房间=" + rooms.getRoomName());
             }
         });
 
@@ -162,10 +160,10 @@ public class DoorbeelManager {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
-                List<Room> roomList = new ArrayList<>();
+               /* List<Room> roomList = new ArrayList<>();
                 roomList.addAll(smartDev.getRoomList());
-                roomList.add(room);
-                smartDev.setRoomList(roomList);
+                roomList.add(room);*/
+                smartDev.setRoom(room);
                 smartDev.setName(deviceName);
                 final boolean saveResult = smartDev.save();
                 mObservable = Observable.create(new ObservableOnSubscribe() {

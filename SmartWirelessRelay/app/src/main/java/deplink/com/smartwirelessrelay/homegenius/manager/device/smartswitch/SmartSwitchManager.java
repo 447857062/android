@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -109,6 +109,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
             smartDev.setType(device.getTp());
+            smartDev.setName(device.getName());
             smartDev.setSubType(currentAddSwitchSubType);
             boolean addResult = smartDev.save();
             Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
@@ -163,7 +164,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
     }
 
     @Override
-    public void onGetalarmRecord(List<LOCK_ALARM> alarmList) {
+    public void onGetalarmRecord(List<Info> alarmList) {
 
     }
 }

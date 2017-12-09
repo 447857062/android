@@ -307,12 +307,13 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     case "SMART_LOCK":
                         //TODO 不需要模拟测试
                         Log.i(TAG, "绑定智能设备");
+                        device.setName(deviceName);
                         mDeviceManager.bindSmartDevList(device);
                         break;
                     case AppConstant.DEVICES.TYPE_SWITCH:
                         //TODO
                         device.setAd(switchqrcode);
-                       // device.setAd("智能开关uid");
+                        // device.setAd("智能开关uid");
                         device.setTp(AppConstant.DEVICES.TYPE_SWITCH);
                         mSmartSwitchManager.addDBSwitchDevice(device);
                         mDeviceManager.bindSmartDevList(device);
@@ -431,11 +432,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
                         });
                 }
-                        break;
-                    case R.id.image_back:
-                        onBackPressed();
-                        break;
+                break;
+            case R.id.image_back:
+                onBackPressed();
+                break;
 
-                }
         }
     }
+}

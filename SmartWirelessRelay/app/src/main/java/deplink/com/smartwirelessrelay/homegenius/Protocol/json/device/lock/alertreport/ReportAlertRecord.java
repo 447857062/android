@@ -10,7 +10,25 @@ import java.util.List;
 public class ReportAlertRecord implements Serializable {
     private String OP="REPORT";
     private String Method="ALARM_INFO";
-    private List<ALARM_INFO> ALARM_INFO;
+    private List<Info> Info;
+    private String Type;
+    private String SmartDev;
+
+    public String getType() {
+        return Type;
+    }
+
+    public void setType(String type) {
+        Type = type;
+    }
+
+    public String getSmartDev() {
+        return SmartDev;
+    }
+
+    public void setSmartDev(String smartDev) {
+        SmartDev = smartDev;
+    }
 
     public String getOP() {
         return OP;
@@ -28,20 +46,12 @@ public class ReportAlertRecord implements Serializable {
         Method = method;
     }
 
-    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ALARM_INFO> getALARM_INFO() {
-        return ALARM_INFO;
+
+    public List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info> getInfo() {
+        return Info;
     }
 
-    public void setALARM_INFO(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ALARM_INFO> ALARM_INFO) {
-        this.ALARM_INFO = ALARM_INFO;
-    }
-
-    @Override
-    public String toString() {
-        return "ReportAlertRecord{" +
-                "OP='" + OP + '\'' +
-                ", Method='" + Method + '\'' +
-                ", ALARM_INFO=" + ALARM_INFO +
-                '}';
+    public void setInfo(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info> info) {
+        Info = info;
     }
 }

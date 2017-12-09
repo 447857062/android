@@ -79,7 +79,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
-
         mRouterManager.getRouterAtRooms(new Observer() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {

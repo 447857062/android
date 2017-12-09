@@ -2,7 +2,7 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp;
 
 import java.util.List;
 
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -46,5 +46,5 @@ public interface LocalConnecteListener {
     /**
      * 获取报警记录
      */
-    void onGetalarmRecord(List<LOCK_ALARM> alarmList);
+    void onGetalarmRecord(List<Info> alarmList);
 }

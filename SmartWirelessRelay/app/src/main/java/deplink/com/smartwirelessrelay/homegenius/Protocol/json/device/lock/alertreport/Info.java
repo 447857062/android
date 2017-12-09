@@ -1,13 +1,24 @@
-package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock;
+package deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class LockHistory implements Serializable{
+public class Info  extends DataSupport implements Serializable {
+    private String ID;
     private String time;
     private String userid;
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
 
     public String getTime() {
         return time;
@@ -23,13 +34,5 @@ public class LockHistory implements Serializable{
 
     public void setUserid(String userid) {
         this.userid = userid;
-    }
-
-    @Override
-    public String toString() {
-        return "LockHistory{" +
-                "time='" + time + '\'' +
-                ", userid='" + userid + '\'' +
-                '}';
     }
 }

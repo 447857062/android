@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:horizontalGap="20px"
+    android:horizontalGap="25dp"
     android:keyHeight="@dimen/keybord_icon_size"
     android:keyWidth="@dimen/keybord_icon_size"
-    android:verticalGap="20px" >
+    android:verticalGap="25dp" >
 
     <Row>
         <Key
-            android:keyIcon="@drawable/clicknumberone"
+
+          android:keyLabel="1"
             android:codes="49"
              />
         <Key
-            android:keyIcon="@drawable/keyboard_button_2"
+            android:keyLabel="2"
             android:codes="50"
              />
         <Key
-            android:keyIcon="@drawable/keyboard_button_3"
+            android:keyLabel="3"
             android:codes="51"
             />
     </Row>
     <Row>
         <Key
-            android:keyIcon="@drawable/keyboard_button_4"
+            android:keyLabel="4"
             android:codes="52"
              />
         <Key
-            android:keyIcon="@drawable/keyboard_button_5"
+            android:keyLabel="5"
             android:codes="53"
             />
         <Key
-            android:keyIcon="@drawable/keyboard_button_6"
+            android:keyLabel="6"
             android:codes="54"
              />
     </Row>
     <Row>
         <Key
-            android:keyIcon="@drawable/keyboard_button_7"
+            android:keyLabel="7"
             android:codes="55"
             />
         <Key
-            android:keyIcon="@drawable/keyboard_button_8"
+            android:keyLabel="8"
             android:codes="56"
             />
         <Key
-            android:keyIcon="@drawable/keyboard_button_9"
+            android:keyLabel="9"
             android:codes="57"
             />
     </Row>
     <Row>
         <Key
             android:keyIcon="@drawable/cancel"
+            android:keyLabel="取消"
             android:codes="-2"
              />
         <Key
-            android:keyIcon="@drawable/keyboard_button_0"
+
+            android:keyLabel="0"
             android:codes="48"
             />
         <Key
-            android:iconPreview="@drawable/undo"
             android:keyIcon="@drawable/undo"
+            android:keyLabel="撤销"
             android:codes="-5"
            />
            <!-- android:keyIcon="撤销"-->

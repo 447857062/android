@@ -154,6 +154,7 @@ public class DeviceListAdapter extends BaseAdapter {
             viewHolder.imageview_device_type.setImageResource(R.drawable.gatewayicon);
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
+            String deviceName = listBottom.get(position - TopCount).getName();
             String deviceSubType="";
             deviceSubType= listBottom.get(position - TopCount).getSubType();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
@@ -164,7 +165,7 @@ public class DeviceListAdapter extends BaseAdapter {
             if("IRMOTE_V2".equals(deviceType)){
                 deviceType=AppConstant.DEVICES.TYPE_REMOTECONTROL;
             }
-            viewHolder.textview_device_name.setText(deviceType);
+            viewHolder.textview_device_name.setText(deviceName);
             viewHolder.textview_device_status.setText("状态:" + deviceStatu);
             getDeviceTypeImage(viewHolder, deviceType,deviceSubType);
         }

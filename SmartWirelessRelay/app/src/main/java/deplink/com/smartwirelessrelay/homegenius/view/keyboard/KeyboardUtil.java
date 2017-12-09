@@ -15,7 +15,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
  * Created by Administrator on 2017/11/11.
  */
 public class KeyboardUtil {
-    private static final String TAG="KeyboardUtil";
+    private static final String TAG = "KeyboardUtil";
     private Activity myActivity;
     private KeyboardView keyboardView;
     private Keyboard kb_num_only;
@@ -32,7 +32,7 @@ public class KeyboardUtil {
         keyboardView.setEnabled(true);
         keyboardView.setPreviewEnabled(false);
         keyboardView.setOnKeyboardActionListener(listener);
-       // this.mCancelListener=cancelListener;
+        // this.mCancelListener=cancelListener;
     }
 
     private KeyboardView.OnKeyboardActionListener listener = new KeyboardView.OnKeyboardActionListener() {
@@ -66,10 +66,10 @@ public class KeyboardUtil {
 
         @Override
         public void onKey(int primaryCode, int[] keyCodes) {
-            if (primaryCode== Keyboard.KEYCODE_MODE_CHANGE) {
-                Log.i(TAG,"primaryCode"+primaryCode);
+            if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+                Log.i(TAG, "primaryCode" + primaryCode);
                 myActivity.finish();
-               // mCancelListener.onCancelClick();
+                // mCancelListener.onCancelClick();
                 return;
             } else if (primaryCode == Keyboard.KEYCODE_DELETE) {// 回退
                 // 删除按钮所做的动作
@@ -80,18 +80,18 @@ public class KeyboardUtil {
                     int len = thisPwdText.length();
                     if (len <= 5) {
                         listEd.get(len).setText("");
+                        listEd.get(len).setBackgroundResource(R.drawable.ovel_15_bg);
                     }
                 }
-            }
-
-            else {
-                Log.i(TAG,"primaryCode"+primaryCode);
+            } else {
+                Log.i(TAG, "primaryCode" + primaryCode);
                 thisPwdText = thisPwdText + (char) primaryCode;
                 System.out.println("thisPwdText=" + thisPwdText);
                 int len = thisPwdText.length();
                 if (len <= 6) {
                     listEd.get(len - 1).setText("*");
-                    if (len ==6) {
+                    listEd.get(len - 1).setBackgroundResource(R.drawable.ovel_15_bg_nostroke);
+                    if (len == 6) {
                         // 返回值，并清理本次记录，自动进入下次
                         listEd.get(6).setText(thisPwdText);
                         thisPwdText = "";
@@ -125,13 +125,14 @@ public class KeyboardUtil {
             keyboardView.setVisibility(View.INVISIBLE);
         }
     }
+
     private CancelListener mCancelListener;
 
     public void setmCancelListener(CancelListener mCancelListener) {
         this.mCancelListener = mCancelListener;
     }
 
-    public interface  CancelListener{
+    public interface CancelListener {
         void onCancelClick();
     }
 }

@@ -8,6 +8,7 @@ public class QrcodeSmartDevice {
     private String tp;
     private String ad;
     private String ver;
+    private String name;
     public String getOrg() {
         return org;
     }
@@ -38,5 +39,13 @@ public class QrcodeSmartDevice {
 
     public void setVer(String ver) {
         this.ver = ver;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

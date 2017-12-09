@@ -10,8 +10,33 @@ public class OpResult  implements Serializable{
     private String OP="REPORT";
     private String Method="SmartLock";
     private int Result;
-    private int Cmd;
-  
+    private String SmartUid;
+    private String Command;
+    private long timestamp_echo;
+
+    public String getSmartUid() {
+        return SmartUid;
+    }
+
+    public void setSmartUid(String smartUid) {
+        SmartUid = smartUid;
+    }
+
+    public String getCommand() {
+        return Command;
+    }
+
+    public void setCommand(String command) {
+        Command = command;
+    }
+
+    public long getTimestamp_echo() {
+        return timestamp_echo;
+    }
+
+    public void setTimestamp_echo(long timestamp_echo) {
+        this.timestamp_echo = timestamp_echo;
+    }
 
     public String getOP() {
         return OP;
@@ -37,21 +62,15 @@ public class OpResult  implements Serializable{
         Result = result;
     }
 
-    public int getCmd() {
-        return Cmd;
-    }
-
-    public void setCmd(int cmd) {
-        Cmd = cmd;
-    }
-
     @Override
     public String toString() {
         return "OpResult{" +
                 "OP='" + OP + '\'' +
                 ", Method='" + Method + '\'' +
                 ", Result=" + Result +
-                ", Cmd=" + Cmd +
+                ", SmartUid='" + SmartUid + '\'' +
+                ", Command='" + Command + '\'' +
+                ", timestamp_echo=" + timestamp_echo +
                 '}';
     }
 }

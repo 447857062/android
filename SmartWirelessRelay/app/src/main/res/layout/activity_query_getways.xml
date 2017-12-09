@@ -4,29 +4,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.QueryGetwaysActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
 
-    <ImageView
-        android:id="@+id/imageview_animation"
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/layout_title_with_back_center_titletext" />
+
+    <FrameLayout
+        android:layout_marginTop="50dp"
+        android:id="@+id/layout_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title"
-        android:layout_centerHorizontal="true"
-        android:src="@mipmap/ic_launcher"
-        android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/imageview_center_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:src="@drawable/scanningsearchround" />
+
+        <ImageView
+            android:id="@+id/imageview_animation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:scaleType="centerInside"
+            android:src="@drawable/scanningsearchicon" />
+
+    </FrameLayout>
+
     <TextView
-        android:layout_marginTop="50dp"
-        android:text="正在扫描网关设备..."
-        android:gravity="center_horizontal"
         android:id="@+id/textview_show_scan_getway_device"
-        android:layout_below="@+id/imageview_animation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_scan"
         android:layout_marginTop="50dp"
-        android:text="取消"
         android:gravity="center_horizontal"
+        android:text="正在扫描网关设备..." />
+
+    <Button
         android:id="@+id/textview_cancel"
-        android:layout_below="@+id/textview_show_scan_getway_device"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/add_doorbell_buttom_button_width"
+        android:layout_height="@dimen/add_doorbell_buttom_button_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/add_doorbell_buttom_button_marginbuttom"
+        android:background="@drawable/radius22_bg_blue_background"
+        android:text="取消"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_small" />
+
 </RelativeLayout>

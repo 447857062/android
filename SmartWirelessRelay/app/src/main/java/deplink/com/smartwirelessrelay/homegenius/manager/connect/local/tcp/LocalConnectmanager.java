@@ -26,9 +26,8 @@ import javax.net.ssl.TrustManagerFactory;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecord;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecordReal;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
@@ -363,11 +362,14 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
 
                 switch (cmd) {
                     case ComandID.HEARTBEAT_RESPONSE:
-                        if (length > 0) {
+
+                        break;
+                    case ComandID.ALARM_REPORT:
+
                             str = new String(buf, AppConstant.BASICLEGTH, length);
-                            Log.i(TAG, "心跳数据=" + str);
+                            Log.i(TAG, "报警记录=" + str);
                             decodeAlarmRecord(str);
-                        }
+
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
                         str = new String(buf, AppConstant.BASICLEGTH, length);
@@ -440,10 +442,11 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         Gson gson = new Gson();
         ReportAlertRecord record = gson.fromJson(str, ReportAlertRecord.class);
         if (record != null) {
-            String recode = record.getALARM_INFO().get(0).getINFO();
-            Log.i(TAG, "recode=" + recode);
-            ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
-            List<LOCK_ALARM> alermList = mAlertRecordReal.getLOCK_ALARM();
+          //  String recode = record.getALARM_INFO().get(0).getINFO();
+          //  Log.i(TAG, "recode=" + recode);
+           // ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
+            Log.i(TAG,"报警记录="+ record.getInfo().size());
+            List<Info> alermList = record.getInfo();
             for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
             }

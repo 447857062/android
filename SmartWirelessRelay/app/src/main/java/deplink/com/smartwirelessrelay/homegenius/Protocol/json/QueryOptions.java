@@ -14,9 +14,9 @@ public class QueryOptions implements Serializable {
     private String Method;
     private String Command;
     private String UserID;
-    private String ManagePasswd;
+    private String ManagePwd;
     private String AuthPwd;
-    private String LimitedTime;
+    private String Time;
     private String Result;
     private List<SmartDev>SmartDev;
     private List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device> Device;
@@ -120,12 +120,16 @@ public class QueryOptions implements Serializable {
         UserID = userID;
     }
 
-    public String getManagePasswd() {
-        return ManagePasswd;
+    public String getManagePwd() {
+        return ManagePwd;
     }
 
-    public void setManagePasswd(String managePasswd) {
-        ManagePasswd = managePasswd;
+    public void setManagePwd(String managePwd) {
+        ManagePwd = managePwd;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getAuthPwd() {
@@ -136,11 +140,11 @@ public class QueryOptions implements Serializable {
         AuthPwd = authPwd;
     }
 
-    public String getLimitedTime() {
-        return LimitedTime;
+    public String getTime() {
+        return Time;
     }
 
-    public void setLimitedTime(String limitedTime) {
-        LimitedTime = limitedTime;
+    public void setTime(String time) {
+        Time = time;
     }
 }

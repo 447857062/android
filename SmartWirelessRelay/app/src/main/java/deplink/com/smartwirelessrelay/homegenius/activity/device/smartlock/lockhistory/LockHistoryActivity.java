@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistory;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistorys;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.Record;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -30,7 +30,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 public class LockHistoryActivity extends Activity implements SmartLockListener, View.OnClickListener {
     private static final String TAG = "LockHistory";
     private ListView dev_list;
-    private List<LockHistory> mRecordList;
+    private List<Record> mRecordList;
     private LockHistoryAdapter recordAdapter;
     private SmartLockManager mSmartLockManager;
     private boolean isStartFromExperience;
@@ -83,21 +83,21 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         super.onResume();
         if (isStartFromExperience) {
             mRecordList.clear();
-            LockHistory temp = new LockHistory();
+            Record temp = new Record();
             temp.setTime("2017-11-23 12:35:23");
-            temp.setUserid("001");
+            temp.setUserID("001");
             mRecordList.add(temp);
-            temp = new LockHistory();
+            temp = new Record();
             temp.setTime("2017-11-24 12:35:23");
-            temp.setUserid("002");
+            temp.setUserID("002");
             mRecordList.add(temp);
-            temp = new LockHistory();
+            temp = new Record();
             temp.setTime("2017-11-25 12:35:23");
-            temp.setUserid("003");
+            temp.setUserID("003");
             mRecordList.add(temp);
-            temp = new LockHistory();
+            temp = new Record();
             temp.setTime("2017-11-26 12:35:23");
-            temp.setUserid("004");
+            temp.setUserID("004");
             mRecordList.add(temp);
         } else {
             mSmartLockManager = SmartLockManager.getInstance();
@@ -119,12 +119,12 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 case MSG_GET_HISTORYRECORD:
                     Gson gson = new Gson();
                     LockHistorys aDeviceList = gson.fromJson(str, LockHistorys.class);
-                    mRecordList.clear();
-                    if (aDeviceList.getRecord() != null) {
+                 //   if (aDeviceList.getRecord() != null) {
                         Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
+                        mRecordList.clear();
                         mRecordList.addAll(aDeviceList.getRecord());
                         recordAdapter.notifyDataSetChanged();
-                    }
+                //    }
 
                     try {
                         new AlertDialog
@@ -161,7 +161,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     public void responseQueryResult(String result) {
         Message msg = Message.obtain();
         msg.obj = result;
-        if (result.contains("SmartLock-HisRecord")) {
+        if (result.contains("HisRecord")) {
             msg.what = MSG_GET_HISTORYRECORD;
         } else if (result.contains("Result")) {
             msg.what = MSG_RETURN_ERROR;
@@ -178,6 +178,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     public void responseBind(String result) {
 
     }
+
 
     @Override
     public void onClick(View v) {

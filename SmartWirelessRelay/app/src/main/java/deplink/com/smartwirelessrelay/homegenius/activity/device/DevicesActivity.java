@@ -105,7 +105,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
         datasBottom.addAll(DataSupport.findAll(SmartDev.class));
-        mDeviceAdapter.notifyDataSetChanged();
+        //  mDeviceAdapter.notifyDataSetChanged();
+        mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
+        listview_devies.setAdapter(mDeviceAdapter);
     }
 
 
@@ -148,6 +150,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                     switch (deviceType) {
                         case "SMART_LOCK":
+                            //设置当前选中的门锁设备
+                            mSmartLockManager.setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
@@ -239,26 +243,26 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 break;
             case R.id.layout_select_room_type:
 
-                    roomTypeDialog.setRoomTypeItemClickListener(new DeviceAtRoomDialog.onItemClickListener() {
-                        @Override
-                        public void onItemClicked(int position) {
-                            datasTop.clear();
-                            datasBottom.clear();
-                            if (mRoomTypes.get(position).equals("全部")) {
-                                datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-                                datasBottom.addAll(DataSupport.findAll(SmartDev.class));
+                roomTypeDialog.setRoomTypeItemClickListener(new DeviceAtRoomDialog.onItemClickListener() {
+                    @Override
+                    public void onItemClicked(int position) {
+                        datasTop.clear();
+                        datasBottom.clear();
+                        if (mRoomTypes.get(position).equals("全部")) {
+                            datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+                            datasBottom.addAll(DataSupport.findAll(SmartDev.class));
 
-                            } else {
-                                Room room = mRoomManager.findRoomByType(mRoomTypes.get(position), true);
-                                //使用数据库中的数据
-                                datasTop.addAll(room.getmGetwayDevices());
-                                datasBottom.addAll(room.getmDevices());
+                        } else {
+                            Room room = mRoomManager.findRoomByType(mRoomTypes.get(position), true);
+                            //使用数据库中的数据
+                            datasTop.addAll(room.getmGetwayDevices());
+                            datasBottom.addAll(room.getmDevices());
 
-                            }
-                            mDeviceAdapter.notifyDataSetChanged();
                         }
-                    });
-                    roomTypeDialog.show();
+                        mDeviceAdapter.notifyDataSetChanged();
+                    }
+                });
+                roomTypeDialog.show();
 
 
                 break;

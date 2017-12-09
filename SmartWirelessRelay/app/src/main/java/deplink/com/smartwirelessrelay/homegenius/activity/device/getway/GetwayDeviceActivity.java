@@ -37,6 +37,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private TextView textview_select_room_name;
     private FrameLayout image_back;
     private ClearEditText edittext_input_devie_name;
+    private TextView textview_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     }
 
     private void initDatas() {
+        textview_title.setText("智能网关");
         isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
@@ -72,6 +74,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         edittext_input_devie_name = (ClearEditText) findViewById(R.id.edittext_input_devie_name);
+        textview_title = (TextView) findViewById(R.id.textview_title);
     }
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;

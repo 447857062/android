@@ -29,7 +29,7 @@ public class GeneralPacket extends BasicPacket {
      * @return
      */
     public int packHeathPacket() {
-        return packData( null, ComandID.HEARTBEAT);
+        return packData( null, ComandID.HEARTBEAT,false);
     }
     /**
      * 发送广播包,探测设备
@@ -43,9 +43,9 @@ public class GeneralPacket extends BasicPacket {
      * 查询设备列表
      * @return
      */
-    public int packQueryDevListData(byte[]xdata) {
+    public int packQueryDevListData(byte[]xdata,boolean addControlUid) {
 
-        return packData( xdata,ComandID.QUERY_OPTION);
+        return packData( xdata,ComandID.QUERY_OPTION,addControlUid);
     }
     /**
      * 查询开锁记录
@@ -53,7 +53,7 @@ public class GeneralPacket extends BasicPacket {
      */
     public int packOpenLockListData(byte[]xdata) {
 
-        return packData(xdata,ComandID.QUERY_OPTION);
+        return packData(xdata,ComandID.QUERY_OPTION,true);
     }
     /**
      *设置智能设备参数
@@ -62,30 +62,30 @@ public class GeneralPacket extends BasicPacket {
     public int packSetSmartLockData( byte[]xdata) {
 
 
-        return packData(xdata,ComandID.SET_CMD);
+        return packData(xdata,ComandID.SET_CMD,true);
     }
     /**
      *智能设备列表下发
      * @return
      */
     public int packSendSmartDevsData( byte[]xdata) {
-        return packData(xdata,ComandID.CMD_SEND_SMART_DEV);
+        return packData(xdata,ComandID.CMD_SEND_SMART_DEV,true);
     }
     public int packQueryWifiListData( byte[]xdata) {
-        return packData(xdata,ComandID.CMD_DEV_SCAN_WIFI);
+        return packData(xdata,ComandID.CMD_DEV_SCAN_WIFI,false);
     }
     public int packRemoteControlData( byte[]xdata) {
-        return packData(xdata,ComandID.SET_CMD);
+        return packData(xdata,ComandID.SET_CMD,true);
     }
     public int packSetWifiListData( byte[]xdata) {
-        return packData(xdata,ComandID.CMD_DEV_SET_WIFI);
+        return packData(xdata,ComandID.CMD_DEV_SET_WIFI,false);
     }
     /**
      *设备列表下发
      * @return
      */
     public int packSendDevsData( byte[]xdata) {
-        return packData( xdata,ComandID.CMD_SEND_SMART_DEV);
+        return packData( xdata,ComandID.CMD_SEND_SMART_DEV,false);
     }
 
 }

@@ -39,10 +39,10 @@ public  class SmartLockConstant {
 
     }
     public interface CMD{
-        int OPEN = 3;
-        int ONCE = 4;
-        int PERMANENT = 5;
-        int TIMELIMIT = 6;
+        String OPEN = "Open";
+        String ONCE = "Once";
+        String PERMANENT = "Perpetual";
+        String TIMELIMIT = "Time-limited";
 
     }
 }

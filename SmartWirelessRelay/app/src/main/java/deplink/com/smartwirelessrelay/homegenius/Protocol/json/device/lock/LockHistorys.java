@@ -9,7 +9,7 @@ import java.util.List;
 public class LockHistorys implements Serializable{
     private String OP;
     private String Method;
-    private List<LockHistory> Record;
+    private List<Record> Record;
 
     public String getOP() {
         return OP;
@@ -28,11 +28,11 @@ public class LockHistorys implements Serializable{
     }
 
 
-    public List<LockHistory> getRecord() {
+    public List<Record> getRecord() {
         return Record;
     }
 
-    public void setRecord(List<LockHistory> record) {
+    public void setRecord(List<Record> record) {
         Record = record;
     }
 }

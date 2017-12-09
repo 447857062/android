@@ -150,7 +150,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                 }
 
                 DialogLoading.showLoading(this);
-                manager.login(phoneNumber, password);
+                    manager.login(phoneNumber, password);
                 break;
             case R.id.textview_forget_password:
                 startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));

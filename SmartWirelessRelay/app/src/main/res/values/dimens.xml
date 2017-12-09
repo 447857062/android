@@ -149,7 +149,7 @@
     <dimen name="point_black_width_height">15dp</dimen>
     <dimen name="keybord_icon_size">72dp</dimen>
     <!---->
-    <dimen name="keybord_layout_margin_left_right">40dp</dimen>
+    <dimen name="keybord_layout_margin_left_right">30dp</dimen>
     <dimen name="doorlock_operation_layout_margin_left_right">26dp</dimen>
     <dimen name="doorlock_operation_one_padding_hor_other">22dp</dimen>
     <dimen name="doorlock_operation_one_padding_ver_other">26dp</dimen>
@@ -207,7 +207,7 @@
     <!--路由器cpu使用距离顶部-->
     <dimen name="router_device_cpu_use_layout_margin_top">88dp</dimen>
     <dimen name="router_device_cpu_use_marginleft_precent">15dp</dimen>
-    <dimen name="router_device_cpu_speed_layout_height">27dp</dimen>
+    <dimen name="router_device_cpu_speed_layout_height">28dp</dimen>
     <dimen name="router_device_speed_layout_height">31dp</dimen>
     <dimen name="router_device_speed_layout_margintop_cpuuse_layout">42dp</dimen>
     <dimen name="router_device_connect_devices_list_item_height">53dp</dimen>

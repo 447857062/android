@@ -9,67 +9,81 @@
 
     <ImageView
         android:id="@+id/imageview_show_net_option"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title"
-        android:layout_marginTop="100dp"
-        android:src="@mipmap/ic_launcher" />
-
-    <TextView
-        android:id="@+id/textview_info_1"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageview_show_net_option"
-        android:layout_marginLeft="50dp"
-        android:gravity="left"
-        android:text="1.将网关接通网络和电源" />
-
-    <TextView
-        android:id="@+id/textview_info_2"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textview_info_1"
-        android:layout_marginLeft="50dp"
-        android:gravity="left"
-        android:text="2.确认盒子与手机连接到相同的路由器网络" />
+        android:src="@drawable/gatewayphoto" />
 
     <RelativeLayout
-        android:id="@+id/layout_info_3"
-        android:layout_width="400dp"
+        android:layout_below="@+id/imageview_show_net_option"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textview_info_2"
-        android:layout_marginLeft="50dp"
-        android:gravity="left">
+        >
 
         <TextView
-            android:id="@+id/textview_info_3_1"
-            android:layout_width="wrap_content"
+            android:id="@+id/textview_info_1"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="@dimen/add_doorbell_tips_textview_padding_left"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="3.待网关" />
+            android:gravity="left"
+            android:text="1.请将手机连接到门铃的WIFI热点" />
 
         <TextView
-            android:id="@+id/textview_info_3_2"
-            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textview_info_2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/textview_info_3_1"
-            android:text="指示灯闪烁时"
-            android:textColor="@color/blue" />
+            android:layout_below="@+id/textview_info_1"
+            android:gravity="left"
 
-        <TextView
-            android:id="@+id/textview_info_3_3"
-            android:layout_width="wrap_content"
+            android:paddingLeft="@dimen/add_doorbell_tips_textview_padding_left"
+            android:text="2.确认盒子与手机连接到相同的路由器网络" />
+        <RelativeLayout
+            android:id="@+id/layout_info_3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/textview_info_3_2"
-            android:text="，即可点击下一步“添加”" />
+            android:layout_below="@+id/textview_info_2"
+            android:paddingLeft="@dimen/add_doorbell_tips_textview_padding_left"
+            >
+
+            <TextView
+                android:id="@+id/textview_info_3_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="3.待网关" />
+
+            <TextView
+                android:id="@+id/textview_info_3_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/textview_info_3_1"
+                android:text="指示灯闪烁时"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:id="@+id/textview_info_3_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/textview_info_3_2"
+                android:text="，即可点击下一步“添加”" />
+
+        </RelativeLayout>
+
+
 
     </RelativeLayout>
 
     <Button
+        android:background="@drawable/radius22_bg_blue_background"
         android:id="@+id/button_next_step"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_info_3"
-        android:layout_marginTop="30dp"
+        android:layout_width="@dimen/add_doorbell_buttom_button_width"
+        android:layout_centerHorizontal="true"
+        android:layout_height="@dimen/add_doorbell_buttom_button_height"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/add_doorbell_buttom_button_marginbuttom"
         android:text="下一步" />
 </RelativeLayout>
