@@ -31,7 +31,6 @@ import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureAct
  */
 public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "AddDeviceQRcodeActivity";
-    private Bundle mBundle;
     private GridView mGridView;
     private AddDeviceTypeSelectAdapter mAdapter;
     private SmartLockManager mSmartLockManager;

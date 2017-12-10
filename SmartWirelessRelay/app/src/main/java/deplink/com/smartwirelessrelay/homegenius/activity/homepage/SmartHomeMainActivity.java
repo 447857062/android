@@ -39,6 +39,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
 
 /**
  * 智能家居主页
@@ -207,7 +208,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         textview_mine = (TextView) findViewById(R.id.textview_mine);
 
         layout_roomselect_normal= (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
-        layout_roomselect_changed_ype= (ListView) findViewById(R.id.layout_roomselect_changed_ype);
+        layout_roomselect_changed_ype= (NonScrollableListView) findViewById(R.id.layout_roomselect_changed_ype);
     }
 
     @Override
@@ -237,7 +238,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
     private HorizontalScrollView layout_roomselect_normal;
-    private ListView layout_roomselect_changed_ype;
+    private NonScrollableListView layout_roomselect_changed_ype;
 
     @Override
     public void onClick(View v) {

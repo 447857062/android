@@ -3,32 +3,32 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceGridViewAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.EditSmartLockActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
-import deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView;
 
 public class AddDeviceActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RoomActivity";
     private FrameLayout image_back;
-    private DragGridView mDragGridView;
-    private GridViewAdapter mRoomsAdapter;
+    private GridView mDragGridView;
+    private AddDeviceGridViewAdapter mRoomsAdapter;
     private RoomManager mRoomManager;
     private List<Room> mRooms = new ArrayList<>();
     private TextView textview_show_select_room;
     private TextView textview_skip_this_option;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,55 +58,38 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_skip_this_option.setOnClickListener(this);
-
-        mDragGridView.setOnChangeListener(new DragGridView.OnChanageListener() {
-
-            @Override
-            public void onChange(int from, int to) {
-                Room temp = mRooms.get(from);
-                //这里的处理需要注意下
-                if (from < to) {
-                    for (int i = from; i < to; i++) {
-                        Collections.swap(mRooms, i, i + 1);
-                    }
-                } else if (from > to) {
-                    for (int i = from; i > to; i--) {
-                        Collections.swap(mRooms, i, i - 1);
-                    }
-                }
-                mRooms.set(to, temp);
-                mRoomsAdapter.notifyDataSetChanged();
-            }
-        });
         mDragGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //最大值，最后一个，添加房间
-                Room currentSelectedRoom=RoomManager.getInstance().getmRooms().get(position);
-                String currentAddRomm=currentSelectedRoom.getRoomName();
-                RoomManager.getInstance().setCurrentSelectedRoom(currentSelectedRoom);
-                if(isStartFromExperience){
+
+                if (position == mRoomsAdapter.getCount() - 1) {
+                    Intent intent = new Intent(AddDeviceActivity.this, AddRommActivity.class);
+                    intent.putExtra("fromAddDevice", true);
+                    startActivity(intent);
+                } else {
+                    Room currentSelectedRoom = RoomManager.getInstance().getmRooms().get(position);
+                    String currentAddRomm = currentSelectedRoom.getRoomName();
+                    RoomManager.getInstance().setCurrentSelectedRoom(currentSelectedRoom);
+                    if (isStartFromExperience) {
                         Intent mIntent = new Intent();
                         mIntent.putExtra("roomName", currentAddRomm);
                         // 设置结果，并进行传送
                         setResult(RESULT_OK, mIntent);
                         finish();
-                }else{
-                    if (isFromEditSmartLockActivity) {
-                        Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
-                        intentSeleteedRoom.putExtra("roomName", currentAddRomm);
-                        AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
-                        finish();
                     } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("roomName", currentAddRomm);
-                        bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
-                        Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
-                        Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + currentAddRomm);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        if (isFromEditSmartLockActivity) {
+                            Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
+                            intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                            AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
+                            finish();
+                        } else {
+                            Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 }
+
 
             }
         });
@@ -114,7 +97,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
 
     private void initViews() {
         image_back = (FrameLayout) findViewById(R.id.image_back);
-        mDragGridView = (DragGridView) findViewById(R.id.dragGridView);
+        mDragGridView = (GridView) findViewById(R.id.dragGridView);
         textview_show_select_room = (TextView) findViewById(R.id.textview_show_select_room);
         textview_skip_this_option = (TextView) findViewById(R.id.textview_skip_this_option);
     }
@@ -122,8 +105,8 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isStartFromExperience){
-            mRoomManager.updateRoomsOrdinalNumber();
+        if (!isStartFromExperience) {
+
         }
 
     }
@@ -132,7 +115,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     protected void onResume() {
         super.onResume();
         mRooms = mRoomManager.getDatabaseRooms();
-        mRoomsAdapter = new GridViewAdapter(this, mRooms);
+        mRoomsAdapter = new AddDeviceGridViewAdapter(this, mRooms);
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);
     }

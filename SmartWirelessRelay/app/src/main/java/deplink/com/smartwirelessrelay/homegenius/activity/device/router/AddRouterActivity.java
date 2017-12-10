@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +30,9 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     private TextView textview_select_room_name;
     private TextView textview_title;
     private FrameLayout image_back;
+    private String routerSN;
+    private String routerName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +50,6 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         textview_title.setText("添加路由器");
-        currentAddRoom = getIntent().getStringExtra("roomName");
         routerSN = getIntent().getStringExtra("routerSN");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
@@ -63,8 +64,8 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
         button_add_device_sure = (Button) findViewById(R.id.button_add_device_sure);
         edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
     private static final int MSG_ADD_ROUTER_FAIL = 100;
@@ -86,9 +87,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
             }
         }
     };
-    private String currentAddRoom;
-    private String routerSN;
-    private String routerName;
+
 
     @Override
     public void onClick(View v) {
@@ -110,11 +109,10 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onNext(@NonNull Object o) {
                         if ((boolean) o) {
-                            Log.i(TAG, "添加路由器的房间=" + currentAddRoom);
-                            Room room = RoomManager.getInstance().findRoom(currentAddRoom, true);
+                            Room room = RoomManager.getInstance().getCurrentSelectedRoom();
                             routerName = edittext_add_device_input_name.getText().toString();
                             if (routerName.equals("")) {
-                                routerName = "新路由器";
+                                routerName = "家里的路由器";
                             }
                             mRouterManager.updateDeviceInWhatRoom(room, routerSN, routerName, new Observer() {
                                 @Override
@@ -126,7 +124,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                                 public void onNext(@NonNull Object o) {
                                     if ((boolean) o) {
                                         startActivity(new Intent(AddRouterActivity.this, DevicesActivity.class));
-                                    }else{
+                                    } else {
                                         Message msg = Message.obtain();
                                         msg.what = MSG_UPDATE_ROOM_FAIL;
                                         mHandler.sendMessage(msg);

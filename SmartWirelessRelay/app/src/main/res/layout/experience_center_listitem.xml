@@ -36,7 +36,6 @@
         android:src="@drawable/directionicon" />
     <View
         android:id="@+id/view_line"
-
         android:background="@color/line_clolor"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

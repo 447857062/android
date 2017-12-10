@@ -43,7 +43,8 @@ public class RouterManager {
     private static RouterManager instance;
     private Context mContext;
     private SmartDev currentSelectedRouter;
-
+    private RouterDevice routerDevice;
+    private SDKManager manager;
     public SmartDev getCurrentSelectedRouter() {
         return currentSelectedRouter;
     }
@@ -89,7 +90,6 @@ public class RouterManager {
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
-
     }
 
     /**
@@ -189,8 +189,7 @@ public class RouterManager {
 
     }
 
-    private RouterDevice routerDevice;
-    private SDKManager manager;
+
 
     public RouterDevice getRouterDevice() {
         String currentDevcieKey = Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY);

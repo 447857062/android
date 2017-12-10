@@ -3,6 +3,8 @@ package deplink.com.smartwirelessrelay.homegenius.activity.room;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -45,6 +48,8 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         initEvents();
     }
 
+    private boolean fromAddDevice;
+
     private void initDatas() {
         roomManager = RoomManager.getInstance();
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
@@ -58,6 +63,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         roomType = AppConstant.ROOMTYPE.TYPE_LIVING;
         edittext_room_name.setText(roomType);
         edittext_room_name.setSelection(roomType.length());
+        fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);
     }
 
     private void initEvents() {
@@ -87,6 +93,29 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     }
 
     private String roomType;
+    private static final int MSG_ADD_ROOM_FAILED = 100;
+    private static final int MSG_ADD_ROOM_SUCCESS = 101;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_ADD_ROOM_FAILED:
+                    Toast.makeText(AddRommActivity.this, "添加房间失败，已存在同名房间", Toast.LENGTH_LONG).show();
+                    break;
+                case MSG_ADD_ROOM_SUCCESS:
+                    Toast.makeText(AddRommActivity.this, "添加房间成功", Toast.LENGTH_LONG).show();
+                    if (fromAddDevice) {
+                        RoomManager.getInstance().setCurrentSelectedRoom(null);
+                        Intent intent = new Intent(AddRommActivity.this, AddDeviceQRcodeActivity.class);
+                        startActivity(intent);
+                    }
+
+                    break;
+            }
+
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -103,11 +132,14 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
 
                         @Override
                         public void onNext(@NonNull Object o) {
-                            Log.i(TAG, "add room react onNext=" + (boolean) o);
+                            Log.i(TAG, "add room react onNext=" + (boolean) o + "fromAddDevice=" + fromAddDevice);
                             if ((boolean) o) {
-                                Toast.makeText(AddRommActivity.this, "添加房间成功", Toast.LENGTH_LONG).show();
+                                mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
+
+
                             } else {
-                                Toast.makeText(AddRommActivity.this, "添加房间失败", Toast.LENGTH_LONG).show();
+                                mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
+
                             }
                         }
 

@@ -79,6 +79,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_device;
     private TextView textview_room;
     private TextView textview_mine;
+    private DeviceAtRoomDialog roomTypeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +118,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceManager.removeDeviceListener(this);
     }
 
-    private List<String> mRoomTypes = new ArrayList<>();
+    private List<String> mRooms = new ArrayList<>();
 
     private void initDatas() {
         runOnUiThread(new Runnable() {
@@ -132,8 +133,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
             }
         });
-        roomTypeDialog = new DeviceAtRoomDialog(this, mRoomTypes);
-        mRoomTypes.addAll(mRoomManager.getRoomTypes());
+        roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
+        mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
 
@@ -198,8 +199,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 }
             }
         });
-
-
     }
 
     private void initEvents() {
@@ -233,8 +232,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
     }
 
-    private DeviceAtRoomDialog roomTypeDialog;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -248,12 +245,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     public void onItemClicked(int position) {
                         datasTop.clear();
                         datasBottom.clear();
-                        if (mRoomTypes.get(position).equals("全部")) {
+
+                        if (mRooms.get(position).equals("全部")) {
                             datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
                             datasBottom.addAll(DataSupport.findAll(SmartDev.class));
 
                         } else {
-                            Room room = mRoomManager.findRoomByType(mRoomTypes.get(position), true);
+                            Room room = mRoomManager.findRoom(mRooms.get(position), true);
                             //使用数据库中的数据
                             datasTop.addAll(room.getmGetwayDevices());
                             datasBottom.addAll(room.getmDevices());
@@ -324,10 +322,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         e.printStackTrace();
                     }
                     break;
-
             }
-
-
         }
     };
 

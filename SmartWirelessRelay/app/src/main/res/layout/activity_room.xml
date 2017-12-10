@@ -84,7 +84,7 @@
         <View
             android:layout_alignParentTop="true"
             android:id="@+id/view_line"
-            android:background="@color/huise"
+            android:background="@color/line_clolor"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
         <include

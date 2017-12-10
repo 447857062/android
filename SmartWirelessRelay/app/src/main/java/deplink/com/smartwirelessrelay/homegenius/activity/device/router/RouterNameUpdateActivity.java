@@ -22,6 +22,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     private TextView textview_title;
     private TextView textview_edit;
     private FrameLayout image_back;
+    private String deviceName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +37,9 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
         textview_edit.setText("完成");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
+        deviceName=mRouterManager.getCurrentSelectedRouter().getName();
+        edittext_router_name.setText(deviceName);
+        edittext_router_name.setSelection(deviceName.length());
     }
 
     private void initEvents() {
@@ -89,6 +93,8 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
 
                         }
                     });
+                }else{
+                    Toast.makeText(this,"请输入路由器名称",Toast.LENGTH_SHORT).show();
                 }
 
 

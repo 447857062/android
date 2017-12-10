@@ -19,9 +19,6 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
@@ -66,6 +63,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private boolean deviceOnline;
     private TextView textview_title;
     private DeleteDeviceDialog deleteDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,13 +86,10 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             @Override
             public void onNext(@NonNull Object o) {
                 //所在房间
-                List<Room> rooms = new ArrayList<>();
-                rooms.addAll((ArrayList<Room>) o);
-                Log.i(TAG, "所在房间列表大小" + ((ArrayList<Room>) o).size());
-                textview_room_select_2.setText("");
-                for (int i = 0; i < rooms.size(); i++) {
-                    textview_room_select_2.append("(" + rooms.get(i).getRoomName() + ")");
-                }
+                Room room = (Room) o;
+                Log.i(TAG, "所在房间名称" + room.getRoomName());
+                textview_room_select_2.setText(room.getRoomName());
+
             }
 
             @Override
@@ -197,9 +192,9 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     }
 
     private void initViews() {
-        deleteDialog=new DeleteDeviceDialog(this);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        buttton_delete_router= (TextView) findViewById(R.id.buttton_delete_router);
+        deleteDialog = new DeleteDeviceDialog(this);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        buttton_delete_router = (TextView) findViewById(R.id.buttton_delete_router);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_router_name_out = (RelativeLayout) findViewById(R.id.layout_router_name_out);
         layout_room_select_out = (RelativeLayout) findViewById(R.id.layout_room_select_out);

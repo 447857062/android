@@ -18,17 +18,19 @@
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
 
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
             <FrameLayout
-                android:layout_alignParentLeft="true"
                 android:id="@+id/image_back"
                 android:layout_width="48dp"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
                 <ImageView
 
                     android:layout_width="wrap_content"
-                    android:scaleType="centerInside"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
+                    android:scaleType="centerInside"
                     android:src="@drawable/returnicon" />
             </FrameLayout>
 
@@ -50,10 +52,10 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/white"
                 android:gravity="center_vertical|right"
-                android:textSize="@dimen/text_size_small"
-                android:text="跳过" />
+                android:text="跳过"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -64,12 +66,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:textColor="@color/add_device_text_show_explan"
-        android:textSize="@dimen/text_size_small"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:text="请选择设备所在的房间,跳过设备默认分类为全部" />
+        android:text="请选择设备所在的房间,跳过设备默认分类为全部"
+        android:textColor="@color/add_device_text_show_explan"
+        android:textSize="@dimen/text_size_small" />
 
-    <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
+    <GridView
         android:id="@+id/dragGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -80,9 +82,8 @@
         android:cacheColorHint="@android:color/transparent"
         android:gravity="center"
         android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
-        android:verticalSpacing="@dimen/layout_addroom_Vertical_Spacing"
         android:listSelector="@android:color/transparent"
         android:numColumns="3"
         android:stretchMode="columnWidth"
-        />
+        android:verticalSpacing="@dimen/layout_addroom_Vertical_Spacing" />
 </RelativeLayout>

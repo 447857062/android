@@ -100,7 +100,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                         public void onNext(@NonNull Object o) {
                             Log.i(TAG, "删除房间，影响的行数=" + o);
                             if ((Integer) o == 1) {
-                                finish();
+                                startActivity(new Intent(ManageRoomActivity.this,RoomActivity.class));
                             } else {
                                 Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
                             }

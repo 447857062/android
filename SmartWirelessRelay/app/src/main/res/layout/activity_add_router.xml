@@ -28,8 +28,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
             android:id="@+id/edittext_add_device_input_name"
-            android:hint="例如：家里的路由器（最多5个字）"
+            android:hint="例如：家里的路由器（最多10个字）"
+            android:maxLength="10"
             android:textColor="@color/huise"
             android:background="@null"
             android:textSize="@dimen/text_size_small"
@@ -78,53 +81,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/layout_getway"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_item_content_height"
-        android:layout_below="@+id/layout_select_room"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textview_getway_title"
-            android:layout_width="wrap_content"
-            android:textColor="@color/room_type_text"
-            android:textSize="@dimen/text_size_small"
-            android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="网关:" />
-
-        <TextView
-            android:layout_centerVertical="true"
-            android:hint="我家的网关"
-
-            android:textColor="@color/huise"
-            android:textSize="@dimen/text_size_small"
-            android:gravity="center_vertical|right"
-            android:id="@+id/textview_select_getway"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/textview_getway_title" />
-        <ImageView
-            android:layout_centerVertical="true"
-            android:src="@drawable/directionicon"
-            android:layout_alignParentRight="true"
-            android:id="@+id/imageview_getway_arror_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
     <Button
         android:background="@drawable/addrouter_button_background"
         android:layout_marginTop="@dimen/add_router_button_sure_margintop"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/layout_getway"
+        android:layout_below="@+id/layout_select_room"
         android:id="@+id/button_add_device_sure"
         android:text="确定"
         android:textSize="@dimen/text_size_small"

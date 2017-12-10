@@ -48,7 +48,13 @@ public class RoomManager {
     }
 
     public void setCurrentSelectedRoom(Room currentSelectedRoom) {
-        this.currentSelectedRoom = currentSelectedRoom;
+        if(currentSelectedRoom!=null){
+            this.currentSelectedRoom = currentSelectedRoom;
+
+        }else{
+            this.currentSelectedRoom = tempAddRoom;
+        }
+
     }
 
     /**
@@ -72,24 +78,20 @@ public class RoomManager {
             }
         });
         for (int i = 0; i < mRooms.size(); i++) {
-            Log.i(TAG, "房间" + i + "是：" + mRooms.get(i).toString()+"房间类型="+mRooms.get(i).getRoomType());
-            addRoomTypes(mRooms.get(i).getRoomType());
+            addRoomNames(mRooms.get(i).getRoomName());
         }
         return mRooms;
     }
-    private List<String>roomTypes;
+    private List<String> roomNames;
 
-    public List<String> getRoomTypes() {
-        Log.i(TAG,"获取房间类型种类="+roomTypes.size());
-        for(int i=0;i<roomTypes.size();i++){
-            Log.i(TAG,"获取房间类型种类="+roomTypes.get(i));
-        }
-        return roomTypes;
+    public List<String> getRoomNames() {
+
+        return roomNames;
     }
 
-    public void addRoomTypes(String roomType) {
-        if( roomType!=null&& ! roomType.equals("null") && !roomTypes.contains(roomType)){
-            roomTypes.add(roomType);
+    public void addRoomNames(String roomType) {
+        if( !roomNames.contains(roomType)){
+            roomNames.add(roomType);
         }
     }
 
@@ -126,9 +128,9 @@ public class RoomManager {
      */
     public void initRoomManager() {
         cachedThreadPool = Executors.newCachedThreadPool();
-        if(roomTypes==null){
-            roomTypes=new ArrayList<>();
-            roomTypes.add("全部");
+        if(roomNames ==null){
+            roomNames =new ArrayList<>();
+            roomNames.add("全部");
         }
     }
 
@@ -241,6 +243,8 @@ public class RoomManager {
         return optionResult;
     }
 
+
+    private Room tempAddRoom;
     /**
      * 添加房间
      * 新加的房间排序序号都是当前房间加一，默认排在最后面
@@ -252,13 +256,13 @@ public class RoomManager {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                Room temp = new Room();
-                temp.setRoomName(roomName);
-                temp.setRoomType(roomType);
-                temp.setRoomOrdinalNumber(mRooms.size() + 1);
+                tempAddRoom = new Room();
+                tempAddRoom.setRoomName(roomName);
+                tempAddRoom.setRoomType(roomType);
+                tempAddRoom.setRoomOrdinalNumber(mRooms.size() + 1);
                 final boolean optionResult;
-                optionResult =  temp.save();
-                mRooms.add(temp);
+                optionResult =  tempAddRoom.save();
+                mRooms.add(tempAddRoom);
                 mObservable=Observable.create(new ObservableOnSubscribe() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter e) throws Exception {
