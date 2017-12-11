@@ -16,8 +16,15 @@ import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.json.PPPOE;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ErrorResponse;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
@@ -25,8 +32,11 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class DialConnectActivity extends Activity implements View.OnClickListener{
+public class DialConnectActivity extends Activity implements View.OnClickListener {
     private TextView textview_title;
     private FrameLayout image_back;
     private EditText edittext_account;
@@ -40,6 +50,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +63,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     private void initDatas() {
         textview_title.setText("宽带拨号");
         textview_edit.setText("保存");
-        mRouterManager=RouterManager.getInstance();
+        mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(DialConnectActivity.this);
@@ -124,8 +135,8 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         edittext_account = (EditText) findViewById(R.id.edittext_account);
         edittext_password = (EditText) findViewById(R.id.edittext_password);
         edittext_dns = (EditText) findViewById(R.id.edittext_dns);
@@ -137,7 +148,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = mRouterManager.getRouterDevice();
         manager.addEventCallback(ec);
     }
 
@@ -147,7 +158,9 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
         super.onPause();
         manager.removeEventCallback(ec);
     }
+
     private boolean isUserLogin;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -173,15 +186,88 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
                     pppoe.setMAC(mac);
                     pppoe.setMTU(mtu);
                     proto.setPPPOE(pppoe);
-                    if (routerDevice != null) {
-                        isUserLogin= Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-                        if(isUserLogin){
-                            routerDevice.setWan(proto);
-                        }else{
-                            ToastSingleShow.showText(this,"未登录，无法设置拨号上网,请登录后重试");
-                        }
+                    if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                        if (routerDevice != null) {
+                            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                            if (isUserLogin) {
+                                routerDevice.setWan(proto);
+                            } else {
+                                ToastSingleShow.showText(this, "未登录，无法设置拨号上网,请登录后重试");
+                            }
 
+                        }
+                    } else {
+                        RestfulToolsRouter.getSingleton(this).internetAccess(account, password, new Callback<RouterResponse>() {
+                            @Override
+                            public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {
+                                int code = response.code();
+                                if (code != 200) {
+                                    String errorMsg = "";
+                                    try {
+                                        String text = response.errorBody().string();
+                                        Gson gson = new Gson();
+                                        ErrorResponse errorResponse = gson.fromJson(text, ErrorResponse.class);
+
+                                        switch (errorResponse.getErrcode()) {
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_TOKEN:
+                                                ToastSingleShow.showText(DialConnectActivity.this, "登录的Token已过期");
+                                                startActivity(new Intent(DialConnectActivity.this, LoginActivity.class));
+                                                return;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT;
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_NOT_FOUND:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_NOT_FOUND;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL_MAX:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL_MAX;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_CAPTCHA_INCORRECT:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_CAPTCHA_INCORRECT;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_INCORRECT:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_INCORRECT;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_SHORT:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_SHORT;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT_INFO:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT_INFO;
+
+                                                break;
+                                            case AppConstant.ERROR_CODE.OP_ERRCODE_DB_TRANSACTION_ERROR:
+                                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_DB_TRANSACTION_ERROR;
+
+                                                break;
+                                            default:
+                                                errorMsg = errorResponse.getMsg();
+                                                break;
+
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ToastSingleShow.showText(DialConnectActivity.this, errorMsg);
+                                } else {
+                                    startActivity(new Intent(DialConnectActivity.this, WifiSetting24.class));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<RouterResponse> call, Throwable t) {
+                            }
+                        });
                     }
+
                 } else {
                     ToastSingleShow.showText(this, "网络连接已断开");
                 }

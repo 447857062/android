@@ -11,20 +11,15 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alert
  * 智能锁设备
  */
 public class SmartLock extends SmartDev {
-    private List<Info> alarmList = new ArrayList<>();
+    private List<Info> info = new ArrayList<>();
 
-    public List<Info> getAlarmList() {
-        return alarmList;
+    public List<Info> getInfo() {
+        return info;
     }
 
-    public void setAlarmList(List<Info> alarmList) {
-        this.alarmList = alarmList;
+    public void setInfo(List<Info> info) {
+        this.info = info;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "SmartLock{" +
-                "alarmList=" + alarmList +
-                '}';
-    }
+
 }

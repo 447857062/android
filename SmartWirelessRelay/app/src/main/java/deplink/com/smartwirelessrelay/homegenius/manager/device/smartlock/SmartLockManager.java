@@ -335,9 +335,10 @@ public class SmartLockManager implements LocalConnecteListener {
         for (int i = 0; i < alarmList.size(); i++) {
             Info alarm;
             alarm = alarmList.get(i);
+            Log.i(TAG,alarm.toString());
             alarm.save();
-
-            mSmartLock.getAlarmList().add(alarm);
+            mSmartLock.setInfo(alarmList);
+           // mSmartLock.getInfo().add(alarm);
         }
         mSmartLock.save();
         //TODO
@@ -353,7 +354,7 @@ public class SmartLockManager implements LocalConnecteListener {
         smartUid = "00-12-4b-00-0b-26-c2-15";
         List<SmartLock> mSmartDevices = DataSupport.where("Uid = ?", smartUid).find(SmartLock.class, true);
         if (mSmartDevices.size() > 0) {
-            List<Info> newsList = mSmartDevices.get(0).getAlarmList();
+            List<Info> newsList = mSmartDevices.get(0).getInfo();
         }
 
         return null;

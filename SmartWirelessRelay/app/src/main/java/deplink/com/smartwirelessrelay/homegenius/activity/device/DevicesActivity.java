@@ -80,7 +80,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_room;
     private TextView textview_mine;
     private DeviceAtRoomDialog roomTypeDialog;
-
+    private RouterManager mRouterManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,8 +105,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        /*List<SmartDev>tempDevs=DataSupport.findAll(SmartDev.class);
+        for(int i=0;i<tempDevs.size();i++){
+            if(tempDevs.get(i).getType().equals("路由器")){
+
+            }
+        }*/
         datasBottom.addAll(DataSupport.findAll(SmartDev.class));
-        //  mDeviceAdapter.notifyDataSetChanged();
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
     }
@@ -130,7 +135,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
                 mRoomManager = RoomManager.getInstance();
                 mRoomManager.initRoomManager();
-
+                mRouterManager=RouterManager.getInstance();
+                mRouterManager.InitRouterManager(DevicesActivity.this);
             }
         });
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
@@ -228,7 +234,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_device = (TextView) findViewById(R.id.textview_device);
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
-        //TODO 初始化设备列表
 
     }
 

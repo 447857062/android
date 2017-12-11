@@ -2,11 +2,13 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.router;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,16 +18,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.json.BLACKLIST;
 import com.deplink.sdk.android.sdk.json.DeviceControl;
 import com.deplink.sdk.android.sdk.json.DevicesOnline;
 import com.deplink.sdk.android.sdk.json.WHITELIST;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ConverterFactory.CheckResponse;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +43,16 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterMan
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureWithInputDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenu;
 import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuCreator;
 import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuItem;
 import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RouterMainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RouterMainActivity";
@@ -102,6 +108,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private TextView textview_connected_devices;
     private TextView textview_blak_list;
     private FrameLayout frame_setting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +117,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         initDatas();
         initEvents();
     }
+
 
     private AdapterView.OnItemClickListener deviceItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -142,13 +150,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
-
-       // isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-
-        /*if (isUserLogin) {
-            showQueryingDialog();
-        }*/
+        isUserLogin=mRouterManager.isUserLogin();
         frame_blacklist_content.setVisibility(View.GONE);
+        routerDevice = mRouterManager.getRouterDevice();
+        startTimer();
     }
 
     @Override
@@ -194,7 +199,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
     private void queryRouterInfo() {
         if (refreshCount > TIME_OUT_WATCHDOG_MAXCOUNT) {
+            Log.i(TAG,"设备离线了");
             routerDevice.setOnline(false);
+            mRouterManager.getCurrentSelectedRouter().setStatus("离线");
+            mRouterManager.getCurrentSelectedRouter().saveFast();
             textview_cpu_use.setText("--");
             textview_memory_use.setText("--");
             textview_upload_speed.setText("--");
@@ -260,18 +268,15 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
 
     private void initDatas() {
-
-
         textview_title.setText("路由器");
         image_setting.setImageResource(R.drawable.settingicon);
-        mRouterManager=RouterManager.getInstance();
+        mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         mConnectedDevices = new ArrayList<>();
         mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);
         mBlackListDatas = new ArrayList<>();
         mBlackListAdapter = new BlackListAdapter(this, mBlackListDatas);
-        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        manager = DeplinkSDK.getSDKManager();
+        manager = mRouterManager.getManager();
         connectLostDialog = new MakeSureDialog(RouterMainActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
             @Override
@@ -283,21 +288,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             @Override
             public void onSuccess(SDKAction action) {
                 switch (action) {
-                    case LOGIN:
-                        manager.connectMQTT(getApplicationContext());
-
-                        break;
-                    case CONNECTED:
-                      /*  isConnectedMqtt=true;*/
-                        isUserLogin=true;
-                        User user = manager.getUserInfo();
-                        Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
-                        Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
-                        Perfence.setPerfence(AppConstant.USER_LOGIN, true);
-                        routerDevice=mRouterManager.getRouterDevice();
-                        startTimer();
-                        Log.i(TAG, "onSuccess CONNECTED");
-                        break;
                     default:
                         break;
                 }
@@ -401,11 +391,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 }
             }
         };
-        String phoneNumber=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        String password="123456";
-        Log.i(TAG,"phoneNumber="+phoneNumber);
-        phoneNumber="13691876442";
-        manager.login(phoneNumber, password);
     }
 
     private void updatePerformance() {
@@ -416,10 +401,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 //这里不用设置设备上线的字段，在routerdevice类里面设置了
                 String mem = routerDevice.getPerformance().getDevice().getMEM();
 
-                textview_memory_use.setText(mem );
+                textview_memory_use.setText(mem);
                 String cpu = routerDevice.getPerformance().getDevice().getCPU();
 
-                textview_cpu_use.setText(cpu );
+                textview_cpu_use.setText(cpu);
 
                 textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
 
@@ -428,6 +413,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             }
         });
     }
+
     private void initEvents() {
         image_back.setOnClickListener(this);
         frame_setting.setOnClickListener(this);
@@ -600,13 +586,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
     private void initViews() {
         frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
-        textview_connected_devices= (TextView) findViewById(R.id.textview_connected_devices);
-        textview_blak_list= (TextView) findViewById(R.id.textview_blak_list);
-        view_line_connected_devices=findViewById(R.id.view_line_connected_devices);
-        view_line_blak_list=findViewById(R.id.view_line_blak_list);
+        textview_connected_devices = (TextView) findViewById(R.id.textview_connected_devices);
+        textview_blak_list = (TextView) findViewById(R.id.textview_blak_list);
+        view_line_connected_devices = findViewById(R.id.view_line_connected_devices);
+        view_line_blak_list = findViewById(R.id.view_line_blak_list);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
-        textview_title= (TextView) findViewById(R.id.textview_title);
+        textview_title = (TextView) findViewById(R.id.textview_title);
         listview_device_list = (SwipeMenuListView) findViewById(R.id.listview_device_list);
         layout_connected_devices = (RelativeLayout) findViewById(R.id.layout_connected_devices);
         layout_blak_list = (RelativeLayout) findViewById(R.id.layout_blak_list);
@@ -646,8 +632,102 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 showQueryingDialog();
                 break;
             case R.id.frame_setting:
-                startActivity(new Intent(this, RouterSettingActivity.class));
+                if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                    startActivity(new Intent(this, RouterSettingActivity.class));
+                } else {
+                    //本地配置先连路由器
+                    checkRouter();
+                }
+
                 break;
         }
+    }
+
+    /**
+     * 显示检查本地路由器是否连接上的加载中的dialog,超时就取消显示
+     */
+    private void showCheckRouterLoadingDialog() {
+        Log.i(TAG, "showCheckRouterLoadingDialog");
+        mHandler.postDelayed(connectStatus, 3000);
+        DialogThreeBounce.showLoading(this);
+    }
+
+    /**
+     * 检查使用本地接口的本地路由器连接情况
+     */
+    private boolean isConnectLocalRouter = false;
+    private MakeSureWithInputDialog connetWifiDialog;
+    private Runnable connectStatus = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(TAG, "connectStatus isConnectLocalRouter=" + isConnectLocalRouter);
+            if (!isConnectLocalRouter) {
+                connetWifiDialog = new MakeSureWithInputDialog(RouterMainActivity.this, MakeSureWithInputDialog.DIALOG_TYPE_WIFI_CONNECTED);
+                connetWifiDialog.setSureBtnClickListener(new MakeSureWithInputDialog.onSureBtnClickListener() {
+                    @Override
+                    public void onSureBtnClicked(String password) {
+                        DialogThreeBounce.hideLoading();
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                connetWifiDialog.show();
+            }
+            DialogThreeBounce.hideLoading();
+        }
+    };
+
+    /**
+     * 检查是否连接本地路由器，（成功连接本地路由器后）选择上网方式
+     */
+    private void checkRouter() {
+        MakeSureWithInputDialog dialog = new MakeSureWithInputDialog(this, MakeSureWithInputDialog.DIALOG_TYPE_BINDED_CHANGE_ROUTER_NAME);
+        dialog.setSureBtnClickListener(new MakeSureWithInputDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked(String password) {
+
+                if (!password.equals("")) {
+                    showCheckRouterLoadingDialog();
+                    isConnectLocalRouter = false;
+                    RestfulToolsRouter.getSingleton(getApplicationContext()).checkRouter(password, new Callback<CheckResponse>() {
+                        @Override
+                        public void onResponse(Call<CheckResponse> call, Response<CheckResponse> response) {
+                            Log.i(TAG, "checkRouter " + response.body().toString());
+                            CheckResponse result = response.body();
+                            String token = response.headers().get("Set-Cookie");
+                            int preferenceMode;
+                            preferenceMode = MODE_PRIVATE;
+                            SharedPreferences sp = getSharedPreferences("user", preferenceMode);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("token", token);
+                            editor.apply();
+
+                            if (!result.getLink().equalsIgnoreCase("")) {
+                                RestfulToolsRouter.getSingleton(getApplicationContext()).setLink(result.getLink());
+                                isConnectLocalRouter = true;
+                                mHandler.removeCallbacks(connectStatus);
+                                try {
+                                    connetWifiDialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                startActivity(new Intent(RouterMainActivity.this, RouterSettingActivity.class));
+                                DialogThreeBounce.hideLoading();
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckResponse> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                }
+
+            }
+        });
+        dialog.show();
+        dialog.setTitleText("输入管理员密码");
+        dialog.setEditText("admin");
     }
 }

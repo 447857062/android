@@ -166,7 +166,7 @@ public class DeviceListAdapter extends BaseAdapter {
                 deviceType=AppConstant.DEVICES.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
-            viewHolder.textview_device_status.setText("状态:" + deviceStatu);
+            viewHolder.textview_device_status.setText("" + deviceStatu);
             getDeviceTypeImage(viewHolder, deviceType,deviceSubType);
         }
         return convertView;

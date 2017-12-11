@@ -18,6 +18,12 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ErrorResponse;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
@@ -27,6 +33,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmware
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.lan.LanSettingActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.qos.QosSettingActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WiFiSettingActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
@@ -35,10 +42,14 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.SelectConnectTypeLocalDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RouterSettingActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RouterSettingActivity";
@@ -47,9 +58,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_room_select_out;
     private RelativeLayout layout_connect_type_select_out;
     private RelativeLayout layout_wifi_setting_out;
-    private RelativeLayout layout_lan_setting_out;
-    private RelativeLayout layout_QOS_setting_out;
-    private RelativeLayout layout_update_out;
     private RelativeLayout layout_reboot_out;
     private TextView buttton_delete_router;
     private RouterManager mRouterManager;
@@ -63,7 +71,9 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private boolean deviceOnline;
     private TextView textview_title;
     private DeleteDeviceDialog deleteDialog;
-
+    private RelativeLayout layout_lan_setting_out;
+    private RelativeLayout layout_update_out;
+    private RelativeLayout layout_QOS_setting_out;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +87,11 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
+        if(mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")){
+            layout_lan_setting_out.setVisibility(View.GONE);
+            layout_update_out.setVisibility(View.GONE);
+            layout_QOS_setting_out.setVisibility(View.GONE);
+        }
         mRouterManager.getRouterAtRooms(new Observer() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -132,7 +147,8 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 startActivity(new Intent(RouterSettingActivity.this, LoginActivity.class));
             }
         });
-        manager = DeplinkSDK.getSDKManager();
+        selectConnectTypeDialog = new SelectConnectTypeLocalDialog(RouterSettingActivity.this);
+        manager = mRouterManager.getManager();
         ec = new EventCallback() {
 
             @Override
@@ -250,6 +266,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     }
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
+    private SelectConnectTypeLocalDialog selectConnectTypeDialog;
 
     @Override
     public void onClick(View v) {
@@ -267,7 +284,26 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.layout_connect_type_select_out:
-                startActivity(new Intent(this, ConnectSettingActivity.class));
+                if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                    startActivity(new Intent(this, ConnectSettingActivity.class));
+                } else {
+                    selectConnectTypeDialog.setmOnConnectTypeSlected(new SelectConnectTypeLocalDialog.onConnectTypeSlected() {
+                        @Override
+                        public void onConnectTypeSelect(int type) {
+                            switch (type) {
+                                case SelectConnectTypeLocalDialog.CONNECTTYPE_DYNAMICS:
+
+                                    selectConnectType();
+
+                                    break;
+                            }
+                        }
+
+
+                    });
+                    selectConnectTypeDialog.show();
+                }
+
                 break;
             case R.id.layout_wifi_setting_out:
                 startActivity(new Intent(this, WiFiSettingActivity.class));
@@ -295,7 +331,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                             if (isUserLogin && deviceOnline) {
                                 routerDevice.reboot();
                             } else {
-                                //RebootLocal();
+                                RebootLocal();
                             }
                         }
 
@@ -309,40 +345,115 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                        mRouterManager.deleteRouter(mRouterManager.getCurrentSelectedRouter(), new Observer() {
-                            @Override
-                            public void onSubscribe(@NonNull Disposable d) {
+                        if (NetUtil.isNetAvailable(RouterSettingActivity.this)) {
+                            mRouterManager.deleteRouter();
+                        } else {
+                            ToastSingleShow.showText(RouterSettingActivity.this, "网络连接不可用");
+                        }
 
-                            }
-
-                            @Override
-                            public void onNext(@NonNull Object o) {
-                                int affectColumn = (int) o;
-                                if (affectColumn > 0) {
-                                    startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
-                                } else {
-                                    Message msg = Message.obtain();
-                                    msg.what = MSG_DELETE_ROUTER_FAIL;
-                                    mHandler.sendMessage(msg);
-                                }
-                            }
-
-                            @Override
-                            public void onError(@NonNull Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
                     }
                 });
                 deleteDialog.show();
 
                 break;
         }
+    }
+    /**
+     * 重启，使用本地接口
+     */
+    private void RebootLocal() {
+
+        RestfulToolsRouter.getSingleton(RouterSettingActivity.this).rebootRouter(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i(TAG, "response.code=" + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+        startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
+    }
+    /**
+     * （成功连接本地路由器后）选择上网方式
+     */
+    private void selectConnectType() {
+        RestfulToolsRouter.getSingleton(RouterSettingActivity.this).dynamicIp(new Callback<RouterResponse>() {
+            @Override
+            public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {
+                int code = response.code();
+                if (code != 200) {
+                    String errorMsg = "";
+                    try {
+                        String text = response.errorBody().string();
+                        Gson gson = new Gson();
+                        ErrorResponse errorResponse = null;
+
+                        errorResponse = gson.fromJson(text, ErrorResponse.class);
+                        switch (errorResponse.getErrcode()) {
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_TOKEN:
+                                text = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_TOKEN;
+                                ToastSingleShow.showText(RouterSettingActivity.this, "登录已失效 :" + text);
+                                startActivity(new Intent(RouterSettingActivity.this, LoginActivity.class));
+                                return;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT;
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_NOT_FOUND:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_NOT_FOUND;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL_MAX:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL_MAX;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_CAPTCHA_INCORRECT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_CAPTCHA_INCORRECT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_INCORRECT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_INCORRECT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_SHORT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_SHORT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT_INFO:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT_INFO;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_DB_TRANSACTION_ERROR:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_DB_TRANSACTION_ERROR;
+                                break;
+                            default:
+                                errorMsg = errorResponse.getMsg();
+                                break;
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    ToastSingleShow.showText(RouterSettingActivity.this, errorMsg);
+                } else {
+                    ToastSingleShow.showText(RouterSettingActivity.this, "动态IP设置成功，请设置wifi名字密码");
+                    Intent intentWifiSetting = new Intent(RouterSettingActivity.this, WifiSetting24.class);
+                    intentWifiSetting.putExtra(AppConstant.OPERATION_TYPE, AppConstant.OPERATION_TYPE_LOCAL);
+                    startActivity(intentWifiSetting);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RouterResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private static final int MSG_DELETE_ROUTER_FAIL = 100;

@@ -84,6 +84,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        mLocalConnectmanager.registerNetBroadcast(this);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -115,6 +116,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
         layout_roomselect_changed_ype.setAdapter(mRoomSelectTypeChangedAdapter);
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLocalConnectmanager.unRegisterNetBroadcast(this);
     }
 
     private void initDatas() {

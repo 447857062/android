@@ -1,7 +1,11 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -14,6 +18,8 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.inter
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
 import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
+import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -36,6 +42,7 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
      */
     private ExecutorService cachedThreadPool;
     private UdpManagerGetIPLintener mUdpManagerGetIPLintener;
+
     private UdpManager() {
     }
 
@@ -53,7 +60,7 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
      */
     public int InitUdpConnect(final Context context, UdpManagerGetIPLintener listener) {
         this.mUdpManagerGetIPLintener = listener;
-        if(cachedThreadPool==null){
+        if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
         this.mContext = context;
@@ -95,6 +102,7 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
         }
 
     }
+
     //TODO 添加网络状态，连接状态反馈
     private void unRegisterNetChangeReceive() {
         mContext.unregisterReceiver(mNetStatuChangeReceiver);
@@ -128,20 +136,66 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
             }
         }
     };
+    public  void registerNetBroadcast(Context conext){
+        //注册网络状态监听
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        conext. registerReceiver(broadCast, filter);
+    }
+    public  void unRegisterNetBroadcast(Context conext){
 
+        conext. unregisterReceiver(broadCast);
+    }
     @Override
     public void onNetStatuChange(int netStatu) {
-        if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
-            //wifi连接不可用
-            if (udpPacket != null) {
-                udpPacket.stop();
-            }
-        } else {
-            //重新连接
-            if (udpPacket != null) {
-                udpPacket.start();
-            }
 
+    }
+
+
+    /**
+     * 当前的网络情况
+     */
+    private int currentNetStatu = 4;
+    private int lastNetStatu;
+    public static final int NET_TYPE_WIFI_CONNECTED = 0;
+    /**
+     * WIFI不可用
+     */
+    public static final int NET_TYPE_WIFI_DISCONNECTED = 4;
+    private NetBroadCast broadCast = new NetBroadCast();
+
+    class NetBroadCast extends BroadcastReceiver {
+        public final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION.equals(intent.getAction())) {
+                Log.i(TAG, "网络连接变化");
+                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeInfo = manager.getActiveNetworkInfo();
+                if (activeInfo != null && NetUtil.isWiFiActive(context)) {
+                    if (NetStatusUtil.isNetworkOnline()) {
+                        currentNetStatu = NET_TYPE_WIFI_CONNECTED;
+                    } else {
+                        currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
+                    }
+                    if(currentNetStatu!=lastNetStatu){
+                        lastNetStatu = currentNetStatu;
+                        if(currentNetStatu==NET_TYPE_WIFI_CONNECTED){
+                            //重新连接
+                            if (udpPacket != null) {
+                                udpPacket.start();
+                            }
+                        }else if(currentNetStatu==NET_TYPE_WIFI_DISCONNECTED){
+                            //wifi连接不可用
+                            if (udpPacket != null) {
+                                udpPacket.stop();
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 }

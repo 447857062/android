@@ -1,7 +1,11 @@
 package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,6 +40,8 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpMa
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
+import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -80,7 +86,6 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
      * sslsocket握手成功
      */
     private boolean handshakeCompleted;
-    private int currentNetStatu;
 
     private LocalConnectmanager() {
     }
@@ -445,8 +450,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
           //  String recode = record.getALARM_INFO().get(0).getINFO();
           //  Log.i(TAG, "recode=" + recode);
            // ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
-            Log.i(TAG,"报警记录="+ record.getInfo().size());
+
             List<Info> alermList = record.getInfo();
+            Log.i(TAG,"报警记录="+ alermList.size());
             for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
             }
@@ -457,33 +463,71 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     //接收回调数据区域
     @Override
     public void onNetStatuChange(int netStatu) {
-        //TODO
-        //wifi没有连接的时候断开socket
-        //wifi连接的时候重新连接socket
-        Log.i(TAG, "Net status cahnge new Statu=" + netStatu);
-        currentNetStatu = netStatu;
-        if (netStatu != NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED) {
-            //TODO wifi连接不可用
-           if(mContext!=null){
-               Toast.makeText(mContext,"wifi连接不可用，本地连接已断开",Toast.LENGTH_SHORT).show();
-           }
-            if (mUdpmanager != null) {
-                mUdpmanager = null;
-            }
-            resetSslSocket();
 
-        } else {
-            //重新连接
-            if (mContext != null && mLocalConnecteListener != null) {
-                if (mUdpmanager == null) {
-                    mUdpmanager = UdpManager.getInstance();
-                    mUdpmanager.InitUdpConnect(mContext, this);
+    }
+    public  void registerNetBroadcast(Context conext){
+        //注册网络状态监听
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        conext. registerReceiver(broadCast, filter);
+    }
+    public  void unRegisterNetBroadcast(Context conext){
+
+        conext. unregisterReceiver(broadCast);
+    }
+    /**
+     * 当前的网络情况
+     */
+    private int currentNetStatu = 4;
+    private int lastNetStatu;
+    public static final int NET_TYPE_WIFI_CONNECTED = 0;
+    /**
+     * WIFI不可用
+     */
+    public static final int NET_TYPE_WIFI_DISCONNECTED = 4;
+    private NetBroadCast broadCast = new NetBroadCast();
+
+    class NetBroadCast extends BroadcastReceiver {
+        public final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION.equals(intent.getAction())) {
+                Log.i(TAG, "网络连接变化");
+                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeInfo = manager.getActiveNetworkInfo();
+                if (activeInfo != null && NetUtil.isWiFiActive(context)) {
+                    if (NetStatusUtil.isNetworkOnline()) {
+                        currentNetStatu = NET_TYPE_WIFI_CONNECTED;
+                    } else {
+                        currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
+                    }
+                    if(currentNetStatu!=lastNetStatu){
+                        lastNetStatu = currentNetStatu;
+                        if(currentNetStatu==NET_TYPE_WIFI_CONNECTED){
+                            //重新连接
+                            if (mContext != null && mLocalConnecteListener != null) {
+                                if (mUdpmanager == null) {
+                                    mUdpmanager = UdpManager.getInstance();
+                                    mUdpmanager.InitUdpConnect(mContext, LocalConnectmanager.this);
+                                }
+                            }
+                        }else if(currentNetStatu==NET_TYPE_WIFI_DISCONNECTED){
+                            //TODO wifi连接不可用
+                            if(mContext!=null){
+                                Toast.makeText(mContext,"wifi连接不可用，本地连接已断开",Toast.LENGTH_SHORT).show();
+                            }
+                            if (mUdpmanager != null) {
+                                mUdpmanager = null;
+                            }
+                            resetSslSocket();
+                        }
+                    }
+
                 }
             }
-
         }
     }
-
     /**
      * 重置sslsocket连接
      */

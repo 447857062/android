@@ -59,6 +59,18 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         listview_getway_devices.setOnItemClickListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mUdpmanager.registerNetBroadcast(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUdpmanager.unRegisterNetBroadcast(this);
+    }
+
     private void initViews() {
         image_back = (FrameLayout) findViewById(R.id.image_back);
         textview_title= (TextView) findViewById(R.id.textview_title);

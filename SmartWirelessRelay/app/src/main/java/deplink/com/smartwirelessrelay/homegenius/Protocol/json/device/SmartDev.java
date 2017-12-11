@@ -22,6 +22,17 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Ver;
     private String name;
 
+
+    private String routerDeviceKey;
+
+    public String getRouterDeviceKey() {
+        return routerDeviceKey;
+    }
+
+    public void setRouterDeviceKey(String routerDeviceKey) {
+        this.routerDeviceKey = routerDeviceKey;
+    }
+
     public String getSubType() {
         return subType;
     }

@@ -22,6 +22,7 @@
         android:textSize="@dimen/text_size_small"
         android:textColor="@color/room_type_text"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginLeft="@dimen/arror_right_left_textview_margin_right"
         android:layout_toRightOf="@+id/image_device_type" />
 
 

@@ -67,6 +67,18 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mUdpmanager.registerNetBroadcast(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUdpmanager.unRegisterNetBroadcast(this);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_back:

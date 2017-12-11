@@ -20,8 +20,15 @@ import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.json.STATIC;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ErrorResponse;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
@@ -30,6 +37,9 @@ import deplink.com.smartwirelessrelay.homegenius.util.StringValidatorUtil;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureWithInputDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class StaticConnectActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "StaticConnectActivity";
@@ -296,7 +306,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
 
     private void setStaticConnectLocal(String ipaddress, String submask, String getway, String dns1) {
 
-     /*   RestfulToolsRouter.getSingleton(StaticConnectActivity.this).staticIp(ipaddress, submask, getway, dns1, new Callback<RouterResponse>() {
+       RestfulToolsRouter.getSingleton(StaticConnectActivity.this).staticIp(ipaddress, submask, getway, dns1, new Callback<RouterResponse>() {
             @Override
             public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {
                 int code = response.code();
@@ -361,7 +371,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
                     ToastSingleShow.showText(StaticConnectActivity.this, errorMsg);
                 } else {
                     ToastSingleShow.showText(StaticConnectActivity.this, "静态IP设置成功，请设置wifi名字密码");
-                    Intent intentWifiSetting = new Intent(StaticConnectActivity.this, WifiSettingActivity.class);
+                    Intent intentWifiSetting = new Intent(StaticConnectActivity.this, WifiSetting24.class);
                     intentWifiSetting.putExtra(AppConstant.OPERATION_TYPE, AppConstant.OPERATION_TYPE_LOCAL);
                     startActivity(intentWifiSetting);
                 }
@@ -372,6 +382,6 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
             public void onFailure(Call<RouterResponse> call, Throwable t) {
 
             }
-        });*/
+        });
     }
 }

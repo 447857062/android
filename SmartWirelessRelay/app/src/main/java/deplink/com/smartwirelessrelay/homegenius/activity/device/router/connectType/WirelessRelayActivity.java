@@ -21,6 +21,9 @@ import com.deplink.sdk.android.sdk.json.AP_CLIENT;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.json.SSIDList;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsString;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -40,8 +43,11 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureWithInputDi
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.WifiRelayInputDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class WirelessRelayActivity extends Activity implements View.OnClickListener{
+public class WirelessRelayActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "WirelessRelayActivity";
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
     private PullToRefreshListView mPullToRefreshListView;
@@ -169,7 +175,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
-              /*  RestfulToolsRouter.getSingleton(WirelessRelayActivity.this).rebootRouter(new Callback<String>() {
+                RestfulToolsRouter.getSingleton(WirelessRelayActivity.this).rebootRouter(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         Log.i(TAG, "response.code=" + response.code());
@@ -179,7 +185,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                     public void onFailure(Call<String> call, Throwable t) {
 
                     }
-                });*/
+                });
             }
         });
         dialog.show();
@@ -262,7 +268,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
      * 获取本地接口的无线中继列表
      */
     private void getLocalWirelessRelay() {
-       /* RestfulToolsString.getSingleton(WirelessRelayActivity.this).WirelessRelayScan(new Callback<String>() {
+        RestfulToolsString.getSingleton(WirelessRelayActivity.this).WirelessRelayScan(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "WirelessRelayScan=" + response.code() + "mDatas.size()=" + mDatas.size());
@@ -282,7 +288,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             public void onFailure(Call<String> call, Throwable t) {
 
             }
-        });*/
+        });
     }
 
     private void getConnectParams(int position) {
@@ -473,7 +479,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         if (!hasPassword) {
             password = "";
         }
-     /*   RestfulToolsRouter.getSingleton(WirelessRelayActivity.this).WirelessRelayConnect(crypt, encryption, channel, userName, password, new Callback<RouterResponse>() {
+        RestfulToolsRouter.getSingleton(WirelessRelayActivity.this).WirelessRelayConnect(crypt, encryption, channel, userName, password, new Callback<RouterResponse>() {
             @Override
             public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {
                 int code = response.code();
@@ -506,11 +512,11 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                 t.printStackTrace();
                 Log.i(TAG, "WirelessRelayConnect onFailure" + t.getMessage());
             }
-        });*/
+        });
     }
 
     private void rebootRouterLocal() {
-       /* RestfulToolsRouter.getSingleton(WirelessRelayActivity.this).rebootRouter(new Callback<String>() {
+        RestfulToolsRouter.getSingleton(WirelessRelayActivity.this).rebootRouter(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "response.code=" + response.code());
@@ -520,7 +526,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             public void onFailure(Call<String> call, Throwable t) {
 
             }
-        });*/
+        });
 
     }
 
@@ -645,8 +651,8 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         mPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_wireless_relay_line);
 
     }

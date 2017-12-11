@@ -21,8 +21,11 @@ import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.json.Wifi_2G;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
@@ -30,6 +33,9 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class WifiSetting24 extends Activity implements View.OnClickListener{
     private static final String TAG = "WifiSetting24";
@@ -327,7 +333,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_LOCAL_OP_RETURN_OK:
-                   /* ToastSingleShow.showText(WifiSetting24.this,"已重启路由器");
+                   ToastSingleShow.showText(WifiSetting24.this,"已重启路由器");
                     Log.i(TAG, "路由器本地设置成功，重启步骤");
                     RestfulToolsRouter.getSingleton(WifiSetting24.this).rebootRouter(new retrofit2.Callback<String>() {
                         @Override
@@ -340,7 +346,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
 
                         }
                     });
-                    startActivity(new Intent(WifiSetting24.this, SettingActivity.class));*/
+                    startActivity(new Intent(WifiSetting24.this, DevicesActivity.class));
                     break;
 
             }
@@ -393,7 +399,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
 
                 }else{
                     //本地接口
-                  /*  RestfulToolsRouter.getSingleton(this).wifiSignalStrengthSetting(
+                  RestfulToolsRouter.getSingleton(this).wifiSignalStrengthSetting(
                             wifiname,
                             wifi_password,
                             new Callback<RouterResponse>() {
@@ -409,7 +415,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                                 public void onFailure(Call<RouterResponse> call, Throwable t) {
                                     //返回空的对象，获取不到code
                                 }
-                            });*/
+                            });
                 }
                 break;
             case R.id.layout_encryption:
