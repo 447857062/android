@@ -44,14 +44,17 @@ public class RoomManager {
     }
 
     public Room getCurrentSelectedRoom() {
+
         return currentSelectedRoom;
     }
 
     public void setCurrentSelectedRoom(Room currentSelectedRoom) {
+
         if(currentSelectedRoom!=null){
             this.currentSelectedRoom = currentSelectedRoom;
-
+            Log.i(TAG,"设置当前房间="+currentSelectedRoom.getRoomName());
         }else{
+            Log.i(TAG,"设置当前房间="+tempAddRoom.getRoomName());
             this.currentSelectedRoom = tempAddRoom;
         }
 
@@ -115,6 +118,8 @@ public class RoomManager {
             public void run() {
                 for (int i = 0; i < mRooms.size(); i++) {
                     mRooms.get(i).setRoomOrdinalNumber(i);
+                    //如果对象是持久化的，执行save操作就相当于更新这条数据，如：
+                    //如果一个对象是没有持久化的，执行save操作相当于新增一条数据
                     mRooms.get(i).save();
                 }
             }
@@ -141,20 +146,21 @@ public class RoomManager {
         mRooms = DataSupport.findAll(Room.class,true);
         if (mRooms.size() == 0) {
             Room temp = new Room();
-            temp.setRoomName("客厅的房间");
+            temp.setRoomName("客厅");
             temp.setRoomOrdinalNumber(0);
             temp.setRoomType("客厅");
+            temp.save();
             mRooms.add(temp);
 
             temp = new Room();
-            temp.setRoomName("卧室的房间");
+            temp.setRoomName("卧室");
             temp.setRoomType("卧室");
             temp.setRoomOrdinalNumber(1);
             temp.save();
             mRooms.add(temp);
 
             temp = new Room();
-            temp.setRoomName("厨房的房间");
+            temp.setRoomName("厨房");
             temp.setRoomType("厨房");
             temp.setRoomOrdinalNumber(2);
             temp.save();

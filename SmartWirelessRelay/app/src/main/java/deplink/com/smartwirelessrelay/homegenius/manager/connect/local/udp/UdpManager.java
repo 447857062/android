@@ -16,7 +16,6 @@ import java.util.concurrent.Executors;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
-import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
 import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
@@ -29,7 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
  * UdpManager manager=UdpManager.getInstance();
  * manager.InitUdpConnect(this);
  */
-public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNetStatuschangeListener {
+public class UdpManager implements OnGetIpListener {
     private static final String TAG = "UdpManager";
     /**
      * 这个类设计成单例
@@ -67,7 +66,7 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
         if (listener == null) {
             Log.e(TAG, "InitUdpConnect 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
         }
-        initRegisterNetChangeReceive();
+
         //接受udp探测设备数据
         if (udpPacket == null) {
             udpPacket = new UdpPacket(context, this);
@@ -76,7 +75,9 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
             @Override
             public void run() {
                 udpPacket.start();
-
+                Message msg = Message.obtain();
+                msg.what = MSG_STOP_CHECK_GETWAY;
+                mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
                 //启动状态查询任务，连续发送udp探测设备
                 if (udpThread == null) {
                     udpThread = new UdpThread(context, udpPacket);
@@ -88,26 +89,6 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
         return 0;
     }
 
-    private NetStatuChangeReceiver mNetStatuChangeReceiver;
-
-    /**
-     * 初始化网络连接广播
-     */
-    private void initRegisterNetChangeReceive() {
-        if (mNetStatuChangeReceiver == null) {
-            mNetStatuChangeReceiver = new NetStatuChangeReceiver();
-            mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
-            IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-            mContext.registerReceiver(mNetStatuChangeReceiver, filter);
-        }
-
-    }
-
-    //TODO 添加网络状态，连接状态反馈
-    private void unRegisterNetChangeReceive() {
-        mContext.unregisterReceiver(mNetStatuChangeReceiver);
-    }
-
     /**
      * 检查到网关后还要继续检查把收到的网关列一个表
      *
@@ -116,14 +97,17 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
     @Override
     public void onRecvLocalConnectIp(byte[] packet) {
         Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
-        Message msg = Message.obtain();
+       /* Message msg = Message.obtain();
         msg.what = MSG_STOP_CHECK_GETWAY;
-        mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
+        mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);*/
         mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet));
     }
 
     private static final int MSG_STOP_CHECK_GETWAY = 100;
-    private static final int MSG_STOP_CHECK_GETWAY_DELAY = 8000;
+    /**
+     * 无论有没有探测到网关，探测时间都设置为10秒
+     */
+    private static final int MSG_STOP_CHECK_GETWAY_DELAY = 10000;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -131,32 +115,28 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
             switch (msg.what) {
                 case MSG_STOP_CHECK_GETWAY:
                     udpPacket.stop();
+                    udpThread.cancel();
                     break;
 
             }
         }
     };
-    public  void registerNetBroadcast(Context conext){
+
+    public void registerNetBroadcast(Context conext) {
         //注册网络状态监听
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        conext. registerReceiver(broadCast, filter);
-    }
-    public  void unRegisterNetBroadcast(Context conext){
-
-        conext. unregisterReceiver(broadCast);
-    }
-    @Override
-    public void onNetStatuChange(int netStatu) {
-
+        conext.registerReceiver(broadCast, filter);
     }
 
+    public void unRegisterNetBroadcast(Context conext) {
+        conext.unregisterReceiver(broadCast);
+    }
 
     /**
      * 当前的网络情况
      */
     private int currentNetStatu = 4;
-    private int lastNetStatu;
     public static final int NET_TYPE_WIFI_CONNECTED = 0;
     /**
      * WIFI不可用
@@ -179,18 +159,22 @@ public class UdpManager implements OnGetIpListener, NetStatuChangeReceiver.onNet
                     } else {
                         currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
                     }
-                    if(currentNetStatu!=lastNetStatu){
-                        lastNetStatu = currentNetStatu;
-                        if(currentNetStatu==NET_TYPE_WIFI_CONNECTED){
-                            //重新连接
-                            if (udpPacket != null) {
-                                udpPacket.start();
-                            }
-                        }else if(currentNetStatu==NET_TYPE_WIFI_DISCONNECTED){
-                            //wifi连接不可用
-                            if (udpPacket != null) {
-                                udpPacket.stop();
-                            }
+                    Log.i(TAG, "网络连接变化 currentNetStatu=" + currentNetStatu +"udpPacket!=null" + (udpPacket != null));
+
+                    if (currentNetStatu == NET_TYPE_WIFI_CONNECTED) {
+                        //重新连接
+                        if (udpPacket != null) {
+                            udpPacket.start();
+                            udpThread.open();
+                            Message msg = Message.obtain();
+                            msg.what = MSG_STOP_CHECK_GETWAY;
+                            mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
+                        }
+                    } else if (currentNetStatu == NET_TYPE_WIFI_DISCONNECTED) {
+                        //wifi连接不可用
+                        if (udpPacket != null) {
+                            udpPacket.stop();
+                            udpThread.cancel();
                         }
                     }
 

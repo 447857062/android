@@ -24,6 +24,7 @@ import com.deplink.sdk.android.sdk.rest.RouterResponse;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
@@ -86,40 +87,50 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
-        if(mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")){
-            layout_lan_setting_out.setVisibility(View.GONE);
-            layout_update_out.setVisibility(View.GONE);
-            layout_QOS_setting_out.setVisibility(View.GONE);
-        }
-        mRouterManager.getRouterAtRooms(new Observer() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
 
-            }
+       if( !mRouterManager.isStartFromExperience()){
+           textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
+           if(mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")){
+               layout_lan_setting_out.setVisibility(View.GONE);
+               layout_update_out.setVisibility(View.GONE);
+               layout_QOS_setting_out.setVisibility(View.GONE);
+           }
+           mRouterManager.getRouterAtRooms(new Observer() {
+               @Override
+               public void onSubscribe(@NonNull Disposable d) {
 
-            @Override
-            public void onNext(@NonNull Object o) {
-                //所在房间
-                Room room = (Room) o;
-                Log.i(TAG, "所在房间名称" + room.getRoomName());
-                textview_room_select_2.setText(room.getRoomName());
+               }
 
-            }
+               @Override
+               public void onNext(@NonNull Object o) {
+                   //所在房间
+                  List<Room>  rooms = (List<Room>) o;
+                  if(rooms.size()==1){
+                      textview_room_select_2.setText(rooms.get(0).getRoomName());
+                  }else{
+                      textview_room_select_2.setText("全部");
+                  }
 
-            @Override
-            public void onError(@NonNull Throwable e) {
 
-            }
+               }
 
-            @Override
-            public void onComplete() {
+               @Override
+               public void onError(@NonNull Throwable e) {
 
-            }
-        });
-        manager.addEventCallback(ec);
-        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        getCurrentSelectedDevice();
+               }
+
+               @Override
+               public void onComplete() {
+
+               }
+           });
+           manager.addEventCallback(ec);
+           isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+           getCurrentSelectedDevice();
+       }else{
+           textview_route_name_2.setText("体验路由器");
+       }
+
     }
 
     /**
@@ -229,38 +240,43 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            final String roomName = data.getStringExtra("roomName");
-            Room room = RoomManager.getInstance().findRoom(roomName, true);
-            String deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
-            String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
-            mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName, new Observer() {
-                @Override
-                public void onSubscribe(@NonNull Disposable d) {
+            if(mRouterManager.isStartFromExperience()){
 
-                }
+            }else{
+                final String roomName = data.getStringExtra("roomName");
+                Room room = RoomManager.getInstance().findRoom(roomName, true);
+                String deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
+                String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
+                mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName, new Observer() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
-                @Override
-                public void onNext(@NonNull Object o) {
-                    if ((boolean) o) {
-                        textview_room_select_2.setText(roomName);
-                    } else {
-                        Message msg = Message.obtain();
-                        msg.what = MSG_UPDATE_ROOM_FAIL;
-                        mHandler.sendMessage(msg);
                     }
-                    ;
-                }
 
-                @Override
-                public void onError(@NonNull Throwable e) {
+                    @Override
+                    public void onNext(@NonNull Object o) {
+                        if ((boolean) o) {
+                            textview_room_select_2.setText(roomName);
+                        } else {
+                            Message msg = Message.obtain();
+                            msg.what = MSG_UPDATE_ROOM_FAIL;
+                            mHandler.sendMessage(msg);
+                        }
+                        ;
+                    }
 
-                }
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-                @Override
-                public void onComplete() {
+                    }
 
-                }
-            });
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            }
+
 
         }
     }

@@ -137,6 +137,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
+                            RouterManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
                             break;
                         case "智能电视":

@@ -38,7 +38,6 @@ import deplink.com.smartwirelessrelay.homegenius.constant.ComandID;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.ConnectionMonitor;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
-import deplink.com.smartwirelessrelay.homegenius.manager.netStatus.NetStatuChangeReceiver;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
@@ -54,7 +53,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
  * mLocalConnectmanager.InitLocalConnectManager(this);
  * mLocalConnectmanager.addLocalConnectListener(this);
  */
-public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatuschangeListener, UdpManagerGetIPLintener {
+public class LocalConnectmanager implements  UdpManagerGetIPLintener {
 
     private static final String TAG = "LocalConnectmanager";
     /**
@@ -81,7 +80,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     private SSLSocket sslSocket;
     private UdpManager mUdpmanager;
     private InetSocketAddress address;
-    private NetStatuChangeReceiver mNetStatuChangeReceiver;
+
     /**
      * sslsocket握手成功
      */
@@ -105,7 +104,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         this.appAuth=bindAppAuth;
         this.mLocalConnecteListener = new ArrayList<>();
 
-        initRegisterNetChangeReceive();
+
         if (mUdpmanager == null) {
             mUdpmanager = UdpManager.getInstance();
             mUdpmanager.InitUdpConnect(context, this);
@@ -127,22 +126,7 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
         }
     }
 
-    /**
-     * 初始化网络连接广播
-     */
-    private void initRegisterNetChangeReceive() {
-        if (mNetStatuChangeReceiver == null) {
-            mNetStatuChangeReceiver = new NetStatuChangeReceiver();
-            mNetStatuChangeReceiver.setmOnNetStatuschangeListener(this);
-            IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-            mContext.registerReceiver(mNetStatuChangeReceiver, filter);
-        }
 
-    }
-
-    private void unRegisterNetChangeReceive() {
-        mContext.unregisterReceiver(mNetStatuChangeReceiver);
-    }
 
     /**
      * 初始化本地连接管理器
@@ -257,9 +241,9 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
             }
 
             while (sslSocket!=null &&!sslSocket.isClosed()) {
-                if(currentNetStatu == NetStatuChangeReceiver.NET_TYPE_WIFI_CONNECTED){
+
                     getIn();
-                }
+
             }
         } catch (Exception e) {
             //TODO 获取连接异常的ip地址
@@ -460,19 +444,16 @@ public class LocalConnectmanager implements NetStatuChangeReceiver.onNetStatusch
     }
 
 
-    //接收回调数据区域
-    @Override
-    public void onNetStatuChange(int netStatu) {
 
-    }
     public  void registerNetBroadcast(Context conext){
         //注册网络状态监听
+        mUdpmanager.registerNetBroadcast(conext);
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         conext. registerReceiver(broadCast, filter);
     }
     public  void unRegisterNetBroadcast(Context conext){
-
+        mUdpmanager.unRegisterNetBroadcast(conext);
         conext. unregisterReceiver(broadCast);
     }
     /**

@@ -285,7 +285,9 @@ public class DeviceManager implements LocalConnecteListener {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
-                smartDev.setRoom(room);
+                List<Room>rooms=new ArrayList<Room>();
+                rooms.add(room);
+                smartDev.setRooms(rooms);
                 smartDev.setName(deviceName);
                 boolean saveResult = smartDev.save();
                 Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
@@ -309,7 +311,7 @@ public class DeviceManager implements LocalConnecteListener {
                         roomList.remove(i);
                     }
                 }*/
-                smartDev.setRoom(null);
+                smartDev.setRooms(null);
                 boolean saveResult = smartDev.save();
                 Log.i(TAG, "deleteSmartDeviceInWhatRoom saveResult=" + saveResult);
             }

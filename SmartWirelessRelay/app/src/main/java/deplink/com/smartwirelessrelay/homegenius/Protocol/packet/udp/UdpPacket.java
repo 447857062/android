@@ -66,11 +66,6 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
             udpPacketThread.stopThis();
             udpPacketThread = null;
         }
-        //TODO
-      /*  if(netUdp!=null){
-            netUdp.stopServer();
-        }*/
-
         sendNetPakcetList.clear();
     }
 

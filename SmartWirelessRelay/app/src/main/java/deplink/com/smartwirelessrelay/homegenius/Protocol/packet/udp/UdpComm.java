@@ -16,7 +16,6 @@ import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
  * 通用UDP线程
  */
 public class UdpComm {
-
     public static final String TAG = "UdpComm";
     private DatagramSocket udp = null;
     private OnRecvLocalConnectIpListener listener = null;
@@ -43,8 +42,7 @@ public class UdpComm {
         byte[] temp = packet.getData();
         try {
             udp.send(packet);
-            Log.e(TAG, "udp sendData success:" + DataExchange.byteArrayToHexString(temp)
-                    + packet.getAddress().getHostAddress() + ":" + packet.getPort());
+            Log.i(TAG, "udp sendData success port" + ":" + packet.getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }

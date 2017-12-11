@@ -105,12 +105,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-        /*List<SmartDev>tempDevs=DataSupport.findAll(SmartDev.class);
-        for(int i=0;i<tempDevs.size();i++){
-            if(tempDevs.get(i).getType().equals("路由器")){
-
-            }
-        }*/
         datasBottom.addAll(DataSupport.findAll(SmartDev.class));
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
@@ -121,6 +115,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     protected void onDestroy() {
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
+
     }
 
     private List<String> mRooms = new ArrayList<>();
@@ -169,6 +164,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
+                            RouterManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                         case "智能电视":

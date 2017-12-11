@@ -84,10 +84,8 @@ public class DeplinkSDK {
     public static synchronized void destroy() {
         if (sdkManager != null) {
             sdkManager.onDestroy();
-//            sdkManager = null;
-        }
-//        if (singleton != null) singleton = null;
 
+        }
         DepUncaughtExceptionHandler.unRegister();
     }
 }

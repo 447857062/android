@@ -4,6 +4,8 @@ import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 
@@ -21,8 +23,11 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Org;
     private String Ver;
     private String name;
-
-
+    /**
+     * 数据库中的关联关系必须要初始化好列表
+     */
+    @Column(nullable = false)
+    private List<Room> rooms=new ArrayList<>();
     private String routerDeviceKey;
 
     public String getRouterDeviceKey() {
@@ -41,10 +46,7 @@ public class SmartDev extends DataSupport implements Serializable{
         this.subType = subType;
     }
 
-    /**
-     * 数据库中的关联关系必须要初始化好列表
-     */
-    private Room room;
+
 
     public String getName() {
         return name;
@@ -54,12 +56,12 @@ public class SmartDev extends DataSupport implements Serializable{
         this.name = name;
     }
 
-    public Room getRoom() {
-        return room;
+    public List<Room> getRooms() {
+        return rooms;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
     public String getOrg() {
@@ -121,7 +123,7 @@ public class SmartDev extends DataSupport implements Serializable{
                 ", Org='" + Org + '\'' +
                 ", Ver='" + Ver + '\'' +
                 ", name='" + name + '\'' +
-                ", room=" + room +
+                ", room=" + rooms.size() +
                 '}';
     }
 }

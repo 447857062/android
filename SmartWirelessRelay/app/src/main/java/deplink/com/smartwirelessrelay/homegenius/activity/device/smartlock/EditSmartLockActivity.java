@@ -147,13 +147,14 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         lockName=mSmartLockManager.getCurrentSelectLock().getName();
         edittext_input_devie_name.setText(lockName);
         edittext_input_devie_name.setSelection(lockName.length());
-
-        lockInRoom=mSmartLockManager.getCurrentSelectLock().getRoom();
-        if(lockInRoom!=null){
-            textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRoom().getRoomName());
+        if(mSmartLockManager.getCurrentSelectLock().getRooms().size()==1){
+            lockInRoom=mSmartLockManager.getCurrentSelectLock().getRooms().get(0);
+            textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
         }else{
             textview_select_room_name.setText("全部");
         }
+
+
 
     }
 

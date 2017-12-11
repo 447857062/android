@@ -115,13 +115,12 @@ public class RoomActivity extends Activity implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mRoomManager.setCurrentSelectedRoom(mRoomManager.getmRooms().get(position));
                 Intent intent = new Intent(RoomActivity.this, DeviceNumberActivity.class);
-                startActivityForResult(intent, REQUEST_MODIFY_ROOM);
+                startActivity(intent);
 
             }
         });
     }
 
-    public static final int REQUEST_MODIFY_ROOM = 100;
 
     private void initViews() {
         textview_home = (TextView) findViewById(R.id.textview_home);

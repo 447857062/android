@@ -135,7 +135,7 @@ public class BasicPacket {
         data[len++] = ComandID.DETEC_DEV;
         // 设备uid，必填
         String uid;
-        //tcp连接发送默认的uid
+        //连接发送默认的uid
         uid = "77685180654101946200316696479445";
         System.arraycopy(uid.getBytes(), 0, data, len, 32);
         //uid32位，最后一个结束标志0
@@ -167,7 +167,7 @@ public class BasicPacket {
         len += 8;*/
         len += 4;
         //xdata数据
-        Log.e(TAG, "打包数据长度data.length=" + data.length + "打包数据:" + DataExchange.byteArrayToHexString(data));
+        Log.i(TAG, "组装探测报");
         return data.length;
     }
 

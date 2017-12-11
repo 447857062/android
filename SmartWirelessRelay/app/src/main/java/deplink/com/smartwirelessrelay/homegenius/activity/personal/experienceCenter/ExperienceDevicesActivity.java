@@ -24,6 +24,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMa
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 
 public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener,View.OnClickListener {
     private static final String TAG = "EDActivity";
@@ -107,12 +108,13 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 break;
             case AppConstant.DEVICES.TYPE_LOCK:
                  intent = new Intent(this, SmartLockActivity.class);
+
                 intent.putExtra("isStartFromExperience",true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_ROUTER:
                  intent = new Intent(this, RouterMainActivity.class);
-                intent.putExtra("isStartFromExperience",true);
+                RouterManager.getInstance().setStartFromExperience(true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_MENLING:

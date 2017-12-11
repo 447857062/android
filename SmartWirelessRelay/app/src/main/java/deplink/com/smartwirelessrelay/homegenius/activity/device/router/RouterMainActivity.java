@@ -1,6 +1,7 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device.router;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
@@ -29,12 +31,15 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.ConverterFactory.CheckResponse;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.adapter.BlackListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.adapter.ConnectedDeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
@@ -108,6 +113,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private TextView textview_connected_devices;
     private TextView textview_blak_list;
     private FrameLayout frame_setting;
+    /**
+     * 检查使用本地接口的本地路由器连接情况
+     */
+    private boolean isConnectLocalRouter = false;
+    private MakeSureWithInputDialog connetWifiDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,11 +159,18 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        manager.addEventCallback(ec);
-        isUserLogin=mRouterManager.isUserLogin();
-        frame_blacklist_content.setVisibility(View.GONE);
-        routerDevice = mRouterManager.getRouterDevice();
-        startTimer();
+        isStartFromExperience = mRouterManager.isStartFromExperience();
+        if (isStartFromExperience) {
+
+        } else {
+            manager = DeplinkSDK.getSDKManager();
+            manager.addEventCallback(ec);
+            isUserLogin = mRouterManager.isUserLogin();
+            frame_blacklist_content.setVisibility(View.GONE);
+            routerDevice = mRouterManager.getRouterDevice();
+            startTimer();
+        }
+
     }
 
     @Override
@@ -199,10 +216,14 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
     private void queryRouterInfo() {
         if (refreshCount > TIME_OUT_WATCHDOG_MAXCOUNT) {
-            Log.i(TAG,"设备离线了");
+            Log.i(TAG, "设备离线了");
             routerDevice.setOnline(false);
             mRouterManager.getCurrentSelectedRouter().setStatus("离线");
-            mRouterManager.getCurrentSelectedRouter().saveFast();
+            ContentValues values = new ContentValues();
+            values.put("Status", "离线");
+            final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
+
+            Log.i(TAG, "更新设备在线状态 :离线 affectColumn=" + affectColumn);
             textview_cpu_use.setText("--");
             textview_memory_use.setText("--");
             textview_upload_speed.setText("--");
@@ -266,152 +287,150 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         }
     };
 
+    private boolean isStartFromExperience;
 
     private void initDatas() {
         textview_title.setText("路由器");
         image_setting.setImageResource(R.drawable.settingicon);
+
+        mConnectedDevices = new ArrayList<>();
+        mBlackListDatas = new ArrayList<>();
+        mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);
+        mBlackListAdapter = new BlackListAdapter(this, mBlackListDatas);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
-        mConnectedDevices = new ArrayList<>();
-        mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);
-        mBlackListDatas = new ArrayList<>();
-        mBlackListAdapter = new BlackListAdapter(this, mBlackListDatas);
-        manager = mRouterManager.getManager();
-        connectLostDialog = new MakeSureDialog(RouterMainActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
-            @Override
-            public void onSureBtnClicked() {
-                startActivity(new Intent(RouterMainActivity.this, LoginActivity.class));
-            }
-        });
-        ec = new EventCallback() {
-            @Override
-            public void onSuccess(SDKAction action) {
-                switch (action) {
-                    default:
-                        break;
+        isStartFromExperience = mRouterManager.isStartFromExperience();
+        if (isStartFromExperience) {
+
+        } else {
+
+            manager = DeplinkSDK.getSDKManager();
+            connectLostDialog = new MakeSureDialog(RouterMainActivity.this);
+            connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                @Override
+                public void onSureBtnClicked() {
+                    startActivity(new Intent(RouterMainActivity.this, LoginActivity.class));
                 }
-            }
+            });
+            ec = new EventCallback() {
+                @Override
+                public void onSuccess(SDKAction action) {
+                    switch (action) {
+                        default:
+                            break;
+                    }
+                }
 
-            @Override
-            public void onBindSuccess(SDKAction action, String devicekey) {
+                @Override
+                public void onBindSuccess(SDKAction action, String devicekey) {
 
-            }
+                }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+                @Override
+                public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
+                }
 
-            @Override
-            public void deviceOpSuccess(String op, final String deviceKey) {
-                super.deviceOpSuccess(op, deviceKey);
-                Log.i(TAG, "deviceOpSuccess op=" + op);
-                switch (op) {
-                    case RouterDevice.OP_GET_DEVICES:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    DialogThreeBounce.hideLoading();
-                                    if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
-                                        mConnectedDevices.clear();
-                                        if (routerDevice != null && routerDevice.getDevicesOnlineRoot() != null) {
-                                            mConnectedDevices.addAll(routerDevice.getDevicesOnlineRoot().getDevicesOnline());
-                                        }
-                                        Log.i(TAG, "设备界面：获取已连接设备列表:" + mConnectedDevices.size());
-                                        if (mConnectedDevices.size() == 0) {
-                                            textview_show_query_device_result.setVisibility(View.VISIBLE);
-                                            textview_show_query_device_result.setText("没有设备连接当前的路由器");
-                                        } else {
-                                            textview_show_query_device_result.setVisibility(View.GONE);
-                                        }
-                                        mAdapter.notifyDataSetChanged();
+                @Override
+                public void deviceOpSuccess(String op, final String deviceKey) {
+                    super.deviceOpSuccess(op, deviceKey);
+                    Log.i(TAG, "deviceOpSuccess op=" + op);
+                    switch (op) {
+                        case RouterDevice.OP_GET_DEVICES:
+
+                            try {
+                                DialogThreeBounce.hideLoading();
+                                if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
+                                    mConnectedDevices.clear();
+                                    if (routerDevice != null && routerDevice.getDevicesOnlineRoot() != null) {
+                                        mConnectedDevices.addAll(routerDevice.getDevicesOnlineRoot().getDevicesOnline());
                                     }
-
-                                    if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
-                                        if (routerDevice.getDevicesOnlineRoot().getBLACKLIST().size() == 0) {
-                                            textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
-                                            textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
-                                        } else {
-                                            textview_show_blacklist_device_result.setVisibility(View.GONE);
-                                        }
-                                        mBlackListDatas.clear();
-                                        mBlackListDatas.addAll(routerDevice.getDevicesOnlineRoot().getBLACKLIST());
-                                        mBlackListAdapter.notifyDataSetChanged();
+                                    Log.i(TAG, "设备界面：获取已连接设备列表:" + mConnectedDevices.size());
+                                    if (mConnectedDevices.size() == 0) {
+                                        textview_show_query_device_result.setVisibility(View.VISIBLE);
+                                        textview_show_query_device_result.setText("没有设备连接当前的路由器");
+                                    } else {
+                                        textview_show_query_device_result.setVisibility(View.GONE);
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                    mAdapter.notifyDataSetChanged();
                                 }
 
+                                if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
+                                    if (routerDevice.getDevicesOnlineRoot().getBLACKLIST().size() == 0) {
+                                        textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
+                                        textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
+                                    } else {
+                                        textview_show_blacklist_device_result.setVisibility(View.GONE);
+                                    }
+                                    mBlackListDatas.clear();
+                                    mBlackListDatas.addAll(routerDevice.getDevicesOnlineRoot().getBLACKLIST());
+                                    mBlackListAdapter.notifyDataSetChanged();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        });
-                        break;
-                    case RouterDevice.OP_GET_REPORT:
-                        try {
+
+
+                            break;
+                        case RouterDevice.OP_GET_REPORT:
+
                             updatePerformance();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    case RouterDevice.OP_SUCCESS:
-                        if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
-                            if (isSetBlackList) {
-                                ToastSingleShow.showText(RouterMainActivity.this, "加入黑名单成功");
+
+                            break;
+                        case RouterDevice.OP_SUCCESS:
+                            if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
+                                if (isSetBlackList) {
+                                    ToastSingleShow.showText(RouterMainActivity.this, "加入黑名单成功");
+                                }
                             }
-                        }
-                        if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
-                            if (isRemoveBlackList) {
-                                ToastSingleShow.showText(RouterMainActivity.this, "恢复上网设置成功");
+                            if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
+                                if (isRemoveBlackList) {
+                                    ToastSingleShow.showText(RouterMainActivity.this, "恢复上网设置成功");
+                                }
                             }
-                        }
 
-                        break;
+                            break;
+                    }
                 }
-            }
 
-            @Override
-            public void connectionLost(Throwable throwable) {
-                super.connectionLost(throwable);
-                isMqttConnect = false;
-                mConnectedDevices.clear();
-                mAdapter.notifyDataSetChanged();
-                isUserLogin = false;
-                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                connectLostDialog.show();
-                connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
-            }
-
-            @Override
-            public void onFailure(SDKAction action, Throwable throwable) {
-                switch (action) {
-                    case GET_BINDING:
-                        break;
+                @Override
+                public void connectionLost(Throwable throwable) {
+                    super.connectionLost(throwable);
+                    isMqttConnect = false;
+                    mConnectedDevices.clear();
+                    mAdapter.notifyDataSetChanged();
+                    isUserLogin = false;
+                    Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                    connectLostDialog.show();
+                    connectLostDialog.setTitleText("账号异地登录");
+                    connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
                 }
-            }
-        };
+
+                @Override
+                public void onFailure(SDKAction action, Throwable throwable) {
+                    switch (action) {
+                        case GET_BINDING:
+                            break;
+                    }
+                }
+            };
+        }
+
     }
 
     private void updatePerformance() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                refreshCount = 0;
-                //这里不用设置设备上线的字段，在routerdevice类里面设置了
-                String mem = routerDevice.getPerformance().getDevice().getMEM();
+        Log.i(TAG, "updatePerformance");
+        refreshCount = 0;
+        //这里不用设置设备上线的字段，在routerdevice类里面设置了
+        String mem = routerDevice.getPerformance().getDevice().getMEM();
+        textview_memory_use.setText(mem);
+        String cpu = routerDevice.getPerformance().getDevice().getCPU();
+        textview_cpu_use.setText(cpu);
 
-                textview_memory_use.setText(mem);
-                String cpu = routerDevice.getPerformance().getDevice().getCPU();
+        textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
 
-                textview_cpu_use.setText(cpu);
+        textview_download_speend.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getDownRate()));
 
-                textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
-
-                textview_download_speend.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getDownRate()));
-
-            }
-        });
     }
 
     private void initEvents() {
@@ -419,8 +438,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         frame_setting.setOnClickListener(this);
         layout_connected_devices.setOnClickListener(this);
         layout_blak_list.setOnClickListener(this);
-        listview_device_list.setAdapter(mAdapter);
+        if (isStartFromExperience) {
 
+        } else {
+            listview_device_list.setAdapter(mAdapter);
+        }
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -463,7 +485,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                 blacklist.setDeviceName(name);
                                 control.setBLACKLIST(blacklist);
                                 try {
-                                    routerDevice.setDeviceControl(control);
+                                    if (isStartFromExperience) {
+
+                                    } else {
+                                        routerDevice.setDeviceControl(control);
+                                    }
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -632,12 +659,17 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 showQueryingDialog();
                 break;
             case R.id.frame_setting:
-                if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                if (isStartFromExperience) {
                     startActivity(new Intent(this, RouterSettingActivity.class));
                 } else {
-                    //本地配置先连路由器
-                    checkRouter();
+                    if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                        startActivity(new Intent(this, RouterSettingActivity.class));
+                    } else {
+                        //本地配置先连路由器
+                        checkRouter();
+                    }
                 }
+
 
                 break;
         }
@@ -652,11 +684,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         DialogThreeBounce.showLoading(this);
     }
 
-    /**
-     * 检查使用本地接口的本地路由器连接情况
-     */
-    private boolean isConnectLocalRouter = false;
-    private MakeSureWithInputDialog connetWifiDialog;
+
     private Runnable connectStatus = new Runnable() {
         @Override
         public void run() {

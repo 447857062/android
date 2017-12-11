@@ -89,7 +89,7 @@ public class DeviceManager implements MqttListener {
     public void cleanup() {
         mDeviceMap.clear();
         mDeviceTopics.clear();
-   }
+    }
 
     public void getDeviceBinding() {
         if (mSDKCoordinator.getUserSession() == null || mSDKCoordinator.getUserInfo() == null) {
@@ -258,7 +258,7 @@ public class DeviceManager implements MqttListener {
             synchronized (mDeviceMap) {
                 mDeviceMap.put(device.getDeviceKey(), device);
             }
-            Log.i(TAG,"notifyDeviceDataUpdate update="+update);
+            Log.i(TAG, "notifyDeviceDataUpdate update=" + update);
             mSDKCoordinator.notifyDeviceDataUpdate(device.getDeviceKey(), update);
         }
     }

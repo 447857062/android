@@ -6,6 +6,8 @@ import android.util.Log;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,7 +53,7 @@ public class DoorbeelManager {
             @Override
             public void run() {
                 SmartDev dev = DataSupport.where("Uid = ?", currentSelectedDoorbeel.getUid()).findFirst(SmartDev.class, true);
-                final Room rooms = dev.getRoom();
+                final List<Room> rooms = dev.getRooms();
                 mObservable = Observable.create(new ObservableOnSubscribe() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter e) throws Exception {
@@ -59,7 +61,7 @@ public class DoorbeelManager {
                     }
                 });
                 mObservable.subscribe(observer);
-                Log.i(TAG, "所在房间=" + rooms.getRoomName());
+                Log.i(TAG, "所在房间=" + rooms.size());
             }
         });
 
@@ -163,7 +165,9 @@ public class DoorbeelManager {
                /* List<Room> roomList = new ArrayList<>();
                 roomList.addAll(smartDev.getRoomList());
                 roomList.add(room);*/
-                smartDev.setRoom(room);
+                List<Room>rooms=new ArrayList<Room>();
+                rooms.add(room);
+                smartDev.setRooms(rooms);
                 smartDev.setName(deviceName);
                 final boolean saveResult = smartDev.save();
                 mObservable = Observable.create(new ObservableOnSubscribe() {

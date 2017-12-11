@@ -50,9 +50,13 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
     protected void onResume() {
         super.onResume();
         mRouterManager.addSmartLockListener(this);
-        textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
-    }
+        if (RoomManager.getInstance().getCurrentSelectedRoom() == null) {
+            textview_select_room_name.setText("全部");
+        } else {
+            textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
+        }
 
+    }
 
 
     private void initDatas() {
@@ -99,6 +103,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
             }
         }
     };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

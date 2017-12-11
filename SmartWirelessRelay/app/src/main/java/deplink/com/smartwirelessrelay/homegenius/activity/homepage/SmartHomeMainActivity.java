@@ -32,7 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.Homep
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.HomepageRoomShowTypeChangedViewAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -71,6 +71,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private TextView textview_mine;
 
     private HomepageRoomShowTypeChangedViewAdapter mRoomSelectTypeChangedAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +80,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
+
     private RoomManager mRoomManager;
 
     @Override
@@ -108,13 +110,21 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
         roomGridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
         roomGridView.setColumnWidth(itemWidth); // 设置列表项宽
-       // roomGridView.setHorizontalSpacing(5); // 设置列表项水平间距
+        // roomGridView.setHorizontalSpacing(5); // 设置列表项水平间距
         roomGridView.setStretchMode(GridView.NO_STRETCH);
         roomGridView.setNumColumns(size); // 设置列数量=列表集合数
         roomGridView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
         layout_roomselect_changed_ype.setAdapter(mRoomSelectTypeChangedAdapter);
+        layout_roomselect_changed_ype.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mRoomManager.setCurrentSelectedRoom(mRoomManager.getmRooms().get(position));
+                Intent intent = new Intent(SmartHomeMainActivity.this, DeviceNumberActivity.class);
+                startActivity(intent);
+            }
+        });
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
     }
 
@@ -133,7 +143,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mRoomManager.initRoomManager();
 
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
-        mRoomSelectTypeChangedAdapter=new HomepageRoomShowTypeChangedViewAdapter(this,mRoomList);
+        mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);
         mExperienceCenterDeviceList = new ArrayList<>();
         ExperienceCenterDevice oneDevice = new ExperienceCenterDevice();
         oneDevice.setDeviceName("智能门锁");
@@ -181,12 +191,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         roomGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = new Bundle();
-                bundle.putString("roomName", RoomManager.getInstance().getmRooms().get(position).getRoomName());
-                bundle.putInt("roomOrdinalNumber", RoomManager.getInstance().getmRooms().get(position).getRoomOrdinalNumber());
-                Intent intent = new Intent(SmartHomeMainActivity.this, ManageRoomActivity.class);
-                Log.i(TAG, "传递当前房间名字=" + bundle.get("roomName") + "获取到的名字是=" + RoomManager.getInstance().getmRooms().get(position));
-                intent.putExtras(bundle);
+
+                mRoomManager.setCurrentSelectedRoom(mRoomManager.getmRooms().get(position));
+                Intent intent = new Intent(SmartHomeMainActivity.this, DeviceNumberActivity.class);
                 startActivity(intent);
             }
         });
@@ -214,8 +221,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
 
-        layout_roomselect_normal= (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
-        layout_roomselect_changed_ype= (NonScrollableListView) findViewById(R.id.layout_roomselect_changed_ype);
+        layout_roomselect_normal = (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
+        layout_roomselect_changed_ype = (NonScrollableListView) findViewById(R.id.layout_roomselect_changed_ype);
     }
 
     @Override
@@ -223,7 +230,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         super.onPause();
 
         mLocalConnectmanager.removeLocalConnectListener(this);
-        mRoomManager.updateRoomsOrdinalNumber();
+
     }
 
     /**
@@ -244,6 +251,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         return super.onKeyDown(keyCode, event);
     }
+
     private HorizontalScrollView layout_roomselect_normal;
     private NonScrollableListView layout_roomselect_changed_ype;
 
@@ -257,7 +265,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 startActivity(new Intent(this, ExperienceDevicesActivity.class));
                 break;
             case R.id.imageview_setting:
-
                 startActivity(new Intent(SmartHomeMainActivity.this, HomePageSettingActivity.class));
                 break;
             case R.id.layout_devices:
@@ -271,13 +278,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 startActivity(new Intent(this, PersonalCenterActivity.class));
                 break;
             case R.id.textview_change_show_type:
-               if(layout_roomselect_normal.getVisibility()==View.VISIBLE){
-                   layout_roomselect_normal.setVisibility(View.GONE);
-                   layout_roomselect_changed_ype.setVisibility(View.VISIBLE);
-               }else{
-                   layout_roomselect_normal.setVisibility(View.VISIBLE);
-                   layout_roomselect_changed_ype.setVisibility(View.GONE);
-               }
+                if (layout_roomselect_normal.getVisibility() == View.VISIBLE) {
+                    layout_roomselect_normal.setVisibility(View.GONE);
+                    layout_roomselect_changed_ype.setVisibility(View.VISIBLE);
+                } else {
+                    layout_roomselect_normal.setVisibility(View.VISIBLE);
+                    layout_roomselect_changed_ype.setVisibility(View.GONE);
+                }
                 break;
 
         }

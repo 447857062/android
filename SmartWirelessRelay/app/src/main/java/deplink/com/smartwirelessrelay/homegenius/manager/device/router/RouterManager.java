@@ -28,6 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -66,6 +67,15 @@ public class RouterManager {
     private String routerName;
     private MakeSureDialog connectLostDialog;
     private List<RouterManagerListener> mRouterManagerListenerList;
+    private boolean isStartFromExperience;
+
+    public boolean isStartFromExperience() {
+        return isStartFromExperience;
+    }
+
+    public void setStartFromExperience(boolean startFromExperience) {
+        isStartFromExperience = startFromExperience;
+    }
 
     public void addSmartLockListener(RouterManagerListener listener) {
 
@@ -128,8 +138,9 @@ public class RouterManager {
 
     public void setCurrentSelectedRouter(SmartDev currentSelectedRouter) {
         Log.i(TAG, "设置当前选中的路由器 uid=" + currentSelectedRouter.getUid());
-        currentSelectedRouter.setStatus("离线");
         this.currentSelectedRouter = currentSelectedRouter;
+        this.currentSelectedRouter .setStatus("在线");
+
     }
 
     public void getRouterAtRooms(final Observer observer) {
@@ -137,7 +148,7 @@ public class RouterManager {
             @Override
             public void run() {
                 SmartDev dev = DataSupport.where("Uid = ?", currentSelectedRouter.getUid()).findFirst(SmartDev.class, true);
-                final Room rooms = dev.getRoom();
+                final List<Room> rooms = dev.getRooms();
                 mObservable = Observable.create(new ObservableOnSubscribe() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter e) throws Exception {
@@ -145,7 +156,7 @@ public class RouterManager {
                     }
                 });
                 mObservable.subscribe(observer);
-                Log.i(TAG, "所在房间=" + rooms.getRoomName());
+                Log.i(TAG, "所在房间有几个=" + rooms.size());
             }
         });
 
@@ -154,6 +165,7 @@ public class RouterManager {
 
     public void bindDevice(String routerSN) {
         if (manager != null) {
+            DialogThreeBounce.showLoading(mContext);
             manager.bindDevice(routerSN);
         }
 
@@ -170,6 +182,7 @@ public class RouterManager {
         this.mContext = context;
         this.mRouterManagerListenerList = new ArrayList<>();
         connectLostDialog = new MakeSureDialog(mContext);
+
         if (manager == null) {
             Log.i(TAG, "InitRouterManager ,init sdk manager");
             DeplinkSDK.initSDK(mContext.getApplicationContext(), Perfence.SDK_APP_KEY);
@@ -181,6 +194,8 @@ public class RouterManager {
                         case GET_BINDING:
                             Log.i(TAG, "status GET_BINDING");
                             if (isUserBindAction) {
+                                isUserBindAction=false;
+
                                 for (int i = 0; i < manager.getDeviceList().size(); i++) {
                                     //查询设备列表，sn和上传时一样才修改名字
                                     if (manager.getDeviceList().get(i).getDeviceSN().equals(routerSN)) {
@@ -230,20 +245,22 @@ public class RouterManager {
                 @Override
                 public void deviceOpSuccess(String op, final String deviceKey) {
                     super.deviceOpSuccess(op, deviceKey);
-                    Log.i(TAG, "deviceOpSuccess op=" + op);
                     switch (op) {
                         case RouterDevice.OP_CHANGE_NAME:
-
                             currentAddRouter.setUid(routerSN);
                             currentAddRouter.setType("路由器");
                             boolean saveResult = saveRouter(currentAddRouter);
                             if (!saveResult) {
                                 for (int i = 0; i < mRouterManagerListenerList.size(); i++) {
-                                    mRouterManagerListenerList.get(i).responseAddyResult(100);//MSG_ADD_ROUTER_SUCCESS
+                                    mRouterManagerListenerList.get(i).responseAddyResult(100);//MSG_ADD_ROUTER_FAILED
                                 }
                             } else {
                                 Room room = RoomManager.getInstance().getCurrentSelectedRoom();
-                                updateDeviceInWhatRoom(room, routerSN, routerName);
+
+                                    Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
+                                    updateDeviceInWhatRoom(room, routerSN, routerName);
+
+
                             }
 
                             break;
@@ -251,9 +268,10 @@ public class RouterManager {
 
                             break;
                         case RouterDevice.OP_GET_REPORT:
-
                             currentSelectedRouter.setStatus("在线");
-                            currentSelectedRouter.save();
+                            ContentValues values = new ContentValues();
+                            values.put("Status", "在线");
+                            final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", currentSelectedRouter.getUid());
                             break;
                         case RouterDevice.OP_SUCCESS:
 
@@ -292,9 +310,8 @@ public class RouterManager {
             };
             manager.addEventCallback(ec);
             String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-            String password = "123456";
-            Log.i(TAG, "phoneNumber=" + phoneNumber);
-            phoneNumber = "13691876442";
+            String password =Perfence.getPerfence(Perfence.USER_PASSWORD);
+            Log.i(TAG, "phoneNumber=" + phoneNumber+"password="+password);
             manager.login(phoneNumber, password);
         }
         if (cachedThreadPool == null) {
@@ -311,9 +328,11 @@ public class RouterManager {
     public boolean saveRouter(SmartDev dev) {
         boolean success = dev.save();
         Log.i(TAG, "保存路由器设备=" + success);
-
-
         return success;
+    }
+    public void onDestroy() {
+        DeplinkSDK.getSDKManager().onDestroy();
+        manager=null;
     }
 
     public void updateRouterName(final String name, final Observer observer) {
@@ -339,6 +358,7 @@ public class RouterManager {
     private Observable mObservable;
 
     public void deleteRouter() {
+        DialogThreeBounce.showLoading(mContext);
         BaseDevice unbindDevice = manager.getDevice(currentSelectedRouter.getRouterDeviceKey());
         manager.unbindDevice(unbindDevice);
 
@@ -365,7 +385,10 @@ public class RouterManager {
             public void run() {
                 Log.i(TAG, "更新路由器设备所在的房间=start");
                 SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
-                smartDev.setRoom(room);
+                List<Room>rooms=new ArrayList<Room>();
+                rooms.clear();
+                rooms.add(room);
+                smartDev.setRooms(rooms);
                 smartDev.setName(deviceName);
                 final boolean saveResult = smartDev.save();
                 mObservable = Observable.create(new ObservableOnSubscribe() {
@@ -387,10 +410,19 @@ public class RouterManager {
             public void run() {
                 Log.i(TAG, "更新路由器设备所在的房间=start");
                 SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
-                smartDev.setRoom(room);
+                List<Room>rooms=new ArrayList<Room>();
+                rooms.clear();
+                if(room!=null){
+                    rooms.add(room);
+                }else{
+                    //
+                rooms.addAll(RoomManager.getInstance().getmRooms());
+                }
+                smartDev.setRooms(rooms);
                 smartDev.setName(deviceName);
                 final boolean saveResult = smartDev.save();
                 for (int i = 0; i < mRouterManagerListenerList.size(); i++) {
+                    DialogThreeBounce.hideLoading();
                     mRouterManagerListenerList.get(i).responseAddyResult(102);//MSG_ADD_ROUTER_SUCCESS
                 }
                 Log.i(TAG, "更新路由器设备所在的房间=" + saveResult);
@@ -407,8 +439,10 @@ public class RouterManager {
         if (routerDevice == null) {
             Log.i(TAG, "设备离线了");
             routerDevice.setOnline(false);
-            currentSelectedRouter.setStatus("离线");
-            currentSelectedRouter.saveFast();
+            ContentValues values = new ContentValues();
+            values.put("Status", "离线");
+            final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", currentSelectedRouter.getUid());
+            Log.i(TAG, "更新设备在线状态 :离线 affectColumn=" + affectColumn);
         }
         return routerDevice;
     }
