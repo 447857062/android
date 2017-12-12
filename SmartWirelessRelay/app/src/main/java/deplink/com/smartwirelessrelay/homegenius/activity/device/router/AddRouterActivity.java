@@ -2,9 +2,11 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.router;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,20 +14,26 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManagerListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
-public class AddRouterActivity extends Activity implements View.OnClickListener, RouterManagerListener {
+public class AddRouterActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "AddRouterActivity";
     private Button button_add_device_sure;
     private RouterManager mRouterManager;
@@ -37,6 +45,8 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
     private String routerName;
     private SDKManager manager;
     private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
+    private boolean isBindAction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,30 +59,105 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onPause() {
         super.onPause();
-        mRouterManager.removeSmartLockListener(this);
     }
-
+    private SmartDev currentAddRouter;
     @Override
     protected void onResume() {
         super.onResume();
-        mRouterManager.addSmartLockListener(this);
         if (RoomManager.getInstance().getCurrentSelectedRoom() == null) {
             textview_select_room_name.setText("全部");
         } else {
             textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
         }
-
     }
-
 
     private void initDatas() {
         textview_title.setText("添加路由器");
         routerSN = getIntent().getStringExtra("routerSN");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new MakeSureDialog(AddRouterActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(AddRouterActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+                switch (action){
+                    case GET_BINDING:
+                        Log.i(TAG, "status GET_BINDING");
+                        if (isBindAction) {
+                            isBindAction = false;
+                            for (int i = 0; i < manager.getDeviceList().size(); i++) {
+                                //查询设备列表，sn和上传时一样才修改名字
+                                if (manager.getDeviceList().get(i).getDeviceSN().equals(routerSN)) {
+                                    Log.i(TAG, "manager.getDeviceList().get(i).getDeviceSN()=" + manager.getDeviceList().get(i).getDeviceSN() + "bindDeviceSn=" + routerSN + "changename");
+                                    currentAddRouter = new SmartDev();
+                                    currentAddRouter.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
+                                    ((RouterDevice) manager.getDeviceList().get(i)).changeName(routerName);
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
 
 
+            }
 
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+                switch (op) {
+                    case RouterDevice.OP_CHANGE_NAME:
+                        currentAddRouter.setUid(routerSN);
+                        currentAddRouter.setType("路由器");
+                        boolean saveResult = mRouterManager.saveRouter(currentAddRouter);
+                        if (!saveResult) {
+
+                        } else {
+                            Room room = RoomManager.getInstance().getCurrentSelectedRoom();
+                            Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
+                            mRouterManager.updateDeviceInWhatRoom(room, routerSN, routerName);
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+                switch (action) {
+                    case GET_BINDING:
+                        if (isBindAction) {
+                            mHandler.sendEmptyMessage(MSG_ADD_ROUTER_FAIL);
+                        }
+                        break;
+
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
     }
 
     private void initEvents() {
@@ -112,7 +197,6 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
             }
         }
     };
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -121,18 +205,15 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.button_add_device_sure:
                 if (NetUtil.isNetAvailable(AddRouterActivity.this)) {
-                    mRouterManager.setUserBindAction(true);
-                    mRouterManager.setRouterSN(routerSN);
+                    isBindAction=true;
                     routerName = edittext_add_device_input_name.getText().toString();
                     if (routerName.equals("")) {
                         routerName = "家里的路由器";
                     }
-
-                    mRouterManager.setRouterName(routerName);
-                   boolean login=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-                    if(login){
-                        mRouterManager.bindDevice(routerSN);
-                    }else{
+                    boolean login = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                    if (login) {
+                        manager.bindDevice(routerSN);
+                    } else {
                         ToastSingleShow.showText(AddRouterActivity.this, " 未登录，无法添加路由器");
                     }
                 } else {
@@ -142,8 +223,5 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
         }
     }
 
-    @Override
-    public void responseAddyResult(int result) {
-        mHandler.sendEmptyMessage(result);
-    }
+
 }

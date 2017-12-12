@@ -143,7 +143,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
      */
     private void getCurrentSelectedDevice() {
         if (isUserLogin) {
-            routerDevice = mRouterManager.getRouterDevice();
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
             if (routerDevice != null) {
                 deviceOnline = routerDevice.getOnline();
             }
@@ -174,7 +174,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                     case UNBIND:
                         int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid());
                         Log.i(TAG, "删除路由器设备=" + affectColumn);
-                        Log.i(TAG, "unbindactivity GET_BINDING=");
                         ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定成功");
                         RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
                         break;

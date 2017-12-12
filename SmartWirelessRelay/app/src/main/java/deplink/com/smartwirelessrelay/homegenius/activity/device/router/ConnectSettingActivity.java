@@ -64,7 +64,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     private TextView textview_dhcp_status;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
-
+    private boolean isUserLogin;
     private TextView textview_title;
     private FrameLayout image_back;
     @Override
@@ -79,7 +79,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         manager.addEventCallback(ec);
         if (routerDevice != null) {
             routerDevice.queryWan();
@@ -378,7 +378,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
         textview_netmask = (TextView) findViewById(R.id.textview_netmask);
         textview_dhcp_status = (TextView) findViewById(R.id.textview_dhcp_status);
     }
-    private boolean isUserLogin;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

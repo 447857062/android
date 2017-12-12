@@ -130,7 +130,7 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
         //获取当前连接设备的是否自动升级固件，
         //当前选择的设备判断：没有绑定设备就没有，如果已绑定，或者别人添加管理者，就默认选中这个，
         // 之后用户手动选择路由器才切换
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         if(routerDevice!=null){
             routerDevice.retrieveUpgradeInfo();
             routerDevice.getReport();

@@ -124,7 +124,7 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
-        routerDevice = mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         try {
             routerDevice.retrieveUpgradeInfo();
         } catch (Exception e) {

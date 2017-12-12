@@ -149,7 +149,7 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         manager.addEventCallback(ec);
         if(NetUtil.isNetAvailable(this)){
             try {

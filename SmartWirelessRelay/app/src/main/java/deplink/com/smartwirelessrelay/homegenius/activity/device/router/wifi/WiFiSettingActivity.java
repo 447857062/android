@@ -96,7 +96,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
         super.onResume();
         Perfence.setContext(getApplicationContext());
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         if (routerDevice != null) {
             deviceOnline = routerDevice.getOnline();
         }

@@ -166,7 +166,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             manager.addEventCallback(ec);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             frame_blacklist_content.setVisibility(View.GONE);
-            routerDevice = mRouterManager.getRouterDevice();
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
             Log.i(TAG, "routerDevice=" + (routerDevice != null));
             startTimer();
         }

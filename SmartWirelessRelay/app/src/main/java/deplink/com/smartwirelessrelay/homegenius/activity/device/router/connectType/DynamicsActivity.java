@@ -52,7 +52,7 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         manager.addEventCallback(ec);
     }
     @Override

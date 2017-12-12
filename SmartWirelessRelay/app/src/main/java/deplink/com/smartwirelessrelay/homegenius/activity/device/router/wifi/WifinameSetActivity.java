@@ -55,7 +55,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
         manager.addEventCallback(ec);
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isLogin) {
-            routerDevice=mRouterManager.getRouterDevice();
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         }
 
     }

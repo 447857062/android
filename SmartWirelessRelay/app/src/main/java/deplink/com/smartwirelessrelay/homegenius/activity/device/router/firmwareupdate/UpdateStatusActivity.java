@@ -135,7 +135,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        routerDevice=mRouterManager.getRouterDevice();
+        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
     }
 
 

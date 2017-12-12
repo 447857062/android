@@ -155,7 +155,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
         manager.addEventCallback(ec);
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isLogin) {
-            routerDevice = mRouterManager.getRouterDevice();
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
         }
 
     }
