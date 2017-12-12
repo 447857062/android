@@ -40,12 +40,12 @@
     <color name="main_bottom_black">#515151</color>
     <color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
     <color name="result_text">#ff000000</color>
-
     <color name="title_blue_bg">#60a3f6</color>
     <color name="room_type_text">#333333</color>
     <color name="white">#ffffff</color>
     <color name="white_alpha60">#99ffffff</color>
     <color name="huise">#999999</color>
+    9
     <color name="seekbar_horiz">#f1f1f1</color>
     <color name="aircondition_mode">#666666</color>
     <color name="router_line_dirver">#cccccc</color>

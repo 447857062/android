@@ -73,17 +73,18 @@
                 android:background="@null"
                 android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:gravity="center_vertical"
-                android:textColor="@color/input_hint"
+                android:textColorHint="@color/white_alpha60"
+                android:textColor="@color/white"
                 android:hint="请输入手机号" />
         </RelativeLayout>
 
         <View
+            android:id="@+id/view_phonenumber_dirverline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:alpha="0.6"
             android:layout_below="@+id/layout_input_phone_number_inner"
             android:layout_marginTop="@dimen/line_margintop_input"
-            android:background="@color/white" />
+            android:background="@color/white_alpha60" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -115,18 +116,19 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/image_password"
                 android:background="@null"
-                android:textColor="@color/input_hint"
+                android:textColorHint="@color/white_alpha60"
+                android:textColor="@color/white"
                 android:gravity="center_vertical"
                 android:hint="请输入密码" />
         </RelativeLayout>
 
         <View
+            android:id="@+id/view_password_dirverline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:alpha="0.6"
             android:layout_below="@+id/layout_input_password_inner"
             android:layout_marginTop="@dimen/line_margintop_input"
-            android:background="@color/white" />
+            android:background="@color/white_alpha60" />
     </RelativeLayout>
 
     <Button

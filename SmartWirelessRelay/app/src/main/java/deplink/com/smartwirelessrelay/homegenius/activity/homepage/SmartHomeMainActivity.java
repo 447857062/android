@@ -22,7 +22,6 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
-import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import java.util.ArrayList;
@@ -124,7 +123,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
         roomGridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
         roomGridView.setColumnWidth(itemWidth); // 设置列表项宽
-        // roomGridView.setHorizontalSpacing(5); // 设置列表项水平间距
         roomGridView.setStretchMode(GridView.NO_STRETCH);
         roomGridView.setNumColumns(size); // 设置列数量=列表集合数
         roomGridView.setAdapter(mAdapter);
@@ -211,16 +209,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op) {
-                    case RouterDevice.OP_GET_WAN:
 
-                        break;
-                    case  RouterDevice.OP_GET_LAN:
-
-
-
-                        break;
-                }
             }
 
             @Override
@@ -235,11 +224,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
             }
         };
-
         String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         String password = Perfence.getPerfence(Perfence.USER_PASSWORD);
         Log.i(TAG, "phoneNumber=" + phoneNumber + "password=" + password);
-        manager.login(phoneNumber, password);
+        if(!password.equals("")){
+            manager.login(phoneNumber, password);
+        }
+
     }
 
     private AdapterView.OnItemClickListener mExperienceCenterListClickListener = new AdapterView.OnItemClickListener() {

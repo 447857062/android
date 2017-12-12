@@ -19,7 +19,6 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -51,8 +50,6 @@ public class SmartLockManager implements LocalConnecteListener {
      * 这个类设计成单例
      */
     private static SmartLockManager instance;
-    private SmartLock mSmartLock;
-    private String smartUid = "00-12-4b-00-0b-26-c2-15";
     private SmartDev currentSelectLock;
     private boolean isStartFromExperience;
 
@@ -255,15 +252,12 @@ public class SmartLockManager implements LocalConnecteListener {
     @Override
     public void OnGetQueryresult(String result) {
         //TODO
-        Log.i(TAG, "OnGetQueryresult=" + smartUid);
         Gson gson = new Gson();
-
         OpResult queryResult = gson.fromJson(result, OpResult.class);
         if (result.contains("DevList")) {
             DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
             if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
-                smartUid = aDeviceList.getSmartDev().get(0).getUid();
-                Log.i(TAG, "保存智能设备uid=" + smartUid);
+
             }
 
         }

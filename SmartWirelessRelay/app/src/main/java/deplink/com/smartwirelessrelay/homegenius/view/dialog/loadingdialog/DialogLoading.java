@@ -16,32 +16,39 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 public class DialogLoading {
     private static Dialog dialogLoading;
     private static TextView textview_show_msg;
-    public static void showLoading(Context context){
-        if(dialogLoading==null){
+    private static Context mContext;
+
+    public static void showLoading(Context context) {
+        mContext = context;
+        if (dialogLoading == null) {
             dialogLoading = new Dialog(context, R.style.DialogRadius);
         }
         View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_loading, null);
         dialogLoading.setContentView(view);
         dialogLoading.setCanceledOnTouchOutside(false);
-          textview_show_msg = (TextView) view.findViewById(R.id.textview_show_msg);
-        try {
+        textview_show_msg = (TextView) view.findViewById(R.id.textview_show_msg);
+        if (context != null && context instanceof Activity
+                && !((Activity) context).isFinishing()) {
             dialogLoading.show();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
+
     }
-    public static void hideLoading(){
-        try {
-            if(null != dialogLoading ) {
+
+    public static void hideLoading() {
+        if (mContext != null && mContext instanceof Activity
+                && !((Activity) mContext).isFinishing()) {
+            if (null != dialogLoading) {
                 dialogLoading.dismiss();
                 dialogLoading = null;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
+
     }
-    public static void setMsg(String msg){
-        if(null != dialogLoading) {
+
+    public static void setMsg(String msg) {
+        if (null != dialogLoading) {
             textview_show_msg.setText(msg);
         }
     }

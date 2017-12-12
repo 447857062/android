@@ -19,8 +19,8 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -100,7 +100,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
                 break;
             case R.id.layout_config_wifi_getway:
-                startActivity(new Intent(this, GetwayCheckActivity.class));
+                startActivity(new Intent(this, ScanWifiListActivity.class));
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);

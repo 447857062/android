@@ -128,34 +128,59 @@
             android:layout_centerVertical="true"
             android:src="@drawable/directionicon" />
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/textview_select_room_type"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_item_content_height"
-        android:layout_below="@+id/layout_getway"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:textSize="@dimen/text_size_small"
-        android:gravity="center_vertical"
-        android:text="请选择以下房间类型"
-        android:textColor="@color/huise" />
-
-    <GridView
-        android:id="@+id/gridview_room_type"
+    <RelativeLayout
+        android:id="@+id/layout_getway_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textview_select_room_type"
-        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:background="@color/white"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:cacheColorHint="@android:color/transparent"
-        android:gravity="center"
-        android:scrollbars="none"
-        android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
-        android:listSelector="@android:color/transparent"
-        android:numColumns="3"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dip"/>
+        android:layout_below="@+id/layout_getway"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/listview_select_getway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:dividerHeight="@dimen/list_item_textview_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
+        </ListView>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_below="@+id/layout_getway_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/textview_select_room_type"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right"
+            android:textSize="@dimen/text_size_small"
+            android:gravity="center_vertical"
+            android:text="请选择以下房间类型"
+            android:textColor="@color/huise" />
+
+        <GridView
+            android:id="@+id/gridview_room_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_select_room_type"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:cacheColorHint="@android:color/transparent"
+            android:gravity="center"
+            android:scrollbars="none"
+            android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dip"/>
+    </RelativeLayout>
+
 </RelativeLayout>

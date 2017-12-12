@@ -5,7 +5,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/loginbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.RegistActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
+
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/layout_title_with_back_center_titletext_transparent" />
 
     <RelativeLayout
         android:id="@+id/layout_input_phone_number_outer"
@@ -25,8 +28,8 @@
                 android:id="@+id/image_person"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:src="@drawable/phonenumber" />
 
             <EditText
@@ -34,30 +37,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:layout_toRightOf="@+id/image_person"
                 android:background="@null"
-                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:gravity="center_vertical"
-                android:textColor="@color/input_hint"
-                android:hint="请输入手机号" />
+                android:hint="请输入手机号"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white_alpha60" />
         </RelativeLayout>
 
         <View
+            android:id="@+id/view_phonenumber_dirverline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:alpha="0.6"
             android:layout_below="@+id/layout_input_phone_number_inner"
             android:layout_marginTop="@dimen/line_margintop_input"
-            android:background="@color/white" />
+            android:background="@color/white_alpha60" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_verification_code_outer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_input_phone_number_outer"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
-        android:layout_below="@+id/layout_input_phone_number_outer"
         android:layout_marginTop="@dimen/password_layout_margin_account_top">
 
         <RelativeLayout
@@ -73,45 +77,48 @@
                 android:src="@drawable/verificationcode" />
 
             <EditText
-                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:id="@+id/edittext_verification_code"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/buton_get_verification_code"
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
+                android:layout_toLeftOf="@+id/buton_get_verification_code"
+                android:layout_toRightOf="@+id/image_verification_code"
                 android:background="@null"
-                android:textColor="@color/input_hint"
                 android:gravity="center_vertical"
-                android:hint="请输入验证码" />
+                android:hint="请输入验证码"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white_alpha60" />
+
             <TextView
                 android:id="@+id/buton_get_verification_code"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:text="获取验证码"
-                android:textSize="@dimen/text_size_smallest"
-                android:gravity="center_horizontal|center_vertical"
-                android:textColor="@color/white"
-                android:background="@drawable/get_vercode_button_background"
                 android:layout_width="80dp"
-                android:layout_height="@dimen/vercode_buttom_height" />
+                android:layout_height="@dimen/vercode_buttom_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/get_vercode_button_background"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="获取验证码"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_smallest" />
         </RelativeLayout>
 
         <View
+            android:id="@+id/view_yanzhen_dirverline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:alpha="0.6"
             android:layout_below="@+id/layout_verification_code_inner"
             android:layout_marginTop="@dimen/line_margintop_input"
-            android:background="@color/white" />
+            android:background="@color/white_alpha60" />
     </RelativeLayout>
     <!--请设置密码-->
     <RelativeLayout
         android:id="@+id/layout_input_password_outer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_verification_code_outer"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
-        android:layout_below="@+id/layout_verification_code_outer"
         android:layout_marginTop="@dimen/password_layout_margin_account_top">
 
         <RelativeLayout
@@ -127,34 +134,37 @@
                 android:src="@drawable/passwordicon" />
 
             <EditText
-                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:id="@+id/edittext_input_password"
-                android:layout_toLeftOf="@+id/imageview_eye"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
+                android:layout_toLeftOf="@+id/imageview_eye"
                 android:layout_toRightOf="@+id/image_input_password"
                 android:background="@null"
-                android:textColor="@color/input_hint"
                 android:gravity="center_vertical"
-                android:hint="请设置密码" />
+                android:hint="请设置密码"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white_alpha60" />
+
             <ImageView
-                android:src="@drawable/displayicon"
                 android:id="@+id/imageview_eye"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/displayicon" />
         </RelativeLayout>
 
         <View
+            android:id="@+id/view_password_dirverline"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:alpha="0.6"
             android:layout_below="@+id/layout_input_password_inner"
             android:layout_marginTop="@dimen/line_margintop_input"
-            android:background="@color/white" />
+            android:background="@color/white_alpha60" />
     </RelativeLayout>
+
     <Button
         android:id="@+id/button_login"
         android:layout_width="match_parent"
@@ -162,26 +172,27 @@
         android:layout_below="@+id/layout_input_password_outer"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
-        android:textColor="@color/title_blue_bg"
-        android:background="@drawable/radius30_bg_white_background"
-        android:textSize="@dimen/login_button_text_size"
         android:layout_marginTop="@dimen/password_layout_margin_account_top"
-        android:text="注册" />
+        android:background="@drawable/radius30_bg_white_background"
+        android:text="注册"
+        android:textColor="@color/title_blue_bg"
+        android:textSize="@dimen/login_button_text_size" />
+
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/text_user_protocal_margin_buttom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/textview_i_read"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_smallest"
+            android:text="我已阅读并同意"
             android:textColor="@color/white"
-            android:text="我已阅读并同意" />
+            android:textSize="@dimen/text_size_smallest" />
 
         <TextView
             android:id="@+id/textview_protocal"
@@ -189,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/textview_i_read"
             android:text="《智能家居协议条款》"
-            android:textSize="@dimen/text_size_smallest"
-            android:textColor="@color/title_blue_bg" />
+            android:textColor="@color/title_blue_bg"
+            android:textSize="@dimen/text_size_smallest" />
     </RelativeLayout>
 </RelativeLayout>

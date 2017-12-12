@@ -26,7 +26,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.StringValidatorUtil;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogLoading;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
-public class LoginActivity extends Activity implements View.OnClickListener{
+public class LoginActivity extends Activity implements View.OnClickListener,View.OnFocusChangeListener{
     private static final String TAG="LoginActivity";
     private ImageView imageview_delete;
     private TextView textview_forget_password;
@@ -37,6 +37,8 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     private boolean isConnectedMqtt=false;
     private SDKManager manager;
     private EventCallback ec;
+    private View view_phonenumber_dirverline;
+    private View view_password_dirverline;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +120,8 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         textview_forget_password.setOnClickListener(this);
         textview_regist_now.setOnClickListener(this);
         button_login.setOnClickListener(this);
+        edittext_input_phone_number.setOnFocusChangeListener(this);
+        edittext_input_password.setOnFocusChangeListener(this);
     }
 
     private void initViews() {
@@ -127,6 +131,8 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         button_login= (Button) findViewById(R.id.button_login);
         edittext_input_password= (EditText) findViewById(R.id.edittext_input_password);
         edittext_input_phone_number= (EditText) findViewById(R.id.edittext_input_phone_number);
+        view_phonenumber_dirverline=  findViewById(R.id.view_phonenumber_dirverline);
+        view_password_dirverline=  findViewById(R.id.view_password_dirverline);
     }
 
     @Override
@@ -157,6 +163,30 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.textview_regist_now:
                 startActivity(new Intent(LoginActivity.this,RegistActivity.class));
+                break;
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()){
+            case R.id.edittext_input_phone_number:
+                if (hasFocus) {
+                    // 此处为得到焦点时的处理内容
+                    view_phonenumber_dirverline.setBackgroundResource(R.color.white);
+                } else {
+                    // 此处为失去焦点时的处理内容
+                    view_phonenumber_dirverline.setBackgroundResource(R.color.white_alpha60);
+                }
+                break;
+            case R.id.edittext_input_password:
+                if (hasFocus) {
+                    // 此处为得到焦点时的处理内容
+                    view_password_dirverline.setBackgroundResource(R.color.white);
+                } else {
+                    // 此处为失去焦点时的处理内容
+                    view_password_dirverline.setBackgroundResource(R.color.white_alpha60);
+                }
                 break;
         }
     }

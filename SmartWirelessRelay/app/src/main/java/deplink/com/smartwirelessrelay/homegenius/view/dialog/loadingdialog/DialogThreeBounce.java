@@ -14,23 +14,29 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
  */
 public class DialogThreeBounce {
     private static Dialog dialogLoading;
-    public static void showLoading(Context context){
-        if(dialogLoading==null){
+    private static Context mContext;
+
+    public static void showLoading(Context context) {
+        mContext = context;
+        if (dialogLoading == null) {
             dialogLoading = new Dialog(context, R.style.DialogRadius);
-       }
+        }
         View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_threebounce, null);
         dialogLoading.setContentView(view);
         dialogLoading.setCanceledOnTouchOutside(false);
-        try {
+        if (context != null && context instanceof Activity
+                && !((Activity) context).isFinishing()) {
             dialogLoading.show();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
-    public static void hideLoading(){
-        if(null != dialogLoading) {
-            dialogLoading.dismiss();
-            dialogLoading = null;
+
+    public static void hideLoading() {
+        if (mContext != null && mContext instanceof Activity
+                && !((Activity) mContext).isFinishing()) {
+            if (null != dialogLoading) {
+                dialogLoading.dismiss();
+                dialogLoading = null;
+            }
         }
     }
 

@@ -512,14 +512,11 @@ public class MqttService extends Service implements MqttTraceHandler {
         for (MqttServiceClient client : clients.values()) {
             client.disconnect(null, null);
         }
-
         // clear down
         if (mqttServiceBinder != null) {
             mqttServiceBinder = null;
         }
-
         super.onDestroy();
-
         Log.d(DeplinkSDK.SDK_TAG, "Service--------------->onDestroy");
     }
 

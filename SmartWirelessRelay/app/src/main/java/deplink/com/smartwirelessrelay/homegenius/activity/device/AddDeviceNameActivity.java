@@ -7,22 +7,28 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
@@ -49,8 +55,13 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private String deviceType;
     private String switchqrcode;
     private TextView textview_title;
+    private TextView textview_select_getway_name;
+    private RelativeLayout layout_getway_select;
+    private RelativeLayout layout_getway_list;
     private DoorbeelManager mDoorbeelManager;
-
+    private GetwaySelectListAdapter selectGetwayAdapter;
+    private List<Device>mGetways;
+    private ListView listview_select_getway;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +76,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private void initEvents() {
         button_add_device_sure.setOnClickListener(this);
         image_back.setOnClickListener(this);
+        layout_getway_select.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -72,6 +84,10 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         textview_title = (TextView) findViewById(R.id.textview_title);
+        textview_select_getway_name = (TextView) findViewById(R.id.textview_select_getway_name);
+        layout_getway_select = (RelativeLayout) findViewById(R.id.layout_getway_select);
+        layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
+        listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
     }
 
 
@@ -88,7 +104,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switchqrcode = getIntent().getStringExtra("switchqrcode");
         //get current room
         currentSelectedRoom = RoomManager.getInstance().getCurrentSelectedRoom();
-
         switch (deviceType) {
             case "SMART_LOCK":
                 edittext_add_device_input_name.setHint("例如:我家的门锁（最多5个字）");
@@ -119,9 +134,30 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 textview_title.setText("智能门铃");
                 break;
         }
-
+        mGetways=new ArrayList<>();
+        //TODO 调试
+        Device temp=new Device();
+        temp.setName("网关一");
+        mGetways.add(temp);
+        temp=new Device();
+        temp.setName("网关2");
+        mGetways.add(temp);
+        temp=new Device();
+        temp.setName("网关3");
+        mGetways.add(temp);
+        //TODO 调试
+        selectGetwayAdapter=new GetwaySelectListAdapter(this,mGetways);
+        listview_select_getway.setAdapter(selectGetwayAdapter);
+        listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectGetwayName=mGetways.get(position).getName();
+                textview_select_getway_name.setText(selectGetwayName);
+                layout_getway_list.setVisibility(View.GONE);
+            }
+        });
     }
-
+    private String selectGetwayName;
     @Override
     public void responseQueryResult(String result) {
 
@@ -440,6 +476,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 break;
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.layout_getway_select:
+                layout_getway_list.setVisibility(View.VISIBLE);
                 break;
 
         }

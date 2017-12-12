@@ -42,6 +42,7 @@ public class GetwayManager implements LocalConnecteListener {
     private String currentAddDevice;
     private GeneralPacket packet;
     private LocalConnectmanager mLocalConnectmanager;
+    private Device currentSelectGetwayDevice;
 
     public String getCurrentAddDevice() {
         Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
@@ -104,7 +105,6 @@ public class GetwayManager implements LocalConnecteListener {
         return list;
     }
 
-    private Device currentSelectGetwayDevice;
 
     public Device getCurrentSelectGetwayDevice() {
         return currentSelectGetwayDevice;
