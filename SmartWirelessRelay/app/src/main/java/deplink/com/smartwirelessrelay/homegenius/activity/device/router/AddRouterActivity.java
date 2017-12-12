@@ -12,12 +12,17 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManagerListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class AddRouterActivity extends Activity implements View.OnClickListener, RouterManagerListener {
@@ -30,7 +35,8 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
     private FrameLayout image_back;
     private String routerSN;
     private String routerName;
-
+    private SDKManager manager;
+    private EventCallback ec;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,9 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
         routerSN = getIntent().getStringExtra("routerSN");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
+
+
+
     }
 
     private void initEvents() {
@@ -118,9 +127,14 @@ public class AddRouterActivity extends Activity implements View.OnClickListener,
                     if (routerName.equals("")) {
                         routerName = "家里的路由器";
                     }
-                    mRouterManager.setRouterName(routerName);
-                    mRouterManager.bindDevice(routerSN);
 
+                    mRouterManager.setRouterName(routerName);
+                   boolean login=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                    if(login){
+                        mRouterManager.bindDevice(routerSN);
+                    }else{
+                        ToastSingleShow.showText(AddRouterActivity.this, " 未登录，无法添加路由器");
+                    }
                 } else {
                     ToastSingleShow.showText(AddRouterActivity.this, " 网络连接不可用，请检查网络连接");
                 }

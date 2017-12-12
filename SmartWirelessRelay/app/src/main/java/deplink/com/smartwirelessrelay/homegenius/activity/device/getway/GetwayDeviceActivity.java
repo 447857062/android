@@ -139,7 +139,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 Room room = RoomManager.getInstance().findRoom(roomName, true);
                 String deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
                 String deviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
-                mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid, deviceName);
+                mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
 
             }
             textview_select_room_name.setText(roomName);

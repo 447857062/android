@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -23,6 +24,35 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Org;
     private String Ver;
     private String name;
+    private List<Info> alarmInfo = new ArrayList<>();
+
+    public List<Info> getAlarmInfo() {
+        return alarmInfo;
+    }
+
+    public void setAlarmInfo(List<Info> alarmInfo) {
+        this.alarmInfo = alarmInfo;
+    }
+
+    private String lockPassword="";
+    private boolean remerberPassword=true;
+
+    public boolean isRemerberPassword() {
+        return remerberPassword;
+    }
+
+    public void setRemerberPassword(boolean remerberPassword) {
+        this.remerberPassword = remerberPassword;
+    }
+
+    public String getLockPassword() {
+        return lockPassword;
+    }
+
+    public void setLockPassword(String lockPassword) {
+        this.lockPassword = lockPassword;
+    }
+
     /**
      * 数据库中的关联关系必须要初始化好列表
      */

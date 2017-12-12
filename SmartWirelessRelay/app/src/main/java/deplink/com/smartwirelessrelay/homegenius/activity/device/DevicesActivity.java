@@ -105,7 +105,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-        datasBottom.addAll(DataSupport.findAll(SmartDev.class));
+        datasBottom.addAll(DataSupport.findAll(SmartDev.class,true));
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
     }
@@ -154,6 +154,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         case "SMART_LOCK":
                             //设置当前选中的门锁设备
                             mSmartLockManager.setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
+                            mSmartLockManager.setStartFromExperience(false);
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
@@ -249,7 +250,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
                         if (mRooms.get(position).equals("全部")) {
                             datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-                            datasBottom.addAll(DataSupport.findAll(SmartDev.class));
+                            datasBottom.addAll(DataSupport.findAll(SmartDev.class,true));
 
                         } else {
                             Room room = mRoomManager.findRoom(mRooms.get(position), true);

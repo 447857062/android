@@ -16,12 +16,11 @@ import java.util.concurrent.Executors;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
@@ -55,15 +54,27 @@ public class SmartLockManager implements LocalConnecteListener {
     private SmartLock mSmartLock;
     private String smartUid = "00-12-4b-00-0b-26-c2-15";
     private SmartDev currentSelectLock;
+    private boolean isStartFromExperience;
+
+    public boolean isStartFromExperience() {
+        return isStartFromExperience;
+    }
+
+    public void setStartFromExperience(boolean startFromExperience) {
+        isStartFromExperience = startFromExperience;
+    }
+
     private SmartLockManager() {
 
     }
 
     public SmartDev getCurrentSelectLock() {
+        Log.i(TAG, "当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size());
         return currentSelectLock;
     }
 
     public void setCurrentSelectLock(SmartDev currentSelectLock) {
+        Log.i(TAG, "设置当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size());
         this.currentSelectLock = currentSelectLock;
     }
 
@@ -87,12 +98,6 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         mLocalConnectmanager.addLocalConnectListener(this);
 
-        ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
-        Log.i(TAG, "managerPassword!=null" + (managerPassword != null));
-        if (managerPassword == null) {
-            managerPassword = new ManagerPassword();
-            managerPassword.save();
-        }
         packet = new GeneralPacket(mContext);
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
@@ -131,13 +136,12 @@ public class SmartLockManager implements LocalConnecteListener {
         queryCmd.setMethod("SmartLock");
         queryCmd.setCommand("HisRecord");
         queryCmd.setUserID("1001");
-        Log.i(TAG, "查询开锁记录设备smartUid=" + smartUid);
-        smartUid = "00-12-4b-00-0b-26-c2-15";
-        queryCmd.setSmartUid(smartUid);
+        queryCmd.setSmartUid(currentSelectLock.getUid());
+        Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
         queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packOpenLockListData(text.getBytes());
+        packet.packOpenLockListData(text.getBytes(), currentSelectLock.getUid());
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -161,6 +165,29 @@ public class SmartLockManager implements LocalConnecteListener {
     }
 
     /**
+     * 更新设备所在房间
+     */
+    public void updateSmartDeviceInWhatRoom(final Room room, final String deviceUid) {
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "更新智能设备所在的房间=start");
+                //保存所在的房间
+                //查询设备
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+                //找到要更行的设备,设置关联的房间
+                List<Room> rooms = new ArrayList<Room>();
+                rooms.add(room);
+                currentSelectLock.setRooms(rooms);
+                smartDev.setRooms(rooms);
+                boolean saveResult = smartDev.save();
+                Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+            }
+        });
+
+    }
+
+    /**
      * 设置SamrtLock参数
      *
      * @param cmd
@@ -173,7 +200,7 @@ public class SmartLockManager implements LocalConnecteListener {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("SmartLock");
-        queryCmd.setSmartUid(smartUid);
+        queryCmd.setSmartUid(currentSelectLock.getUid());
         queryCmd.setCommand(cmd);
         if (authPwd != null) {
             queryCmd.setAuthPwd(authPwd);
@@ -192,7 +219,7 @@ public class SmartLockManager implements LocalConnecteListener {
 
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packSetSmartLockData(text.getBytes());
+        packet.packSetSmartLockData(text.getBytes(), currentSelectLock.getUid());
 
         cachedThreadPool.execute(new Runnable() {
             @Override
@@ -330,17 +357,14 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     @Override
     public void onGetalarmRecord(List<Info> alarmList) {
-        //TODO 这里还要写入devuid，不然会报错，因为这个devuid是不为空的
-        mSmartLock = DataSupport.findFirst(SmartLock.class);
         for (int i = 0; i < alarmList.size(); i++) {
             Info alarm;
             alarm = alarmList.get(i);
-            Log.i(TAG,alarm.toString());
+            Log.i(TAG, alarm.toString());
             alarm.save();
-            mSmartLock.setInfo(alarmList);
-           // mSmartLock.getInfo().add(alarm);
+            currentSelectLock.setAlarmInfo(alarmList);
         }
-        mSmartLock.save();
+        currentSelectLock.save();
         //TODO
     }
 
@@ -349,14 +373,8 @@ public class SmartLockManager implements LocalConnecteListener {
      *
      * @return
      */
-    public List<LOCK_ALARM> getAlarmRecord(String devUid) {
-        //TODO
-        smartUid = "00-12-4b-00-0b-26-c2-15";
-        List<SmartLock> mSmartDevices = DataSupport.where("Uid = ?", smartUid).find(SmartLock.class, true);
-        if (mSmartDevices.size() > 0) {
-            List<Info> newsList = mSmartDevices.get(0).getInfo();
-        }
-
-        return null;
+    public List<Info> getAlarmRecord() {
+        List<Info> newsList = currentSelectLock.getAlarmInfo();
+        return newsList;
     }
 }

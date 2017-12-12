@@ -23,6 +23,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.Recor
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
 /**
  * 开锁记录界面
@@ -103,6 +104,10 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             mSmartLockManager = SmartLockManager.getInstance();
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
+            DialogThreeBounce.showLoading(this);
+            Message msg=Message.obtain();
+            msg.what=MSG_GET_HISRECORD;
+            mHandler.sendMessageDelayed(msg,3000);
             mSmartLockManager.queryLockHistory();
         }
 
@@ -110,6 +115,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
 
     private static final int MSG_GET_HISTORYRECORD = 0x01;
     private static final int MSG_RETURN_ERROR = 0x02;
+    private static final int MSG_GET_HISRECORD = 0x03;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -119,13 +125,11 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 case MSG_GET_HISTORYRECORD:
                     Gson gson = new Gson();
                     LockHistorys aDeviceList = gson.fromJson(str, LockHistorys.class);
-                 //   if (aDeviceList.getRecord() != null) {
-                        Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
-                        mRecordList.clear();
-                        mRecordList.addAll(aDeviceList.getRecord());
-                        recordAdapter.notifyDataSetChanged();
-                //    }
-
+                    Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
+                    mRecordList.clear();
+                    mRecordList.addAll(aDeviceList.getRecord());
+                    recordAdapter.notifyDataSetChanged();
+                    DialogThreeBounce.hideLoading();
                     try {
                         new AlertDialog
                                 .Builder(LockHistoryActivity.this)
@@ -150,6 +154,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    break;
+                case MSG_GET_HISRECORD:
+                   DialogThreeBounce.hideLoading();
                     break;
             }
 

@@ -16,11 +16,30 @@ public class Device extends DataSupport implements Serializable{
     @Column(unique = true,nullable = false)
     private String Uid;
     private String Status;
+    private String Type;
+    private String Mac;
     private String name;
     /**
      * 网关的IP地址
      */
     private String ipAddress;
+
+    public String getType() {
+        return Type;
+    }
+
+    public void setType(String type) {
+        Type = type;
+    }
+
+    public String getMac() {
+        return Mac;
+    }
+
+    public void setMac(String mac) {
+        Mac = mac;
+    }
+
     private List<Room>roomList=new ArrayList<>();
 
     public String getIpAddress() {

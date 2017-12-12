@@ -30,6 +30,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
@@ -127,6 +128,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                     switch (deviceType) {
                         case "SMART_LOCK":
+                            SmartLockManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":

@@ -17,12 +17,14 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.add.AddDoorbellTipsActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwayNotifyActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 
@@ -85,9 +87,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
         switch (mDeviceTypes.get(position)) {
             case AppConstant.DEVICES.TYPE_SMART_GETWAY:
-                intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AddGetwayNotifyActivity.class);
-                intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intentQrcodeSn);
+                startActivityForResult(intentQrcodeSn, REQUEST_ADD_GETWAY);
                 break;
             case AppConstant.DEVICES.TYPE_REMOTECONTROL:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
@@ -127,6 +127,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
      */
     public final static int REQUEST_ADD_INFRAED_UNIVERSAL_RC = 3;
     public final static int REQUEST_ADD_ROUTER = 4;
+    public final static int REQUEST_ADD_GETWAY = 5;
 
     @Override
     public void onClick(View v) {
@@ -182,6 +183,12 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     //添加路由器
                     intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
                     intent.putExtra("routerSN", qrCodeResult);
+                    startActivity(intent);
+                    break;
+                case REQUEST_ADD_GETWAY:
+                    //添加路由器
+                    intent =new Intent(this, AddGetwaySettingOptionsActivity.class);
+                    GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
                     startActivity(intent);
                     break;
             }

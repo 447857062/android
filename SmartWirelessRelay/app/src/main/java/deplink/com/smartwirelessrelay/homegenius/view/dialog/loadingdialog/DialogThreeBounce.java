@@ -17,11 +17,15 @@ public class DialogThreeBounce {
     public static void showLoading(Context context){
         if(dialogLoading==null){
             dialogLoading = new Dialog(context, R.style.DialogRadius);
-        }
+       }
         View view = ((Activity) context).getLayoutInflater().inflate(R.layout.dialog_threebounce, null);
         dialogLoading.setContentView(view);
         dialogLoading.setCanceledOnTouchOutside(false);
-        dialogLoading.show();
+        try {
+            dialogLoading.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public static void hideLoading(){
         if(null != dialogLoading) {

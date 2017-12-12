@@ -58,7 +58,11 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
         netUdp = new UdpComm( this);
         netUdp.startServer();
         udpPacketThread = new UdpPacketThread();
-        udpPacketThread.start();
+        try {
+            udpPacketThread.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() {
@@ -91,17 +95,15 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
             Log.i(TAG,"UdpPacketThread is Run");
             isRun = true;
             while (isRun) {
-
                 try {
                     for (int i = 0; i < sendNetPakcetList.size(); i++) {
                         BasicPacket tmp = sendNetPakcetList.get(i);
                         if (tmp.ip != null ) {
-
                             netUdp.sendData(tmp.getUdpData());
                             delOneSendPacket(sendNetPakcetList, tmp);
                         }
                     }
-                    Thread.sleep(1);
+                    Thread.sleep(3000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -29,6 +29,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -130,6 +131,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private static final int MSG_FINISH_ACTIVITY = 101;
     private static final int MSG_UPDATE_ROOM_FAIL = 102;
     private static final int MSG_ADD_DOORBEEL_FAIL = 103;
+    private static final int MSG_HIDE_DIALOG = 104;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -154,6 +156,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 case MSG_ADD_DOORBEEL_FAIL:
                     Toast.makeText(AddDeviceNameActivity.this, "添加智能门铃失败", Toast.LENGTH_SHORT).show();
                     break;
+                case MSG_HIDE_DIALOG:
+                   DialogThreeBounce.hideLoading();
+                    break;
             }
         }
     };
@@ -170,23 +175,19 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     @Override
     public void responseBindDeviceResult(String result) {
         Gson gson = new Gson();
-
         final DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
         boolean success;
         success = isSmartDeviceAddSuccess(aDeviceList);
         mDeviceManager.addDBSmartDevice(device);
         switch (deviceType) {
             case "SMART_LOCK":
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                            if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                                mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
-                            }
-                        }
+
+                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
+                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
+                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
                     }
-                });
+                }
+               DialogThreeBounce.hideLoading();
                 break;
             case "IRMOTE_V2":
                 // 智能遥控添加结果
@@ -308,6 +309,10 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         //TODO 不需要模拟测试
                         Log.i(TAG, "绑定智能设备");
                         device.setName(deviceName);
+                        DialogThreeBounce.showLoading(this);
+                        Message msg=Message.obtain();
+                        msg.what=MSG_HIDE_DIALOG;
+                        mHandler.sendMessageDelayed(msg,3000);
                         mDeviceManager.bindSmartDevList(device);
                         break;
                     case AppConstant.DEVICES.TYPE_SWITCH:

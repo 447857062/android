@@ -38,8 +38,10 @@ public class BasicPacket {
 
     /**
      * 基础打包函数
+     *
+     * @param addControlUid 是否需要加上控制id
      **/
-    public int packData(byte[] xdata, byte cmdId, boolean addControlUid) {
+    public int packData(byte[] xdata, byte cmdId, boolean addControlUid, String controlUid) {
         int len = 0;
         if (xdata != null)
             data = new byte[AppConstant.BASICLEGTH + xdata.length];
@@ -72,7 +74,7 @@ public class BasicPacket {
         data[len++] = 0x01;
         //  SmartUid 智能设备uid,可以为空33,先为空调试
         if (addControlUid) {
-            System.arraycopy("00-12-4b-00-0b-26-c2-15".getBytes(), 0, data, len, 23);
+            System.arraycopy(controlUid.getBytes(), 0, data, len, 23);
             len += 23;
             data[len++] = 0x0;
             data[len++] = 0x0;
@@ -112,7 +114,7 @@ public class BasicPacket {
         if (xdata != null && xdata.length > 0) {
             System.arraycopy(xdata, 0, data, len, xdata.length);
         }
-        Log.e(TAG, "打包数据长度data.length=" + data.length + "打包数据:" + DataExchange.byteArrayToHexString(data));
+        Log.e(TAG, "打包数据长度data.length=" + data.length);
         return data.length;
     }
 

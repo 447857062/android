@@ -29,7 +29,7 @@ public class GeneralPacket extends BasicPacket {
      * @return
      */
     public int packHeathPacket() {
-        return packData( null, ComandID.HEARTBEAT,false);
+        return packData( null, ComandID.HEARTBEAT,false,null);
     }
     /**
      * 发送广播包,探测设备
@@ -43,49 +43,49 @@ public class GeneralPacket extends BasicPacket {
      * 查询设备列表
      * @return
      */
-    public int packQueryDevListData(byte[]xdata,boolean addControlUid) {
+    public int packQueryDevListData(byte[]xdata,boolean addControlUid,String controlUid ) {
 
-        return packData( xdata,ComandID.QUERY_OPTION,addControlUid);
+        return packData( xdata,ComandID.QUERY_OPTION,addControlUid,controlUid);
     }
     /**
      * 查询开锁记录
      * @return
      */
-    public int packOpenLockListData(byte[]xdata) {
+    public int packOpenLockListData(byte[]xdata,String controlUid) {
 
-        return packData(xdata,ComandID.QUERY_OPTION,true);
+        return packData(xdata,ComandID.QUERY_OPTION,true,controlUid);
     }
     /**
      *设置智能设备参数
      * @return
      */
-    public int packSetSmartLockData( byte[]xdata) {
+    public int packSetSmartLockData( byte[]xdata,String controlUid) {
 
 
-        return packData(xdata,ComandID.SET_CMD,true);
+        return packData(xdata,ComandID.SET_CMD,true,controlUid);
     }
     /**
      *智能设备列表下发
      * @return
      */
     public int packSendSmartDevsData( byte[]xdata) {
-        return packData(xdata,ComandID.CMD_SEND_SMART_DEV,true);
+        return packData(xdata,ComandID.CMD_SEND_SMART_DEV,false,null);
     }
     public int packQueryWifiListData( byte[]xdata) {
-        return packData(xdata,ComandID.CMD_DEV_SCAN_WIFI,false);
+        return packData(xdata,ComandID.CMD_DEV_SCAN_WIFI,false,null);
     }
-    public int packRemoteControlData( byte[]xdata) {
-        return packData(xdata,ComandID.SET_CMD,true);
+    public int packRemoteControlData( byte[]xdata,String controlUid) {
+        return packData(xdata,ComandID.SET_CMD,true,controlUid);
     }
     public int packSetWifiListData( byte[]xdata) {
-        return packData(xdata,ComandID.CMD_DEV_SET_WIFI,false);
+        return packData(xdata,ComandID.CMD_DEV_SET_WIFI,false,null);
     }
     /**
      *设备列表下发
      * @return
      */
     public int packSendDevsData( byte[]xdata) {
-        return packData( xdata,ComandID.CMD_SEND_SMART_DEV,false);
+        return packData( xdata,ComandID.CMD_SEND_SMART_DEV,false,null);
     }
 
 }

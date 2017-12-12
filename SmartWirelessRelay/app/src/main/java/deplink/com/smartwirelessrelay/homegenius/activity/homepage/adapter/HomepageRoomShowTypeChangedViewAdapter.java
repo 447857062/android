@@ -46,7 +46,8 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.textview_room_item.setText(listTop.get(position).getRoomName());
-        int devicesSize=listTop.get(position).getmDevices().size();
+        //网关设备加智能设备
+        int devicesSize=listTop.get(position).getmDevices().size()+listTop.get(position).getmGetwayDevices().size();
         if( devicesSize==0){
             viewHolder.device_number.setBackground(mContext.getResources().getDrawable(R.drawable.homepage_roomselect_ovel_bg_device_size_0));
         }else{

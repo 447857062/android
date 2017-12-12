@@ -86,7 +86,7 @@ public class RemoteControlManager implements LocalConnecteListener {
                 cmd.setSmartUid(mRemoteControlDevice.getUid());
                 cmd.setCommand("Study");
                 String text = gson.toJson(cmd);
-                packet.packRemoteControlData(text.getBytes());
+                packet.packRemoteControlData(text.getBytes(),null);
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
@@ -104,7 +104,7 @@ public class RemoteControlManager implements LocalConnecteListener {
                 cmd.setCommand("Send");
                 cmd.setData(data);
                 String text = gson.toJson(cmd);
-                packet.packRemoteControlData(text.getBytes());
+                packet.packRemoteControlData(text.getBytes(),null);
                 mLocalConnectmanager.getOut(packet.data);
             }
         });

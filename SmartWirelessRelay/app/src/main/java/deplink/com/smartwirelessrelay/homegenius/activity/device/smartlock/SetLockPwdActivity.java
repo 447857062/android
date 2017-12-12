@@ -1,7 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,12 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.ArrayList;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -94,11 +90,12 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
 
     private void initData() {
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        mSmartLockManager = SmartLockManager.getInstance();
+        isStartFromExperience = mSmartLockManager.isStartFromExperience();
         if (isStartFromExperience) {
 
         } else {
-            mSmartLockManager = SmartLockManager.getInstance();
+
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
         }
@@ -120,8 +117,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdFive_setLockPwd.setInputType(InputType.TYPE_NULL);
         etPwdSix_setLockPwd.setInputType(InputType.TYPE_NULL);
         MyHandle();
-        boolean checked = DataSupport.findFirst(ManagerPassword.class).isRemenbEnable();
-        switch_remond_managerpassword.setImageLevel(1);
     }
 
     void backToActivity() {
@@ -180,20 +175,16 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     @Override
     public void responseSetResult(String result) {
         Log.i(TAG, "设置管理密码=" + result);
-        if (DataSupport.findAll(ManagerPassword.class).size() == 0) {
-            ManagerPassword managerPassword = new ManagerPassword();
-            managerPassword.save();
-        }
         //密码正确才能保存，消失界面显示
         // TODO 保存密码
-
         Log.i(TAG, "result=" + result);
-
         if ("成功".equals(result)) {
-            ContentValues values = new ContentValues();
-            values.put("managerPassword", currentPassword);
-            int affectColumn = DataSupport.updateAll(ManagerPassword.class, values);
-            Log.i(TAG, "保存密码影响的行数=" + affectColumn);
+            if (currentImageLevel == 1) {
+
+                mSmartLockManager.getCurrentSelectLock().setLockPassword(currentPassword);
+                mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
+                mSmartLockManager.getCurrentSelectLock().save();
+            }
             SetLockPwdActivity.this.finish();
         }
     }
@@ -203,14 +194,43 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     }
 
+    private int currentImageLevel;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSmartLockManager.getCurrentSelectLock().isRemerberPassword()) {
+            switch_remond_managerpassword.setImageLevel(1);
+            currentImageLevel = 1;
+        } else {
+            switch_remond_managerpassword.setImageLevel(0);
+            currentImageLevel = 0;
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.switch_remond_managerpassword:
-                ManagerPassword managerPassword = DataSupport.findFirst(ManagerPassword.class);
-                managerPassword.setRemenbEnable(true);
-                int updateAll = managerPassword.updateAll();
-                Log.i(TAG, "saveResult记住密码=" + updateAll);
+                switch (currentImageLevel) {
+                    case 0:
+                        currentImageLevel = 1;
+                        break;
+                    case 1:
+                        currentImageLevel = 0;
+                        break;
+                }
+                switch_remond_managerpassword.setImageLevel(currentImageLevel);
+                ;
+                switch (currentImageLevel) {
+                    case 0:
+                        mSmartLockManager.getCurrentSelectLock().setRemerberPassword(false);
+                        break;
+                    case 1:
+                        mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
+                        break;
+                }
+                mSmartLockManager.getCurrentSelectLock().save();
                 break;
 
         }

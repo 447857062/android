@@ -16,6 +16,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
@@ -24,7 +25,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
 /**
  * Created by Administrator on 2017/11/22.
  */
-public class GetwayManager implements LocalConnecteListener{
+public class GetwayManager implements LocalConnecteListener {
     private static final String TAG = "GetwayManager";
     /**
      * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
@@ -38,13 +39,12 @@ public class GetwayManager implements LocalConnecteListener{
     /**
      * 当前要添加设备的识别码，二维码扫码出来的
      */
-    private  String currentAddDevice;
+    private String currentAddDevice;
     private GeneralPacket packet;
     private LocalConnectmanager mLocalConnectmanager;
+
     public String getCurrentAddDevice() {
-        //TODO
-        currentAddDevice="77685180654101946200316696479888";
-        Log.i(TAG,"获取当前添加设备："+currentAddDevice);
+        Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
         return currentAddDevice;
     }
 
@@ -59,20 +59,22 @@ public class GetwayManager implements LocalConnecteListener{
         }
         return instance;
     }
-    public void InitGetwayManager(Context context,GetwayListener listener) {
+
+    public void InitGetwayManager(Context context, GetwayListener listener) {
         this.mContext = context;
-        mGetwayListenerList=new ArrayList<>();
+        mGetwayListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
             mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
-        if(cachedThreadPool==null){
+        if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
         addGetwayListener(listener);
     }
+
     private List<GetwayListener> mGetwayListenerList;
 
     public void addGetwayListener(GetwayListener listener) {
@@ -80,6 +82,7 @@ public class GetwayManager implements LocalConnecteListener{
             this.mGetwayListenerList.add(listener);
         }
     }
+
     /**
      * 删除数据库中的一个网关设备
      */
@@ -88,18 +91,21 @@ public class GetwayManager implements LocalConnecteListener{
         Log.i(TAG, "删除一个网关设备，删除影响的行数=" + affectcolumn);
         return affectcolumn;
     }
+
     public void removeGetwayListener(GetwayListener listener) {
         if (listener != null && mGetwayListenerList.contains(listener)) {
             this.mGetwayListenerList.remove(listener);
         }
     }
 
-    public List<Device>queryAllGetwayDevice(){
-        List<Device>list=DataSupport.findAll(Device.class);
-        Log.i(TAG,"查询到的网关设备个数="+list.size());
+    public List<Device> queryAllGetwayDevice() {
+        List<Device> list = DataSupport.findAll(Device.class);
+        Log.i(TAG, "查询到的网关设备个数=" + list.size());
         return list;
     }
+
     private Device currentSelectGetwayDevice;
+
     public Device getCurrentSelectGetwayDevice() {
         return currentSelectGetwayDevice;
     }
@@ -107,6 +113,7 @@ public class GetwayManager implements LocalConnecteListener{
     public void setCurrentSelectGetwayDevice(Device currentSelectGetwayDevice) {
         this.currentSelectGetwayDevice = currentSelectGetwayDevice;
     }
+
     public void deleteGetwayDevice() {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("DELETE");
@@ -128,6 +135,7 @@ public class GetwayManager implements LocalConnecteListener{
             }
         });
     }
+
     public boolean addDBGetwayDevice(String uid) {
         //查询设备
         Device getwayDevice = DataSupport.where("Uid=?", uid).findFirst(Device.class);
@@ -143,12 +151,10 @@ public class GetwayManager implements LocalConnecteListener{
     }
 
     /**
-     *
-     * @param room 更新房间
+     * @param room      更新房间
      * @param deviceUid 当前网关设备
-     * @param deviceName 当前网关设备名称
      */
-    public void updateGetwayDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
+    public void updateGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -157,19 +163,19 @@ public class GetwayManager implements LocalConnecteListener{
                 Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
                 //找到要更行的设备,设置关联的房间
                 List<Room> roomList = new ArrayList<>();
-                roomList.addAll(getwayDevice.getRoomList());
                 roomList.add(room);
                 getwayDevice.setRoomList(roomList);
-                getwayDevice.setName(deviceName);
-                getwayDevice.save();
+                boolean result = getwayDevice.save();
+                Log.i(TAG, "更新网关所在房间" + result);
             }
         });
 
     }
+
     /**
      * 绑定网关，中继器
      */
-    public void bindDevice(String uid) {
+    public void bindDevice(QrcodeSmartDevice device) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
@@ -178,7 +184,9 @@ public class GetwayManager implements LocalConnecteListener{
         //设备赋值
         Device dev = new Device();
         //调试  uid 77685180654101946200316696479888
-        dev.setUid(uid);
+        dev.setUid(device.getSn());
+        dev.setMac(device.getAd());
+        dev.setType(device.getTp());
         devs.add(dev);
         queryCmd.setDevice(devs);
         Gson gson = new Gson();
@@ -191,6 +199,7 @@ public class GetwayManager implements LocalConnecteListener{
             }
         });
     }
+
     public void deleteGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
         cachedThreadPool.execute(new Runnable() {
             @Override
@@ -213,6 +222,7 @@ public class GetwayManager implements LocalConnecteListener{
         });
 
     }
+
     @Override
     public void handshakeCompleted() {
 

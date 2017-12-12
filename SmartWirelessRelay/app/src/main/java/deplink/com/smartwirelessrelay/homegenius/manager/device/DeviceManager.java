@@ -29,6 +29,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
  * Created by Administrator on 2017/11/9.
@@ -86,7 +87,7 @@ public class DeviceManager implements LocalConnecteListener {
         queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packQueryDevListData(text.getBytes(), false);
+        packet.packQueryDevListData(text.getBytes(), false,null);
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -145,7 +146,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 中继连接
      */
     public void setWifiRelay(AP_CLIENT paramas) {
-        Log.i(TAG,"setWifiRelay");
+        Log.i(TAG, "setWifiRelay");
         WifiRelaySet setCmd = new WifiRelaySet();
         setCmd.setTimestamp();
         Proto proto = new Proto();
@@ -285,7 +286,7 @@ public class DeviceManager implements LocalConnecteListener {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
-                List<Room>rooms=new ArrayList<Room>();
+                List<Room> rooms = new ArrayList<Room>();
                 rooms.add(room);
                 smartDev.setRooms(rooms);
                 smartDev.setName(deviceName);
@@ -433,6 +434,14 @@ public class DeviceManager implements LocalConnecteListener {
                 Device dev = new Device();
                 dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
                 dev.setUid(aDeviceList.getDevice().get(i).getUid());
+                List<Room> rooms = new ArrayList<Room>();
+                rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
+                dev.setRoomList(rooms);
+                String name=aDeviceList.getDevice().get(i).getName();
+                if(name==null){
+                    name="中继器";
+                }
+                dev.setName(aDeviceList.getDevice().get(i).getName());
                 boolean success = dev.save();
                 Log.i(TAG, "保存设备=" + success);
             }
@@ -444,11 +453,21 @@ public class DeviceManager implements LocalConnecteListener {
             @Override
             public void run() {
                 SmartDev dev = new SmartDev();
+                String deviceType=aDeviceList.getSmartDev().get(i).getType();
+                if(deviceType.equals("SMART_LOCK")){
+                    deviceType=AppConstant.DEVICES.TYPE_LOCK;
+                }else if(deviceType.equals("IRMOTE_V2")){
+                    deviceType=AppConstant.DEVICES.TYPE_REMOTECONTROL;
+                }
                 dev.setUid(aDeviceList.getSmartDev().get(i).getUid());
                 dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
                 dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
                 dev.setType(aDeviceList.getSmartDev().get(i).getType());
+                List<Room> rooms = new ArrayList<Room>();
+                rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
+                dev.setRooms(rooms);
+                dev.setName(deviceType);
                 boolean success = dev.save();
                 Log.i(TAG, "保存智能锁设备=" + success);
             }
@@ -480,7 +499,7 @@ public class DeviceManager implements LocalConnecteListener {
 
     @Override
     public void onSetWifiRelayResult(String result) {
-        Log.i(TAG,"onSetWifiRelayResult="+result);
+        Log.i(TAG, "onSetWifiRelayResult=" + result);
         Gson gson = new Gson();
         OpResult opResult = gson.fromJson(result, OpResult.class);
         if (opResult.getOP().equals("REPORT") && opResult.getMethod().equals("WIFI"))

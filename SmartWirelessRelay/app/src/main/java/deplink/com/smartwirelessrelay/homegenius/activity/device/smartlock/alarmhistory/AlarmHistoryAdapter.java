@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.LOCK_ALARM;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.util.DateUtil;
 
 /**
@@ -22,8 +22,8 @@ import deplink.com.smartwirelessrelay.homegenius.util.DateUtil;
 public class AlarmHistoryAdapter extends BaseAdapter{
     private static final String TAG="AlarmHistoryAdapter";
     private Context mContext;
-    private List<LOCK_ALARM>mDatas;
-    public AlarmHistoryAdapter(Context mContext, List<LOCK_ALARM>mDevices) {
+    private List<Info>mDatas;
+    public AlarmHistoryAdapter(Context mContext, List<Info>mDevices) {
         this.mContext=mContext;
         this.mDatas=mDevices;
     }

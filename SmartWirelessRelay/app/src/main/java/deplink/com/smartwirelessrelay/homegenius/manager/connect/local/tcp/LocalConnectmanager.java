@@ -53,7 +53,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
  * mLocalConnectmanager.InitLocalConnectManager(this);
  * mLocalConnectmanager.addLocalConnectListener(this);
  */
-public class LocalConnectmanager implements  UdpManagerGetIPLintener {
+public class LocalConnectmanager implements UdpManagerGetIPLintener {
 
     private static final String TAG = "LocalConnectmanager";
     /**
@@ -95,13 +95,15 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
         }
         return instance;
     }
+
     private String appAuth;
+
     /**
      * 初始化本地连接管理器
      */
-    public int InitLocalConnectManager(Context context,String bindAppAuth) {
+    public int InitLocalConnectManager(Context context, String bindAppAuth) {
         this.mContext = context;
-        this.appAuth=bindAppAuth;
+        this.appAuth = bindAppAuth;
         this.mLocalConnecteListener = new ArrayList<>();
 
 
@@ -125,7 +127,6 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
             this.mLocalConnecteListener.add(listener);
         }
     }
-
 
 
     /**
@@ -231,21 +232,18 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
             Log.e(TAG, "创建sslsocket success" + address.toString());
             //TODO
-            if(appAuth==null){
-                if(mContext!=null){
-                    Toast.makeText(mContext,"用户未绑定zgbee模块",Toast.LENGTH_SHORT).show();
+            if (appAuth == null) {
+                if (mContext != null) {
+                    Toast.makeText(mContext, "用户未绑定zgbee模块", Toast.LENGTH_SHORT).show();
                 }
-
-            }else{
+            } else {
                 bindApp(appAuth);
             }
-
-            while (sslSocket!=null &&!sslSocket.isClosed()) {
-
-                    getIn();
-
+            while (sslSocket != null && !sslSocket.isClosed()) {
+                getIn();
             }
         } catch (Exception e) {
+            initSocketing=false;
             //TODO 获取连接异常的ip地址
             handshakeCompleted = false;
             for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -268,7 +266,7 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
         queryCmd.setAuthId(uid);
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packBindUnbindAppPacket(uid, ComandID.CMD_BIND,text.getBytes());
+        packet.packBindUnbindAppPacket(uid, ComandID.CMD_BIND, text.getBytes());
         getOut(packet.data);
     }
 
@@ -287,18 +285,21 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
             }
             return -1;
         }
-        Log.i(TAG, "getout HandshakeCompleted=" + handshakeCompleted + "message=" + DataExchange.byteArrayToHexString(message));
-        try {
-            Log.e(TAG, "getOut() send start: ");
-            OutputStream out = sslSocket.getOutputStream();
-            out.write(message);
-            Log.e(TAG, "getOut() send cuccess: " + DataExchange.byteArrayToHexString(message));
-            out.flush();
-            out.close();
-        } catch (IOException e) {
+        if (sslSocket.isClosed()) {
             reConnectLoclNet();
-            e.printStackTrace();
-            return -1;
+        } else {
+            try {
+                Log.e(TAG, "getOut() send start: ");
+                OutputStream out = sslSocket.getOutputStream();
+                out.write(message);
+                Log.e(TAG, "getOut() send cuccess: " + DataExchange.byteArrayToHexString(message));
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                reConnectLoclNet();
+                e.printStackTrace();
+                return -1;
+            }
         }
         return 0;
     }
@@ -355,15 +356,15 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
                         break;
                     case ComandID.ALARM_REPORT:
 
-                            str = new String(buf, AppConstant.BASICLEGTH, length);
-                            Log.i(TAG, "报警记录=" + str);
-                            decodeAlarmRecord(str);
+                        str = new String(buf, AppConstant.BASICLEGTH, length);
+                        Log.i(TAG, "报警记录=" + str);
+                        decodeAlarmRecord(str);
 
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                            Log.i(TAG,"绑定结果="+str);
+                            Log.i(TAG, "绑定结果=" + str);
                             mLocalConnecteListener.get(i).OnBindAppResult(str);
                         }
                         break;
@@ -431,12 +432,12 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
         Gson gson = new Gson();
         ReportAlertRecord record = gson.fromJson(str, ReportAlertRecord.class);
         if (record != null) {
-          //  String recode = record.getALARM_INFO().get(0).getINFO();
-          //  Log.i(TAG, "recode=" + recode);
-           // ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
+            //  String recode = record.getALARM_INFO().get(0).getINFO();
+            //  Log.i(TAG, "recode=" + recode);
+            // ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
 
             List<Info> alermList = record.getInfo();
-            Log.i(TAG,"报警记录="+ alermList.size());
+            Log.i(TAG, "报警记录=" + alermList.size());
             for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                 mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
             }
@@ -444,18 +445,19 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
     }
 
 
-
-    public  void registerNetBroadcast(Context conext){
+    public void registerNetBroadcast(Context conext) {
         //注册网络状态监听
         mUdpmanager.registerNetBroadcast(conext);
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        conext. registerReceiver(broadCast, filter);
+        conext.registerReceiver(broadCast, filter);
     }
-    public  void unRegisterNetBroadcast(Context conext){
+
+    public void unRegisterNetBroadcast(Context conext) {
         mUdpmanager.unRegisterNetBroadcast(conext);
-        conext. unregisterReceiver(broadCast);
+        conext.unregisterReceiver(broadCast);
     }
+
     /**
      * 当前的网络情况
      */
@@ -483,9 +485,9 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
                     } else {
                         currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
                     }
-                    if(currentNetStatu!=lastNetStatu){
+                    if (currentNetStatu != lastNetStatu) {
                         lastNetStatu = currentNetStatu;
-                        if(currentNetStatu==NET_TYPE_WIFI_CONNECTED){
+                        if (currentNetStatu == NET_TYPE_WIFI_CONNECTED) {
                             //重新连接
                             if (mContext != null && mLocalConnecteListener != null) {
                                 if (mUdpmanager == null) {
@@ -493,10 +495,10 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
                                     mUdpmanager.InitUdpConnect(mContext, LocalConnectmanager.this);
                                 }
                             }
-                        }else if(currentNetStatu==NET_TYPE_WIFI_DISCONNECTED){
+                        } else if (currentNetStatu == NET_TYPE_WIFI_DISCONNECTED) {
                             //TODO wifi连接不可用
-                            if(mContext!=null){
-                                Toast.makeText(mContext,"wifi连接不可用，本地连接已断开",Toast.LENGTH_SHORT).show();
+                            if (mContext != null) {
+                                Toast.makeText(mContext, "wifi连接不可用，本地连接已断开", Toast.LENGTH_SHORT).show();
                             }
                             if (mUdpmanager != null) {
                                 mUdpmanager = null;
@@ -509,6 +511,7 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
             }
         }
     }
+
     /**
      * 重置sslsocket连接
      */
@@ -518,6 +521,7 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
             public void run() {
                 if (sslSocket != null) {
                     try {
+                        initSocketing=false;
                         sslSocket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -528,8 +532,18 @@ public class LocalConnectmanager implements  UdpManagerGetIPLintener {
         }).start();
     }
 
+    private String ipaddressOnly;
+    private boolean initSocketing = false;
+
     @Override
     public void onGetLocalConnectIp(String ipAddress) {
-        InitConnect(ipAddress);
+        if (!initSocketing) {
+          //  if (ipaddressOnly == null || ipaddressOnly.equals(ipAddress)) {
+              //  ipaddressOnly = ipAddress;
+                initSocketing = true;
+                InitConnect(ipAddress);
+         //   }
+        }
+
     }
 }

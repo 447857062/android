@@ -13,7 +13,7 @@
         以了。例：
         <version value="1" ></version>
     -->
-    <version value="3"></version>
+    <version value="6"></version>
 
     <!--
         这里是实体类和数据库中的表的映射配置，一个类对应数据库中一张表，类中的一个字
@@ -25,7 +25,6 @@
     <list>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device"></mapping>
-        <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.ManagerPassword"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SmartLock"></mapping>
         <mapping class="deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info"></mapping>

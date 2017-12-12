@@ -7,8 +7,18 @@ public class QrcodeSmartDevice {
     private String org;
     private String tp;
     private String ad;
+    private String sn;
     private String ver;
     private String name;
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
+    }
+
     public String getOrg() {
         return org;
     }

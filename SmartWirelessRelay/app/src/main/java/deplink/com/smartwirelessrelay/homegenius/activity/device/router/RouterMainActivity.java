@@ -163,11 +163,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         if (isStartFromExperience) {
 
         } else {
-            manager = DeplinkSDK.getSDKManager();
             manager.addEventCallback(ec);
-            isUserLogin = mRouterManager.isUserLogin();
+            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             frame_blacklist_content.setVisibility(View.GONE);
             routerDevice = mRouterManager.getRouterDevice();
+            Log.i(TAG, "routerDevice=" + (routerDevice != null));
             startTimer();
         }
 
@@ -177,6 +177,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     protected void onPause() {
         super.onPause();
         stopTimer();
+        manager.removeEventCallback(ec);
     }
 
     private void stopTimer() {
@@ -298,13 +299,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);
         mBlackListAdapter = new BlackListAdapter(this, mBlackListDatas);
         mRouterManager = RouterManager.getInstance();
-        mRouterManager.InitRouterManager(this);
+        // mRouterManager.InitRouterManager(this);
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
         isStartFromExperience = mRouterManager.isStartFromExperience();
         if (isStartFromExperience) {
 
         } else {
-
-            manager = DeplinkSDK.getSDKManager();
             connectLostDialog = new MakeSureDialog(RouterMainActivity.this);
             connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
                 @Override
@@ -373,7 +374,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
                             break;
                         case RouterDevice.OP_GET_REPORT:
-
+                            mRouterManager.getCurrentSelectedRouter().setStatus("在线");
+                            ContentValues values = new ContentValues();
+                            values.put("Status", "在线");
+                            final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
                             updatePerformance();
 
                             break;

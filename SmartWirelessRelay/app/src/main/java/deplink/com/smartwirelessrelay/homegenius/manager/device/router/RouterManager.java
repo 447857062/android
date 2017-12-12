@@ -2,14 +2,12 @@ package deplink.com.smartwirelessrelay.homegenius.manager.device.router;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.device.BaseDevice;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
@@ -23,7 +21,6 @@ import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
@@ -139,7 +136,7 @@ public class RouterManager {
     public void setCurrentSelectedRouter(SmartDev currentSelectedRouter) {
         Log.i(TAG, "设置当前选中的路由器 uid=" + currentSelectedRouter.getUid());
         this.currentSelectedRouter = currentSelectedRouter;
-        this.currentSelectedRouter .setStatus("在线");
+        this.currentSelectedRouter.setStatus("在线");
 
     }
 
@@ -165,7 +162,6 @@ public class RouterManager {
 
     public void bindDevice(String routerSN) {
         if (manager != null) {
-            DialogThreeBounce.showLoading(mContext);
             manager.bindDevice(routerSN);
         }
 
@@ -182,138 +178,103 @@ public class RouterManager {
         this.mContext = context;
         this.mRouterManagerListenerList = new ArrayList<>();
         connectLostDialog = new MakeSureDialog(mContext);
+        DeplinkSDK.initSDK(mContext.getApplicationContext(), Perfence.SDK_APP_KEY);
 
-        if (manager == null) {
-            Log.i(TAG, "InitRouterManager ,init sdk manager");
-            DeplinkSDK.initSDK(mContext.getApplicationContext(), Perfence.SDK_APP_KEY);
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+                switch (action) {
+                    case GET_BINDING:
+                        Log.i(TAG, "status GET_BINDING");
+                        if (isUserBindAction) {
+                            isUserBindAction = false;
+                            for (int i = 0; i < manager.getDeviceList().size(); i++) {
+                                //查询设备列表，sn和上传时一样才修改名字
+                                if (manager.getDeviceList().get(i).getDeviceSN().equals(routerSN)) {
+                                    Log.i(TAG, "manager.getDeviceList().get(i).getDeviceSN()=" + manager.getDeviceList().get(i).getDeviceSN() + "bindDeviceSn=" + routerSN + "changename");
+                                    currentAddRouter = new SmartDev();
+                                    currentAddRouter.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
+                                    ((RouterDevice) manager.getDeviceList().get(i)).changeName(routerName);
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, final String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+                switch (op) {
+                    case RouterDevice.OP_CHANGE_NAME:
+                        currentAddRouter.setUid(routerSN);
+                        currentAddRouter.setType("路由器");
+                        boolean saveResult = saveRouter(currentAddRouter);
+                        if (!saveResult) {
+                            for (int i = 0; i < mRouterManagerListenerList.size(); i++) {
+                                mRouterManagerListenerList.get(i).responseAddyResult(100);//MSG_ADD_ROUTER_FAILED
+                            }
+                        } else {
+                            Room room = RoomManager.getInstance().getCurrentSelectedRoom();
+
+                            Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
+                            updateDeviceInWhatRoom(room, routerSN, routerName);
+
+
+                        }
+
+                        break;
+
+                    case RouterDevice.OP_GET_REPORT:
+
+                        break;
+
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isConnectedMqtt = false;
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+                switch (action) {
+                    case GET_BINDING:
+                        if (isUserBindAction) {
+                            for (int i = 0; i < mRouterManagerListenerList.size(); i++) {
+                                mRouterManagerListenerList.get(i).responseAddyResult(100);//MSG_ADD_ROUTER_FAIL
+                            }
+                        }
+                        break;
+
+                }
+            }
+        };
+        if(manager==null){
             manager = DeplinkSDK.getSDKManager();
-            ec = new EventCallback() {
-                @Override
-                public void onSuccess(SDKAction action) {
-                    switch (action) {
-                        case GET_BINDING:
-                            Log.i(TAG, "status GET_BINDING");
-                            if (isUserBindAction) {
-                                isUserBindAction=false;
-
-                                for (int i = 0; i < manager.getDeviceList().size(); i++) {
-                                    //查询设备列表，sn和上传时一样才修改名字
-                                    if (manager.getDeviceList().get(i).getDeviceSN().equals(routerSN)) {
-                                        Log.i(TAG, "manager.getDeviceList().get(i).getDeviceSN()=" + manager.getDeviceList().get(i).getDeviceSN() + "bindDeviceSn=" + routerSN + "changename");
-                                        currentAddRouter = new SmartDev();
-                                        currentAddRouter.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
-                                        ((RouterDevice) manager.getDeviceList().get(i)).changeName(routerName);
-                                    }
-                                }
-                            }
-                            break;
-                        case LOGIN:
-                            isUserLogin = true;
-                            manager.connectMQTT(mContext);
-                            Log.i(TAG, "LOGIN success");
-                            break;
-                        case CONNECTED:
-                            Log.i(TAG, "CONNECTED mqtt");
-                            isConnectedMqtt = true;
-                            User user = manager.getUserInfo();
-                            Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
-                            Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
-                            Perfence.setPerfence(AppConstant.USER_LOGIN, true);
-                            break;
-                        case UNBIND:
-                            int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", currentSelectedRouter.getUid());
-                            Log.i(TAG, "删除路由器设备=" + affectColumn);
-                            Log.i(TAG, "unbindactivity GET_BINDING=");
-                            ToastSingleShow.showText(mContext, "解除绑定成功");
-                            mContext.startActivity(new Intent(mContext, DevicesActivity.class));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                @Override
-                public void onBindSuccess(SDKAction action, String devicekey) {
-
-                }
-
-                @Override
-                public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-
-                }
-
-                @Override
-                public void deviceOpSuccess(String op, final String deviceKey) {
-                    super.deviceOpSuccess(op, deviceKey);
-                    switch (op) {
-                        case RouterDevice.OP_CHANGE_NAME:
-                            currentAddRouter.setUid(routerSN);
-                            currentAddRouter.setType("路由器");
-                            boolean saveResult = saveRouter(currentAddRouter);
-                            if (!saveResult) {
-                                for (int i = 0; i < mRouterManagerListenerList.size(); i++) {
-                                    mRouterManagerListenerList.get(i).responseAddyResult(100);//MSG_ADD_ROUTER_FAILED
-                                }
-                            } else {
-                                Room room = RoomManager.getInstance().getCurrentSelectedRoom();
-
-                                    Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
-                                    updateDeviceInWhatRoom(room, routerSN, routerName);
-
-
-                            }
-
-                            break;
-                        case RouterDevice.OP_GET_DEVICES:
-
-                            break;
-                        case RouterDevice.OP_GET_REPORT:
-                            currentSelectedRouter.setStatus("在线");
-                            ContentValues values = new ContentValues();
-                            values.put("Status", "在线");
-                            final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", currentSelectedRouter.getUid());
-                            break;
-                        case RouterDevice.OP_SUCCESS:
-
-
-                            break;
-                    }
-                }
-
-                @Override
-                public void connectionLost(Throwable throwable) {
-                    super.connectionLost(throwable);
-                    isConnectedMqtt = false;
-                    isUserLogin = false;
-                    Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                    connectLostDialog.show();
-                    connectLostDialog.setTitleText("账号异地登录");
-                    connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
-
-                }
-
-                @Override
-                public void onFailure(SDKAction action, Throwable throwable) {
-                    switch (action) {
-                        case GET_BINDING:
-                            if (isUserBindAction) {
-                                for (int i = 0; i < mRouterManagerListenerList.size(); i++) {
-                                    mRouterManagerListenerList.get(i).responseAddyResult(100);//MSG_ADD_ROUTER_FAIL
-                                }
-                            }
-                            break;
-                        case UNBIND:
-                            ToastSingleShow.showText(mContext, "解除绑定失败");
-                            break;
-                    }
-                }
-            };
-            manager.addEventCallback(ec);
-            String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-            String password =Perfence.getPerfence(Perfence.USER_PASSWORD);
-            Log.i(TAG, "phoneNumber=" + phoneNumber+"password="+password);
-            manager.login(phoneNumber, password);
+            Log.i(TAG, "InitRouterManager ,init sdk manager"); manager.addEventCallback(ec);
         }
+
+
+
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
@@ -330,9 +291,10 @@ public class RouterManager {
         Log.i(TAG, "保存路由器设备=" + success);
         return success;
     }
+
     public void onDestroy() {
         DeplinkSDK.getSDKManager().onDestroy();
-        manager=null;
+        manager = null;
     }
 
     public void updateRouterName(final String name, final Observer observer) {
@@ -361,15 +323,6 @@ public class RouterManager {
         DialogThreeBounce.showLoading(mContext);
         BaseDevice unbindDevice = manager.getDevice(currentSelectedRouter.getRouterDeviceKey());
         manager.unbindDevice(unbindDevice);
-
-    }
-
-    public SDKManager getManager() {
-        return manager;
-    }
-
-    public void setManager(SDKManager manager) {
-        this.manager = manager;
     }
 
     /**
@@ -385,7 +338,7 @@ public class RouterManager {
             public void run() {
                 Log.i(TAG, "更新路由器设备所在的房间=start");
                 SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
-                List<Room>rooms=new ArrayList<Room>();
+                List<Room> rooms = new ArrayList<Room>();
                 rooms.clear();
                 rooms.add(room);
                 smartDev.setRooms(rooms);
@@ -410,13 +363,13 @@ public class RouterManager {
             public void run() {
                 Log.i(TAG, "更新路由器设备所在的房间=start");
                 SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
-                List<Room>rooms=new ArrayList<Room>();
+                List<Room> rooms = new ArrayList<Room>();
                 rooms.clear();
-                if(room!=null){
+                if (room != null) {
                     rooms.add(room);
-                }else{
+                } else {
                     //
-                rooms.addAll(RoomManager.getInstance().getmRooms());
+                    rooms.addAll(RoomManager.getInstance().getmRooms());
                 }
                 smartDev.setRooms(rooms);
                 smartDev.setName(deviceName);

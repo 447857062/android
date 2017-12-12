@@ -187,6 +187,7 @@ public class UserManager implements MqttListener {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<UserSession> call, Throwable t) {
                 String error = "无法访问网络";
@@ -458,28 +459,30 @@ public class UserManager implements MqttListener {
         }
         final BindingInfo info = new BindingInfo();
         info.device_list = new String[]{DeviceSn};
-
+        Log.i(TAG, "绑定设备");
         RestfulTools.getSingleton().bindDevice(info, new Callback<DeviceRoot>() {
             @Override
             public void onResponse(Call<DeviceRoot> call, Response<DeviceRoot> response) {
                 DeviceRoot deviceRoot = response.body();
+
                 String error;
+                Log.i(TAG, "绑定设备" + response.code());
                 switch (response.code()) {
+
                     case 200:
                         //设备绑定成功
                         List<DeviceInfo> deviceList = deviceRoot.getDevice_list();
-                        for(int i=0;i<deviceList.size();i++){
-                            Log.i(TAG,"binddevice info="+deviceList.get(i).getChannels().toString());
-                            if(deviceList.get(i).getDeviceSn().equals(info.device_list[0])){
+                        Log.i(TAG, "binddevice info=" + deviceList.size());
+                        for (int i = 0; i < deviceList.size(); i++) {
+                            Log.i(TAG, "binddevice info=" + deviceList.get(i).getChannels().toString());
+                            if (deviceList.get(i).getDeviceSn().equals(info.device_list[0])) {
                                 //设备的SN相同
-                                bindedDeviceName=deviceList.get(i).getDeviceName();
+                                bindedDeviceName = deviceList.get(i).getDeviceName();
                             }
                         }
                         if (deviceList.size() > 0) {
-
                             mSDKCoordinator.afterDeviceBinding();
                             mSDKCoordinator.notifyBindSuccess(SDKAction.BIND, deviceList.get(0).getDevice_key());
-
                         } else {//绑定失败，设备序列号不存在
                             error = "设备不存在，或者您尚未被添加为可绑定该设备的成员";
                             mSDKCoordinator.notifyFailure(SDKAction.BIND, error);

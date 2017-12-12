@@ -21,10 +21,12 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.a
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener,View.OnClickListener {
     private static final String TAG = "EDActivity";
@@ -33,6 +35,7 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
     private ExperienceCenterListAdapter mAdapter;
     private FrameLayout imageview_back;
     private TextView textview_title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +111,7 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 break;
             case AppConstant.DEVICES.TYPE_LOCK:
                  intent = new Intent(this, SmartLockActivity.class);
-
-                intent.putExtra("isStartFromExperience",true);
+                SmartLockManager.getInstance().setStartFromExperience(true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_ROUTER:
@@ -123,7 +125,7 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
-                 intent = new Intent(this, SmartLockActivity.class);
+                 intent = new Intent(this, SwitchOneActivity.class);
                 intent.putExtra("isStartFromExperience",true);
                 startActivity(intent);
                 break;

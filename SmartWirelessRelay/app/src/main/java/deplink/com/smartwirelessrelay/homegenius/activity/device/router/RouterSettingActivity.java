@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.device.BaseDevice;
 import com.deplink.sdk.android.sdk.device.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.ErrorResponse;
@@ -23,11 +24,14 @@ import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 import com.deplink.sdk.android.sdk.rest.RouterResponse;
 import com.google.gson.Gson;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.IOException;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity;
@@ -44,6 +48,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.SelectConnectTypeLocalDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -159,12 +164,21 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             }
         });
         selectConnectTypeDialog = new SelectConnectTypeLocalDialog(RouterSettingActivity.this);
-        manager = mRouterManager.getManager();
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
 
             @Override
             public void onSuccess(SDKAction action) {
-
+                switch (action){
+                    case UNBIND:
+                        int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid());
+                        Log.i(TAG, "删除路由器设备=" + affectColumn);
+                        Log.i(TAG, "unbindactivity GET_BINDING=");
+                        ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定成功");
+                        RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
+                        break;
+                }
             }
 
             @Override
@@ -189,7 +203,11 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
-
+                switch (action){
+                    case UNBIND:
+                        ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定失败");
+                        break;
+                }
             }
 
             @Override
@@ -362,7 +380,9 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                     @Override
                     public void onSureBtnClicked() {
                         if (NetUtil.isNetAvailable(RouterSettingActivity.this)) {
-                            mRouterManager.deleteRouter();
+                            DialogThreeBounce.showLoading(RouterSettingActivity.this);
+                            BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouterDeviceKey());
+                            manager.unbindDevice(unbindDevice);
                         } else {
                             ToastSingleShow.showText(RouterSettingActivity.this, "网络连接不可用");
                         }

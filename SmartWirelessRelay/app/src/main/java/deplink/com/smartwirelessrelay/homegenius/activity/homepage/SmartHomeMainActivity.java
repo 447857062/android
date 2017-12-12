@@ -2,6 +2,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.homepage;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,6 +17,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.bean.User;
+import com.deplink.sdk.android.sdk.device.RouterDevice;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +46,9 @@ import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
 
 /**
@@ -71,7 +81,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private TextView textview_mine;
 
     private HomepageRoomShowTypeChangedViewAdapter mRoomSelectTypeChangedAdapter;
-
+    private SDKManager manager;
+    private EventCallback ec;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +97,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        mLocalConnectmanager.registerNetBroadcast(this);
+        manager.addEventCallback(ec);
+        if(mLocalConnectmanager!=null){
+            mLocalConnectmanager.registerNetBroadcast(this);
+        }
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -132,6 +146,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         mLocalConnectmanager.unRegisterNetBroadcast(this);
+        manager.removeEventCallback(ec);
     }
 
     private void initDatas() {
@@ -159,6 +174,72 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mExperienceCenterDeviceList.add(oneDevice);
         mExperienceCenterListAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDeviceList);
         listview_experience_center.setOnItemClickListener(mExperienceCenterListClickListener);
+
+
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+                switch (action){
+                    case LOGIN:
+                        manager.connectMQTT(SmartHomeMainActivity.this);
+                        Log.i(TAG, "LOGIN success");
+                        break;
+                    case CONNECTED:
+                        Log.i(TAG, "CONNECTED mqtt");
+                        User user = manager.getUserInfo();
+                        Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
+                        Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
+                        Perfence.setPerfence(AppConstant.USER_LOGIN, true);
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+                switch (op) {
+                    case RouterDevice.OP_GET_WAN:
+
+                        break;
+                    case  RouterDevice.OP_GET_LAN:
+
+
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
+            }
+        };
+
+        String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        String password = Perfence.getPerfence(Perfence.USER_PASSWORD);
+        Log.i(TAG, "phoneNumber=" + phoneNumber + "password=" + password);
+        manager.login(phoneNumber, password);
     }
 
     private AdapterView.OnItemClickListener mExperienceCenterListClickListener = new AdapterView.OnItemClickListener() {
@@ -167,7 +248,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             switch (mExperienceCenterDeviceList.get(position).getDeviceName()) {
                 case "智能门锁":
                     Intent intent = new Intent(SmartHomeMainActivity.this, SmartLockActivity.class);
-                    intent.putExtra("isStartFromExperience", true);
+                    SmartLockManager.getInstance().setStartFromExperience(true);
                     startActivity(intent);
                     break;
                 case "智能网关":

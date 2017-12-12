@@ -89,6 +89,7 @@ public class UdpManager implements OnGetIpListener {
         return 0;
     }
 
+
     /**
      * 检查到网关后还要继续检查把收到的网关列一个表
      *
@@ -97,9 +98,12 @@ public class UdpManager implements OnGetIpListener {
     @Override
     public void onRecvLocalConnectIp(byte[] packet) {
         Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
-       /* Message msg = Message.obtain();
-        msg.what = MSG_STOP_CHECK_GETWAY;
-        mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);*/
+
+        //不用发送，可以接收udp
+        if(udpThread!=null){
+            udpThread.cancel();
+        }
+
         mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet));
     }
 

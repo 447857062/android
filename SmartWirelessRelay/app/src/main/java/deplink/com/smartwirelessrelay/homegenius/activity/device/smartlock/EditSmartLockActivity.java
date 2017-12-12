@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -31,6 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 
 public class EditSmartLockActivity extends Activity implements View.OnClickListener, DeviceListener {
+    private static final String TAG = "EditSmartLockActivity";
     private FrameLayout image_back;
     private Button button_delete_device;
     private DeviceManager mDeviceManager;
@@ -61,16 +63,16 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private boolean isStartFromExperience;
 
     private void initDatas() {
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        mSmartLockManager = SmartLockManager.getInstance();
+        mDeviceManager = DeviceManager.getInstance();
+        isStartFromExperience = mSmartLockManager.isStartFromExperience();
         textview_title.setText("编辑");
         textview_edit.setText("完成");
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("我家的门锁");
             edittext_input_devie_name.setSelection(5);
         } else {
-            mDeviceManager = DeviceManager.getInstance();
             mDeviceManager.InitDeviceManager(this, this);
-            mSmartLockManager = SmartLockManager.getInstance();
             mSmartLockManager.InitSmartLockManager(this);
         }
         deleteDialog = new DeleteDeviceDialog(this);
@@ -86,18 +88,20 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         edittext_input_devie_name = (ClearEditText) findViewById(R.id.edittext_input_devie_name);
     }
 
+    private boolean isOnActivityResult;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
+            isOnActivityResult = true;
             String roomName = data.getStringExtra("roomName");
+            Log.i(TAG, "roomName=" + roomName);
             if (!isStartFromExperience) {
                 Room room = RoomManager.getInstance().findRoom(roomName, true);
                 String deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
-                String deviceName = mDeviceManager.getCurrentSelectSmartDevice().getName();
-                mDeviceManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
+                mSmartLockManager.updateSmartDeviceInWhatRoom(room, deviceUid);
             }
-
             textview_select_room_name.setText(roomName);
         }
     }
@@ -109,7 +113,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.textview_edit:
                 String devciename = edittext_input_devie_name.getText().toString();
-                mSmartLockManager.updateSmartDeviceName( devciename);
+                mSmartLockManager.updateSmartDeviceName(devciename);
                 onBackPressed();
                 break;
             case R.id.layout_select_room:
@@ -139,21 +143,22 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 break;
         }
     }
+
     private String lockName;
-    private Room lockInRoom;
+
     @Override
     protected void onResume() {
         super.onResume();
-        lockName=mSmartLockManager.getCurrentSelectLock().getName();
+        lockName = mSmartLockManager.getCurrentSelectLock().getName();
         edittext_input_devie_name.setText(lockName);
         edittext_input_devie_name.setSelection(lockName.length());
-        if(mSmartLockManager.getCurrentSelectLock().getRooms().size()==1){
-            lockInRoom=mSmartLockManager.getCurrentSelectLock().getRooms().get(0);
-            textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
-        }else{
-            textview_select_room_name.setText("全部");
+        if (!isOnActivityResult) {
+            if (mSmartLockManager.getCurrentSelectLock().getRooms().size() == 1) {
+                textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
+            } else {
+                textview_select_room_name.setText("全部");
+            }
         }
-
 
 
     }

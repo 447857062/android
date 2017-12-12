@@ -150,7 +150,7 @@ public class DeviceListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         if (position < TopCount) {
-            viewHolder.textview_device_status.setText("状态:" + listTop.get(position).getStatus());
+            viewHolder.textview_device_status.setText("" + listTop.get(position).getStatus());
             viewHolder.imageview_device_type.setImageResource(R.drawable.gatewayicon);
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
