@@ -5,5 +5,5 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.inte
  * udpmanager获取到ip地址，把数据回调给LocalConnectManager
  */
 public interface UdpManagerGetIPLintener {
-    void onGetLocalConnectIp(String ipAddress);
+    void onGetLocalConnectIp(String ipAddress,String uid);
 }

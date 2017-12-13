@@ -15,13 +15,9 @@ import android.widget.Toast;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.SmartGetwayActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 
 public class ManageRoomActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ManageRoomActivity";
-    public static final int REQUEST_MODIFY_ROOM_NAME = 100;
     private FrameLayout image_back;
     private Button button_delete_room;
     private TextView textview_room_name;
@@ -88,56 +84,26 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                 onBackPressed();
                 break;
             case R.id.button_delete_room:
-                //TODO 删除房间
                 if (mRoomName != null) {
-                    mRoomManager.deleteRoom(mRoomName, new Observer() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(@NonNull Object o) {
-                            Log.i(TAG, "删除房间，影响的行数=" + o);
-                            if ((Integer) o == 1) {
-                                startActivity(new Intent(ManageRoomActivity.this,RoomActivity.class));
-                            } else {
-                                Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-
+                    int result = mRoomManager.deleteRoom(mRoomName);
+                    Log.i(TAG, "删除房间，影响的行数=" + result);
+                    if (result == 1) {
+                        startActivity(new Intent(ManageRoomActivity.this, RoomActivity.class));
+                        Toast.makeText(ManageRoomActivity.this, "删除房间成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 break;
             case R.id.layout_room_name:
                 intent = new Intent(this, ModifyRoomNameActivity.class);
-                startActivityForResult(intent, REQUEST_MODIFY_ROOM_NAME);
+                startActivity(intent);
                 break;
             case R.id.layout_getway:
                 intent = new Intent(this, SmartGetwayActivity.class);
                 startActivity(intent);
                 break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_MODIFY_ROOM_NAME) {
-            mRoomName = data.getStringExtra("roomName");
-            Log.i(TAG, "onActivityResult mRoomName=" + mRoomName);
-            textview_room_name.setText(mRoomName);
         }
     }
 }

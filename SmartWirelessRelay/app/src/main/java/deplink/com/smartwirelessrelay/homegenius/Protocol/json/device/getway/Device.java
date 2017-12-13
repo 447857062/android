@@ -19,6 +19,7 @@ public class Device extends DataSupport implements Serializable{
     private String Type;
     private String Mac;
     private String name;
+    private List<Room>roomList=new ArrayList<>();
     /**
      * 网关的IP地址
      */
@@ -39,8 +40,6 @@ public class Device extends DataSupport implements Serializable{
     public void setMac(String mac) {
         Mac = mac;
     }
-
-    private List<Room>roomList=new ArrayList<>();
 
     public String getIpAddress() {
         return ipAddress;

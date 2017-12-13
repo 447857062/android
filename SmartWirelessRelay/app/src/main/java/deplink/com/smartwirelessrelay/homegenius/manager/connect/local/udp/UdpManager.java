@@ -96,7 +96,7 @@ public class UdpManager implements OnGetIpListener {
      * @param packet
      */
     @Override
-    public void onRecvLocalConnectIp(byte[] packet) {
+    public void onRecvLocalConnectIp(byte[] packet,String uid) {
         Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
 
         //不用发送，可以接收udp
@@ -104,7 +104,7 @@ public class UdpManager implements OnGetIpListener {
             udpThread.cancel();
         }
 
-        mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet));
+        mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet),uid);
     }
 
     private static final int MSG_STOP_CHECK_GETWAY = 100;

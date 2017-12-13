@@ -19,6 +19,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -71,7 +72,7 @@ public class SmartLockManager implements LocalConnecteListener {
     }
 
     public void setCurrentSelectLock(SmartDev currentSelectLock) {
-        Log.i(TAG, "设置当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size());
+        Log.i(TAG, "设置当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size()+"currentSelectLock="+currentSelectLock.getName());
         this.currentSelectLock = currentSelectLock;
     }
 
@@ -182,6 +183,13 @@ public class SmartLockManager implements LocalConnecteListener {
             }
         });
 
+    }
+    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+                Log.i(TAG, "更新智能设备所在的网关=start");
+                currentSelectLock.setGetwayDevice(getwayDevice);
+                boolean saveResult = currentSelectLock.save();
+                Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
+        return saveResult;
     }
 
     /**

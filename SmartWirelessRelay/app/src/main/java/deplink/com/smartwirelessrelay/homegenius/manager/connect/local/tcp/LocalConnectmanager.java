@@ -243,7 +243,7 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                 getIn();
             }
         } catch (Exception e) {
-            initSocketing=false;
+            initSocketing = false;
             //TODO 获取连接异常的ip地址
             handshakeCompleted = false;
             for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -292,7 +292,7 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                 Log.e(TAG, "getOut() send start: ");
                 OutputStream out = sslSocket.getOutputStream();
                 out.write(message);
-                Log.e(TAG, "getOut() send cuccess: " + DataExchange.byteArrayToHexString(message));
+                Log.e(TAG, "getOut() send cuccess: " + message.length);
                 out.flush();
                 out.close();
             } catch (IOException e) {
@@ -342,7 +342,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                 int cmd = DataExchange.bytesToInt(buf, 6, 1);
                 str = new String(buf, 0, len);
                 Log.i(TAG, "cmd=" + cmd + "length=" + len);
-                System.out.println("received:" + DataExchange.byteArrayToHexString(buf));
                 //数据长度,如果携带数据，数据的长度占2byte
                 byte[] lengthByte = new byte[2];
                 //数据长度int表示
@@ -355,11 +354,9 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
 
                         break;
                     case ComandID.ALARM_REPORT:
-
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         Log.i(TAG, "报警记录=" + str);
                         decodeAlarmRecord(str);
-
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
                         str = new String(buf, AppConstant.BASICLEGTH, length);
@@ -371,7 +368,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                     case ComandID.QUERY_DEV_RESPONSE:
                         System.out.println("received:" + "length=" + length + "received devlist:" + str);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
-
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
                             Log.i(TAG, "mLocalConnecteListener=" + mLocalConnecteListener.get(i).toString());
                             mLocalConnecteListener.get(i).OnGetQueryresult(str);
@@ -521,7 +517,7 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             public void run() {
                 if (sslSocket != null) {
                     try {
-                        initSocketing=false;
+                        initSocketing = false;
                         sslSocket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -536,14 +532,13 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
     private boolean initSocketing = false;
 
     @Override
-    public void onGetLocalConnectIp(String ipAddress) {
+    public void onGetLocalConnectIp(String ipAddress, String uid) {
         if (!initSocketing) {
-          //  if (ipaddressOnly == null || ipaddressOnly.equals(ipAddress)) {
-              //  ipaddressOnly = ipAddress;
-                initSocketing = true;
-                InitConnect(ipAddress);
-         //   }
+            //  if (ipaddressOnly == null || ipaddressOnly.equals(ipAddress)) {
+            //  ipaddressOnly = ipAddress;
+            initSocketing = true;
+            InitConnect(ipAddress);
+            //   }
         }
-
     }
 }

@@ -161,7 +161,7 @@ public class RouterManager {
         Log.i(TAG, "更新路由器设备所在的房间=" + saveResult);
     }
 
-    public void updateDeviceInWhatRoom(Room room, String sn, String deviceName) {
+    public boolean updateDeviceInWhatRoom(Room room, String sn, String deviceName) {
         Log.i(TAG, "更新路由器设备所在的房间=start");
         SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
         List<Room> rooms = new ArrayList<>();
@@ -173,8 +173,9 @@ public class RouterManager {
         }
         smartDev.setRooms(rooms);
         smartDev.setName(deviceName);
-        final boolean saveResult = smartDev.save();
+         boolean saveResult = smartDev.save();
         Log.i(TAG, "更新路由器设备所在的房间=" + saveResult);
+        return saveResult;
     }
 
 

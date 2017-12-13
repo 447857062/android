@@ -29,7 +29,6 @@ public class UdpThread {
     public Context mContext;
     private UdpPacket udp;
 
-
     //TODO UID要不要传
     public UdpThread(Context context, UdpPacket udpPacket) {
         mContext = context;
@@ -55,15 +54,16 @@ public class UdpThread {
         boolean net = NetStatusUtil.isWiFiActive(mContext);
         //更新下本地的网络状态和IP地址
         PublicMethod.getLocalIP(mContext);
-        if(net){
+        if (net) {
             wifiCheckHandler();
         }
     }
 
     public void wifiCheckHandler() {
-        GeneralPacket packet;
+
         try {
             //发送一个局域网查询包
+            GeneralPacket packet;
             packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"), AppConstant.UDP_CONNECT_PORT, mContext);
             //查询设备，探测设备区别(这里探测设备就不需要发送查询的gson数据了)
             packet.packCheckPacketWithUID();
@@ -78,8 +78,13 @@ public class UdpThread {
 
     public void open() {
         timer = new Timer();
-        timer.schedule(new timerTimeoutTask(), 1000, 5000);
+        try {
+            timer.schedule(new timerTimeoutTask(), 1000, 5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     public void cancel() {
         timer.cancel();
     }

@@ -197,7 +197,11 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.layout_getway:
-                layout_getway_list.setVisibility(View.VISIBLE);
+                if(layout_getway_list.getVisibility()==View.VISIBLE){
+                    layout_getway_list.setVisibility(View.GONE);
+                }else{
+                    layout_getway_list.setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }

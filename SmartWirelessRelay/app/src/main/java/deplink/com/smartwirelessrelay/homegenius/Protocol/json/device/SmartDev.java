@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class SmartDev extends DataSupport implements Serializable{
-    @Column(unique = true,nullable = false)
+public class SmartDev extends DataSupport implements Serializable {
+    @Column(unique = true, nullable = false)
     private String Uid;
     private String CtrUid;
     private String Type;
@@ -24,6 +25,16 @@ public class SmartDev extends DataSupport implements Serializable{
     private String Org;
     private String Ver;
     private String name;
+    private Device getwayDevice;
+
+    public Device getGetwayDevice() {
+        return getwayDevice;
+    }
+
+    public void setGetwayDevice(Device getwayDevice) {
+        this.getwayDevice = getwayDevice;
+    }
+
     private List<Info> alarmInfo = new ArrayList<>();
 
     public List<Info> getAlarmInfo() {
@@ -34,8 +45,8 @@ public class SmartDev extends DataSupport implements Serializable{
         this.alarmInfo = alarmInfo;
     }
 
-    private String lockPassword="";
-    private boolean remerberPassword=true;
+    private String lockPassword = "";
+    private boolean remerberPassword = true;
 
     public boolean isRemerberPassword() {
         return remerberPassword;
@@ -57,7 +68,7 @@ public class SmartDev extends DataSupport implements Serializable{
      * 数据库中的关联关系必须要初始化好列表
      */
     @Column(nullable = false)
-    private List<Room> rooms=new ArrayList<>();
+    private List<Room> rooms = new ArrayList<>();
     private String routerDeviceKey;
 
     public String getRouterDeviceKey() {
@@ -75,7 +86,6 @@ public class SmartDev extends DataSupport implements Serializable{
     public void setSubType(String subType) {
         this.subType = subType;
     }
-
 
 
     public String getName() {

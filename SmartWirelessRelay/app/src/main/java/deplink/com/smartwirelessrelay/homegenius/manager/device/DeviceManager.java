@@ -53,6 +53,7 @@ public class DeviceManager implements LocalConnecteListener {
     private Context mContext;
     private List<SmartDev> mSmartDevList;
     private SmartDev currentSelectSmartDevice;
+    private List<SmartDev> allSmartDevices;
 
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
@@ -87,7 +88,7 @@ public class DeviceManager implements LocalConnecteListener {
         queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packQueryDevListData(text.getBytes(), false,null);
+        packet.packQueryDevListData(text.getBytes(), false, null);
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -103,6 +104,8 @@ public class DeviceManager implements LocalConnecteListener {
     public void InitDeviceManager(Context context, DeviceListener listener) {
         this.mContext = context;
         this.mDeviceListenerList = new ArrayList<>();
+        this.allSmartDevices = new ArrayList<>();
+        allSmartDevices = DataSupport.findAll(SmartDev.class, true);
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
             mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
@@ -201,7 +204,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 如果有这个设备就不处理
      * 添加智能设备成功，需要更新数据库
      */
-    public boolean addDBSmartDevice(QrcodeSmartDevice device) {
+    public boolean addDBSmartDevice(QrcodeSmartDevice device,Device getwayDevice) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
         if (smartDev == null) {
@@ -210,7 +213,7 @@ public class DeviceManager implements LocalConnecteListener {
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
             smartDev.setType(device.getTp());
-
+            smartDev.setGetwayDevice(getwayDevice);
             boolean addResult = smartDev.save();
             Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
             return addResult;
@@ -437,37 +440,53 @@ public class DeviceManager implements LocalConnecteListener {
                 List<Room> rooms = new ArrayList<Room>();
                 rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
                 dev.setRoomList(rooms);
-                String name=aDeviceList.getDevice().get(i).getName();
-                if(name==null){
-                    name="中继器";
+                String deviceName = "中继器";
+                List<Device> devices = DataSupport.findAll(Device.class, true);
+                for (int i = 0; i < devices.size(); i++) {
+                    if (devices.get(i).getName().equals(deviceName)) {
+                        deviceName = deviceName + 1;
+                    }
+
                 }
-                dev.setName(aDeviceList.getDevice().get(i).getName());
+                dev.setName(deviceName);
                 boolean success = dev.save();
                 Log.i(TAG, "保存设备=" + success);
             }
         });
     }
 
+    /*
+    * 这里是本地设备上报的保存到数据库中，添加保存数据库使用其他方法
+    * */
     private void saveSmartDeviceToSqlite(final DeviceList aDeviceList, final int i) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 SmartDev dev = new SmartDev();
-                String deviceType=aDeviceList.getSmartDev().get(i).getType();
-                if(deviceType.equals("SMART_LOCK")){
-                    deviceType=AppConstant.DEVICES.TYPE_LOCK;
-                }else if(deviceType.equals("IRMOTE_V2")){
-                    deviceType=AppConstant.DEVICES.TYPE_REMOTECONTROL;
+                String deviceType = aDeviceList.getSmartDev().get(i).getType();
+                if (deviceType.equals("SMART_LOCK")) {
+                    deviceType = AppConstant.DEVICES.TYPE_LOCK;
+                } else if (deviceType.equals("IRMOTE_V2")) {
+                    deviceType = AppConstant.DEVICES.TYPE_REMOTECONTROL;
                 }
                 dev.setUid(aDeviceList.getSmartDev().get(i).getUid());
                 dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
+                Log.i(TAG, "保存智能锁设备状态=" + aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
                 dev.setType(aDeviceList.getSmartDev().get(i).getType());
-                List<Room> rooms = new ArrayList<Room>();
+                List<Room> rooms = new ArrayList<>();
                 rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
                 dev.setRooms(rooms);
-                dev.setName(deviceType);
+
+                String deviceName = deviceType;
+                allSmartDevices = DataSupport.findAll(SmartDev.class, true);
+                for (int i = 0; i < allSmartDevices.size(); i++) {
+                    if (allSmartDevices.get(i).getName().equals(deviceName)) {
+                        deviceName = deviceName +1;
+                    }
+                }
+                dev.setName(deviceName);
                 boolean success = dev.save();
                 Log.i(TAG, "保存智能锁设备=" + success);
             }

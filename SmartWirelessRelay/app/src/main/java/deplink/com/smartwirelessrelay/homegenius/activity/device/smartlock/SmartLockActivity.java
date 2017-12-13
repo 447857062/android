@@ -64,8 +64,13 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
-        mSmartLockManager.addSmartLockListener(this);
-        Log.i(TAG,"当前设备uid="+mSmartLockManager.getCurrentSelectLock().getUid());
+        if(isStartFromExperience){
+
+        }else{
+            mSmartLockManager.addSmartLockListener(this);
+            Log.i(TAG,"当前设备uid="+mSmartLockManager.getCurrentSelectLock().getUid());
+        }
+
     }
 
     @Override

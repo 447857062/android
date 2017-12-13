@@ -6,5 +6,5 @@ package deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.inte
  */
 
 public interface OnRecvLocalConnectIpListener {
-    void OnRecvIp(byte[] ip);
+    void OnRecvIp(byte[] ip,String uid);
 }

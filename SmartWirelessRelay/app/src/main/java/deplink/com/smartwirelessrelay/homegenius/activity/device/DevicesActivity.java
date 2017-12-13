@@ -81,6 +81,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_mine;
     private DeviceAtRoomDialog roomTypeDialog;
     private RouterManager mRouterManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,9 +106,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-        datasBottom.addAll(DataSupport.findAll(SmartDev.class,true));
+        datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
+        mDeviceAdapter.notifyDataSetChanged();
     }
 
 
@@ -121,24 +123,20 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private List<String> mRooms = new ArrayList<>();
 
     private void initDatas() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mSmartLockManager = SmartLockManager.getInstance();
-                mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
-                mDeviceManager = DeviceManager.getInstance();
-                mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
-                mRoomManager = RoomManager.getInstance();
-                mRoomManager.initRoomManager();
-                mRouterManager=RouterManager.getInstance();
-                mRouterManager.InitRouterManager(DevicesActivity.this);
-            }
-        });
+
+        mSmartLockManager = SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
+        mRoomManager = RoomManager.getInstance();
+        mRoomManager.initRoomManager();
+        mRouterManager = RouterManager.getInstance();
+        mRouterManager.InitRouterManager(DevicesActivity.this);
+
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
-
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
         listview_devies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -247,10 +245,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     public void onItemClicked(int position) {
                         datasTop.clear();
                         datasBottom.clear();
-
                         if (mRooms.get(position).equals("全部")) {
                             datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
-                            datasBottom.addAll(DataSupport.findAll(SmartDev.class,true));
+                            datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
 
                         } else {
                             Room room = mRoomManager.findRoom(mRooms.get(position), true);

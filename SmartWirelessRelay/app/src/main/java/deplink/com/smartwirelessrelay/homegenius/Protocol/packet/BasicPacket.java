@@ -220,7 +220,6 @@ public class BasicPacket {
         //xdata数据
         //xdata数据
         System.arraycopy(xdata, 0, data, len, xdata.length);
-        Log.e(TAG, "绑定设备数据:" + DataExchange.byteArrayToHexString(data));
         return data.length;
     }
 

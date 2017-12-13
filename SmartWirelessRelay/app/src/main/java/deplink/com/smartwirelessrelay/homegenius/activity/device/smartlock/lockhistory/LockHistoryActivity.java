@@ -130,17 +130,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     mRecordList.addAll(aDeviceList.getRecord());
                     recordAdapter.notifyDataSetChanged();
                     DialogThreeBounce.hideLoading();
-                    try {
-                        new AlertDialog
-                                .Builder(LockHistoryActivity.this)
-                                .setTitle("设备")
-                                .setNegativeButton("确定", null)
-                                .setIcon(android.R.drawable.ic_menu_agenda)
-                                .setMessage(str)
-                                .show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     break;
                 case MSG_RETURN_ERROR:
                     try {

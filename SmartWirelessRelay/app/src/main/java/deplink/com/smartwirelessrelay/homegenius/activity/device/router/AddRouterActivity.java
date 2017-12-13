@@ -31,6 +31,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class AddRouterActivity extends Activity implements View.OnClickListener {
@@ -47,6 +48,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
     private boolean isBindAction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +61,11 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onPause() {
         super.onPause();
+        manager.removeEventCallback(ec);
     }
+
     private SmartDev currentAddRouter;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -69,6 +74,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
         } else {
             textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
         }
+        manager.addEventCallback(ec);
     }
 
     private void initDatas() {
@@ -88,7 +94,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
         ec = new EventCallback() {
             @Override
             public void onSuccess(SDKAction action) {
-                switch (action){
+                switch (action) {
                     case GET_BINDING:
                         Log.i(TAG, "status GET_BINDING");
                         if (isBindAction) {
@@ -131,7 +137,12 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                         } else {
                             Room room = RoomManager.getInstance().getCurrentSelectedRoom();
                             Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
-                            mRouterManager.updateDeviceInWhatRoom(room, routerSN, routerName);
+                            boolean result = mRouterManager.updateDeviceInWhatRoom(room, routerSN, routerName);
+                            if (result) {
+                                Message msg = Message.obtain();
+                                msg.what=MSG_ADD_ROUTER_SUCCESS;
+                                mHandler.sendMessage(msg);
+                            }
                         }
                         break;
                 }
@@ -197,6 +208,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
             }
         }
     };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -205,13 +217,14 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                 break;
             case R.id.button_add_device_sure:
                 if (NetUtil.isNetAvailable(AddRouterActivity.this)) {
-                    isBindAction=true;
+                    isBindAction = true;
                     routerName = edittext_add_device_input_name.getText().toString();
                     if (routerName.equals("")) {
                         routerName = "家里的路由器";
                     }
                     boolean login = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
                     if (login) {
+                        DialogThreeBounce.showLoading(this);
                         manager.bindDevice(routerSN);
                     } else {
                         ToastSingleShow.showText(AddRouterActivity.this, " 未登录，无法添加路由器");

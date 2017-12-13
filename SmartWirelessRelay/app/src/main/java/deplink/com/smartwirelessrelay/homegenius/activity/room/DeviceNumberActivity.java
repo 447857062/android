@@ -128,6 +128,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                     switch (deviceType) {
                         case "SMART_LOCK":
+                            SmartLockManager.getInstance().setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
                             SmartLockManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
                             break;

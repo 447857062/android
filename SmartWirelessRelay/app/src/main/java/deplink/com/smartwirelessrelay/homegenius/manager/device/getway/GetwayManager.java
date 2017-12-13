@@ -43,6 +43,7 @@ public class GetwayManager implements LocalConnecteListener {
     private GeneralPacket packet;
     private LocalConnectmanager mLocalConnectmanager;
     private Device currentSelectGetwayDevice;
+    private Device currentAddGetwayDevice;
 
     public String getCurrentAddDevice() {
         Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
@@ -100,8 +101,10 @@ public class GetwayManager implements LocalConnecteListener {
     }
 
     public List<Device> queryAllGetwayDevice() {
-        List<Device> list = DataSupport.findAll(Device.class);
-        Log.i(TAG, "查询到的网关设备个数=" + list.size());
+        List<Device> list = DataSupport.findAll(Device.class, true);
+        if(list.size()>0){
+            Log.i(TAG, "查询到的网关设备个数=" + list.size()+list.get(0).getUid());
+        }
         return list;
     }
 
@@ -136,18 +139,17 @@ public class GetwayManager implements LocalConnecteListener {
         });
     }
 
-    public boolean addDBGetwayDevice(String uid) {
+    public boolean addDBGetwayDevice(QrcodeSmartDevice device) {
         //查询设备
-        Device getwayDevice = DataSupport.where("Uid=?", uid).findFirst(Device.class);
-        if (getwayDevice == null) {
-            getwayDevice = new Device();
-            getwayDevice.setUid(uid);
-            boolean addResult = getwayDevice.save();
-            Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
-            return addResult;
+        currentAddGetwayDevice = new Device();
+        currentAddGetwayDevice.setUid(device.getSn());
+        currentAddGetwayDevice.setName(device.getName());
+        boolean addResult = currentAddGetwayDevice.save();
+        Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
+        if(!addResult){
+            Log.i(TAG, "数据库中已存在相同网关设备，不必要添加");
         }
-        Log.i(TAG, "数据库中已存在相同网关设备，不必要添加");
-        return false;
+        return addResult;
     }
 
     /**
@@ -169,7 +171,12 @@ public class GetwayManager implements LocalConnecteListener {
                 Log.i(TAG, "更新网关所在房间" + result);
             }
         });
+    }
 
+    public void updateGetwayDeviceName(String name) {
+        currentSelectGetwayDevice.setName(name);
+        boolean result = currentSelectGetwayDevice.save();
+        Log.i(TAG, "更新网关名称" + result);
     }
 
     /**

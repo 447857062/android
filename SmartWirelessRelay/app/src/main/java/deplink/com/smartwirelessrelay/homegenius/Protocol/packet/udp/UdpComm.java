@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Arrays;
 
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
@@ -41,8 +42,9 @@ public class UdpComm {
             return false;
         byte[] temp = packet.getData();
         try {
-            udp.send(packet);
             Log.i(TAG, "udp sendData success port" + ":" + packet.getPort());
+            udp.send(packet);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,7 +112,7 @@ public class UdpComm {
             isRun = true;
             DatagramPacket packet = new DatagramPacket(data, 0, data.length);
             packet.setPort(AppConstant.UDP_CONNECT_PORT);
-            Log.i(TAG,"udp RecvThread 接收数据 run");
+            Log.i(TAG, "udp RecvThread 接收数据 run");
             while (isRun) {
                 try {
                     udp.receive(packet);
@@ -118,14 +120,14 @@ public class UdpComm {
                     if (len > 0) {
                         byte[] result = new byte[len];
                         System.arraycopy(data, 0, result, 0, len);
-                        Log.i(TAG, "udp RecvThread 接收数据 ip=" + packet.getAddress().getAddress().toString() + ":" + packet.getPort());
+                        Log.i(TAG, "udp RecvThread 接收数据 ip=" + Arrays.toString(packet.getAddress().getAddress()) + ":" + packet.getPort());
                         //获取设备的通讯IP地址，这个不能根据上面的packet.getAddress()获取的IP地址来
-                        //basicPacket.unpackPacketWithWirelessData(result);
-                        // listener.OnRecvIp(basicPacket.unpackPacketWithWirelessData(result));
                         Log.i(TAG, "" + DataExchange.byteArrayToHexString(packet.getAddress().getAddress()));
-                        listener.OnRecvIp(packet.getAddress().getAddress());
-                        //停止探测ip地址
-                        //stopServer();
+                        byte[] uidResult = new byte[33];
+                        System.arraycopy(result, 6, uidResult, 0, 33);
+                        String uid=new String(uidResult);
+                        Log.i(TAG, "网关UID:" +uid);
+                        listener.OnRecvIp(packet.getAddress().getAddress(), uid);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

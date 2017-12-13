@@ -18,6 +18,7 @@
         <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
            android:layout_centerVertical="true"
             android:id="@+id/clear"
+            android:maxLength="5"
             android:hint="客厅"
             android:textSize="@dimen/text_size_small"
             android:background="@null"

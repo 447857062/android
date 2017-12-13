@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/experience_center_listitem_height"
     android:alpha="0.9"
-    android:paddingLeft="@dimen/layout_content_margin_left_right"
-    android:paddingRight="@dimen/layout_content_margin_left_right"
     android:minHeight="@dimen/experience_center_listitem_height"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/layout_content_margin_left_right"
+    android:paddingRight="@dimen/layout_content_margin_left_right">
 
     <ImageView
         android:id="@+id/image_device_type"
@@ -16,17 +16,46 @@
         android:layout_centerVertical="true"
         android:src="@drawable/gatewayicon" />
 
+    <RelativeLayout
+        android:id="@+id/layout_getway_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/textview_device_bindstatus"
+        android:layout_toRightOf="@+id/image_device_type"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textview_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/experience_center_listitem_devicetype_marginleft"
+            android:text="网关"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/textview_device_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_device_name"
+            android:layout_marginLeft="@dimen/experience_center_listitem_devicetype_marginleft"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+    </RelativeLayout>
+
     <TextView
-        android:id="@+id/textview_device_name"
+        android:id="@+id/textview_device_bindstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:textSize="@dimen/text_size_small"
-        android:textColor="@color/room_type_text"
         android:layout_marginLeft="@dimen/experience_center_listitem_devicetype_marginleft"
-        android:layout_toRightOf="@+id/image_device_type" />
-
-
+        android:layout_toLeftOf="@+id/iamgeview_setting"
+        android:text="未绑定"
+        android:gravity="center_vertical"
+        android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
+        android:textColor="@color/room_type_text"
+        android:textSize="@dimen/text_size_small" />
 
     <ImageView
         android:id="@+id/iamgeview_setting"
@@ -35,9 +64,10 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/directionicon" />
+
     <View
-        android:layout_alignParentBottom="true"
-        android:background="@color/seekbar_horiz"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/seekbar_horiz" />
 </RelativeLayout>

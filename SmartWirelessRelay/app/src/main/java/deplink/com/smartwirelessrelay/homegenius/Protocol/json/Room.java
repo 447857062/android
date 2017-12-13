@@ -83,6 +83,7 @@ public class Room extends DataSupport implements Serializable{
                 "roomName='" + roomName + '\'' +
                 ", roomOrdinalNumber=" + roomOrdinalNumber +
                 ", mDevices=" + mDevices.size()+
+                ", mGetways=" + mGetwayDevices.size()+
                 '}';
     }
 }

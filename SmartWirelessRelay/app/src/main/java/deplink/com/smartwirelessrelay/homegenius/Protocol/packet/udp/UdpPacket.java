@@ -14,16 +14,16 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.inter
  * 接收获取到的IP地址
  * 负责发送udp广播
  */
-public class UdpPacket  implements OnRecvLocalConnectIpListener {
+public class UdpPacket implements OnRecvLocalConnectIpListener {
     public static final String TAG = "UdpPacket";
     private UdpComm netUdp;
     //发送网络包队列
-    public  ArrayList<BasicPacket> sendNetPakcetList;
+    public ArrayList<BasicPacket> sendNetPakcetList;
     private UdpPacketThread udpPacketThread;
     private OnGetIpListener mOnGetIpListener;
 
-    public UdpPacket(Context context,OnGetIpListener listener) {
-        this.mOnGetIpListener=listener;
+    public UdpPacket(Context context, OnGetIpListener listener) {
+        this.mOnGetIpListener = listener;
         if (sendNetPakcetList == null) {
             sendNetPakcetList = new ArrayList<>();
         }
@@ -43,6 +43,7 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
     /**
      * 从udp发送数据队列里面删除一条数据
      * 删除一个发送包
+     *
      * @param list
      * @param packet
      * @return
@@ -55,7 +56,7 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
 
     public void start() {
         stop();
-        netUdp = new UdpComm( this);
+        netUdp = new UdpComm(this);
         netUdp.startServer();
         udpPacketThread = new UdpPacketThread();
         try {
@@ -72,14 +73,10 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
         }
         sendNetPakcetList.clear();
     }
-
-    public void restart() {
-        start();
-    }
     @Override
-    public void OnRecvIp(byte[] ip) {
-        Log.i(TAG,"获取到连接的IP地址");
-        mOnGetIpListener.onRecvLocalConnectIp(ip);
+    public void OnRecvIp(byte[] ip, String uid) {
+        Log.i(TAG, "获取到连接的IP地址");
+        mOnGetIpListener.onRecvLocalConnectIp(ip, uid);
     }
 
     private class UdpPacketThread extends Thread {
@@ -92,18 +89,17 @@ public class UdpPacket  implements OnRecvLocalConnectIpListener {
         @Override
         public void run() {
             super.run();
-            Log.i(TAG,"UdpPacketThread is Run");
+            Log.i(TAG, "UdpPacketThread is Run");
             isRun = true;
             while (isRun) {
                 try {
                     for (int i = 0; i < sendNetPakcetList.size(); i++) {
                         BasicPacket tmp = sendNetPakcetList.get(i);
-                        if (tmp.ip != null ) {
+                        if (tmp.ip != null) {
                             netUdp.sendData(tmp.getUdpData());
                             delOneSendPacket(sendNetPakcetList, tmp);
                         }
                     }
-                    Thread.sleep(3000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

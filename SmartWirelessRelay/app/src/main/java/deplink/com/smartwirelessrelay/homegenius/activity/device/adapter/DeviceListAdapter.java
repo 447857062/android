@@ -123,7 +123,7 @@ public class DeviceListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
 
@@ -134,6 +134,8 @@ public class DeviceListAdapter extends BaseAdapter {
                         .findViewById(R.id.textview_device_status);
                 viewHolder.imageview_device_type = (ImageView) convertView
                         .findViewById(R.id.imageview_device_type);
+                viewHolder.textview_device_name = (TextView) convertView
+                        .findViewById(R.id.textview_device_name);
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(
                         R.layout.devicelist_smartdevice_item, null);
@@ -150,8 +152,10 @@ public class DeviceListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         if (position < TopCount) {
-            viewHolder.textview_device_status.setText("" + listTop.get(position).getStatus());
+            viewHolder.textview_device_status.setText(listTop.get(position).getStatus());
             viewHolder.imageview_device_type.setImageResource(R.drawable.gatewayicon);
+            String deviceName = listTop.get(position).getName();
+            viewHolder.textview_device_name.setText(deviceName);
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
@@ -166,7 +170,10 @@ public class DeviceListAdapter extends BaseAdapter {
                 deviceType=AppConstant.DEVICES.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
-            viewHolder.textview_device_status.setText("" + deviceStatu);
+            if(deviceStatu.equalsIgnoreCase("on")){
+                deviceStatu="在线";
+            }
+            viewHolder.textview_device_status.setText( deviceStatu);
             getDeviceTypeImage(viewHolder, deviceType,deviceSubType);
         }
         return convertView;

@@ -27,15 +27,15 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayMan
  * 获取所有的网关
  * 判断当前要添加的网关要不要配置wifi
  */
-public class QueryGetwaysActivity extends Activity implements View.OnClickListener,UdpManagerGetIPLintener {
+public class QueryGetwaysActivity extends Activity implements View.OnClickListener, UdpManagerGetIPLintener {
     private static final String TAG = "QueryGetwaysActivity";
-    private static final int MSG_CHECK_GETWAY_OK=100;
+    private static final int MSG_CHECK_GETWAY_OK = 100;
     private String currentAddDevice;
     private Button textview_cancel;
     private UdpManager mUdpmanager;
-
     private TextView textview_title;
     private FrameLayout image_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +51,19 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        textview_cancel= (Button) findViewById(R.id.textview_cancel);
+        textview_cancel = (Button) findViewById(R.id.textview_cancel);
 
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
     private void initDatas() {
         textview_title.setText("网关");
-        currentAddDevice=getIntent().getStringExtra("currentAddDevice");
+        currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         GetwayManager.getInstance().setCurrentAddDevice(currentAddDevice);
         mUdpmanager = UdpManager.getInstance();
         mUdpmanager.InitUdpConnect(this, this);
-        mDevices=new ArrayList<>();
+        mDevices = new ArrayList<>();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
                 break;
@@ -89,30 +89,32 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
                 break;
         }
     }
+
     private List<Device> mDevices;
-    private Handler mHandler =new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_CHECK_GETWAY_OK:
-                    Device device=new Device();
+                    Device device = new Device();
                     device.setIpAddress((String) msg.obj);
                     mDevices.add(device);
-                    Toast.makeText(QueryGetwaysActivity.this,"检查到IP为:"+ msg.obj+"的网关",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QueryGetwaysActivity.this, "检查到IP为:" + msg.obj + "的网关", Toast.LENGTH_SHORT).show();
                     //TODO 连接tcp/ip
-                    Intent intent=new Intent(QueryGetwaysActivity.this,ScanWifiListActivity.class);
+                    Intent intent = new Intent(QueryGetwaysActivity.this, ScanWifiListActivity.class);
                     startActivity(intent);
                     break;
             }
         }
     };
+
     @Override
-    public void onGetLocalConnectIp(String ipAddress) {
+    public void onGetLocalConnectIp(String ipAddress, String uid) {
         Log.i(TAG, "检查网关，获取到IP地址=" + ipAddress);
-        Message msg=Message.obtain();
-        msg.what=MSG_CHECK_GETWAY_OK;
-        msg.obj=ipAddress;
+        Message msg = Message.obtain();
+        msg.what = MSG_CHECK_GETWAY_OK;
+        msg.obj = ipAddress;
         mHandler.sendMessage(msg);
     }
 }

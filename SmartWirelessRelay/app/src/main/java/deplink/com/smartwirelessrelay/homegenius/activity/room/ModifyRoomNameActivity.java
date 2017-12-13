@@ -1,11 +1,11 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.room;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -17,6 +17,7 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     private TextView textview_title;
     private TextView textview_edit;
     private FrameLayout image_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +27,20 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
         initEvents();
     }
 
+    String orgRoomName;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        orgRoomName = RoomManager.getInstance().getCurrentSelectedRoom().getRoomName();
+        clearEditText.setText(orgRoomName);
+        clearEditText.setSelection(orgRoomName.length());
+    }
+
     private void initDatas() {
         textview_title.setText("修改房间名称");
         textview_edit.setText("完成");
-        String hintRoomName= RoomManager.getInstance().getCurrentSelectedRoom().getRoomName();
-        clearEditText.setHint(hintRoomName);
+
     }
 
     private void initEvents() {
@@ -39,9 +49,9 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        textview_edit= (TextView) findViewById(R.id.textview_edit);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         clearEditText = (ClearEditText) findViewById(R.id.clear);
     }
 
@@ -55,12 +65,15 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
 
             case R.id.textview_edit:
                 roomName = clearEditText.getText().toString();
-                if (!roomName.equalsIgnoreCase("")) {
-                    Intent i = new Intent();
-                    i.putExtra("roomName", roomName);
-                    setResult(RESULT_OK, i);
+                if (!roomName.equalsIgnoreCase("")&& !roomName.equals(orgRoomName)) {
+                    int result=RoomManager.getInstance().updateRoomName(orgRoomName,roomName);
+                    if(result!=1){
+                        Toast.makeText(this,"修改房间名称失败",Toast.LENGTH_SHORT).show();
+                    }else{
+                        finish();
+                    }
                 }
-                finish();
+
                 break;
         }
     }

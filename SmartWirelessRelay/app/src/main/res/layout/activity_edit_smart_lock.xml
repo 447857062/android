@@ -123,15 +123,34 @@
             android:layout_height="wrap_content" />
 
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_getway_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_below="@+id/layout_getway"
+        android:visibility="gone">
 
+        <ListView
+            android:id="@+id/listview_select_getway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:dividerHeight="@dimen/list_item_textview_margin_top"
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
 
+        </ListView>
+    </RelativeLayout>
 
     <Button
         android:background="@color/white"
         android:layout_marginTop="@dimen/delete_device_button_margintop"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal|center_vertical"
-        android:layout_below="@+id/layout_getway"
+        android:layout_below="@+id/layout_getway_list"
         android:id="@+id/button_delete_device"
         android:text="删除设备"
         android:layout_width="match_parent"

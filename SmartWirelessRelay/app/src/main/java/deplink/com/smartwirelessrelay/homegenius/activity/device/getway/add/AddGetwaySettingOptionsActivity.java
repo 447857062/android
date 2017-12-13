@@ -128,11 +128,13 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         QrcodeSmartDevice tempDevice = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
         DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
         addDeviceSuccess = isDeviceAddSuccess(mDeviceList,tempDevice);
-        mGetwayManager.addDBGetwayDevice(currentAddDevice);
         deviceName = edittext_input_devie_name.getText().toString();
         if (deviceName.equals("")) {
             deviceName = "家里的网关";
         }
+        tempDevice.setName(deviceName);
+        mGetwayManager.addDBGetwayDevice(tempDevice);
+
         for (int i = 0; i < mDeviceList.getDevice().size(); i++) {
             if (mDeviceList.getDevice().get(i).getUid().equals(tempDevice.getSn())) {
                 Room room = RoomManager.getInstance().findRoom(mRoomName, true);

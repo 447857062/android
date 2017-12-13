@@ -33,6 +33,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
@@ -60,8 +61,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private RelativeLayout layout_getway_list;
     private DoorbeelManager mDoorbeelManager;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device>mGetways;
+    private List<Device> mGetways;
     private ListView listview_select_getway;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +91,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
         listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
     }
-
 
     private void initDatas() {
         mDoorbeelManager = DoorbeelManager.getInstance();
@@ -134,33 +135,32 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 textview_title.setText("智能门铃");
                 break;
         }
-        mGetways=new ArrayList<>();
-        //TODO 调试
-        Device temp=new Device();
-        temp.setName("网关一");
-        mGetways.add(temp);
-        temp=new Device();
-        temp.setName("网关2");
-        mGetways.add(temp);
-        temp=new Device();
-        temp.setName("网关3");
-        mGetways.add(temp);
-        //TODO 调试
-        selectGetwayAdapter=new GetwaySelectListAdapter(this,mGetways);
+        mGetways = new ArrayList<>();
+        mGetways.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectGetwayName=mGetways.get(position).getName();
+                selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
+                currentSelectGetway=mGetways.get(position);
             }
         });
+        if (mGetways.size() > 0) {
+            textview_select_getway_name.setText(mGetways.get(0).getName());
+            currentSelectGetway = mGetways.get(0);
+        } else {
+            textview_select_getway_name.setText("未检测到网关");
+        }
+
     }
+
     private String selectGetwayName;
+
     @Override
     public void responseQueryResult(String result) {
-
     }
 
     private static final int MSG_ADD_DEVICE_RESULT = 100;
@@ -193,7 +193,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     Toast.makeText(AddDeviceNameActivity.this, "添加智能门铃失败", Toast.LENGTH_SHORT).show();
                     break;
                 case MSG_HIDE_DIALOG:
-                   DialogThreeBounce.hideLoading();
+                    DialogThreeBounce.hideLoading();
                     break;
             }
         }
@@ -207,6 +207,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
     private String deviceName;
     private Room currentSelectedRoom;
+    private Device currentSelectGetway;
 
     @Override
     public void responseBindDeviceResult(String result) {
@@ -214,16 +215,15 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         final DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
         boolean success;
         success = isSmartDeviceAddSuccess(aDeviceList);
-        mDeviceManager.addDBSmartDevice(device);
+        mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
         switch (deviceType) {
             case "SMART_LOCK":
-
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                         mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
                     }
                 }
-               DialogThreeBounce.hideLoading();
+                DialogThreeBounce.hideLoading();
                 break;
             case "IRMOTE_V2":
                 // 智能遥控添加结果
@@ -251,7 +251,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     }
                 });
                 break;
-
         }
         Message msg = Message.obtain();
         msg.what = MSG_ADD_DEVICE_RESULT;
@@ -346,9 +345,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         Log.i(TAG, "绑定智能设备");
                         device.setName(deviceName);
                         DialogThreeBounce.showLoading(this);
-                        Message msg=Message.obtain();
-                        msg.what=MSG_HIDE_DIALOG;
-                        mHandler.sendMessageDelayed(msg,3000);
+                        Message msg = Message.obtain();
+                        msg.what = MSG_HIDE_DIALOG;
+                        mHandler.sendMessageDelayed(msg, 3000);
                         mDeviceManager.bindSmartDevList(device);
                         break;
                     case AppConstant.DEVICES.TYPE_SWITCH:
@@ -370,7 +369,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         device.setAd("智能空调序列号001");
                         device.setTp("智能空调");
-                        mDeviceManager.addDBSmartDevice(device);
+                        mDeviceManager.addDBSmartDevice(device, null);
                         // 智能遥控添加结果
                         runOnUiThread(new Runnable() {
                             @Override
@@ -385,7 +384,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         device.setAd("智能电视序列号001");
                         device.setTp("智能电视");
-                        mDeviceManager.addDBSmartDevice(device);
+                        mDeviceManager.addDBSmartDevice(device, null);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -399,7 +398,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         device.setAd("智能机顶盒遥控序列号001");
                         device.setTp("智能机顶盒遥控");
-                        mDeviceManager.addDBSmartDevice(device);
+                        mDeviceManager.addDBSmartDevice(device, null);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -478,7 +477,12 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 onBackPressed();
                 break;
             case R.id.layout_getway_select:
-                layout_getway_list.setVisibility(View.VISIBLE);
+                if (layout_getway_list.getVisibility() == View.VISIBLE) {
+                    layout_getway_list.setVisibility(View.GONE);
+                } else {
+                    layout_getway_list.setVisibility(View.VISIBLE);
+                }
+
                 break;
 
         }
