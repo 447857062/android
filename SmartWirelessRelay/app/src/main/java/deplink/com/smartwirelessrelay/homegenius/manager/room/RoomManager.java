@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -59,7 +60,15 @@ public class RoomManager {
         }
 
     }
-
+    public boolean updateGetway(Device getwayDevice) {
+        Log.i(TAG, "更新网关=start");
+        List<Device>getways=new ArrayList<>();
+        getways.add(getwayDevice);
+        currentSelectedRoom.setmGetwayDevices(getways);
+        boolean saveResult = currentSelectedRoom.save();
+        Log.i(TAG, "更新网关=" + saveResult);
+        return saveResult;
+    }
     /**
      * 按照序号排序
      */
@@ -202,8 +211,8 @@ public class RoomManager {
         Room room = null;
         if (rooms.size() > 0) {
             room = rooms.get(0);
+            Log.i(TAG, "根据名字查询房间,查到房间" + room.toString());
         }
-        Log.i(TAG, "根据名字查询房间,查到房间" + room.toString());
         return room;
     }
 

@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.litepal.crud.DataSupport;
@@ -49,6 +53,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterMan
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -81,7 +86,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_mine;
     private DeviceAtRoomDialog roomTypeDialog;
     private RouterManager mRouterManager;
-
+    private RelativeLayout layout_devices_show;
+    private ImageView imageview_empty_device;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +114,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
         datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
+        if(datasTop.size()==0&&datasBottom.size()==0){
+            imageview_empty_device.setVisibility(View.VISIBLE);
+            listview_devies.setVisibility(View.GONE);
+        }else{
+            imageview_empty_device.setVisibility(View.GONE);
+            listview_devies.setVisibility(View.VISIBLE);
+        }
         listview_devies.setAdapter(mDeviceAdapter);
         mDeviceAdapter.notifyDataSetChanged();
     }
@@ -201,6 +214,29 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
     }
+    // 用GestureDetectorCompat替换GestureDetector,GestureDetectorCompat兼容的版本较广
+    private GestureDetectorCompat mDetector;
+    public class MytGestureListener extends GestureDetector.SimpleOnGestureListener {
+        // 滑动时触发
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) {
+            Log.i(TAG,"layout_devices_show onScroll");
+            RefreshDevicesBackground();
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+    }
+
+    private void RefreshDevicesBackground() {
+        DialogThreeBounce.showLoading(this);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DialogThreeBounce.hideLoading();
+            }
+        },3000);
+        mDeviceManager.queryDeviceList();
+    }
 
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
@@ -210,6 +246,17 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
         layout_select_room_type.setOnClickListener(this);
+
+        mDetector = new GestureDetectorCompat(DevicesActivity.this,
+                new MytGestureListener());
+        layout_devices_show.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.i(TAG,"layout_devices_show ontouch");
+                mDetector.onTouchEvent(event);
+                return false;
+            }
+        });
     }
 
 
@@ -222,6 +269,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_add_device = (ImageView) findViewById(R.id.imageview_add_device);
         layout_select_room_type = (LinearLayout) findViewById(R.id.layout_select_room_type);
         imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
+        imageview_empty_device = (ImageView) findViewById(R.id.imageview_empty_device);
         imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
         imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
         imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
@@ -229,6 +277,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_device = (TextView) findViewById(R.id.textview_device);
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
+        layout_devices_show = (RelativeLayout) findViewById(R.id.layout_devices_show);
 
     }
 
@@ -248,13 +297,23 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         if (mRooms.get(position).equals("全部")) {
                             datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
                             datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
-
+                            mDeviceAdapter.setTopList(datasTop);
+                            mDeviceAdapter.setBottomList(datasBottom);
                         } else {
                             Room room = mRoomManager.findRoom(mRooms.get(position), true);
                             //使用数据库中的数据
                             datasTop.addAll(room.getmGetwayDevices());
                             datasBottom.addAll(room.getmDevices());
+                            mDeviceAdapter.setTopList(datasTop);
+                            mDeviceAdapter.setBottomList(datasBottom);
 
+                        }
+                        if(datasTop.size()==0&&datasBottom.size()==0){
+                            imageview_empty_device.setVisibility(View.VISIBLE);
+                            listview_devies.setVisibility(View.GONE);
+                        }else{
+                            imageview_empty_device.setVisibility(View.GONE);
+                            listview_devies.setVisibility(View.VISIBLE);
                         }
                         mDeviceAdapter.notifyDataSetChanged();
                     }

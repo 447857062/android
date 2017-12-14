@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/scan_view_textview_margintop"
+        android:layout_marginTop="120dp"
         android:text="请将扫描框对准设备或者产品包装上的二维码"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_small" />

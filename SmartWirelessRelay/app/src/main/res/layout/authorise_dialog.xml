@@ -38,13 +38,13 @@
         android:layout_height="1dp"
         android:layout_below="@+id/layout_top"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:background="@color/huise" />
+        android:background="@color/router_line_dirver" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view_line_first"
-        android:layout_marginTop="@dimen/layout_room_content_margin_top">
+       >
         <!--第一部分-->
         <RelativeLayout
 
@@ -246,7 +246,11 @@
                         android:src="@drawable/directionicon" />
                 </RelativeLayout>
 
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/seekbar_horiz" />
             </RelativeLayout>
 
         </RelativeLayout>
@@ -281,7 +285,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:text="2小时"
-                        android:textColor="@color/title_blue_bg"
+                        android:textColor="@color/room_type_text"
                         android:textSize="@dimen/text_size_small" />
 
 
@@ -324,7 +328,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:text="12小时"
-                        android:textColor="@color/title_blue_bg"
+                        android:textColor="@color/room_type_text"
                         android:textSize="@dimen/text_size_small" />
 
 
@@ -368,13 +372,11 @@
                         android:layout_alignParentLeft="true"
                         android:background="@null"
                         android:hint="自定义"
-
                         android:imeActionLabel="完成"
                         android:inputType="numberDecimal"
                         android:singleLine="true"
-
                         android:textColorHint="@android:color/darker_gray"
-                        android:textColor="@color/title_blue_bg"
+                        android:textColor="@color/room_type_text"
                         android:textSize="@dimen/text_size_small" />
 
 
@@ -396,7 +398,11 @@
                         android:src="@drawable/directionicon" />
                 </RelativeLayout>
 
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/seekbar_horiz" />
 
             </RelativeLayout>
 

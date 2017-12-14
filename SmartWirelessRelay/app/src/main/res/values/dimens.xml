@@ -247,5 +247,5 @@
 
     <!--二维码扫码界面-->
     <dimen name="scan_view_textview_margintop">140dp</dimen>
-    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">100dp</dimen>
+    <dimen name="adddevice_qrcode_capture_buttom_cancel_marginbuttom">90dp</dimen>
 </resources>

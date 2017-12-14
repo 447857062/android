@@ -126,7 +126,6 @@ public class DeviceListAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-
             if (getItemViewType(position) == TOP_ITEM) {
                 convertView = LayoutInflater.from(mContext).inflate(
                         R.layout.devicelist_device_item, null);
@@ -152,35 +151,43 @@ public class DeviceListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         if (position < TopCount) {
-            viewHolder.textview_device_status.setText(listTop.get(position).getStatus());
+            String statu = listTop.get(position).getStatus();
+            if (statu != null && statu.equalsIgnoreCase("on")) {
+                statu = "在线";
+            } else {
+                statu = "离线";
+            }
+            viewHolder.textview_device_status.setText(statu);
             viewHolder.imageview_device_type.setImageResource(R.drawable.gatewayicon);
             String deviceName = listTop.get(position).getName();
             viewHolder.textview_device_name.setText(deviceName);
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
-            String deviceSubType="";
-            deviceSubType= listBottom.get(position - TopCount).getSubType();
+            String deviceSubType = "";
+            deviceSubType = listBottom.get(position - TopCount).getSubType();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
-            Log.i(TAG, "deviceType=" + deviceType + "deviceStatu=" + deviceStatu);
-            if("SMART_LOCK".equals(deviceType)){
-                deviceType=AppConstant.DEVICES.TYPE_LOCK;
+            if (deviceStatu != null && deviceStatu.equalsIgnoreCase("on")) {
+                Log.i(TAG, "deviceType=" + deviceType + "deviceStatu=" + deviceStatu);
+                deviceStatu = "在线";
+            } else {
+                deviceStatu = "离线";
             }
-            if("IRMOTE_V2".equals(deviceType)){
-                deviceType=AppConstant.DEVICES.TYPE_REMOTECONTROL;
+            if ("SMART_LOCK".equals(deviceType)) {
+                deviceType = AppConstant.DEVICES.TYPE_LOCK;
+            }
+            if ("IRMOTE_V2".equals(deviceType)) {
+                deviceType = AppConstant.DEVICES.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
-            if(deviceStatu.equalsIgnoreCase("on")){
-                deviceStatu="在线";
-            }
-            viewHolder.textview_device_status.setText( deviceStatu);
-            getDeviceTypeImage(viewHolder, deviceType,deviceSubType);
+            viewHolder.textview_device_status.setText(deviceStatu);
+            getDeviceTypeImage(viewHolder, deviceType, deviceSubType);
         }
         return convertView;
     }
 
-    private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType,String deviceSubType) {
-        switch (deviceType){
+    private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType, String deviceSubType) {
+        switch (deviceType) {
             case AppConstant.DEVICES.TYPE_ROUTER:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.routericon);
                 break;
@@ -192,7 +199,7 @@ public class DeviceListAdapter extends BaseAdapter {
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
-                switch (deviceSubType){
+                switch (deviceSubType) {
                     case "一路开关":
                         viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
                         break;

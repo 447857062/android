@@ -300,7 +300,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private SelectConnectTypeLocalDialog selectConnectTypeDialog;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -379,9 +378,14 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                     @Override
                     public void onSureBtnClicked() {
                         if (NetUtil.isNetAvailable(RouterSettingActivity.this)) {
-                            DialogThreeBounce.showLoading(RouterSettingActivity.this);
-                            BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouterDeviceKey());
-                            manager.unbindDevice(unbindDevice);
+                            if(isUserLogin){
+                                DialogThreeBounce.showLoading(RouterSettingActivity.this);
+                                BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouterDeviceKey());
+                                manager.unbindDevice(unbindDevice);
+                            }else{
+                                ToastSingleShow.showText(RouterSettingActivity.this, "用户已离线，登录后使用");
+                            }
+
                         } else {
                             ToastSingleShow.showText(RouterSettingActivity.this, "网络连接不可用");
                         }

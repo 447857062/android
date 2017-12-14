@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
@@ -48,6 +50,8 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
     private boolean isBindAction;
+    private boolean isUserLogin;
+    private RelativeLayout layout_select_room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +73,12 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        if (RoomManager.getInstance().getCurrentSelectedRoom() == null) {
-            textview_select_room_name.setText("全部");
-        } else {
-            textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
+        if(!isOnActivityResult){
+            if (RoomManager.getInstance().getCurrentSelectedRoom() == null) {
+                textview_select_room_name.setText("全部");
+            } else {
+                textview_select_room_name.setText(RoomManager.getInstance().getCurrentSelectedRoom().getRoomName());
+            }
         }
         manager.addEventCallback(ec);
     }
@@ -140,7 +146,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                             boolean result = mRouterManager.updateDeviceInWhatRoom(room, routerSN, routerName);
                             if (result) {
                                 Message msg = Message.obtain();
-                                msg.what=MSG_ADD_ROUTER_SUCCESS;
+                                msg.what = MSG_ADD_ROUTER_SUCCESS;
                                 mHandler.sendMessage(msg);
                             }
                         }
@@ -163,6 +169,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
+                isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
@@ -174,6 +181,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     private void initEvents() {
         button_add_device_sure.setOnClickListener(this);
         image_back.setOnClickListener(this);
+        layout_select_room.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -182,6 +190,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
         textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
         textview_title = (TextView) findViewById(R.id.textview_title);
         image_back = (FrameLayout) findViewById(R.id.image_back);
+        layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
     }
 
     public static final int MSG_ADD_ROUTER_FAIL = 100;
@@ -208,12 +217,33 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
             }
         }
     };
+    private boolean isOnActivityResult;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
+            isOnActivityResult = true;
+            String roomName = data.getStringExtra("roomName");
+            Log.i(TAG, "roomName=" + roomName);
+            Room room = RoomManager.getInstance().findRoom(roomName, true);
+            RoomManager.getInstance().setCurrentSelectedRoom(room);
+            textview_select_room_name.setText(roomName);
+        }
+    }
+
+    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.layout_select_room:
+                Intent intent = new Intent(this, AddDeviceActivity.class);
+                intent.putExtra("EditSmartLockActivity", true);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.button_add_device_sure:
                 if (NetUtil.isNetAvailable(AddRouterActivity.this)) {
@@ -222,8 +252,8 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                     if (routerName.equals("")) {
                         routerName = "家里的路由器";
                     }
-                    boolean login = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-                    if (login) {
+                    isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                    if (isUserLogin) {
                         DialogThreeBounce.showLoading(this);
                         manager.bindDevice(routerSN);
                     } else {
@@ -235,6 +265,4 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                 break;
         }
     }
-
-
 }

@@ -87,6 +87,11 @@ public class Device extends DataSupport implements Serializable{
         return "Device{" +
                 "Uid='" + Uid + '\'' +
                 ", Status='" + Status + '\'' +
+                ", Type='" + Type + '\'' +
+                ", Mac='" + Mac + '\'' +
+                ", name='" + name + '\'' +
+                ", roomList=" + roomList +
+                ", ipAddress='" + ipAddress + '\'' +
                 '}';
     }
 }

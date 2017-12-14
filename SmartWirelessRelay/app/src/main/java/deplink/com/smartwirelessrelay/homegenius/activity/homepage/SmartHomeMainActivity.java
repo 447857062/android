@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -82,6 +83,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private HomepageRoomShowTypeChangedViewAdapter mRoomSelectTypeChangedAdapter;
     private SDKManager manager;
     private EventCallback ec;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +99,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
-        if(mLocalConnectmanager!=null){
-            mLocalConnectmanager.registerNetBroadcast(this);
-        }
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -112,15 +111,16 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mRoomList.clear();
         mRoomList.addAll(mRoomManager.getDatabaseRooms());
         int size = mRoomList.size();
-        int length = 100;
+        int length = 92;
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         float density = dm.density;
-        int gridviewWidth = (int) (size * (length + 4) * density);
+        int gridviewWidth = (int) (size * (length + 1) * density);
         int itemWidth = (int) (length * density);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                gridviewWidth, LinearLayout.LayoutParams.FILL_PARENT);
+                gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
         roomGridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
         roomGridView.setColumnWidth(itemWidth); // 设置列表项宽
         roomGridView.setStretchMode(GridView.NO_STRETCH);
@@ -148,13 +148,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
-
         mLocalConnectmanager = LocalConnectmanager.getInstance();
         mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this, AppConstant.BIND_APP_MAC);
         mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
-
+        if (mLocalConnectmanager != null) {
+            mLocalConnectmanager.registerNetBroadcast(this);
+        }
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
         mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);
         mExperienceCenterDeviceList = new ArrayList<>();
@@ -179,7 +180,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         ec = new EventCallback() {
             @Override
             public void onSuccess(SDKAction action) {
-                switch (action){
+                switch (action) {
                     case LOGIN:
                         manager.connectMQTT(SmartHomeMainActivity.this);
                         Log.i(TAG, "LOGIN success");
@@ -227,10 +228,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         String password = Perfence.getPerfence(Perfence.USER_PASSWORD);
         Log.i(TAG, "phoneNumber=" + phoneNumber + "password=" + password);
-        if(!password.equals("")){
+        if (!password.equals("")) {
+            Perfence.setPerfence(AppConstant.USER_LOGIN, false);
             manager.login(phoneNumber, password);
         }
-
     }
 
     private AdapterView.OnItemClickListener mExperienceCenterListClickListener = new AdapterView.OnItemClickListener() {

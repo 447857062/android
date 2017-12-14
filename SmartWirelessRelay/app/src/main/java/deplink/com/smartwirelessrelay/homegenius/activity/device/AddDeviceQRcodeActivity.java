@@ -38,6 +38,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_scan_device;
     private FrameLayout image_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,12 +161,16 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", "SMART_LOCK");
                         startActivity(intent);
-                    } else {
-                        //TODO
-                        String uid = "77685180654101946200316696479888";
-                        intent.putExtra("currentAddDevice", uid);
-                        intent.putExtra("DeviceType", "getway");
+                    } else if (qrCodeResult.contains("LKSWG")) {
+                        intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
+                        GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
                         startActivity(intent);
+                    }else {
+                        if(qrCodeResult.length()==12){
+                            intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
+                            intent.putExtra("routerSN", qrCodeResult);
+                            startActivity(intent);
+                        }
                     }
                     break;
                 case REQUEST_ADD_INFRAED_UNIVERSAL_RC:
@@ -186,8 +191,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     startActivity(intent);
                     break;
                 case REQUEST_ADD_GETWAY:
-                    //添加路由器
-                    intent =new Intent(this, AddGetwaySettingOptionsActivity.class);
+                    intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
                     GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
                     startActivity(intent);
                     break;

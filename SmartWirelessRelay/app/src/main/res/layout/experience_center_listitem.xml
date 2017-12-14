@@ -4,7 +4,7 @@
     android:layout_height="@dimen/experience_center_listitem_height"
     android:alpha="0.9"
     android:minHeight="@dimen/experience_center_listitem_height"
-    android:orientation="vertical">
+   >
 
     <ImageView
         android:id="@+id/image_device_type"
@@ -12,33 +12,32 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@mipmap/ic_launcher" />
+        />
 
     <TextView
         android:id="@+id/textview_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:textSize="@dimen/text_size_small"
-        android:textColor="@color/room_type_text"
-        android:layout_marginRight="@dimen/layout_content_margin_left_right"
         android:layout_marginLeft="@dimen/arror_right_left_textview_margin_right"
-        android:layout_toRightOf="@+id/image_device_type" />
-
-
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_toRightOf="@+id/image_device_type"
+        android:textColor="@color/room_type_text"
+        android:textSize="@dimen/text_size_small" />
 
     <ImageView
         android:id="@+id/iamgeview_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:src="@drawable/directionicon" />
+
     <View
         android:id="@+id/view_line"
-        android:background="@color/line_clolor"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/line_clolor" />
 </RelativeLayout>

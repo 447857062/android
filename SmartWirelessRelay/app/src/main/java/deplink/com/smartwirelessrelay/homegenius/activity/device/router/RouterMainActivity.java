@@ -128,7 +128,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         initEvents();
     }
 
-
     private AdapterView.OnItemClickListener deviceItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -223,7 +222,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             ContentValues values = new ContentValues();
             values.put("Status", "离线");
             final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
-
             Log.i(TAG, "更新设备在线状态 :离线 affectColumn=" + affectColumn);
             textview_cpu_use.setText("--");
             textview_memory_use.setText("--");
@@ -233,16 +231,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 routerDevice.getReport();//这里只要查询设备有没有上线
                 //下面几个也加上
                 queryDevices();
-                routerDevice.queryLan();
-                routerDevice.queryWan();
             }
         } else {
             if (routerDevice != null) {
                 refreshCount++;
                 routerDevice.getReport();//进界面更新
                 queryDevices();
-                routerDevice.queryLan();
-                routerDevice.queryWan();
             }
         }
     }

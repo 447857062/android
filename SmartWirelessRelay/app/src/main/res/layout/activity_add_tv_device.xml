@@ -28,6 +28,7 @@
 
         <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
             android:layout_centerVertical="true"
+            android:singleLine="true"
             android:layout_toRightOf="@+id/icon_search_band"
             android:id="@+id/edittext_band_name"
             android:layout_width="match_parent"

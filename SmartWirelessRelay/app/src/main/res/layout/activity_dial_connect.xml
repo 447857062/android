@@ -11,6 +11,7 @@
         android:background="@color/white_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_account"
+
         android:layout_below="@+id/layout_topbar"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"

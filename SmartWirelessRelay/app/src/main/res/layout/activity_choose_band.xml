@@ -33,6 +33,7 @@
             android:layout_toRightOf="@+id/icon_search_band"
             android:id="@+id/edittext_band_name"
             android:layout_width="match_parent"
+            android:singleLine="true"
             android:layout_height="wrap_content"
             android:background="@null"
             android:layout_marginLeft="@dimen/search_band_icon_marginright" />
