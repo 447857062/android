@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/experience_center_listitem_height"
     android:alpha="0.9"
+    android:background="@color/white"
     android:minHeight="@dimen/experience_center_listitem_height"
     android:orientation="vertical"
     android:paddingLeft="@dimen/layout_content_margin_left_right"

@@ -3,7 +3,6 @@
 
     <!-- QR 二维码扫描 -->
     <color name="transparent">#00000000</color>
-    <color name="viewfinder_laser">#60a3f6</color> <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#cb000000</color>
     <color name="viewfinder_frame">#ffffffff</color><!-- #ff0000ff -->
     <color name="viewfinder_backgroud">#ffffffff</color>
@@ -16,7 +15,6 @@
     <color name="green">#59BBFF</color>
     <color name="page_title_text_color">#F8FAFA</color>
     <color name="blue_add_new_router_title">#2B89F3</color>
-    <color name="black_3a3a3a">#3a3a3a</color>
     <color name="gray_919090">#919090</color>
     <color name="result_view">#b0ffffff</color>
     <color name="text_color_908F8F">#908F8F</color>
@@ -26,15 +24,6 @@
     <!--灰色-->
     <color name="gray_DFDEDE">#DFDEDE</color>
     <color name="main_interface_topbar_text_color">#F8FAFA</color>
-    <!--白色-->
-    <color name="white_DDEBFC">#DDEBFC</color>
-    <!--蓝色-->
-    <color name="color_2B89F3">#2B89F3</color>
-    <color name="modify_password_text_color">#3A3A3A</color>
-    <color name="littlegray">#EEEEEE</color>
-
-
-
     <!--新app使用-->
     <!--主题使用的颜色-->
     <color name="main_bottom_black">#515151</color>
@@ -45,7 +34,8 @@
     <color name="white">#ffffff</color>
     <color name="white_alpha60">#99ffffff</color>
     <color name="huise">#999999</color>
-    9
+    <color name="pressed_button_background">#5692dd</color>
+    <color name="delete_button_background">#e5e5e5</color>
     <color name="seekbar_horiz">#f1f1f1</color>
     <color name="aircondition_mode">#666666</color>
     <color name="router_line_dirver">#cccccc</color>

@@ -9,18 +9,9 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alert
  */
 public interface LocalConnecteListener {
 
-    /**
-     * sslsocket握手成功
-     */
-    void handshakeCompleted();
-    /**
-     * sslsocket握手失败
-     */
-    void createSocketFailed(String msg);
-    /**
-     * 获取本地网关失败
-     */
-    void OnFailedgetLocalGW(String msg);
+
+
+
     /**
      * 获取uid
      */

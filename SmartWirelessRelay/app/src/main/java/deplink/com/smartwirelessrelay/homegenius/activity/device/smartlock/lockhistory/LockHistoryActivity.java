@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -21,6 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.LockHistorys;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.Record;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
@@ -104,11 +106,18 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             mSmartLockManager = SmartLockManager.getInstance();
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
-            DialogThreeBounce.showLoading(this);
-            Message msg=Message.obtain();
-            msg.what=MSG_GET_HISRECORD;
-            mHandler.sendMessageDelayed(msg,3000);
-            mSmartLockManager.queryLockHistory();
+          if(LocalConnectmanager.getInstance().isHandshakeCompleted()&& LocalConnectmanager.getInstance().getSslSocket()!=null){
+              DialogThreeBounce.setmContext(this);
+              DialogThreeBounce.showLoading(this);
+              Message msg=Message.obtain();
+              msg.what=MSG_GET_HISRECORD;
+              mHandler.sendMessageDelayed(msg,3000);
+              mSmartLockManager.queryLockHistory();
+
+            }else{
+              Toast.makeText(this, "未找到可用网关", Toast.LENGTH_SHORT).show();
+          }
+
         }
 
     }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,7 +43,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private GetwaySelectListAdapter selectGetwayAdapter;
     private List<Device> mGetways;
     private String selectGetwayName;
-
+    private ImageView imageview_getway_arror_right;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +99,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
         layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
         listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
+        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
     }
 
     @Override
@@ -143,8 +145,10 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
             case R.id.layout_getway:
                 if (layout_getway_list.getVisibility() == View.VISIBLE) {
                     layout_getway_list.setVisibility(View.GONE);
+                    imageview_getway_arror_right.setImageResource(R.drawable.directionicon);
                 } else {
                     layout_getway_list.setVisibility(View.VISIBLE);
+                    imageview_getway_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
 
                 break;

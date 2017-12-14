@@ -62,6 +62,7 @@
     <RelativeLayout
         android:layout_below="@+id/layout_input_password_out"
         android:layout_marginTop="@dimen/wifirelay_connect_button_margintop"
+        android:layout_marginBottom="15dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/router_wifirelay_connectdialogs_button_height"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"

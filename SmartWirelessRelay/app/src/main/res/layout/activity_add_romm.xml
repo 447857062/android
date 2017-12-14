@@ -122,6 +122,7 @@
             android:textSize="@dimen/text_size_small" />
 
         <ImageView
+            android:id="@+id/imageview_getway_arror_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -132,7 +133,7 @@
         android:id="@+id/layout_getway_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:background="@color/white"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:layout_below="@+id/layout_getway"
         android:visibility="gone">

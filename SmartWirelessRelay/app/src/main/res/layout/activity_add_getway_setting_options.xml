@@ -88,7 +88,7 @@
         </RelativeLayout>
 
         <Button
-            android:background="@drawable/radius22_bg_blue_background"
+            android:background="@drawable/button_wifi_reload"
             android:layout_marginTop="@dimen/adddevice_surebutton_margintop"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/layout_room_select"

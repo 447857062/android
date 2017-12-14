@@ -41,6 +41,7 @@
             android:background="@color/huise" />
     </RelativeLayout>
 
+
     <ListView
         android:id="@+id/listview_wifi_list"
         android:layout_width="match_parent"
@@ -49,6 +50,7 @@
         android:layout_below="@+id/layout_select_wifi"
         android:divider="@null"
         android:visibility="visible" />
+
 
     <RelativeLayout
         android:id="@+id/layout_reload_wifilist"
@@ -64,7 +66,7 @@
             android:layout_marginLeft="@dimen/input_layout_marginleft_right"
             android:layout_marginRight="@dimen/input_layout_marginleft_right"
             android:layout_marginTop="@dimen/wifirelay_reload_wifilist_button_margintop"
-            android:background="@drawable/wifirelay_reload_button_background"
+            android:background="@drawable/button_wifi_reload"
             android:gravity="center_horizontal|center_vertical"
             android:text="重新扫描"
             android:textColor="@color/white" />

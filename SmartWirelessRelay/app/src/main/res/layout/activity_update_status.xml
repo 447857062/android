@@ -18,7 +18,7 @@
         android:layout_below="@+id/image_show_logo"
         android:id="@+id/textview_updateing"
         android:layout_marginTop="40dp"
-        android:textColor="@color/modify_password_text_color"
+        android:textColor="@color/room_type_text"
         android:textSize="15dp"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"

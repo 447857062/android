@@ -38,7 +38,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
     private GetwayListDevicesAdapter mAdapter;
     private GetwayManager getwayManager;
     private List<Device> mBindGetway;
-
+    private TextView textview_no_getway;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +92,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         image_back = (FrameLayout) findViewById(R.id.image_back);
         textview_title = (TextView) findViewById(R.id.textview_title);
         listview_getway_devices = (ListView) findViewById(R.id.listview_getway_devices);
+        textview_no_getway = (TextView) findViewById(R.id.textview_no_getway);
     }
 
 
@@ -122,12 +123,18 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
                     }
                     if (addToDevices) {
                         mDevices.add(device);
+                        textview_no_getway.setVisibility(View.GONE);
                         mBindGetway = getwayManager.queryAllGetwayDevice();
                         mAdapter.notifyDataSetChanged();
                     }
 
                     break;
                 case MSG_DISMISS_DIALOG:
+                    if(mDevices.size()==0){
+                        textview_no_getway.setVisibility(View.VISIBLE);
+                    }else{
+                        textview_no_getway.setVisibility(View.GONE);
+                    }
                     DialogThreeBounce.hideLoading();
                     break;
             }
@@ -148,6 +155,8 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(GetwayCheckActivity.this, ScanWifiListActivity.class));
+        Intent inent=new Intent(this, ScanWifiListActivity.class);
+        inent.putExtra("isShowSkipOption",false);
+        startActivity(inent);
     }
 }

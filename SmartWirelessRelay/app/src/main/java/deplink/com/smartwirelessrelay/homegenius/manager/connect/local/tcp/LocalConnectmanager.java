@@ -86,6 +86,14 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
      */
     private boolean handshakeCompleted;
 
+    public boolean isHandshakeCompleted() {
+        return handshakeCompleted;
+    }
+
+    public SSLSocket getSslSocket() {
+        return sslSocket;
+    }
+
     private LocalConnectmanager() {
     }
 
@@ -111,11 +119,13 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             mUdpmanager = UdpManager.getInstance();
             mUdpmanager.InitUdpConnect(context, this);
         }
+        registerNetBroadcast(context);
         return 0;
     }
 
     public void removeLocalConnectListener(LocalConnecteListener listener) {
         if (listener != null && mLocalConnecteListener.contains(listener)) {
+            Log.i(TAG, "removeLocalConnectListener=" + listener.toString());
             this.mLocalConnecteListener.remove(listener);
         }
 
@@ -221,11 +231,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                 public void handshakeCompleted(HandshakeCompletedEvent event) {
                     Log.i(TAG, "ssl握手成功回调");
                     handshakeCompleted = true;
-                    for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                        mLocalConnecteListener.get(i).handshakeCompleted();
-                    }
-
-
                 }
             });
             address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
@@ -244,11 +249,8 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             }
         } catch (Exception e) {
             initSocketing = false;
-            //TODO 获取连接异常的ip地址
             handshakeCompleted = false;
-            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                mLocalConnecteListener.get(i).createSocketFailed("连接网关:创建到" + ipAddress + "的连接失败");
-            }
+
             e.printStackTrace();
         }
 
@@ -280,9 +282,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
     public int getOut(byte[] message) {
         if (sslSocket == null) {
             Log.i(TAG, "socket==null cannot send tcp ip message");
-            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
-            }
             return -1;
         }
         if (sslSocket.isClosed()) {
@@ -323,9 +322,7 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
     public String getIn() {
         if (sslSocket == null) {
             Log.i(TAG, "getIn() socket==null cannot receive message");
-            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                mLocalConnecteListener.get(i).OnFailedgetLocalGW("未连接本地网关");
-            }
+
             return "";
         }
         if (sslSocket.isClosed()) {
@@ -408,13 +405,11 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                         break;
 
                 }
-                //获取到数据
-                //TODO
+
             }
             input.close();
         } catch (Exception e) {
             e.printStackTrace();
-            //TODO 连接断开
         }
         return str;
     }
@@ -534,11 +529,10 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
     @Override
     public void onGetLocalConnectIp(String ipAddress, String uid) {
         if (!initSocketing) {
-            //  if (ipaddressOnly == null || ipaddressOnly.equals(ipAddress)) {
-            //  ipaddressOnly = ipAddress;
+
             initSocketing = true;
             InitConnect(ipAddress);
-            //   }
+
         }
     }
 }

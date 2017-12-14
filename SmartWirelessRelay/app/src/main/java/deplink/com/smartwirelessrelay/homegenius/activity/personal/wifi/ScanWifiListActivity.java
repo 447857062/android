@@ -24,12 +24,13 @@ import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.adapter.
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.WifiRelayInputDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
 /**
  * 配置wifi网关
  */
-public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener,View.OnClickListener {
-    private static final String TAG="ScanWifiListActivity";
+public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener, View.OnClickListener {
+    private static final String TAG = "ScanWifiListActivity";
     private DeviceManager mDeviceManager;
     private ListView listview_wifi_list;
     private WifiListAdapter mWifiListAdapter;
@@ -37,6 +38,8 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private TextView textview_title;
     private TextView textview_edit;
     private TextView textview_reload_wifilist;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private void initViews() {
         listview_wifi_list = (ListView) findViewById(R.id.listview_wifi_list);
         textview_title = (TextView) findViewById(R.id.textview_title);
+
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         textview_reload_wifilist = (TextView) findViewById(R.id.textview_reload_wifilist);
@@ -65,10 +69,27 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     @Override
     protected void onResume() {
         super.onResume();
+        queryWifiRelayList();
+    }
+
+    private void queryWifiRelayList() {
+        DialogThreeBounce.showLoading(this);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG,"mDatas.size()="+mDatas.size());
+                DialogThreeBounce.hideLoading();
+
+            }
+        }, 3000);
+        mDatas.clear();
+        mWifiListAdapter.notifyDataSetChanged();
         mDeviceManager.queryWifiList();
     }
 
+    private boolean isShowSkipOption;
     private List<SSIDList> mDatas;
+
     private void initDatas() {
         textview_title.setText("配置WiFi网关");
         textview_edit.setText("跳过");
@@ -76,7 +97,11 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         mDeviceManager.InitDeviceManager(this, this);
         mDatas = new ArrayList<>();
         mWifiListAdapter = new WifiListAdapter(this, mDatas);
-        wifiRelayDialog=new WifiRelayInputDialog(this);
+        wifiRelayDialog = new WifiRelayInputDialog(this);
+        isShowSkipOption = getIntent().getBooleanExtra("isShowSkipOption", false);
+        if (!isShowSkipOption) {
+            textview_edit.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -88,83 +113,83 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     public void responseBindDeviceResult(String result) {
 
     }
-    private Handler mhanHandler=new Handler(){
+
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_GET_WIFILIST:
                     mDatas.clear();
                     mDatas.addAll((Collection<? extends SSIDList>) msg.obj);
                     mWifiListAdapter.notifyDataSetChanged();
+
                     break;
             }
 
         }
     };
-    private static final int MSG_GET_WIFILIST=1;
+    private static final int MSG_GET_WIFILIST = 1;
+
     @Override
     public void responseWifiListResult(List<SSIDList> wifiList) {
-        Message msg=Message.obtain();
-        msg.what=MSG_GET_WIFILIST;
-        msg.obj=wifiList;
-        mhanHandler.sendMessage(msg);
+        Message msg = Message.obtain();
+        msg.what = MSG_GET_WIFILIST;
+        msg.obj = wifiList;
+        mHandler.sendMessage(msg);
 
     }
 
     @Override
     public void responseSetWifirelayResult(int result) {
-        Log.i(TAG,"responseSetWifirelayResult="+result);
+        Log.i(TAG, "responseSetWifirelayResult=" + result);
     }
+
     private WifiRelayInputDialog wifiRelayDialog;
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        final AP_CLIENT setCmd=new AP_CLIENT();
-        String setApCliSsid=mDatas.get(position).getSSID();
+        final AP_CLIENT setCmd = new AP_CLIENT();
+        String setApCliSsid = mDatas.get(position).getSSID();
         setCmd.setApCliSsid(setApCliSsid);
 
-        String setApCliEncrypType=mDatas.get(position).getEncryption();
+        String setApCliEncrypType = mDatas.get(position).getEncryption();
         setCmd.setApCliEncrypType(setApCliEncrypType);
 
-        String setApCliAuthMode=mDatas.get(position).getCRYTP();
+        String setApCliAuthMode = mDatas.get(position).getCRYTP();
         setCmd.setApCliAuthMode(setApCliAuthMode);
 
-        String setChannel=mDatas.get(position).getChannel();
+        String setChannel = mDatas.get(position).getChannel();
         setCmd.setChannel(setChannel);
         //没有密码直接连接
-        if(mDatas.get(position).getEncryption().equalsIgnoreCase("none")){
+        if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
             setCmd.setApCliWPAPSK("");
             mDeviceManager.setWifiRelay(setCmd);
-        }else{
-            //TODO 弹框提示连接
+        } else {
             wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
                 @Override
                 public void onSureBtnClicked(String password) {
-                    if(password.length()<8){
-                        //TODO
-                    }else{
-                        setCmd.setApCliWPAPSK(password);
-                    }
+                    setCmd.setApCliWPAPSK(password);
                     mDeviceManager.setWifiRelay(setCmd);
-                    //
                 }
             });
-           wifiRelayDialog.show();
+            wifiRelayDialog.show();
+            wifiRelayDialog.setTitleText(setApCliSsid);
         }
 
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.textview_reload_wifilist:
-                mDeviceManager.queryWifiList();
+                queryWifiRelayList();
                 break;
             case R.id.textview_edit:
-               startActivity(new Intent(this, AddGetwaySettingOptionsActivity.class));
+                startActivity(new Intent(this, AddGetwaySettingOptionsActivity.class));
                 break;
         }
     }

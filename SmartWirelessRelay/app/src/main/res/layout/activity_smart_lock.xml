@@ -58,7 +58,7 @@
         </RelativeLayout>
         <ImageView
             android:layout_gravity="bottom|center_horizontal"
-            android:src="@drawable/unlock"
+            android:src="@drawable/button_unlock"
             android:id="@+id/imageview_unlock"
             android:layout_width="@dimen/doorlock_unlock_image_width_height"
             android:layout_height="@dimen/doorlock_unlock_image_width_height" />
@@ -85,7 +85,7 @@
                 android:layout_width="@dimen/doorlock_option_item_width_height"
                 android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/alarmrecord" />
+                android:src="@drawable/button_alarmrecord" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
                 android:layout_width="@dimen/doorlock_option_item_width_height"
                 android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/unlockrecord" />
+                android:src="@drawable/button_unlockrecord" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
                 android:layout_width="@dimen/doorlock_option_item_width_height"
                 android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/passwordisnotsaved" />
+                android:src="@drawable/button_passwordisnotsaved" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -162,7 +162,7 @@
                 android:layout_width="@dimen/doorlock_option_item_width_height"
                 android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/authorized" />
+                android:src="@drawable/button_authorized" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                 android:layout_width="@dimen/doorlock_option_item_width_height"
                 android:layout_height="@dimen/doorlock_option_item_width_height"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/clearhistory" />
+                android:src="@drawable/button_clearhistory" />
 
             <TextView
                 android:layout_width="wrap_content"

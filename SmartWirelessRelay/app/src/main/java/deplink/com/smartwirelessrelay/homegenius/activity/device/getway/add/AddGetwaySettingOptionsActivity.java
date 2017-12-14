@@ -20,9 +20,11 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 /**
  * 添加网关走到添加网关名称，配置wifi网关
@@ -79,12 +81,16 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         switch (v.getId()) {
             case R.id.button_save:
                 if (currentAddDevice != null) {
-                    Gson gson = new Gson();
-                    QrcodeSmartDevice device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
-                    mGetwayManager.bindDevice(device);
+                    if(LocalConnectmanager.getInstance().isHandshakeCompleted()&& LocalConnectmanager.getInstance().getSslSocket()!=null){
+                        Gson gson = new Gson();
+                        QrcodeSmartDevice device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
+                        mGetwayManager.bindDevice(device);
+                    }else{
+                        ToastSingleShow.showText(this,"无可用的网关");
+
+                    }
+
                 }
-                //TODO 这里设置不需要绑定结果就写入到数据库中去，调试使用
-                //mGetwayManager.addDBGetwayDevice(currentAddDevice);
                 break;
             case R.id.image_back:
                 onBackPressed();

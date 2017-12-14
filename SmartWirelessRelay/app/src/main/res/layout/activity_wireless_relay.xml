@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:textColor="@color/white"
             android:layout_height="@dimen/layout_item_content_height"
-            android:background="@drawable/wifirelay_reload_button_background"
+            android:background="@drawable/wifirelay_reload_button_normal_background"
             android:gravity="center_horizontal|center_vertical"
             android:text="重新扫描" />
     </RelativeLayout>

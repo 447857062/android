@@ -230,20 +230,7 @@ public class GetwayManager implements LocalConnecteListener {
 
     }
 
-    @Override
-    public void handshakeCompleted() {
 
-    }
-
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
 
     @Override
     public void OnBindAppResult(String uid) {

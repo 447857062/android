@@ -15,10 +15,6 @@ import java.util.concurrent.Executors;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
 
 /**
  * Created by Administrator on 2017/11/13.
@@ -60,15 +56,17 @@ public class RoomManager {
         }
 
     }
+
     public boolean updateGetway(Device getwayDevice) {
         Log.i(TAG, "更新网关=start");
-        List<Device>getways=new ArrayList<>();
+        List<Device> getways = new ArrayList<>();
         getways.add(getwayDevice);
         currentSelectedRoom.setmGetwayDevices(getways);
         boolean saveResult = currentSelectedRoom.save();
         Log.i(TAG, "更新网关=" + saveResult);
         return saveResult;
     }
+
     /**
      * 按照序号排序
      */
@@ -241,7 +239,7 @@ public class RoomManager {
         return affectColumn;
     }
 
-    public int updateRoomName(String oriName,String roomName) {
+    public int updateRoomName(String oriName, String roomName) {
         ContentValues values = new ContentValues();
         values.put("roomName", roomName);
         return DataSupport.updateAll(Room.class, values, "roomName = ?", oriName);
@@ -269,28 +267,21 @@ public class RoomManager {
      * @param roomName
      * @return
      */
-    public void addRoom(final String roomType, final String roomName, final Observer observer) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                tempAddRoom = new Room();
-                tempAddRoom.setRoomName(roomName);
-                tempAddRoom.setRoomType(roomType);
-                tempAddRoom.setRoomOrdinalNumber(mRooms.size() + 1);
-                final boolean optionResult;
-                optionResult = tempAddRoom.save();
-                mRooms.add(tempAddRoom);
-                mObservable = Observable.create(new ObservableOnSubscribe() {
-                    @Override
-                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                        e.onNext(optionResult);
-                        e.onComplete();
-                    }
-                });
-                mObservable.subscribe(observer);
-                getDatabaseRooms();
-                Log.i(TAG, "添加房间=" + optionResult);
-            }
-        });
+    public boolean addRoom(String roomType, String roomName, Device gewayDevice) {
+
+        tempAddRoom = new Room();
+        tempAddRoom.setRoomName(roomName);
+        tempAddRoom.setRoomType(roomType);
+        tempAddRoom.setRoomOrdinalNumber(mRooms.size() + 1);
+        List<Device> devices = new ArrayList<>();
+        devices.add(gewayDevice);
+        tempAddRoom.setmGetwayDevices(devices);
+        final boolean optionResult;
+        optionResult = tempAddRoom.save();
+        mRooms.add(tempAddRoom);
+        getDatabaseRooms();
+        Log.i(TAG, "添加房间=" + optionResult);
+        return optionResult;
     }
+
 }

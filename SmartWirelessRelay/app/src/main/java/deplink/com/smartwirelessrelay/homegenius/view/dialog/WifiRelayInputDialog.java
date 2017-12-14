@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 
@@ -40,10 +41,8 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        int screenWidth = dm.widthPixels;
-        int screenHeigh = dm.heightPixels;
-        p.height = (int)(screenHeigh*0.25);
-        p.width = (int)(screenWidth*0.9);
+        p.width = (int) Perfence.dp2px(mContext,283);
+        p.height = (int) Perfence.dp2px(mContext,185);
         View view = LayoutInflater.from(mContext).inflate(R.layout.wifi_relay_dialog, null);
         setContentView(view, p);
         //初始化界面控件
@@ -93,7 +92,7 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
 
 
     public interface onSureBtnClickListener {
-        public void onSureBtnClicked(String password);
+         void onSureBtnClicked(String password);
     }
 
     @Override

@@ -16,6 +16,11 @@ public class DialogThreeBounce {
     private static Dialog dialogLoading;
     private static Context mContext;
 
+
+    public static void setmContext(Context mContext) {
+        DialogThreeBounce.mContext = mContext;
+    }
+
     public static void showLoading(Context context) {
         mContext = context;
         if (dialogLoading == null) {

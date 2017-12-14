@@ -55,6 +55,7 @@ public class DeviceManager implements LocalConnecteListener {
     private SmartDev currentSelectSmartDevice;
     private List<SmartDev> allSmartDevices;
 
+
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
             instance = new DeviceManager();
@@ -324,20 +325,7 @@ public class DeviceManager implements LocalConnecteListener {
     }
 
 
-    @Override
-    public void handshakeCompleted() {
 
-    }
-
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
 
     @Override
     public void OnBindAppResult(String uid) {

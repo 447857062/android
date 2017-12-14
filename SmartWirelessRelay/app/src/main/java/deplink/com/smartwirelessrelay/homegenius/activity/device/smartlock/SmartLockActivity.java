@@ -16,6 +16,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.smartlock.AuthoriseDialog;
@@ -113,7 +114,6 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.layout_lock_record:
                 Intent intentLockHistory = new Intent(this, LockHistoryActivity.class);
-                // intentLockHistory.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intentLockHistory.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivity(intentLockHistory);
                 break;
@@ -148,8 +148,6 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 onBackPressed();
                 break;
             case R.id.imageview_unlock:
-                saveManagetPassword=(mSmartLockManager.getCurrentSelectLock().isRemerberPassword());
-                savedManagePassword=mSmartLockManager.getCurrentSelectLock().getLockPassword();
                 if (isStartFromExperience) {
                     if (saveManagetPasswordExperience) {
                         Toast.makeText(SmartLockActivity.this, "开门成功", Toast.LENGTH_SHORT).show();
@@ -158,13 +156,20 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         startActivity(intentSetLockPwd);
                     }
                 } else {
+                    saveManagetPassword=(mSmartLockManager.getCurrentSelectLock().isRemerberPassword());
+                    savedManagePassword=mSmartLockManager.getCurrentSelectLock().getLockPassword();
                     Log.i(TAG,"saveManagetPassword="+saveManagetPassword+"savedManagePassword="+savedManagePassword);
-                    if (saveManagetPassword && !savedManagePassword.equals("")) {
-                        mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
-                    } else {
-                        Intent intentSetLockPwd = new Intent(this, SetLockPwdActivity.class);
-                        startActivity(intentSetLockPwd);
+                    if(LocalConnectmanager.getInstance().isHandshakeCompleted()&& LocalConnectmanager.getInstance().getSslSocket()!=null){
+                        if (saveManagetPassword && !savedManagePassword.equals("")) {
+                            mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
+                        } else {
+                            Intent intentSetLockPwd = new Intent(this, SetLockPwdActivity.class);
+                            startActivity(intentSetLockPwd);
+                        }
+                    }else{
+                        Toast.makeText(this, "未找到可用网关", Toast.LENGTH_SHORT).show();
                     }
+
                 }
 
                 break;

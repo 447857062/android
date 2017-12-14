@@ -120,7 +120,9 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
                 break;
             case R.id.layout_config_wifi_getway:
-                startActivity(new Intent(this, ScanWifiListActivity.class));
+                Intent inent=new Intent(this, ScanWifiListActivity.class);
+                inent.putExtra("isShowSkipOption",false);
+                startActivity(inent );
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);

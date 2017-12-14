@@ -118,20 +118,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
         Log.i(TAG, "数据库中已存在相同设备，不必要添加");
         return false;
     }
-    @Override
-    public void handshakeCompleted() {
 
-    }
-
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
 
     @Override
     public void OnBindAppResult(String uid) {

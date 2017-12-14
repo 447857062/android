@@ -301,7 +301,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-
         mLocalConnectmanager.removeLocalConnectListener(this);
 
     }
@@ -363,20 +362,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void handshakeCompleted() {
 
-    }
-
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
 
     @Override
     public void OnBindAppResult(String uid) {

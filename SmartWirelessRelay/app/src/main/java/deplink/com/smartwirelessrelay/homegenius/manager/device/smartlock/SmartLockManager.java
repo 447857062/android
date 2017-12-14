@@ -32,7 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
  * 智能锁设备管理器
  * 需要context，LocalConnecteListener（非必须）参数
  * 使用：
- * <p/>
+ * <p>
  * private SmartLockManager mSmartLockManager;
  * mSmartLockManager = SmartLockManager.getInstance();
  * mSmartLockManager.InitSmartLockManager(this);
@@ -54,6 +54,7 @@ public class SmartLockManager implements LocalConnecteListener {
     private SmartDev currentSelectLock;
     private boolean isStartFromExperience;
 
+
     public boolean isStartFromExperience() {
         return isStartFromExperience;
     }
@@ -72,7 +73,7 @@ public class SmartLockManager implements LocalConnecteListener {
     }
 
     public void setCurrentSelectLock(SmartDev currentSelectLock) {
-        Log.i(TAG, "设置当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size()+"currentSelectLock="+currentSelectLock.getName());
+        Log.i(TAG, "设置当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size() + "currentSelectLock=" + currentSelectLock.getName());
         this.currentSelectLock = currentSelectLock;
     }
 
@@ -95,7 +96,6 @@ public class SmartLockManager implements LocalConnecteListener {
             mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
-
         packet = new GeneralPacket(mContext);
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
@@ -129,23 +129,24 @@ public class SmartLockManager implements LocalConnecteListener {
      * 查询开锁记录
      */
     public void queryLockHistory() {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("QUERY");
-        queryCmd.setMethod("SmartLock");
-        queryCmd.setCommand("HisRecord");
-        queryCmd.setUserID("1001");
-        queryCmd.setSmartUid(currentSelectLock.getUid());
-        Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
-        queryCmd.setTimestamp();
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packOpenLockListData(text.getBytes(), currentSelectLock.getUid());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
-            }
-        });
+
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("QUERY");
+            queryCmd.setMethod("SmartLock");
+            queryCmd.setCommand("HisRecord");
+            queryCmd.setUserID("1001");
+            queryCmd.setSmartUid(currentSelectLock.getUid());
+            Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
+            queryCmd.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packOpenLockListData(text.getBytes(), currentSelectLock.getUid());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
     }
 
     public void updateSmartDeviceName(final String deviceName) {
@@ -184,11 +185,12 @@ public class SmartLockManager implements LocalConnecteListener {
         });
 
     }
+
     public boolean updateSmartDeviceGetway(Device getwayDevice) {
-                Log.i(TAG, "更新智能设备所在的网关=start");
-                currentSelectLock.setGetwayDevice(getwayDevice);
-                boolean saveResult = currentSelectLock.save();
-                Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
+        Log.i(TAG, "更新智能设备所在的网关=start");
+        currentSelectLock.setGetwayDevice(getwayDevice);
+        boolean saveResult = currentSelectLock.save();
+        Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
         return saveResult;
     }
 
@@ -202,53 +204,41 @@ public class SmartLockManager implements LocalConnecteListener {
      * @param limitedTime  授权时限
      */
     public void setSmartLockParmars(String cmd, String userId, String managePasswd, String authPwd, String limitedTime) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("SmartLock");
-        queryCmd.setSmartUid(currentSelectLock.getUid());
-        queryCmd.setCommand(cmd);
-        if (authPwd != null) {
-            queryCmd.setAuthPwd(authPwd);
-        } else {
-            queryCmd.setAuthPwd("0");
-        }
 
-        queryCmd.setUserID(userId);
-        queryCmd.setManagePwd(managePasswd);
-        if (limitedTime != null) {
-            queryCmd.setTime(limitedTime);
-        } else {
-            queryCmd.setTime("0");
-        }
-
-
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSetSmartLockData(text.getBytes(), currentSelectLock.getUid());
-
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("SmartLock");
+            queryCmd.setSmartUid(currentSelectLock.getUid());
+            queryCmd.setCommand(cmd);
+            if (authPwd != null) {
+                queryCmd.setAuthPwd(authPwd);
+            } else {
+                queryCmd.setAuthPwd("0");
             }
-        });
+
+            queryCmd.setUserID(userId);
+            queryCmd.setManagePwd(managePasswd);
+            if (limitedTime != null) {
+                queryCmd.setTime(limitedTime);
+            } else {
+                queryCmd.setTime("0");
+            }
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSetSmartLockData(text.getBytes(), currentSelectLock.getUid());
+
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+
     }
 
 
-    @Override
-    public void handshakeCompleted() {
 
-    }
 
-    @Override
-    public void createSocketFailed(String msg) {
-
-    }
-
-    @Override
-    public void OnFailedgetLocalGW(String msg) {
-
-    }
 
     @Override
     public void OnBindAppResult(String uid) {
@@ -259,7 +249,6 @@ public class SmartLockManager implements LocalConnecteListener {
 
     @Override
     public void OnGetQueryresult(String result) {
-        //TODO
         Gson gson = new Gson();
         OpResult queryResult = gson.fromJson(result, OpResult.class);
         if (result.contains("DevList")) {

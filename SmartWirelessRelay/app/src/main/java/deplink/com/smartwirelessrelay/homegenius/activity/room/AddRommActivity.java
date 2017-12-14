@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -24,11 +23,9 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcode
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 
 public class AddRommActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "AddRommActivity";
@@ -43,8 +40,10 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private RelativeLayout layout_getway_list;
     private TextView textview_getway_name;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device>mGetways;
+    private List<Device> mGetways;
     private ListView listview_select_getway;
+    private ImageView imageview_getway_arror_right;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +55,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
 
     private boolean fromAddDevice;
     private String selectGetwayName;
+
     private void initDatas() {
         roomManager = RoomManager.getInstance();
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
@@ -71,24 +71,19 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         edittext_room_name.setSelection(roomType.length());
         fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);
 
-        mGetways=new ArrayList<>();
-        //TODO 调试
-        Device temp=new Device();
-        temp.setName("网关一");
-        mGetways.add(temp);
-        temp=new Device();
-        temp.setName("网关2");
-        mGetways.add(temp);
-        temp=new Device();
-        temp.setName("网关3");
-        mGetways.add(temp);
-        //TODO 调试
-        selectGetwayAdapter=new GetwaySelectListAdapter(this,mGetways);
+        mGetways = new ArrayList<>();
+        mGetways.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        if(mGetways.size()>0){
+            currentSelectGetway=mGetways.get(0);
+        }
+
+        selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectGetwayName=mGetways.get(position).getName();
+                selectGetwayName = mGetways.get(position).getName();
+                currentSelectGetway=mGetways.get(position);
                 textview_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
             }
@@ -122,6 +117,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
         listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
         textview_getway_name = (TextView) findViewById(R.id.textview_getway_name);
+        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
     }
 
     private String roomType;
@@ -148,7 +144,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
 
         }
     };
-
+    private Device currentSelectGetway;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -156,37 +152,13 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
             case R.id.textview_add_room_complement:
                 String roomName = edittext_room_name.getText().toString();
                 if (!roomName.equals("")) {
-                    roomManager.addRoom(roomType, roomName, new Observer() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(@NonNull Object o) {
-                            Log.i(TAG, "add room react onNext=" + (boolean) o + "fromAddDevice=" + fromAddDevice);
-                            if ((boolean) o) {
-                                mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
-
-
-                            } else {
-                                mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
-
-                            }
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-                    finish();
-
+                    boolean result = roomManager.addRoom(roomType, roomName,currentSelectGetway);
+                    if (result) {
+                        mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
+                        finish();
+                    } else {
+                        mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
+                    }
                 } else {
                     Toast.makeText(this, "请输入房间名称", Toast.LENGTH_SHORT).show();
                 }
@@ -197,10 +169,12 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.layout_getway:
-                if(layout_getway_list.getVisibility()==View.VISIBLE){
+                if (layout_getway_list.getVisibility() == View.VISIBLE) {
                     layout_getway_list.setVisibility(View.GONE);
-                }else{
+                    imageview_getway_arror_right.setImageResource(R.drawable.directionicon);
+                } else {
                     layout_getway_list.setVisibility(View.VISIBLE);
+                    imageview_getway_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
                 break;
         }

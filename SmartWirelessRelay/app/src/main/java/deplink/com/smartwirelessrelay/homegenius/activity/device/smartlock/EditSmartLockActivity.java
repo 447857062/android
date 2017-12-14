@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,7 +60,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_getway_list;
     private TextView textview_select_getway_name;
     private RelativeLayout layout_getway;
-
+    private ImageView imageview_getway_arror_right;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +128,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
         layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
         listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
+        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
     }
 
     private boolean isOnActivityResult;
@@ -187,8 +189,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
             case R.id.layout_getway:
                 if (layout_getway_list.getVisibility() == View.VISIBLE) {
                     layout_getway_list.setVisibility(View.GONE);
+                    imageview_getway_arror_right.setImageResource(R.drawable.directionicon);
                 } else {
                     layout_getway_list.setVisibility(View.VISIBLE);
+                    imageview_getway_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
 
                 break;
