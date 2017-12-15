@@ -171,18 +171,23 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        manager.addEventCallback(ec);
-        if (NetUtil.isNetAvailable(this)) {
-            try {
-                Log.i(TAG, "onResume queryWifi");
-                routerDevice.queryWifi();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(mRouterManager.isStartFromExperience()){
+
+        }else{
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            manager.addEventCallback(ec);
+            if (NetUtil.isNetAvailable(this)) {
+                try {
+                    Log.i(TAG, "onResume queryWifi");
+                    routerDevice.queryWifi();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ToastSingleShow.showText(this, "网络连接已断开");
             }
-        } else {
-            ToastSingleShow.showText(this, "网络连接已断开");
         }
+
     }
 
 

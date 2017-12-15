@@ -19,9 +19,8 @@
             android:id="@+id/layout_device_name"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
-
+            android:background="@drawable/button_delete_background"
             android:layout_marginTop="@dimen/layout_room_content_margin_top"
-            android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -57,7 +56,7 @@
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_device_name"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -98,7 +97,7 @@
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_select_room"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -160,7 +159,7 @@
             android:layout_below="@+id/layout_getway_list"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/delete_device_button_margintop"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:gravity="center_horizontal|center_vertical"
             android:text="删除设备"
             android:textColor="@color/delete_button"

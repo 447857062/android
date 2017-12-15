@@ -109,7 +109,7 @@ public class DeviceManager implements LocalConnecteListener {
         allSmartDevices = DataSupport.findAll(SmartDev.class, true);
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
+          //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);

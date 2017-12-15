@@ -1,7 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,6 +87,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private RouterManager mRouterManager;
     private RelativeLayout layout_devices_show;
     private ImageView imageview_empty_device;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,30 +113,29 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
         datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
-        mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
-        if(datasTop.size()==0&&datasBottom.size()==0){
+        mDeviceAdapter.setTopList(datasTop);
+        mDeviceAdapter.setBottomList(datasBottom);
+        //  mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
+        if (datasTop.size() == 0 && datasBottom.size() == 0) {
             imageview_empty_device.setVisibility(View.VISIBLE);
             listview_devies.setVisibility(View.GONE);
-        }else{
+        } else {
             imageview_empty_device.setVisibility(View.GONE);
             listview_devies.setVisibility(View.VISIBLE);
         }
-        listview_devies.setAdapter(mDeviceAdapter);
+        //  listview_devies.setAdapter(mDeviceAdapter);
         mDeviceAdapter.notifyDataSetChanged();
     }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
-
     }
 
     private List<String> mRooms = new ArrayList<>();
 
     private void initDatas() {
-
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
         mDeviceManager = DeviceManager.getInstance();
@@ -200,7 +199,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                                     startActivity(new Intent(DevicesActivity.this, SwitchFourActivity.class));
                                     break;
                             }
-
                             break;
                         case "智能门铃":
                             startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
@@ -214,14 +212,16 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
     }
+
     // 用GestureDetectorCompat替换GestureDetector,GestureDetectorCompat兼容的版本较广
     private GestureDetectorCompat mDetector;
+
     public class MytGestureListener extends GestureDetector.SimpleOnGestureListener {
         // 滑动时触发
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
-            Log.i(TAG,"layout_devices_show onScroll");
+            Log.i(TAG, "layout_devices_show onScroll");
             RefreshDevicesBackground();
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
@@ -234,7 +234,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             public void run() {
                 DialogThreeBounce.hideLoading();
             }
-        },3000);
+        }, 3000);
         mDeviceManager.queryDeviceList();
     }
 
@@ -252,7 +252,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_devices_show.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.i(TAG,"layout_devices_show ontouch");
+                Log.i(TAG, "layout_devices_show ontouch");
                 mDetector.onTouchEvent(event);
                 return false;
             }
@@ -278,7 +278,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
         layout_devices_show = (RelativeLayout) findViewById(R.id.layout_devices_show);
-
     }
 
     @Override
@@ -306,12 +305,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             datasBottom.addAll(room.getmDevices());
                             mDeviceAdapter.setTopList(datasTop);
                             mDeviceAdapter.setBottomList(datasBottom);
-
                         }
-                        if(datasTop.size()==0&&datasBottom.size()==0){
+                        if (datasTop.size() == 0 && datasBottom.size() == 0) {
                             imageview_empty_device.setVisibility(View.VISIBLE);
                             listview_devies.setVisibility(View.GONE);
-                        }else{
+                        } else {
                             imageview_empty_device.setVisibility(View.GONE);
                             listview_devies.setVisibility(View.VISIBLE);
                         }
@@ -368,17 +366,14 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_GET_DEVS:
-                    try {
-                        new AlertDialog
-                                .Builder(DevicesActivity.this)
-                                .setTitle("设备")
-                                .setNegativeButton("确定", null)
-                                .setIcon(android.R.drawable.ic_menu_agenda)
-                                .setMessage(str)
-                                .show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    datasTop.clear();
+                    datasBottom.clear();
+                    datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+                    datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
+                    mDeviceAdapter.setTopList(datasTop);
+                    mDeviceAdapter.setBottomList(datasBottom);
+                    mDeviceAdapter.notifyDataSetChanged();
+                    Log.i(TAG, "设备列表=" + str);
                     break;
             }
         }

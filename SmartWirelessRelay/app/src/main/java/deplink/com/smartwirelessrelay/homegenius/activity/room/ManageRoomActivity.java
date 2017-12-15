@@ -129,7 +129,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                 if (mRoomName != null) {
                     int result = mRoomManager.deleteRoom(mRoomName);
                     Log.i(TAG, "删除房间，影响的行数=" + result);
-                    if (result == 1) {
+                    if (result > 0) {
                         startActivity(new Intent(ManageRoomActivity.this, RoomActivity.class));
                         Toast.makeText(ManageRoomActivity.this, "删除房间成功", Toast.LENGTH_SHORT).show();
                     } else {

@@ -74,6 +74,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     private String userName = "";
     private String password = "";
     private MakeSureDialog connectLostDialog;
+    private TextView button_reload_wifirelay;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -210,10 +211,8 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             getLocalWirelessRelay();
         } else {
             initMqttPulltoRefreshView();
-            try {
+            if (routerDevice != null) {
                 routerDevice.queryWifiRelay();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -532,6 +531,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
 
     private void initEvents() {
         image_back.setOnClickListener(this);
+        button_reload_wifirelay.setOnClickListener(this);
         mPullToRefreshListView.getRefreshableView().setDivider(null);
         mPullToRefreshListView.getRefreshableView().setSelector(android.R.color.transparent);
         mPullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
@@ -652,6 +652,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         textview_title = (TextView) findViewById(R.id.textview_title);
+        button_reload_wifirelay = (TextView) findViewById(R.id.button_reload_wifirelay);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         mPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_wireless_relay_line);
 
@@ -663,6 +664,15 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.button_reload_wifirelay:
+                if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
+                    getLocalWirelessRelay();
+                } else {
+                    if (routerDevice != null) {
+                        routerDevice.queryWifiRelay();
+                    }
+                }
                 break;
         }
     }

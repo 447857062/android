@@ -17,9 +17,9 @@
         <!--孕妇模式-->
         <RelativeLayout
             android:id="@+id/layout_model_pregnant"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/connect_setting_item_height"
-
             android:background="@color/white"
             android:clickable="true"
             android:paddingLeft="@dimen/connect_setting_layout_padding_left_right">
@@ -49,13 +49,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
         </RelativeLayout>
         <!--均衡模式-->
         <RelativeLayout
             android:id="@+id/layout_model_balance"
             android:layout_width="match_parent"
             android:layout_height="@dimen/connect_setting_item_height"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:layout_below="@+id/layout_model_pregnant"
             android:background="@color/white"
             android:clickable="true"
@@ -87,11 +88,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
         </RelativeLayout>
         <!--穿墙模式-->
         <RelativeLayout
             android:id="@+id/layout_model_walls"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/connect_setting_item_height"
             android:layout_below="@+id/layout_model_balance"
@@ -124,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
         </RelativeLayout>
     </RelativeLayout>
 

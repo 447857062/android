@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Binder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
  * mLocalConnectmanager.InitLocalConnectManager(this);
  * mLocalConnectmanager.addLocalConnectListener(this);
  */
-public class LocalConnectmanager implements UdpManagerGetIPLintener {
+public class LocalConnectmanager extends Binder implements UdpManagerGetIPLintener {
 
     private static final String TAG = "LocalConnectmanager";
     /**
@@ -113,8 +114,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
         this.mContext = context;
         this.appAuth = bindAppAuth;
         this.mLocalConnecteListener = new ArrayList<>();
-
-
         if (mUdpmanager == null) {
             mUdpmanager = UdpManager.getInstance();
             mUdpmanager.InitUdpConnect(context, this);
@@ -182,8 +181,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             });
             monitorThread.start();
         }
-
-
     }
 
     /**
@@ -236,7 +233,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
             Log.e(TAG, "创建sslsocket success" + address.toString());
-            //TODO
             if (appAuth == null) {
                 if (mContext != null) {
                     Toast.makeText(mContext, "用户未绑定zgbee模块", Toast.LENGTH_SHORT).show();
@@ -250,7 +246,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
         } catch (Exception e) {
             initSocketing = false;
             handshakeCompleted = false;
-
             e.printStackTrace();
         }
 
@@ -403,9 +398,7 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
                             mLocalConnecteListener.get(i).onSetWifiRelayResult(str);
                         }
                         break;
-
                 }
-
             }
             input.close();
         } catch (Exception e) {
@@ -426,7 +419,6 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             //  String recode = record.getALARM_INFO().get(0).getINFO();
             //  Log.i(TAG, "recode=" + recode);
             // ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
-
             List<Info> alermList = record.getInfo();
             Log.i(TAG, "报警记录=" + alermList.size());
             for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -522,14 +514,10 @@ public class LocalConnectmanager implements UdpManagerGetIPLintener {
             }
         }).start();
     }
-
-    private String ipaddressOnly;
     private boolean initSocketing = false;
-
     @Override
     public void onGetLocalConnectIp(String ipAddress, String uid) {
         if (!initSocketing) {
-
             initSocketing = true;
             InitConnect(ipAddress);
 

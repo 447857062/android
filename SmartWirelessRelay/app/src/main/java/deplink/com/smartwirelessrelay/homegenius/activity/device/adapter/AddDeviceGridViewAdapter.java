@@ -73,25 +73,25 @@ public class AddDeviceGridViewAdapter extends BaseAdapter {
         }
         switch (listTop.get(position).getRoomType()){
             case AppConstant.ROOMTYPE.TYPE_LIVING:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roomlivingroom);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_livingroom_background);
                 break;
             case AppConstant.ROOMTYPE.TYPE_BED:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roombedroom);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_bedroom_background);
                 break;
             case AppConstant.ROOMTYPE.TYPE_DINING:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roomdiningroom);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_diningroom_background);
                 break;
             case AppConstant.ROOMTYPE.TYPE_KITCHEN:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roomkitchen);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_kitchroom_background);
                 break;
             case AppConstant.ROOMTYPE.TYPE_STORAGE:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roomstorageroom);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_storageroom_background);
                 break;
             case AppConstant.ROOMTYPE.TYPE_STUDY:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roomstudy);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_studyroom_background);
                 break;
             case AppConstant.ROOMTYPE.TYPE_TOILET:
-                viewHolder.imageview_room_type.setImageResource(R.drawable.roomtoilet);
+                viewHolder.imageview_room_type.setImageResource(R.drawable.button_add_device_roomselect_toiletroom_background);
                 break;
         }
     }

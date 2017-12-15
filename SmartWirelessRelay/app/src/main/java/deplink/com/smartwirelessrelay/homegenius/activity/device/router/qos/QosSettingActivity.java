@@ -28,7 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
-public class QosSettingActivity extends Activity implements View.OnClickListener{
+public class QosSettingActivity extends Activity implements View.OnClickListener {
     private TextView textview_title;
     private FrameLayout image_back;
     private RelativeLayout layout_model_A;
@@ -38,7 +38,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     private ImageView imageview_model_b;
     private ImageView imageview_model_download;
     private String currentQosMode;
-   private TextView textview_edit;
+    private TextView textview_edit;
     private SDKManager manager;
     private EventCallback ec;
     private RouterDevice routerDevice;
@@ -47,6 +47,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     private RouterManager mRouterManager;
     private Qos qos;
     private boolean isSetQos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     private void initDatas() {
         textview_title.setText("智能分配类型选择");
         textview_edit.setText("保存");
-        mRouterManager=RouterManager.getInstance();
+        mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(QosSettingActivity.this);
@@ -153,18 +154,21 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        manager.addEventCallback(ec);
-        if (NetUtil.isNetAvailable(this)) {
-            if(routerDevice!=null){
-                routerDevice.queryQos();
-            }
+        if (mRouterManager.isStartFromExperience()) {
+
         } else {
-            ToastSingleShow.showText(this, "网络连接已断开");
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            manager.addEventCallback(ec);
+            if (NetUtil.isNetAvailable(this)) {
+                if (routerDevice != null) {
+                    routerDevice.queryQos();
+                }
+            } else {
+                ToastSingleShow.showText(this, "网络连接已断开");
+            }
         }
 
 
@@ -186,11 +190,11 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
         checkbox_qos_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     layout_model_A.setVisibility(View.VISIBLE);
                     layout_model_B.setVisibility(View.VISIBLE);
                     layout_model_download.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     layout_model_A.setVisibility(View.GONE);
                     layout_model_B.setVisibility(View.GONE);
                     layout_model_download.setVisibility(View.GONE);
@@ -200,8 +204,8 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_model_A = (RelativeLayout) findViewById(R.id.layout_model_A);
         layout_model_B = (RelativeLayout) findViewById(R.id.layout_model_B);
         layout_model_download = (RelativeLayout) findViewById(R.id.layout_model_download);
@@ -227,13 +231,13 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
                     }
                     if (NetUtil.isNetAvailable(this)) {
                         boolean isUserLogin;
-                        isUserLogin= Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-                        if(isUserLogin){
+                        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                        if (isUserLogin) {
                             isSetQos = true;
                             ToastSingleShow.showText(this, "QOS已设置");
                             routerDevice.setQos(qos);
-                        }else{
-                            ToastSingleShow.showText(this,"未登录，无法设置静态上网,请登录后重试");
+                        } else {
+                            ToastSingleShow.showText(this, "未登录，无法设置静态上网,请登录后重试");
                         }
 
                     } else {

@@ -199,13 +199,18 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     @Override
     protected void onResume() {
         super.onResume();
-        if (mSmartLockManager.getCurrentSelectLock().isRemerberPassword()) {
-            switch_remond_managerpassword.setImageLevel(1);
-            currentImageLevel = 1;
-        } else {
-            switch_remond_managerpassword.setImageLevel(0);
-            currentImageLevel = 0;
+        if(mSmartLockManager.isStartFromExperience()){
+
+        }else{
+            if (mSmartLockManager.getCurrentSelectLock().isRemerberPassword()) {
+                switch_remond_managerpassword.setImageLevel(1);
+                currentImageLevel = 1;
+            } else {
+                switch_remond_managerpassword.setImageLevel(0);
+                currentImageLevel = 0;
+            }
         }
+
     }
 
     @Override

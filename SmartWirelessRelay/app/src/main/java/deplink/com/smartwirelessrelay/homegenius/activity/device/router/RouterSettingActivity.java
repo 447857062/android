@@ -316,17 +316,13 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.layout_connect_type_select_out:
-                if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
-                    startActivity(new Intent(this, ConnectSettingActivity.class));
-                } else {
+                if(mRouterManager.isStartFromExperience()){
                     selectConnectTypeDialog.setmOnConnectTypeSlected(new SelectConnectTypeLocalDialog.onConnectTypeSlected() {
                         @Override
                         public void onConnectTypeSelect(int type) {
                             switch (type) {
                                 case SelectConnectTypeLocalDialog.CONNECTTYPE_DYNAMICS:
-
                                     selectConnectType();
-
                                     break;
                             }
                         }
@@ -334,7 +330,26 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
                     });
                     selectConnectTypeDialog.show();
+                }else{
+                    if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                        startActivity(new Intent(this, ConnectSettingActivity.class));
+                    } else {
+                        selectConnectTypeDialog.setmOnConnectTypeSlected(new SelectConnectTypeLocalDialog.onConnectTypeSlected() {
+                            @Override
+                            public void onConnectTypeSelect(int type) {
+                                switch (type) {
+                                    case SelectConnectTypeLocalDialog.CONNECTTYPE_DYNAMICS:
+                                        selectConnectType();
+                                        break;
+                                }
+                            }
+
+
+                        });
+                        selectConnectTypeDialog.show();
+                    }
                 }
+
 
                 break;
             case R.id.layout_wifi_setting_out:

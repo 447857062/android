@@ -11,7 +11,7 @@
         android:layout_width="@dimen/room_item_room_image_width_height"
         android:layout_height="@dimen/room_item_room_image_width_height"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:src="@drawable/roombedroom" />
+         />
 
     <TextView
         android:id="@+id/textview_room_item"

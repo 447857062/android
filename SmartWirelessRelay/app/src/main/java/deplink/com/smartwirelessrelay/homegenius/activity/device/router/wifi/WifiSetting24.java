@@ -250,35 +250,40 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        manager.addEventCallback(ec);
-        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        // setWifiNameText();
-        if (isUserLogin && routerDevice != null && routerDevice.getOnline()) {
-            if (NetUtil.isNetAvailable(this)) {
-                routerDevice.queryWifi();
+        if(mRouterManager.isStartFromExperience()){
+
+        }else{
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            manager.addEventCallback(ec);
+            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+            // setWifiNameText();
+            if (isUserLogin && routerDevice != null && routerDevice.getOnline()) {
+                if (NetUtil.isNetAvailable(this)) {
+                    routerDevice.queryWifi();
+                } else {
+                    ToastSingleShow.showText(this, "网络连接已断开");
+                }
+                layout_wireless_wifi.setVisibility(View.VISIBLE);
+                layout_hide_net.setVisibility(View.VISIBLE);
+                layout_encryption.setVisibility(View.VISIBLE);
+                layout_mode.setVisibility(View.VISIBLE);
+                layout_channel.setVisibility(View.VISIBLE);
+                layout_bandwidth.setVisibility(View.VISIBLE);
             } else {
-                ToastSingleShow.showText(this, "网络连接已断开");
+                layout_wireless_wifi.setVisibility(View.GONE);
+                layout_hide_net.setVisibility(View.GONE);
+                layout_encryption.setVisibility(View.GONE);
+                layout_mode.setVisibility(View.GONE);
+                layout_channel.setVisibility(View.GONE);
+                layout_bandwidth.setVisibility(View.GONE);
+                if (!isActivityResultSetWifiname) {
+                    wifiname= deplink.com.smartwirelessrelay.homegenius.util.Wifi.getConnectedWifiName(WifiSetting24.this);
+                    wifi_password="12345678";
+                }
+                textview_wifi_name.setText(wifiname);
             }
-            layout_wireless_wifi.setVisibility(View.VISIBLE);
-            layout_hide_net.setVisibility(View.VISIBLE);
-            layout_encryption.setVisibility(View.VISIBLE);
-            layout_mode.setVisibility(View.VISIBLE);
-            layout_channel.setVisibility(View.VISIBLE);
-            layout_bandwidth.setVisibility(View.VISIBLE);
-        } else {
-            layout_wireless_wifi.setVisibility(View.GONE);
-            layout_hide_net.setVisibility(View.GONE);
-            layout_encryption.setVisibility(View.GONE);
-            layout_mode.setVisibility(View.GONE);
-            layout_channel.setVisibility(View.GONE);
-            layout_bandwidth.setVisibility(View.GONE);
-            if (!isActivityResultSetWifiname) {
-                wifiname= deplink.com.smartwirelessrelay.homegenius.util.Wifi.getConnectedWifiName(WifiSetting24.this);
-                wifi_password="12345678";
-            }
-            textview_wifi_name.setText(wifiname);
         }
+
 
 
     }

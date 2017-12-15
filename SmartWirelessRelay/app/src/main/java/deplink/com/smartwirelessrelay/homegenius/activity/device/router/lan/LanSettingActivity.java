@@ -149,17 +149,22 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        manager.addEventCallback(ec);
-        if(NetUtil.isNetAvailable(this)){
-            try {
-                routerDevice.queryLan();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if(mRouterManager.isStartFromExperience()){
+
         }else{
-            ToastSingleShow.showText(this,"网络连接已断开");
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            manager.addEventCallback(ec);
+            if(NetUtil.isNetAvailable(this)){
+                try {
+                    routerDevice.queryLan();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                ToastSingleShow.showText(this,"网络连接已断开");
+            }
         }
+
 
 
     }

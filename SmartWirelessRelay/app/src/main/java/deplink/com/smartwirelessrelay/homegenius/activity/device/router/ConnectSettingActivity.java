@@ -79,12 +79,17 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        manager.addEventCallback(ec);
-        if (routerDevice != null) {
-            routerDevice.queryWan();
-            routerDevice.queryLan();
+        if(mRouterManager.isStartFromExperience()){
+
+        }else{
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            manager.addEventCallback(ec);
+            if (routerDevice != null) {
+                routerDevice.queryWan();
+                routerDevice.queryLan();
+            }
         }
+
     }
 
     @Override

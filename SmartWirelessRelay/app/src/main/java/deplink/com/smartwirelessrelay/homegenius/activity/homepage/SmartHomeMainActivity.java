@@ -1,9 +1,12 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.homepage;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,7 +34,6 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
@@ -44,7 +46,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActiv
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectService;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -54,7 +56,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
 /**
  * 智能家居主页
  */
-public class SmartHomeMainActivity extends Activity implements View.OnClickListener, LocalConnecteListener {
+public class SmartHomeMainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "SmartHomeMainActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -143,19 +145,28 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mLocalConnectmanager.unRegisterNetBroadcast(this);
         manager.removeEventCallback(ec);
     }
 
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG,"onServiceConnected");
+            mLocalConnectmanager = (LocalConnectmanager) service;
+
+        }
+    };
+
     private void initDatas() {
-        mLocalConnectmanager = LocalConnectmanager.getInstance();
-        mLocalConnectmanager.InitLocalConnectManager(SmartHomeMainActivity.this, AppConstant.BIND_APP_MAC);
-        mLocalConnectmanager.addLocalConnectListener(SmartHomeMainActivity.this);
+        Intent bindIntent = new Intent(this, LocalConnectService.class);
+        bindService(bindIntent, connection, BIND_AUTO_CREATE);
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
-        if (mLocalConnectmanager != null) {
-            mLocalConnectmanager.registerNetBroadcast(this);
-        }
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
         mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);
         mExperienceCenterDeviceList = new ArrayList<>();
@@ -301,7 +312,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        mLocalConnectmanager.removeLocalConnectListener(this);
+
 
     }
 
@@ -360,43 +371,5 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 break;
 
         }
-    }
-
-
-
-    @Override
-    public void OnBindAppResult(String uid) {
-
-    }
-
-    @Override
-    public void OnGetQueryresult(String devList) {
-        Log.i(TAG, "OnGetQueryresult");
-    }
-
-    @Override
-    public void OnGetSetresult(String setResult) {
-
-    }
-
-    @Override
-    public void OnGetBindresult(String setResult) {
-
-    }
-
-
-    @Override
-    public void getWifiList(String result) {
-
-    }
-
-    @Override
-    public void onSetWifiRelayResult(String result) {
-
-    }
-
-    @Override
-    public void onGetalarmRecord(List<Info> alarmList) {
-
     }
 }

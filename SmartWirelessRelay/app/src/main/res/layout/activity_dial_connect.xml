@@ -4,217 +4,232 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.connectType.DialConnectActivity">
-    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
 
-    <!--宽带账号-->
+    <include
+        android:id="@+id/layout_topbar"
+        layout="@layout/layout_title_with_right_have_text_have_textbackground" />
+
     <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_account"
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/layout_topbar"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@color/white_background">
+        <!--宽带账号-->
         <RelativeLayout
-            android:layout_centerVertical="true"
+            android:id="@+id/layout_account"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textview_account"
-                android:text="宽带账号:"
-                android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="请输入账号"
-                android:textColorHint="@color/huise"
-                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
-                android:id="@+id/edittext_account"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/textview_account"
-                android:background="@null"
-                android:layout_centerVertical="true"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:text=""
-                />
-        </RelativeLayout>
-        <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-    </RelativeLayout>
+                android:layout_centerVertical="true">
 
-    <!--宽带密码-->
-    <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_password"
-        android:layout_below="@+id/layout_account"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+                <TextView
+                    android:id="@+id/textview_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
+                    android:text="宽带账号:"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:id="@+id/edittext_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
+                    android:layout_toRightOf="@+id/textview_account"
+                    android:background="@null"
+                    android:hint="请输入账号"
+                    android:text=""
+                    android:textColor="@color/room_type_text"
+                    android:textColorHint="@color/huise"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/router_line_dirver" />
+        </RelativeLayout>
+
+        <!--宽带密码-->
         <RelativeLayout
-            android:layout_centerVertical="true"
+            android:id="@+id/layout_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textview_password_title"
-                android:text="宽带密码:"
-                android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="请输入密码"
-                android:textColorHint="@color/huise"
-                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
-                android:id="@+id/edittext_password"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_below="@+id/layout_account"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/textview_password_title"
-                android:background="@null"
-                android:layout_centerVertical="true"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:text=""
-                />
-        </RelativeLayout>
+                android:layout_centerVertical="true">
 
-    </RelativeLayout>
-    <!--DNS-->
-    <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_dns"
-        android:layout_below="@+id/layout_password"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+                <TextView
+                    android:id="@+id/textview_password_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
+                    android:text="宽带密码:"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:id="@+id/edittext_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
+                    android:layout_toRightOf="@+id/textview_password_title"
+                    android:background="@null"
+                    android:hint="请输入密码"
+                    android:text=""
+                    android:textColor="@color/room_type_text"
+                    android:textColorHint="@color/huise"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <!--DNS-->
         <RelativeLayout
-            android:layout_centerVertical="true"
+            android:id="@+id/layout_dns"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textview_dns_title"
-                android:text="DNS:"
-                android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="非必须参数（可不填写）"
-                android:textColorHint="@color/huise"
-                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
-                android:id="@+id/edittext_dns"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_below="@+id/layout_password"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/textview_dns_title"
-                android:background="@null"
-                android:layout_centerVertical="true"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:text=""
-                />
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/textview_dns_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
+                    android:text="DNS:"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:id="@+id/edittext_dns"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
+                    android:layout_toRightOf="@+id/textview_dns_title"
+                    android:background="@null"
+                    android:hint="非必须参数（可不填写）"
+                    android:text=""
+                    android:textColor="@color/room_type_text"
+                    android:textColorHint="@color/huise"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/router_line_dirver" />
         </RelativeLayout>
-        <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-    </RelativeLayout>
-    <!--MTU-->
-    <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_mtu"
-        android:layout_below="@+id/layout_dns"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        <!--MTU-->
         <RelativeLayout
-            android:layout_centerVertical="true"
+            android:id="@+id/layout_mtu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textview_mtu_title"
-                android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
-                android:text="MTU:"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="非必须参数（可不填写）"
-                android:textColorHint="@color/huise"
-                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
-                android:id="@+id/edittext_mtu"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_below="@+id/layout_dns"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/textview_mtu_title"
-                android:background="@null"
-                android:layout_centerVertical="true"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:text=""
-                />
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/textview_mtu_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
+                    android:text="MTU:"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:id="@+id/edittext_mtu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
+                    android:layout_toRightOf="@+id/textview_mtu_title"
+                    android:background="@null"
+                    android:hint="非必须参数（可不填写）"
+                    android:text=""
+                    android:textColor="@color/room_type_text"
+                    android:textColorHint="@color/huise"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/router_line_dirver" />
         </RelativeLayout>
-        <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-    </RelativeLayout>
-    <!--MAC-->
-    <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_mac"
-        android:layout_below="@+id/layout_mtu"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        <!--MAC-->
         <RelativeLayout
-            android:layout_centerVertical="true"
+            android:id="@+id/layout_mac"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/textview_mac_title"
-                android:text="MAC:"
-                android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:hint="非必须参数（可不填写）"
-                android:textColorHint="@color/huise"
-                android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
-                android:id="@+id/edittext_mac"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_below="@+id/layout_mtu"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/layout_content_margin_left_right">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/textview_mac_title"
-                android:background="@null"
-                android:layout_centerVertical="true"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:text=""
-                />
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/textview_mac_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:minWidth="@dimen/router_connect_setting_left_textview_minwidth"
+                    android:text="MAC:"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <EditText
+                    android:id="@+id/edittext_mac"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
+                    android:layout_toRightOf="@+id/textview_mac_title"
+                    android:background="@null"
+                    android:hint="非必须参数（可不填写）"
+                    android:text=""
+                    android:textColor="@color/room_type_text"
+                    android:textColorHint="@color/huise"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
         </RelativeLayout>
-
     </RelativeLayout>
-
-
 </RelativeLayout>

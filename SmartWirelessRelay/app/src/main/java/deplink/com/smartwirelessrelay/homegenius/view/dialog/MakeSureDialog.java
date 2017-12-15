@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 
 /**
  * Created by Administrator on 2017/7/25.
@@ -25,9 +26,6 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
     private Button btn_cancel;
     private TextView textview_unbind_device_type;
     private onSureBtnClickListener mOnSureBtnClickListener;
-    public void setmOnCancelBtnClickListener(onCancelBtnClickListener mOnCancelBtnClickListener) {
-        this.mOnCancelBtnClickListener = mOnCancelBtnClickListener;
-    }
 
     private onCancelBtnClickListener mOnCancelBtnClickListener;
     private TextView textivew_msg;
@@ -46,8 +44,8 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         int screenHeigh = dm.heightPixels;
-        p.height = (int)(screenHeigh*0.25);
-        p.width = (int)(screenWidth*0.9);
+        p.width = (int) Perfence.dp2px(mContext,283);
+        p.height = (int) Perfence.dp2px(mContext,185);
         View view = LayoutInflater.from(mContext).inflate(R.layout.makesure_dialog, null);
         setContentView(view, p);
         //初始化界面控件

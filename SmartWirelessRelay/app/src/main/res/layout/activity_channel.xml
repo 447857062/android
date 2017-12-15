@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_topbar"
+
         android:clickable="false"
         android:scrollbars="none">
 
@@ -21,13 +22,13 @@
             android:layout_height="match_parent">
             <!--auto-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_auto"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
                 android:layout_below="@+id/layout_bandwidth_20"
                 android:layout_marginTop="@dimen/layout_room_content_margin_top"
-                android:background="@color/white"
+
+                android:background="@color/white_background"
                 android:clickable="true"
                 android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -53,12 +54,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
             <!--1-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -90,14 +90,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
 
             <!--2-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -129,13 +128,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--3-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -167,13 +165,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--4-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_4"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -205,13 +202,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--5-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_5"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -243,13 +239,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--6-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_6"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -281,13 +276,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--7-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_7"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -319,13 +313,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--8-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_8"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -357,13 +350,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--9-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_9"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -395,13 +387,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--10-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_10"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -433,13 +424,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--11-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_11"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -471,13 +461,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--12-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_12"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -509,13 +498,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
+                    android:background="@color/router_line_dirver" />
 
             </RelativeLayout>
 
             <!--13-->
             <RelativeLayout
-
                 android:id="@+id/layout_channel_13"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -547,11 +535,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/huise" />
-
+                    android:background="@color/router_line_dirver" />
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
-
-
 </RelativeLayout>

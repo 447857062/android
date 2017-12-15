@@ -11,6 +11,7 @@
         android:id="@+id/listview_devies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:listSelector="@color/transparent"
         android:layout_below="@+id/layout_title"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"

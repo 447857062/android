@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <!--填充颜色-->
-    <solid android:color="@color/white" />
+    <solid android:color="@color/room_type_text" />
     <!--圆角弧度-->
-    <corners android:radius="@dimen/device_item_background_ridus"/>
+    <corners android:radius="@dimen/adddevice_device_item_background_ridus"/>
 </shape>

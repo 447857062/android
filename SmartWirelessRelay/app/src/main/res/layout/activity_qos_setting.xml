@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
 
 
         </RelativeLayout>
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
 
         </RelativeLayout>
         <!--B-->
@@ -134,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
 
         </RelativeLayout>
         <!--B-->
@@ -177,7 +177,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/huise" />
+                android:background="@color/router_line_dirver" />
 
         </RelativeLayout>
     </RelativeLayout>

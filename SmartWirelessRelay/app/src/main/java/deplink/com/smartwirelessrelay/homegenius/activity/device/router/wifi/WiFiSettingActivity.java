@@ -94,21 +94,26 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        Perfence.setContext(getApplicationContext());
-        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        if (routerDevice != null) {
-            deviceOnline = routerDevice.getOnline();
+        if(mRouterManager.isStartFromExperience()){
+
+        }else{
+            Perfence.setContext(getApplicationContext());
+            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            if (routerDevice != null) {
+                deviceOnline = routerDevice.getOnline();
+            }
+            //登录了，并且绑定了设备
+            if (isUserLogin && routerDevice != null && deviceOnline) {
+                layout_wifi_custom.setVisibility(View.VISIBLE);//目前不支持访客WIFI
+                layout_signal_strength.setVisibility(View.VISIBLE);
+            } else {
+                layout_wifi_custom.setVisibility(View.GONE);
+                layout_signal_strength.setVisibility(View.GONE);
+            }
+            manager.addEventCallback(ec);
         }
-        //登录了，并且绑定了设备
-        if (isUserLogin && routerDevice != null && deviceOnline) {
-            layout_wifi_custom.setVisibility(View.VISIBLE);//目前不支持访客WIFI
-            layout_signal_strength.setVisibility(View.VISIBLE);
-        } else {
-            layout_wifi_custom.setVisibility(View.GONE);
-            layout_signal_strength.setVisibility(View.GONE);
-        }
-        manager.addEventCallback(ec);
+
     }
 
     @Override

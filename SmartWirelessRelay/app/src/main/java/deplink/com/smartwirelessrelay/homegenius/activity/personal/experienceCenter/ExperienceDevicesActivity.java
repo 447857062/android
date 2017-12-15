@@ -28,7 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
-public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener,View.OnClickListener {
+public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "EDActivity";
     private ListView listview_experience_center;
     private List<ExperienceCenterDevice> mExperienceCenterDevices;
@@ -106,47 +106,47 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
 
             case AppConstant.DEVICES.TYPE_SMART_GETWAY:
                 Intent intentGetwayDevice = new Intent(ExperienceDevicesActivity.this, GetwayDeviceActivity.class);
-                intentGetwayDevice.putExtra("isStartFromExperience",true);
+                intentGetwayDevice.putExtra("isStartFromExperience", true);
                 startActivity(intentGetwayDevice);
                 break;
             case AppConstant.DEVICES.TYPE_LOCK:
-                 intent = new Intent(this, SmartLockActivity.class);
+                intent = new Intent(this, SmartLockActivity.class);
                 SmartLockManager.getInstance().setStartFromExperience(true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_ROUTER:
-                 intent = new Intent(this, RouterMainActivity.class);
+                intent = new Intent(this, RouterMainActivity.class);
                 RouterManager.getInstance().setStartFromExperience(true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_MENLING:
-                 intent = new Intent(this, DoorbeelMainActivity.class);
-                intent.putExtra("isStartFromExperience",true);
+                intent = new Intent(this, DoorbeelMainActivity.class);
+                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
-                 intent = new Intent(this, SwitchOneActivity.class);
-                intent.putExtra("isStartFromExperience",true);
+                intent = new Intent(this, SwitchOneActivity.class);
+                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_REMOTECONTROL:
-                 intent = new Intent(this, RemoteControlActivity.class);
-                intent.putExtra("isStartFromExperience",true);
+                intent = new Intent(this, RemoteControlActivity.class);
+                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
-                 intent = new Intent(this, TvMainActivity.class);
+                intent = new Intent(this, TvMainActivity.class);
 
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
-                 intent = new Intent(this, AirRemoteControlMianActivity.class);
-                intent.putExtra("isStartFromExperience",true);
+                intent = new Intent(this, AirRemoteControlMianActivity.class);
+                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
-                 intent = new Intent(this,IptvMainActivity.class);
-                intent.putExtra("isStartFromExperience",true);
+                intent = new Intent(this, IptvMainActivity.class);
+                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
         }
@@ -154,7 +154,7 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
                 break;

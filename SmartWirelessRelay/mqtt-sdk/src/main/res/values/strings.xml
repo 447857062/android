@@ -1,6 +1,5 @@
 <resources>
 
-    <string name="app_name">联客路由</string>
     <string name="menu_settings">设置</string>
     <string name="server">Server</string>
     <string name="port">端口</string>

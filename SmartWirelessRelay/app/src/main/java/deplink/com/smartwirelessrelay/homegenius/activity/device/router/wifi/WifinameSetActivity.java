@@ -52,11 +52,16 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        manager.addEventCallback(ec);
-        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        if (isLogin) {
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        if(mRouterManager.isStartFromExperience()){
+
+        }else{
+            manager.addEventCallback(ec);
+            isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+            if (isLogin) {
+                routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            }
         }
+
 
     }
     @Override

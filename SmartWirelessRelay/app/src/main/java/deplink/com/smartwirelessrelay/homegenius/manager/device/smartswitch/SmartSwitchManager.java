@@ -53,7 +53,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
         this.mContext = context;
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
+          //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);

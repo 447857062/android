@@ -4,30 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.ConnectSettingActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
+
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/layout_title_with_back_center_titletext" />
 
     <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:paddingRight="@dimen/layout_content_margin_left_right"
         android:id="@+id/layout_connect_type_setting"
-        android:layout_below="@+id/layout_title"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_title"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@color/white_background">
+
         <RelativeLayout
             android:id="@+id/layout_reboot"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="@drawable/button_delete_background"
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="当前上网方式"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:id="@+id/textview_reboot"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="当前上网方式"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_current_connect_type"
                 android:layout_width="wrap_content"
@@ -36,41 +43,45 @@
                 android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
                 android:layout_toLeftOf="@+id/imageview_encryption"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text" />
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <ImageView
                 android:id="@+id/imageview_encryption"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/directionicon"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/directionicon" />
         </RelativeLayout>
 
     </RelativeLayout>
 
     <!--LAN　ＩＰ-->
     <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_lan_ip"
-        android:layout_below="@+id/layout_connect_type_setting"
         android:layout_width="match_parent"
+
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_connect_type_setting"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="LAN IP"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="LAN IP"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_lan_ip"
                 android:layout_width="wrap_content"
@@ -78,37 +89,42 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--子网掩码-->
     <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_netmask"
-        android:layout_below="@+id/layout_lan_ip"
         android:layout_width="match_parent"
+
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_lan_ip"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="子网掩码"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="子网掩码"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_netmask"
                 android:layout_width="wrap_content"
@@ -116,37 +132,42 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--ＤＨＣＰ-->
     <RelativeLayout
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_dhcp_status"
-        android:layout_below="@+id/layout_netmask"
         android:layout_width="match_parent"
+
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_netmask"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="dhcp开关"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="dhcp开关"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_dhcp_status"
                 android:layout_width="wrap_content"
@@ -154,41 +175,45 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
-        <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-    </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
 
     <!--宽带账号-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_pppoe_account"
-        android:layout_below="@+id/layout_dhcp_status"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_dhcp_status"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="宽带账号"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="宽带账号"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_pppoe_account"
                 android:layout_width="wrap_content"
@@ -196,37 +221,42 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--宽带密码-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
+        android:id="@+id/layout_pppoe_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_pppoe_account"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:background="@drawable/button_delete_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_pppoe_password"
-        android:layout_below="@+id/layout_pppoe_account"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:visibility="gone">
+
         <RelativeLayout
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
             <TextView
-                android:text="宽带密码"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="宽带密码"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_pppoe_password"
                 android:layout_width="wrap_content"
@@ -234,34 +264,37 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
 
     </RelativeLayout>
     <!--WAN IP-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_wan_ip_setting"
-        android:layout_below="@+id/layout_pppoe_password"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_pppoe_password"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="WAN IP"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="WAN IP"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_wanip_value"
                 android:layout_width="wrap_content"
@@ -269,38 +302,43 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--子网掩码-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_submask_setting"
-        android:layout_below="@+id/layout_wan_ip_setting"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_wan_ip_setting"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="子网掩码"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="子网掩码"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_submask_value"
                 android:layout_width="wrap_content"
@@ -308,37 +346,42 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--默认网关-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
+        android:id="@+id/layout_gateway_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_submask_setting"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:background="@drawable/button_delete_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_gateway_setting"
-        android:layout_below="@+id/layout_submask_setting"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:visibility="gone">
+
         <RelativeLayout
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
             <TextView
-                android:text="默认网关"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="默认网关"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_gateway_value"
                 android:layout_width="wrap_content"
@@ -346,33 +389,36 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
     </RelativeLayout>
     <!--DNS-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_dns_setting"
-        android:layout_below="@+id/layout_gateway_setting"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_gateway_setting"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="DNS"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="DNS"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_dns_value"
                 android:layout_width="wrap_content"
@@ -380,39 +426,44 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
 
     <!--mtu-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_mtu"
-        android:layout_below="@+id/layout_dns_setting"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_dns_setting"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="MTU"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="MTU"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_mtu"
                 android:layout_width="wrap_content"
@@ -420,37 +471,42 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--MAC-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
+        android:id="@+id/layout_mac"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_mtu"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:background="@drawable/button_delete_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:id="@+id/layout_mac"
-        android:layout_below="@+id/layout_mtu"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:visibility="gone">
+
         <RelativeLayout
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
             <TextView
-                android:text="MAC"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="MAC"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_mac"
                 android:layout_width="wrap_content"
@@ -458,34 +514,37 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
 
     </RelativeLayout>
     <!--WIFI名称-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_wifissid"
-        android:layout_below="@+id/layout_mac"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_mac"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="WIFI名称"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="WIFI名称"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_wifi_ssid"
                 android:layout_width="wrap_content"
@@ -493,38 +552,43 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--WIFI密码-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_wifipassword"
-        android:layout_below="@+id/layout_wifissid"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_wifissid"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="WIFI密码"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="WIFI密码"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_wifipassword"
                 android:layout_width="wrap_content"
@@ -532,38 +596,42 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz" />
     </RelativeLayout>
     <!--加密类型-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_encryption"
-        android:layout_below="@+id/layout_wifipassword"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_wifipassword"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="加密类型"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="加密类型"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_encryption"
                 android:layout_width="wrap_content"
@@ -571,38 +639,43 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--加密算法类型-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_encryption_algorithm"
-        android:layout_below="@+id/layout_encryption"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_encryption"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="加密算法类型"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="加密算法类型"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_encryption_algorithm"
                 android:layout_width="wrap_content"
@@ -610,38 +683,43 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
     <!--信道-->
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-
         android:id="@+id/layout_channel"
-        android:layout_below="@+id/layout_encryption_algorithm"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+
+        android:layout_below="@+id/layout_encryption_algorithm"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_height="@dimen/layout_item_content_height">
+        android:background="@drawable/button_delete_background"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:visibility="gone">
+
         <RelativeLayout
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:text="信道"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="信道"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_channel"
                 android:layout_width="wrap_content"
@@ -649,13 +727,15 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="--"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/room_type_text"/>
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
+
         <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/huise"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/seekbar_horiz"
+            android:visibility="invisible" />
     </RelativeLayout>
 </RelativeLayout>

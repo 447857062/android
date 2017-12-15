@@ -51,8 +51,8 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity"
             android:launchMode="singleTask"
-            android:theme="@style/noAnimTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,17 +65,17 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity"
             android:launchMode="singleTop"
-            android:theme="@style/noAnimTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity"
-            android:theme="@style/noAnimTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity"
-            android:theme="@style/noAnimTheme"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity"
             android:screenOrientation="portrait" />
@@ -84,8 +84,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SetLockPwdActivity"
-            android:theme="@style/Transparent"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity"
             android:screenOrientation="portrait" />
@@ -296,7 +296,12 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity"
             android:theme="@style/Transparent" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity"></activity>
+        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity" />
+
+        <service
+            android:name="deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

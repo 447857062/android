@@ -62,12 +62,12 @@
 
 
     <RelativeLayout
+        android:background="@drawable/button_press_normal"
         android:id="@+id/layout_getway_check"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_title"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:text="网关检查"
+            android:text="我的家庭网络"
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small" />
 
@@ -97,7 +97,7 @@
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_getway_check"
         android:layout_marginTop="@dimen/room_list_item_margin_top"
-        android:background="@color/white"
+        android:background="@drawable/button_press_normal"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
@@ -123,7 +123,7 @@
     <TextView
         android:id="@+id/button_logout"
         android:layout_width="match_parent"
-        android:background="@color/white"
+        android:background="@drawable/button_delete_background"
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_experience_center"
         android:layout_marginTop="@dimen/mine_page_logout_margitop"

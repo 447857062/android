@@ -22,6 +22,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
@@ -74,17 +75,22 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        getRouterDevice();
-        manager.addEventCallback(ec);
-        if (NetUtil.isNetAvailable(this)) {
-            try {
-                routerDevice.queryWifi();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(RouterManager.getInstance().isStartFromExperience()){
+
+        }else{
+            getRouterDevice();
+            manager.addEventCallback(ec);
+            if (NetUtil.isNetAvailable(this)) {
+                try {
+                    routerDevice.queryWifi();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ToastSingleShow.showText(this, "网络连接已断开");
             }
-        } else {
-            ToastSingleShow.showText(this, "网络连接已断开");
         }
+
 
     }
 

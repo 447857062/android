@@ -9,8 +9,9 @@
     <ListView
         android:id="@+id/listview_experience_center"
         android:layout_width="match_parent"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:scrollbars="none"
+        android:background="@null"
+        android:divider="@null"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_title"
        >

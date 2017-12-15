@@ -78,6 +78,8 @@
 
         <ListView
             android:id="@+id/listview_devies"
+            android:listSelector="@color/transparent"
+            android:background="@null"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"

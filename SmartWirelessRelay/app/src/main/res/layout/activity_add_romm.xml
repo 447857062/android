@@ -80,6 +80,7 @@
             android:layout_marginTop="@dimen/room_list_item_margin_top"
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small"
+            android:singleLine="true"
             android:layout_toRightOf="@+id/textview_example_room_name"
             android:background="@null"
             android:gravity="center_vertical"

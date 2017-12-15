@@ -26,9 +26,7 @@ public class GridViewAdapter extends BaseAdapter {
     public GridViewAdapter(Context mContext, List<Room> mRooms) {
         this.mContext = mContext;
         listTop = mRooms;
-
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;

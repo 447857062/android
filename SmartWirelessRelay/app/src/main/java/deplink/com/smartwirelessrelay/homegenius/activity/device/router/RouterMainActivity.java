@@ -162,6 +162,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         if (isStartFromExperience) {
 
         } else {
+            textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
             manager.addEventCallback(ec);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             frame_blacklist_content.setVisibility(View.GONE);

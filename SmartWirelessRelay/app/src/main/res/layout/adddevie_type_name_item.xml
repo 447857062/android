@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/devices_grid_device_icon_width_height"
     android:layout_height="@dimen/devices_grid_device_icon_width_height"
-    android:background="@drawable/radius4_white_background"
+    android:background="@drawable/button_add_device_gridview_background"
     android:minHeight="@dimen/devices_grid_device_icon_width_height"
     android:minWidth="@dimen/devices_grid_device_icon_width_height">
 
@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/device_type"
-        android:gravity="center_horizontal"
         android:layout_marginBottom="@dimen/devices_grid_device_icon_margin_top"
+        android:gravity="center_horizontal"
         android:textColor="@color/add_device_text_show_explan"
         android:textSize="@dimen/text_size_small" />
 

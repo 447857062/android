@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
         <!--路由器名称-->
         <RelativeLayout
-        android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:id="@+id/layout_router_name_out"
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
         </RelativeLayout>
         <!--房间分类-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right"
             android:id="@+id/layout_room_select_out"
@@ -99,7 +99,7 @@
         </RelativeLayout>
         <!--上网设置-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:id="@+id/layout_connect_type_select_out"
@@ -138,7 +138,7 @@
         </RelativeLayout>
         <!--WIFi设置-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
 
             android:id="@+id/layout_wifi_setting_out"
@@ -176,7 +176,7 @@
         </RelativeLayout>
         <!--LAN设置-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right"
             android:id="@+id/layout_lan_setting_out"
@@ -208,7 +208,7 @@
         </RelativeLayout>
         <!--QOS设置-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
 
             android:id="@+id/layout_QOS_setting_out"
@@ -246,7 +246,7 @@
         </RelativeLayout>
         <!--固件升级-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
 
             android:id="@+id/layout_update_out"
@@ -283,7 +283,7 @@
         </RelativeLayout>
         <!--重启路由器-->
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right"
             android:id="@+id/layout_reboot_out"
@@ -313,7 +313,7 @@
             </RelativeLayout>
         </RelativeLayout>
         <TextView
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:layout_marginTop="@dimen/button_delete_button_margin_top"
             android:layout_below="@+id/layout_reboot_out"
             android:id="@+id/buttton_delete_router"
