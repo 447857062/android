@@ -34,7 +34,9 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private Button button_ok;
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
+    private TextView textview_test_press_4;
     private FrameLayout image_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,44 +47,44 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private List<String> codeDatas;
-    private static final int MSG_SHOW_GET_KT_CODE =100;
-    private static final int MSG_SEND_CODE=101;
-    private static final int MSG_SHOW_GET_TV_CODE =102;
-    private static final int MSG_SHOW_GET_IPTV_CODE =103;
-
+    private static final int MSG_SHOW_GET_KT_CODE = 100;
+    private static final int MSG_SEND_CODE = 101;
+    private static final int MSG_SHOW_GET_TV_CODE = 102;
+    private static final int MSG_SHOW_GET_IPTV_CODE = 103;
+    private int testCodeNumber;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             QueryTestCodeResponse code;
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_SHOW_GET_KT_CODE:
-                     code = (QueryTestCodeResponse) msg.obj;
-
+                    code = (QueryTestCodeResponse) msg.obj;
+                    testCodeNumber = code.getValue().size();
+                    textview_test_press_4.setText("" + testCodeNumber);
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
                     codeDatas.clear();
 
-
                     break;
                 case MSG_SHOW_GET_TV_CODE:
-                     code = (QueryTestCodeResponse) msg.obj;
-
+                    code = (QueryTestCodeResponse) msg.obj;
+                    textview_test_press_4.setText("" + code.getValue().size());
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
                     codeDatas.clear();
 
                     break;
                 case MSG_SHOW_GET_IPTV_CODE:
-                     code = (QueryTestCodeResponse) msg.obj;
-
+                    code = (QueryTestCodeResponse) msg.obj;
+                    textview_test_press_4.setText("" + code.getValue().size());
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
                     codeDatas.clear();
 
                     break;
                 case MSG_SEND_CODE:
-                    if(currentTestCodeIndex<codeDatas.size()){
+                    if (currentTestCodeIndex < codeDatas.size()) {
                         mRemoteControlManager.sendData(codeDatas.get(currentTestCodeIndex));
                         startSend();
                     }
@@ -95,17 +97,19 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     };
     private int controlId;
     private String brandId;
+
     @Override
     protected void onResume() {
         super.onResume();
-        switch (type){
+        switch (type) {
             case "KT":
                 RestfulTools.getSingleton(this).queryTestCode("KT", bandName, "cn", new Callback<QueryTestCodeResponse>() {
                     @Override
                     public void onResponse(Call<QueryTestCodeResponse> call, Response<QueryTestCodeResponse> response) {
                         Message msg = Message.obtain();
-                        msg.what= MSG_SHOW_GET_KT_CODE;
+                        msg.what = MSG_SHOW_GET_KT_CODE;
                         msg.obj = response.body();
+                        Log.i(TAG, "测试码列表大小:" + response.body().getValue().size());
                         mHandler.sendMessage(msg);
                     }
 
@@ -120,7 +124,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     @Override
                     public void onResponse(Call<QueryTestCodeResponse> call, Response<QueryTestCodeResponse> response) {
                         Message msg = Message.obtain();
-                        msg.what= MSG_SHOW_GET_TV_CODE;
+                        msg.what = MSG_SHOW_GET_TV_CODE;
                         msg.obj = response.body();
                         mHandler.sendMessage(msg);
                     }
@@ -136,7 +140,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     @Override
                     public void onResponse(Call<QueryTestCodeResponse> call, Response<QueryTestCodeResponse> response) {
                         Message msg = Message.obtain();
-                        msg.what= MSG_SHOW_GET_IPTV_CODE;
+                        msg.what = MSG_SHOW_GET_IPTV_CODE;
                         msg.obj = response.body();
                         mHandler.sendMessage(msg);
                     }
@@ -163,8 +167,9 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         button_test = (Button) findViewById(R.id.button_test);
         button_ng = (Button) findViewById(R.id.button_ng);
         button_ok = (Button) findViewById(R.id.button_ok);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        textview_test_press_4 = (TextView) findViewById(R.id.textview_test_press_4);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
     private String bandName;
@@ -186,19 +191,19 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 onBackPressed();
                 break;
             case R.id.button_ng:
-                currentTestCodeIndex=0;
+                currentTestCodeIndex = 0;
                 layout_device_response.setVisibility(View.GONE);
                 break;
             case R.id.button_ok:
-                Log.i(TAG, "下载码表 type="+type+"brandId=" + brandId+"controlId="+controlId);
-                switch (type){
+                Log.i(TAG, "下载码表 type=" + type + "brandId=" + brandId + "controlId=" + controlId);
+                switch (type) {
                     case "TV":
                         RestfulTools.getSingleton(this).downloadIrCode("TV", brandId, controlId, new Callback<QueryRCCodeResponse>() {
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
-                                Intent intent=new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
-                                intent.putExtra("DeviceType","智能电视");
+                                Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                intent.putExtra("DeviceType", "智能电视");
                                 startActivity(intent);
                             }
 
@@ -213,8 +218,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
-                                Intent intent=new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
-                                intent.putExtra("DeviceType","智能空调");
+                                Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                intent.putExtra("DeviceType", "智能空调");
                                 startActivity(intent);
                             }
 
@@ -229,8 +234,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
-                                Intent intent=new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
-                                intent.putExtra("DeviceType","智能机顶盒遥控");
+                                Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                intent.putExtra("DeviceType", "智能机顶盒遥控");
                                 startActivity(intent);
                             }
 
@@ -253,17 +258,18 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
     private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 10000;
     int currentTestCodeIndex = 0;
+
     private void startSend() {
         if (codeDatas.size() > 0) {
             if (currentTestCodeIndex < codeDatas.size()) {
                 if (currentTestCodeIndex == 0) {
                     currentTestCodeIndex++;
-                    Message msg=Message.obtain();
-                    msg.what=MSG_SEND_CODE;
+                    Message msg = Message.obtain();
+                    msg.what = MSG_SEND_CODE;
                     mHandler.sendMessage(msg);
                 } else {
-                    Message msg=Message.obtain();
-                    msg.what=MSG_SEND_CODE;
+                    Message msg = Message.obtain();
+                    msg.what = MSG_SEND_CODE;
                     mHandler.sendMessageDelayed(msg, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
                 }
             }
@@ -272,6 +278,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
     @Override
     public void responseQueryResult(String result) {
-        Log.i(TAG,"测试按键="+result);
+        Log.i(TAG, "测试按键=" + result);
     }
 }

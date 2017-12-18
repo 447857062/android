@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 import io.reactivex.Observer;
@@ -38,7 +39,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
         textview_edit.setText("完成");
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
-        if (mRouterManager.isStartFromExperience()) {
+        if ( DeviceManager.getInstance().isStartFromExperience()) {
             deviceName = "体验路由器";
         } else {
             deviceName = mRouterManager.getCurrentSelectedRouter().getName();
@@ -70,7 +71,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
             case R.id.textview_edit:
                 final String routerName = edittext_router_name.getText().toString();
                 if (!routerName.equals("")) {
-                    if (mRouterManager.isStartFromExperience()) {
+                    if ( DeviceManager.getInstance().isStartFromExperience()) {
 
                     } else {
                         mRouterManager.updateRouterName(routerName, new Observer() {

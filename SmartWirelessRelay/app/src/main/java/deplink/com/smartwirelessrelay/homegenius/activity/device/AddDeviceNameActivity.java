@@ -65,6 +65,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private List<Device> mGetways;
     private ListView listview_select_getway;
     private ImageView imageview_getway_arror_right;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +148,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                currentSelectGetway=mGetways.get(position);
+                currentSelectGetway = mGetways.get(position);
             }
         });
         if (mGetways.size() > 0) {
@@ -343,7 +344,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 }
                 switch (deviceType) {
                     case "SMART_LOCK":
-                        //TODO 不需要模拟测试
                         Log.i(TAG, "绑定智能设备");
                         device.setName(deviceName);
                         DialogThreeBounce.showLoading(this);

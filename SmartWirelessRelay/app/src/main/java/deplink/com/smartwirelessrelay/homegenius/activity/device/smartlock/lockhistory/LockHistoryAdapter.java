@@ -14,6 +14,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.Record;
 import deplink.com.smartwirelessrelay.homegenius.util.DateUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -61,7 +62,12 @@ public class LockHistoryAdapter extends BaseAdapter{
         String yearMouthDay=DateUtil.getYearMothDayStringFromData(date);
         String hourMinuteSecond=DateUtil.getHourMinuteSecondStringFromData(date);
         Log.i(TAG,"yearMouthDay="+yearMouthDay+"hourMinuteSecond="+hourMinuteSecond);
-        vh.textview_userid.setText(mDatas.get(position).getUserID());
+        if(!Perfence.getPerfence(mDatas.get(position).getUserID()).equals("")){
+            vh.textview_userid.setText(Perfence.getPerfence(mDatas.get(position).getUserID()));
+        }else{
+            vh.textview_userid.setText(mDatas.get(position).getUserID());
+        }
+
         vh.textview_data_year_mouth_day.setText(yearMouthDay);
         vh.textview_data_hour_minute_second.setText(hourMinuteSecond);
         return convertView;

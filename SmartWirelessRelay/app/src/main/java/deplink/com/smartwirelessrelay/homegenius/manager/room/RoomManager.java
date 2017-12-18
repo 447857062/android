@@ -273,9 +273,11 @@ public class RoomManager {
         tempAddRoom.setRoomName(roomName);
         tempAddRoom.setRoomType(roomType);
         tempAddRoom.setRoomOrdinalNumber(mRooms.size() + 1);
-        List<Device> devices = new ArrayList<>();
-        devices.add(gewayDevice);
-        tempAddRoom.setmGetwayDevices(devices);
+        if(gewayDevice!=null){
+            List<Device> devices = new ArrayList<>();
+            devices.add(gewayDevice);
+            tempAddRoom.setmGetwayDevices(devices);
+        }
         final boolean optionResult;
         optionResult = tempAddRoom.save();
         mRooms.add(tempAddRoom);

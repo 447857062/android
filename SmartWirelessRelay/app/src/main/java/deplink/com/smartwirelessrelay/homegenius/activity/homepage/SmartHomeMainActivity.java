@@ -48,7 +48,7 @@ import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectService;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
@@ -248,15 +248,15 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private AdapterView.OnItemClickListener mExperienceCenterListClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            DeviceManager.getInstance().setStartFromExperience(true);
             switch (mExperienceCenterDeviceList.get(position).getDeviceName()) {
                 case "智能门锁":
                     Intent intent = new Intent(SmartHomeMainActivity.this, SmartLockActivity.class);
-                    SmartLockManager.getInstance().setStartFromExperience(true);
+
                     startActivity(intent);
                     break;
                 case "智能网关":
                     Intent intentGetwayDevice = new Intent(SmartHomeMainActivity.this, GetwayDeviceActivity.class);
-                    intentGetwayDevice.putExtra("isStartFromExperience", true);
                     startActivity(intentGetwayDevice);
                     break;
             }

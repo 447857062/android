@@ -25,13 +25,14 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
  * Created by Administrator on 2017/11/9.
  * 智能锁设备管理器
  * 需要context，LocalConnecteListener（非必须）参数
  * 使用：
- * <p>
+ * <p/>
  * private SmartLockManager mSmartLockManager;
  * mSmartLockManager = SmartLockManager.getInstance();
  * mSmartLockManager.InitSmartLockManager(this);
@@ -51,16 +52,6 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     private static SmartLockManager instance;
     private SmartDev currentSelectLock;
-    private boolean isStartFromExperience;
-
-
-    public boolean isStartFromExperience() {
-        return isStartFromExperience;
-    }
-
-    public void setStartFromExperience(boolean startFromExperience) {
-        isStartFromExperience = startFromExperience;
-    }
 
     private SmartLockManager() {
 
@@ -92,7 +83,7 @@ public class SmartLockManager implements LocalConnecteListener {
         this.mSmartLockListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-          //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
+            //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -129,23 +120,23 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     public void queryLockHistory() {
 
-            QueryOptions queryCmd = new QueryOptions();
-            queryCmd.setOP("QUERY");
-            queryCmd.setMethod("SmartLock");
-            queryCmd.setCommand("HisRecord");
-            queryCmd.setUserID("1001");
-            queryCmd.setSmartUid(currentSelectLock.getUid());
-            Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
-            queryCmd.setTimestamp();
-            Gson gson = new Gson();
-            String text = gson.toJson(queryCmd);
-            packet.packOpenLockListData(text.getBytes(), currentSelectLock.getUid());
-            cachedThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    mLocalConnectmanager.getOut(packet.data);
-                }
-            });
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("QUERY");
+        queryCmd.setMethod("SmartLock");
+        queryCmd.setCommand("HisRecord");
+        queryCmd.setUserID("1001");
+        queryCmd.setSmartUid(currentSelectLock.getUid());
+        Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
+        queryCmd.setTimestamp();
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        packet.packOpenLockListData(text.getBytes(), currentSelectLock.getUid());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
     }
 
     public void updateSmartDeviceName(final String deviceName) {
@@ -165,24 +156,22 @@ public class SmartLockManager implements LocalConnecteListener {
     /**
      * 更新设备所在房间
      */
-    public void updateSmartDeviceInWhatRoom(final Room room, final String deviceUid) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "更新智能设备所在的房间=start");
-                //保存所在的房间
-                //查询设备
-                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
-                //找到要更行的设备,设置关联的房间
-                List<Room> rooms = new ArrayList<Room>();
-                rooms.add(room);
-                currentSelectLock.setRooms(rooms);
-                smartDev.setRooms(rooms);
-                boolean saveResult = smartDev.save();
-                Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
-            }
-        });
-
+    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid) {
+        Log.i(TAG, "更新智能设备所在的房间=start");
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<>();
+        if (room == null) {
+            rooms.add(room);
+        } else {
+            rooms.addAll(RoomManager.getInstance().getmRooms());
+        }
+        currentSelectLock.setRooms(rooms);
+        smartDev.setRooms(rooms);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
     }
 
     public boolean updateSmartDeviceGetway(Device getwayDevice) {
@@ -204,39 +193,36 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     public void setSmartLockParmars(String cmd, String userId, String managePasswd, String authPwd, String limitedTime) {
 
-            QueryOptions queryCmd = new QueryOptions();
-            queryCmd.setOP("SET");
-            queryCmd.setMethod("SmartLock");
-            queryCmd.setSmartUid(currentSelectLock.getUid());
-            queryCmd.setCommand(cmd);
-            if (authPwd != null) {
-                queryCmd.setAuthPwd(authPwd);
-            } else {
-                queryCmd.setAuthPwd("0");
-            }
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("SET");
+        queryCmd.setMethod("SmartLock");
+        queryCmd.setSmartUid(currentSelectLock.getUid());
+        queryCmd.setCommand(cmd);
+        if (authPwd != null) {
+            queryCmd.setAuthPwd(authPwd);
+        } else {
+            queryCmd.setAuthPwd("0");
+        }
 
-            queryCmd.setUserID(userId);
-            queryCmd.setManagePwd(managePasswd);
-            if (limitedTime != null) {
-                queryCmd.setTime(limitedTime);
-            } else {
-                queryCmd.setTime("0");
-            }
-            Gson gson = new Gson();
-            String text = gson.toJson(queryCmd);
-            packet.packSetSmartLockData(text.getBytes(), currentSelectLock.getUid());
+        queryCmd.setUserID(userId);
+        queryCmd.setManagePwd(managePasswd);
+        if (limitedTime != null) {
+            queryCmd.setTime(limitedTime);
+        } else {
+            queryCmd.setTime("0");
+        }
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        packet.packSetSmartLockData(text.getBytes(), currentSelectLock.getUid());
 
-            cachedThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    mLocalConnectmanager.getOut(packet.data);
-                }
-            });
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
 
     }
-
-
-
 
 
     @Override
@@ -366,5 +352,11 @@ public class SmartLockManager implements LocalConnecteListener {
     public List<Info> getAlarmRecord() {
         List<Info> newsList = currentSelectLock.getAlarmInfo();
         return newsList;
+    }
+
+    public boolean clearAlarmRecord() {
+        currentSelectLock.setAlarmInfo(null);
+        boolean result = currentSelectLock.save();
+        return result;
     }
 }

@@ -114,7 +114,7 @@ public class BasicPacket {
         if (xdata != null && xdata.length > 0) {
             System.arraycopy(xdata, 0, data, len, xdata.length);
         }
-        Log.e(TAG, "打包数据长度data.length=" + data.length);
+        Log.e(TAG, "打包数据长度data.length=" + data.length+"数据是："+DataExchange.byteArrayToHexString(data));
         return data.length;
     }
 

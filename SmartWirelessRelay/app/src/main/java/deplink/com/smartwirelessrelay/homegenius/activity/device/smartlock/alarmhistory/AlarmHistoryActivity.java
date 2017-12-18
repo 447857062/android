@@ -12,6 +12,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class AlarmHistoryActivity extends Activity implements View.OnClickListener {
@@ -57,7 +58,6 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
         } else {
             mSmartLockManager.InitSmartLockManager(this);
             mLockHistory.clear();
-            //TODO
             if (mSmartLockManager.getAlarmRecord() != null) {
                 mLockHistory.addAll(mSmartLockManager.getAlarmRecord());
             }
@@ -80,7 +80,7 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
 
     private void initDatas() {
         textview_title.setText("报警记录");
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         mLockHistory = new ArrayList<>();
         mAlarmHistoryAdapter = new AlarmHistoryAdapter(this, mLockHistory);
         if (!isStartFromExperience) {

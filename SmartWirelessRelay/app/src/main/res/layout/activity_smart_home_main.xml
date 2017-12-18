@@ -200,7 +200,6 @@
                     android:background="@drawable/homepage_halfrectangle_buttom_background"
                     android:divider="@null"
                     android:minHeight="@dimen/home_page_roomselect_top_height"
-                    android:paddingLeft="@dimen/layout_content_margin_left_right"
                     android:scrollbars="none" />
             </RelativeLayout>
         </RelativeLayout>

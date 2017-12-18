@@ -41,6 +41,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WiF
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
@@ -93,7 +94,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-       if( !mRouterManager.isStartFromExperience()){
+       if( ! DeviceManager.getInstance().isStartFromExperience()){
            textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
            if(mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")){
                layout_lan_setting_out.setVisibility(View.GONE);
@@ -257,7 +258,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            if(mRouterManager.isStartFromExperience()){
+            if( DeviceManager.getInstance().isStartFromExperience()){
 
             }else{
                 final String roomName = data.getStringExtra("roomName");
@@ -312,11 +313,11 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 break;
             case R.id.layout_room_select_out:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
-                intent.putExtra("EditSmartLockActivity", true);
+                intent.putExtra("addDeviceSelectRoom", true);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.layout_connect_type_select_out:
-                if(mRouterManager.isStartFromExperience()){
+                if( DeviceManager.getInstance().isStartFromExperience()){
                     selectConnectTypeDialog.setmOnConnectTypeSlected(new SelectConnectTypeLocalDialog.onConnectTypeSlected() {
                         @Override
                         public void onConnectTypeSelect(int type) {

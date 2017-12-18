@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.constant.SmartLockConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.view.keyboard.KeyboardUtil;
@@ -91,7 +92,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     private void initData() {
         mSmartLockManager = SmartLockManager.getInstance();
-        isStartFromExperience = mSmartLockManager.isStartFromExperience();
+        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
 
         } else {
@@ -199,7 +200,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     @Override
     protected void onResume() {
         super.onResume();
-        if(mSmartLockManager.isStartFromExperience()){
+        if( DeviceManager.getInstance().isStartFromExperience()){
 
         }else{
             if (mSmartLockManager.getCurrentSelectLock().isRemerberPassword()) {

@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDList;
@@ -160,11 +163,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     String deviceSubType = datasBottom.get(position - datasTop.size()).getSubType();
                     Log.i(TAG, "智能设备类型=" + deviceType);
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                    mDeviceManager.setStartFromExperience(false);
                     switch (deviceType) {
                         case "SMART_LOCK":
                             //设置当前选中的门锁设备
                             mSmartLockManager.setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
-                            mSmartLockManager.setStartFromExperience(false);
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
@@ -175,7 +178,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
-                            RouterManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                         case "智能电视":
@@ -370,6 +372,32 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     datasBottom.clear();
                     datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
                     datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
+                    List<Device> tempDevice = new ArrayList<>();
+                    List<SmartDev> tempSmartDevice = new ArrayList<>();
+                    Gson gson = new Gson();
+                    DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
+                    if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
+                        tempSmartDevice.addAll(aDeviceList.getSmartDev());
+                    }
+                    //存储设备列表
+                    if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
+                        tempDevice.addAll(aDeviceList.getDevice());
+                    }
+                    for(int i=0;i<tempDevice.size();i++){
+                        for(int j=0;j<datasTop.size();j++){
+                            if(datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())){
+                                datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
+                            }
+                        }
+                    }
+                    for(int i=0;i<tempSmartDevice.size();i++){
+                        for(int j=0;j<datasBottom.size();j++){
+                            if(datasBottom.get(j).getUid().equals(tempSmartDevice.get(i).getUid())){
+                                datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
+                            }
+                        }
+                    }
+
                     mDeviceAdapter.setTopList(datasTop);
                     mDeviceAdapter.setBottomList(datasBottom);
                     mDeviceAdapter.notifyDataSetChanged();

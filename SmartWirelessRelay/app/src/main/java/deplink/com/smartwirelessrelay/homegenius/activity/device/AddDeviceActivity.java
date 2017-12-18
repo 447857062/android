@@ -18,7 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDevi
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.EditSmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 public class AddDeviceActivity extends Activity implements View.OnClickListener {
@@ -40,17 +40,17 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
         initEvents();
     }
 
-    private boolean isFromEditSmartLockActivity;
     private boolean isFromGetwayMainActivity;
     private boolean isStartFromExperience;
+    private boolean addDeviceSelectRoom;
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
-        isFromEditSmartLockActivity = getIntent().getBooleanExtra("EditSmartLockActivity", false);
         isFromGetwayMainActivity = getIntent().getBooleanExtra("isFromGetwayMainActivity", false);
-        isStartFromExperience = RouterManager.getInstance().isStartFromExperience();
-        if (isFromEditSmartLockActivity || isFromGetwayMainActivity) {
+        addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        if (isFromGetwayMainActivity || addDeviceSelectRoom) {
             textview_show_select_room.setText("请选择设备所在的房间");
             textview_skip_this_option.setVisibility(View.GONE);
         } else {
@@ -82,7 +82,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                         setResult(RESULT_OK, mIntent);
                         finish();
                     } else {
-                        if (isFromEditSmartLockActivity) {
+                        if ( addDeviceSelectRoom) {
                             Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
                             intentSeleteedRoom.putExtra("roomName", currentAddRomm);
                             AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);

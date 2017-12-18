@@ -23,11 +23,16 @@ public class UpdateNicknameActivity extends Activity implements View.OnClickList
         initDatas();
         initEvents();
     }
-
+    private String nickName;
     private void initDatas() {
         textview_title.setText("修改昵称");
-
         textview_edit.setText("完成");
+        nickName=getIntent().getStringExtra("nickname");
+        if(nickName!=null){
+            edittext_update_nickname.setText(nickName);
+            edittext_update_nickname.setSelection(nickName.length());
+        }
+
     }
 
     private void initEvents() {

@@ -22,7 +22,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
@@ -75,7 +75,7 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if(RouterManager.getInstance().isStartFromExperience()){
+        if( DeviceManager.getInstance().isStartFromExperience()){
 
         }else{
             getRouterDevice();

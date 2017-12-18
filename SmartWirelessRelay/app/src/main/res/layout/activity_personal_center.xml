@@ -43,7 +43,7 @@
             android:layout_height="@dimen/mine_page_user_image_ridus"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/mine_page_user_image_margintop"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/defaultavatar"
             app:border_color="@color/white_alpha60"
             app:border_width="2dp" />
 

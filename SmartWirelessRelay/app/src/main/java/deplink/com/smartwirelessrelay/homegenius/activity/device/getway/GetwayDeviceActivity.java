@@ -23,6 +23,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivi
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -56,7 +57,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private void initDatas() {
         textview_title.setText("智能网关");
         textview_edit.setText("完成");
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
             edittext_input_devie_name.setSelection(5);

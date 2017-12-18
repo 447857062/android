@@ -43,15 +43,6 @@ public class RouterManager {
     private SmartDev currentSelectedRouter;
 
     private RouterDevice routerDevice;
-    private boolean isStartFromExperience;
-
-    public boolean isStartFromExperience() {
-        return isStartFromExperience;
-    }
-
-    public void setStartFromExperience(boolean startFromExperience) {
-        isStartFromExperience = startFromExperience;
-    }
 
     public SmartDev getCurrentSelectedRouter() {
         return currentSelectedRouter;

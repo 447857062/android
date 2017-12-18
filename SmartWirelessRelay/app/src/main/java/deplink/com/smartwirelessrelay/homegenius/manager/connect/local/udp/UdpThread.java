@@ -29,7 +29,6 @@ public class UdpThread {
     public Context mContext;
     private UdpPacket udp;
 
-    //TODO UID要不要传
     public UdpThread(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
@@ -60,7 +59,6 @@ public class UdpThread {
     }
 
     public void wifiCheckHandler() {
-
         try {
             //发送一个局域网查询包
             GeneralPacket packet;
@@ -72,8 +70,6 @@ public class UdpThread {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void open() {

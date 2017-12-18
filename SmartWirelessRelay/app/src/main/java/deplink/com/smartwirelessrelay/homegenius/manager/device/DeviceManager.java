@@ -54,7 +54,15 @@ public class DeviceManager implements LocalConnecteListener {
     private List<SmartDev> mSmartDevList;
     private SmartDev currentSelectSmartDevice;
     private List<SmartDev> allSmartDevices;
+    private boolean isStartFromExperience;
 
+    public boolean isStartFromExperience() {
+        return isStartFromExperience;
+    }
+
+    public void setStartFromExperience(boolean startFromExperience) {
+        isStartFromExperience = startFromExperience;
+    }
 
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
@@ -109,7 +117,7 @@ public class DeviceManager implements LocalConnecteListener {
         allSmartDevices = DataSupport.findAll(SmartDev.class, true);
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-          //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
+            //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -205,7 +213,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 如果有这个设备就不处理
      * 添加智能设备成功，需要更新数据库
      */
-    public boolean addDBSmartDevice(QrcodeSmartDevice device,Device getwayDevice) {
+    public boolean addDBSmartDevice(QrcodeSmartDevice device, Device getwayDevice) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
         if (smartDev == null) {
@@ -270,35 +278,29 @@ public class DeviceManager implements LocalConnecteListener {
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         packet.packSendSmartDevsData(text.getBytes());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
-            }
-        });
+        mLocalConnectmanager.getOut(packet.data);
     }
 
     /**
      * 更新设备所在房间
      */
-    public void updateSmartDeviceInWhatRoom(final Room room, final String deviceUid, final String deviceName) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "更新智能设备所在的房间=start");
-                //保存所在的房间
-                //查询设备
-                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
-                //找到要更行的设备,设置关联的房间
-                List<Room> rooms = new ArrayList<Room>();
-                rooms.add(room);
-                smartDev.setRooms(rooms);
-                smartDev.setName(deviceName);
-                boolean saveResult = smartDev.save();
-                Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
-            }
-        });
-
+    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid, String deviceName) {
+        Log.i(TAG, "更新智能设备所在的房间=start" + "room=" + (room != null));
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<>();
+        if (room != null) {
+            rooms.add(room);
+        } else {
+            rooms.addAll(RoomManager.getInstance().getmRooms());
+            Log.i(TAG, "房间列表大小" + rooms.size());
+        }
+        smartDev.setRooms(rooms);
+        smartDev.setName(deviceName);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
     }
 
     public void deleteSmartDeviceInWhatRoom(final Room room, final String deviceUid) {
@@ -323,8 +325,6 @@ public class DeviceManager implements LocalConnecteListener {
         });
 
     }
-
-
 
 
     @Override
@@ -471,7 +471,7 @@ public class DeviceManager implements LocalConnecteListener {
                 allSmartDevices = DataSupport.findAll(SmartDev.class, true);
                 for (int i = 0; i < allSmartDevices.size(); i++) {
                     if (allSmartDevices.get(i).getName().equals(deviceName)) {
-                        deviceName = deviceName +1;
+                        deviceName = deviceName + 1;
                     }
                 }
                 dev.setName(deviceName);

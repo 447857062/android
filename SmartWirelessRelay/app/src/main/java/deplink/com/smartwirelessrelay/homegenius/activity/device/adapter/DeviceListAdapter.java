@@ -167,13 +167,12 @@ public class DeviceListAdapter extends BaseAdapter {
             String deviceSubType = "";
             deviceSubType = listBottom.get(position - TopCount).getSubType();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
+            Log.i(TAG,"deviceStatu="+deviceStatu);
             if (deviceStatu != null) {
                 if (deviceStatu.equalsIgnoreCase("on")) {
                     Log.i(TAG, "deviceType=" + deviceType + "deviceStatu=" + deviceStatu);
                     deviceStatu = "在线";
-                } else if (deviceStatu.equalsIgnoreCase("在线")) {
-
-                } else {
+                }  else {
                     deviceStatu = "离线";
                 }
             }
@@ -181,6 +180,7 @@ public class DeviceListAdapter extends BaseAdapter {
 
             if ("SMART_LOCK".equals(deviceType)) {
                 deviceType = AppConstant.DEVICES.TYPE_LOCK;
+                deviceStatu = "在线";
             }
             if ("IRMOTE_V2".equals(deviceType)) {
                 deviceType = AppConstant.DEVICES.TYPE_REMOTECONTROL;

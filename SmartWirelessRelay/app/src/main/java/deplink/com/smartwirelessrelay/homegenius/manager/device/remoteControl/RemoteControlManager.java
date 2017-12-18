@@ -14,11 +14,14 @@ import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.RemoteControlOpResult;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -29,10 +32,6 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
 public class RemoteControlManager implements LocalConnecteListener {
     private static final String TAG = "RemoteControlManager";
     /**
-     * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
-     */
-    private ExecutorService cachedThreadPool;
-    /**
      * 这个类设计成单例
      */
     private static RemoteControlManager instance;
@@ -42,11 +41,24 @@ public class RemoteControlManager implements LocalConnecteListener {
     private List<RemoteControlListener> mRemoteControlListenerList;
     private Gson gson;
     private List<SmartDev> mRemoteControlDeviceList;
+    private ExecutorService cachedThreadPool;
     /**
      * 当前选中的遥控设备
      */
-    private SmartDev mRemoteControlDevice;
+    private SmartDev mSelectRemoteControlDevice;
 
+    public SmartDev getmSelectRemoteControlDevice() {
+        return mSelectRemoteControlDevice;
+    }
+
+    public void setmSelectRemoteControlDevice(SmartDev mSelectRemoteControlDevice) {
+        this.mSelectRemoteControlDevice = mSelectRemoteControlDevice;
+    }
+    public List<SmartDev> findAllRemotecontrolDevice() {
+        List<SmartDev> newsList = DataSupport.where("Type = ?", "IRMOTE_V2").find(SmartDev.class);
+        Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
+        return newsList;
+    }
     public static synchronized RemoteControlManager getInstance() {
         if (instance == null) {
             instance = new RemoteControlManager();
@@ -58,55 +70,91 @@ public class RemoteControlManager implements LocalConnecteListener {
         this.mContext = context;
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-           // mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
+            // mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
-        cachedThreadPool = Executors.newCachedThreadPool();
         mRemoteControlListenerList = new ArrayList<>();
         addRemoteControlListener(listener);
         gson = new Gson();
         mRemoteControlDeviceList = new ArrayList<>();
         mRemoteControlDeviceList.addAll(DataSupport.where("Type=?", "IRMOTE_V2").find(SmartDev.class));
         //TODO 当前选中的遥控器
-        if(mRemoteControlDeviceList.size()>0){
-            mRemoteControlDevice = mRemoteControlDeviceList.get(0);
+        if (mRemoteControlDeviceList.size() > 0) {
+            mSelectRemoteControlDevice = mRemoteControlDeviceList.get(0);
+        }
+        if (cachedThreadPool == null) {
+            cachedThreadPool = Executors.newCachedThreadPool();
         }
     }
 
+    /**
+     * 更新设备所在房间
+     */
+    public void updateSmartDeviceInWhatRoom( Room room,  String deviceUid) {
+
+        Log.i(TAG, "更新智能设备所在的房间=start");
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<>();
+        if(room!=null){
+            rooms.add(room);
+        }else{
+            rooms.addAll(RoomManager.getInstance().getmRooms());
+        }
+        mSelectRemoteControlDevice.setRooms(rooms);
+        smartDev.setRooms(rooms);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+
+
+    }
+
     public void study() {
+
+        QueryOptions cmd = new QueryOptions();
+        cmd.setOP("SET");
+        cmd.setMethod("IrmoteV2");
+        cmd.setTimestamp();
+        cmd.setSmartUid(mSelectRemoteControlDevice.getUid());
+        cmd.setCommand("Study");
+        String text = gson.toJson(cmd);
+        packet.packRemoteControlData(text.getBytes(), null);
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                QueryOptions cmd = new QueryOptions();
-                cmd.setOP("SET");
-                cmd.setMethod("IrmoteV2");
-                cmd.setTimestamp();
-                cmd.setSmartUid(mRemoteControlDevice.getUid());
-                cmd.setCommand("Study");
-                String text = gson.toJson(cmd);
-                packet.packRemoteControlData(text.getBytes(),null);
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+
+    }
+
+    public void sendData(final String data) {
+        QueryOptions cmd = new QueryOptions();
+        cmd.setOP("SET");
+        cmd.setMethod("IrmoteV2");
+        cmd.setTimestamp();
+        cmd.setSmartUid(mSelectRemoteControlDevice.getUid());
+        cmd.setCommand("Send");
+        cmd.setData(data);
+        String text = gson.toJson(cmd);
+        packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getUid());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
     }
 
-    public void sendData(final String data) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                QueryOptions cmd = new QueryOptions();
-                cmd.setOP("SET");
-                cmd.setMethod("IrmoteV2");
-                cmd.setTimestamp();
-                cmd.setSmartUid(mRemoteControlDevice.getUid());
-                cmd.setCommand("Send");
-                cmd.setData(data);
-                String text = gson.toJson(cmd);
-                packet.packRemoteControlData(text.getBytes(),null);
-                mLocalConnectmanager.getOut(packet.data);
-            }
-        });
+    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+        Log.i(TAG, "更新智能设备所在的网关=start");
+        mSelectRemoteControlDevice.setGetwayDevice(getwayDevice);
+        boolean saveResult = mSelectRemoteControlDevice.save();
+        Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
+        return saveResult;
     }
 
     public void addRemoteControlListener(RemoteControlListener listener) {
@@ -120,7 +168,6 @@ public class RemoteControlManager implements LocalConnecteListener {
             this.mRemoteControlListenerList.remove(listener);
         }
     }
-
 
 
     @Override

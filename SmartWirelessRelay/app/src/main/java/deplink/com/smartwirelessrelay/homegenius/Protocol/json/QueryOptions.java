@@ -147,4 +147,24 @@ public class QueryOptions implements Serializable {
     public void setTime(String time) {
         Time = time;
     }
+
+    @Override
+    public String toString() {
+        return "QueryOptions{" +
+                "OP='" + OP + '\'' +
+                ", Method='" + Method + '\'' +
+                ", Command='" + Command + '\'' +
+                ", UserID='" + UserID + '\'' +
+                ", ManagePwd='" + ManagePwd + '\'' +
+                ", AuthPwd='" + AuthPwd + '\'' +
+                ", Time='" + Time + '\'' +
+                ", Result='" + Result + '\'' +
+                ", SmartDev=" + SmartDev +
+                ", Device=" + Device +
+                ", timestamp=" + timestamp +
+                ", AuthId='" + AuthId + '\'' +
+                ", Data='" + Data + '\'' +
+                ", SmartUid='" + SmartUid + '\'' +
+                '}';
+    }
 }

@@ -61,6 +61,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private TextView textview_select_getway_name;
     private RelativeLayout layout_getway;
     private ImageView imageview_getway_arror_right;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +85,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mDeviceManager = DeviceManager.getInstance();
-        isStartFromExperience = mSmartLockManager.isStartFromExperience();
+        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         textview_title.setText("编辑");
         textview_edit.setText("完成");
         if (isStartFromExperience) {
@@ -161,7 +162,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
-                intent.putExtra("EditSmartLockActivity", true);
+                intent.putExtra("addDeviceSelectRoom", true);
                 intent.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
@@ -204,23 +205,30 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        lockName = mSmartLockManager.getCurrentSelectLock().getName();
-        edittext_input_devie_name.setText(lockName);
-        Log.i(TAG,"lockName="+lockName+"lockName.length()="+lockName.length());
-        edittext_input_devie_name.setSelection(lockName.length());
-        if (!isOnActivityResult) {
-            if (mSmartLockManager.getCurrentSelectLock().getRooms().size() == 1) {
-                textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
-            } else {
-                textview_select_room_name.setText("全部");
+        if (isStartFromExperience) {
+
+        } else {
+            lockName = mSmartLockManager.getCurrentSelectLock().getName();
+            if (lockName != null) {
+                edittext_input_devie_name.setText(lockName);
+                Log.i(TAG, "lockName=" + lockName + "lockName.length()=" + lockName.length());
+                edittext_input_devie_name.setSelection(lockName.length());
             }
 
-            SmartDev smartDev = DataSupport.where("Uid=?", mSmartLockManager.getCurrentSelectLock().getUid()).findFirst(SmartDev.class, true);
-            Device temp =smartDev.getGetwayDevice();
-            if (temp == null) {
-                textview_select_getway_name.setText("未设置网关");
-            } else {
-                textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
+            if (!isOnActivityResult) {
+                if (mSmartLockManager.getCurrentSelectLock().getRooms().size() == 1) {
+                    textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
+                } else {
+                    textview_select_room_name.setText("全部");
+                }
+
+                SmartDev smartDev = DataSupport.where("Uid=?", mSmartLockManager.getCurrentSelectLock().getUid()).findFirst(SmartDev.class, true);
+                Device temp = smartDev.getGetwayDevice();
+                if (temp == null) {
+                    textview_select_getway_name.setText("未设置网关");
+                } else {
+                    textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
+                }
             }
         }
 
@@ -265,7 +273,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         DialogThreeBounce.hideLoading();
         if (deleteSuccess) {
             mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-        }else{
+        } else {
             mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
         }
     }

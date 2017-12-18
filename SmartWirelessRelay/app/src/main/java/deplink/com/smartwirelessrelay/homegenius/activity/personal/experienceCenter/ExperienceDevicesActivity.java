@@ -25,8 +25,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.Swi
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 
 public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "EDActivity";
@@ -102,36 +101,31 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent;
+        DeviceManager.getInstance().setStartFromExperience(true);
         switch (mExperienceCenterDevices.get(position).getDeviceName()) {
 
             case AppConstant.DEVICES.TYPE_SMART_GETWAY:
                 Intent intentGetwayDevice = new Intent(ExperienceDevicesActivity.this, GetwayDeviceActivity.class);
-                intentGetwayDevice.putExtra("isStartFromExperience", true);
                 startActivity(intentGetwayDevice);
                 break;
             case AppConstant.DEVICES.TYPE_LOCK:
                 intent = new Intent(this, SmartLockActivity.class);
-                SmartLockManager.getInstance().setStartFromExperience(true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_ROUTER:
                 intent = new Intent(this, RouterMainActivity.class);
-                RouterManager.getInstance().setStartFromExperience(true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_MENLING:
                 intent = new Intent(this, DoorbeelMainActivity.class);
-                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
                 intent = new Intent(this, SwitchOneActivity.class);
-                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_REMOTECONTROL:
                 intent = new Intent(this, RemoteControlActivity.class);
-                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
@@ -141,12 +135,10 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 break;
             case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
                 intent = new Intent(this, AirRemoteControlMianActivity.class);
-                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
             case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
                 intent = new Intent(this, IptvMainActivity.class);
-                intent.putExtra("isStartFromExperience", true);
                 startActivity(intent);
                 break;
         }

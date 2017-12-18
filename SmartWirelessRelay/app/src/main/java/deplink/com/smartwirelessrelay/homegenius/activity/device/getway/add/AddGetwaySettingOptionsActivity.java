@@ -66,7 +66,11 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     private void initDatas() {
         currentAddDevice = GetwayManager.getInstance().getCurrentAddDevice();
-        mRoomName = RoomManager.getInstance().getCurrentSelectedRoom().getRoomName();
+        if (RoomManager.getInstance().getCurrentSelectedRoom() != null) {
+            mRoomName = RoomManager.getInstance().getCurrentSelectedRoom().getRoomName();
+        } else {
+            mRoomName = "全部";
+        }
         Log.i(TAG, "mRoomName=" + mRoomName);
         mGetwayManager = GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this, this);
@@ -81,12 +85,12 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         switch (v.getId()) {
             case R.id.button_save:
                 if (currentAddDevice != null) {
-                    if(LocalConnectmanager.getInstance().isHandshakeCompleted()&& LocalConnectmanager.getInstance().getSslSocket()!=null){
+                    if (LocalConnectmanager.getInstance().isHandshakeCompleted() && LocalConnectmanager.getInstance().getSslSocket() != null) {
                         Gson gson = new Gson();
                         QrcodeSmartDevice device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         mGetwayManager.bindDevice(device);
-                    }else{
-                        ToastSingleShow.showText(this,"无可用的网关");
+                    } else {
+                        ToastSingleShow.showText(this, "无可用的网关");
 
                     }
 
@@ -112,7 +116,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         }
     };
 
-    private boolean isDeviceAddSuccess(DeviceList aDeviceList,QrcodeSmartDevice tempDevice) {
+    private boolean isDeviceAddSuccess(DeviceList aDeviceList, QrcodeSmartDevice tempDevice) {
         for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
             if (aDeviceList.getDevice().get(i).getUid().equals(tempDevice.getSn())) {
                 return true;
@@ -133,7 +137,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         boolean addDeviceSuccess;
         QrcodeSmartDevice tempDevice = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
         DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-        addDeviceSuccess = isDeviceAddSuccess(mDeviceList,tempDevice);
+        addDeviceSuccess = isDeviceAddSuccess(mDeviceList, tempDevice);
         deviceName = edittext_input_devie_name.getText().toString();
         if (deviceName.equals("")) {
             deviceName = "家里的网关";

@@ -242,7 +242,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
-                intent.putExtra("EditSmartLockActivity", true);
+                intent.putExtra("addDeviceSelectRoom", true);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.button_add_device_sure:

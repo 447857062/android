@@ -17,15 +17,20 @@
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
-
-            <ImageView
-                android:id="@+id/image_back"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
+            <FrameLayout
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/returnicon" />
+                android:layout_width="48dp"
+                android:id="@+id/image_back"
+                android:layout_height="match_parent">
+                <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/returnicon" />
+            </FrameLayout>
+
 
             <TextView
                 android:id="@+id/textview_title"
@@ -52,19 +57,29 @@
 
         </RelativeLayout>
     </RelativeLayout>
+
     <RelativeLayout
-        android:background="@color/white_background"
-        android:layout_below="@+id/layout_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_title"
+        android:background="@color/white_background">
+
+        <TextView
+            android:id="@+id/textview_empty_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="未查询到开锁记录"
+            android:visibility="gone" />
+
         <ListView
             android:id="@+id/list_lock_histroy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:divider="@null"
             android:scrollbars="none" />
     </RelativeLayout>
 
-    </RelativeLayout>
+</RelativeLayout>

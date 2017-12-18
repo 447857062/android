@@ -118,7 +118,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
             mUdpmanager = UdpManager.getInstance();
             mUdpmanager.InitUdpConnect(context, this);
         }
-        registerNetBroadcast(context);
         return 0;
     }
 
@@ -340,10 +339,8 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                 int length;
                 System.arraycopy(buf, AppConstant.PACKET_DATA_LENGTH_START_INDEX, lengthByte, 0, 2);
                 length = DataExchange.bytesToInt(lengthByte, 0, 2);
-
                 switch (cmd) {
                     case ComandID.HEARTBEAT_RESPONSE:
-
                         break;
                     case ComandID.ALARM_REPORT:
                         str = new String(buf, AppConstant.BASICLEGTH, length);
@@ -514,7 +511,9 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
             }
         }).start();
     }
+
     private boolean initSocketing = false;
+
     @Override
     public void onGetLocalConnectIp(String ipAddress, String uid) {
         if (!initSocketing) {

@@ -121,6 +121,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         listview_devies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DeviceManager.getInstance().setStartFromExperience(false);
                 if (datasTop.size() < (position + 1)) {
                     //智能设备
                     String deviceType = datasBottom.get(position - datasTop.size()).getType();
@@ -129,7 +130,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                     switch (deviceType) {
                         case "SMART_LOCK":
                             SmartLockManager.getInstance().setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
-                            SmartLockManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
@@ -140,7 +140,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
-                            RouterManager.getInstance().setStartFromExperience(false);
                             startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
                             break;
                         case "智能电视":

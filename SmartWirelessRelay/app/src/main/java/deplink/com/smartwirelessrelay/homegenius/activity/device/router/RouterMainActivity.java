@@ -44,6 +44,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.adapter.
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.adapter.ConnectedDeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
@@ -158,7 +159,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        isStartFromExperience = mRouterManager.isStartFromExperience();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
 
         } else {
@@ -297,7 +298,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         // mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
-        isStartFromExperience = mRouterManager.isStartFromExperience();
+        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
 
         } else {

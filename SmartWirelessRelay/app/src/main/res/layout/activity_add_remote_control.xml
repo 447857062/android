@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AddRemoteControlActivity">
-
 
     <include
         android:id="@+id/layout_title"
         layout="@layout/layout_title_with_back_center_titletext" />
+
     <RelativeLayout
-        android:background="@color/white_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/layout_device_response"
         android:layout_below="@+id/layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:background="@color/white_background">
+
         <TextView
             android:id="@+id/textview_introduce"
             android:layout_width="match_parent"
@@ -81,49 +81,49 @@
 
 
     <RelativeLayout
-        android:visibility="gone"
-        android:background="@color/white"
         android:id="@+id/layout_device_response"
         android:layout_width="match_parent"
         android:layout_height="@dimen/test_response_layout"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textview_device_response"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_item_content_height"
-            android:textColor="@color/room_type_text"
-            android:textSize="@dimen/text_size_small"
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal|center_vertical"
-            android:text="设备有响应了吗" />
+            android:text="设备有响应了吗"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-            android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textview_device_response">
+            android:layout_below="@+id/textview_device_response"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right">
 
             <Button
-                android:background="@drawable/button_ng_remotecontrol_test_response_bg"
                 android:id="@+id/button_ng"
-                android:textColor="@color/title_blue_bg"
-                android:textSize="@dimen/delete_textview_size"
                 android:layout_width="@dimen/test_response_button_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="否" />
+                android:background="@drawable/button_ng_remotecontrol_test_response_bg"
+                android:text="否"
+                android:textColor="@color/title_blue_bg"
+                android:textSize="@dimen/delete_textview_size" />
 
             <Button
-                android:background="@drawable/button_yes_remotecontrol_test_response_bg"
                 android:id="@+id/button_ok"
-                android:textSize="@dimen/delete_textview_size"
                 android:layout_width="@dimen/test_response_button_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:background="@drawable/button_yes_remotecontrol_test_response_bg"
+                android:text="是"
                 android:textColor="@color/white"
-                android:text="是" />
+                android:textSize="@dimen/delete_textview_size" />
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

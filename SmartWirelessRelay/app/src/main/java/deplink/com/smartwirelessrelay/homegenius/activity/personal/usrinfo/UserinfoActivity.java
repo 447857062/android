@@ -40,6 +40,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     private CircleImageView user_head_portrait;
     private TextView textview_show_birthday;
     private TextView textview_show_sex;
+    private TextView textview_show_nicknamke;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
+        textview_show_nicknamke= (TextView) findViewById(R.id.textview_show_nicknamke);
         image_back= (FrameLayout) findViewById(R.id.image_back);
         layout_user_header_image = (RelativeLayout) findViewById(R.id.layout_user_header_image);
         layout_update_user_nickname = (RelativeLayout) findViewById(R.id.layout_update_user_nickname);
@@ -106,7 +108,9 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.layout_update_user_nickname:
-                startActivity(new Intent(this, UpdateNicknameActivity.class));
+                Intent intent=new Intent(this, UpdateNicknameActivity.class);
+                intent.putExtra("nickname",textview_show_nicknamke.getText().toString());
+                startActivity(intent);
                 break;
             case R.id.layout_update_sex:
                 //TODO

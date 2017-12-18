@@ -10,9 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
@@ -36,10 +33,6 @@ public class UdpManager implements OnGetIpListener {
     private static UdpManager instance;
     private UdpPacket udpPacket;
     private UdpThread udpThread;
-    /**
-     * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
-     */
-    private ExecutorService cachedThreadPool;
     private UdpManagerGetIPLintener mUdpManagerGetIPLintener;
 
     private UdpManager() {
@@ -59,33 +52,23 @@ public class UdpManager implements OnGetIpListener {
      */
     public int InitUdpConnect(final Context context, UdpManagerGetIPLintener listener) {
         this.mUdpManagerGetIPLintener = listener;
-        if (cachedThreadPool == null) {
-            cachedThreadPool = Executors.newCachedThreadPool();
-        }
         this.mContext = context;
         if (listener == null) {
             Log.e(TAG, "InitUdpConnect 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
         }
-
         //接受udp探测设备数据
         if (udpPacket == null) {
             udpPacket = new UdpPacket(context, this);
         }
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                udpPacket.start();
-                Message msg = Message.obtain();
-                msg.what = MSG_STOP_CHECK_GETWAY;
-                mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
-                //启动状态查询任务，连续发送udp探测设备
-                if (udpThread == null) {
-                    udpThread = new UdpThread(context, udpPacket);
-                }
-                udpThread.open();
-            }
-        });
-
+        udpPacket.start();
+        Message msg = Message.obtain();
+        msg.what = MSG_STOP_CHECK_GETWAY;
+        mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
+        //启动状态查询任务，连续发送udp探测设备
+        if (udpThread == null) {
+            udpThread = new UdpThread(context, udpPacket);
+        }
+        udpThread.open();
         return 0;
     }
 
@@ -96,15 +79,15 @@ public class UdpManager implements OnGetIpListener {
      * @param packet
      */
     @Override
-    public void onRecvLocalConnectIp(byte[] packet,String uid) {
+    public void onRecvLocalConnectIp(byte[] packet, String uid) {
         Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
 
         //不用发送，可以接收udp
-        if(udpThread!=null){
+        if (udpThread != null) {
             udpThread.cancel();
         }
 
-        mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet),uid);
+        mUdpManagerGetIPLintener.onGetLocalConnectIp(IPV4Util.trans2IpV4Str(packet), uid);
     }
 
     private static final int MSG_STOP_CHECK_GETWAY = 100;
@@ -163,7 +146,7 @@ public class UdpManager implements OnGetIpListener {
                     } else {
                         currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
                     }
-                    Log.i(TAG, "网络连接变化 currentNetStatu=" + currentNetStatu +"udpPacket!=null" + (udpPacket != null));
+                    Log.i(TAG, "网络连接变化 currentNetStatu=" + currentNetStatu + "udpPacket!=null" + (udpPacket != null));
 
                     if (currentNetStatu == NET_TYPE_WIFI_CONNECTED) {
                         //重新连接

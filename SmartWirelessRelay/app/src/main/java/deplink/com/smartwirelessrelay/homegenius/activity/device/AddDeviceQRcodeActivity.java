@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.add.AddDoorbellTipsActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwayNotifyActivity;
@@ -25,8 +26,10 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRoute
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
+import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 /**
  * 扫码添加设备
@@ -94,8 +97,16 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
                 break;
             case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
-                intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AirconditionChooseBandActivity.class);
-                startActivity(intentQrcodeSn);
+                List<SmartDev>mRemotecontrol=new ArrayList<>();
+                mRemotecontrol.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
+                if(mRemotecontrol.size()==0){
+                    ToastSingleShow.showText(this,"未添加智能遥控，无法添加设备");
+                }else{
+                    RemoteControlManager.getInstance().setmSelectRemoteControlDevice(mRemotecontrol.get(0));
+                    intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AirconditionChooseBandActivity.class);
+                    startActivity(intentQrcodeSn);
+                }
+
                 break;
             case AppConstant.DEVICES.TYPE_ROUTER:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);

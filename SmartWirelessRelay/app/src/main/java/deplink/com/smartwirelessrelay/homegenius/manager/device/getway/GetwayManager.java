@@ -20,16 +20,13 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmar
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
  * Created by Administrator on 2017/11/22.
  */
 public class GetwayManager implements LocalConnecteListener {
     private static final String TAG = "GetwayManager";
-    /**
-     * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
-     */
-    private ExecutorService cachedThreadPool;
     /**
      * 这个类设计成单例
      */
@@ -43,7 +40,7 @@ public class GetwayManager implements LocalConnecteListener {
     private LocalConnectmanager mLocalConnectmanager;
     private Device currentSelectGetwayDevice;
     private Device currentAddGetwayDevice;
-
+    private ExecutorService cachedThreadPool;
     public String getCurrentAddDevice() {
         Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
         return currentAddDevice;
@@ -66,7 +63,7 @@ public class GetwayManager implements LocalConnecteListener {
         mGetwayListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-           // mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
+            // mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -101,8 +98,8 @@ public class GetwayManager implements LocalConnecteListener {
 
     public List<Device> queryAllGetwayDevice() {
         List<Device> list = DataSupport.findAll(Device.class, true);
-        if(list.size()>0){
-            Log.i(TAG, "查询到的网关设备个数=" + list.size()+list.get(0).getUid());
+        if (list.size() > 0) {
+            Log.i(TAG, "查询到的网关设备个数=" + list.size() + list.get(0).getUid());
         }
         return list;
     }
@@ -145,7 +142,7 @@ public class GetwayManager implements LocalConnecteListener {
         currentAddGetwayDevice.setName(device.getName());
         boolean addResult = currentAddGetwayDevice.save();
         Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
-        if(!addResult){
+        if (!addResult) {
             Log.i(TAG, "数据库中已存在相同网关设备，不必要添加");
         }
         return addResult;
@@ -155,21 +152,22 @@ public class GetwayManager implements LocalConnecteListener {
      * @param room      更新房间
      * @param deviceUid 当前网关设备
      */
-    public void updateGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                //保存所在的房间
-                //查询设备
-                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
-                //找到要更行的设备,设置关联的房间
-                List<Room> roomList = new ArrayList<>();
-                roomList.add(room);
-                getwayDevice.setRoomList(roomList);
-                boolean result = getwayDevice.save();
-                Log.i(TAG, "更新网关所在房间" + result);
-            }
-        });
+    public void updateGetwayDeviceInWhatRoom(Room room, String deviceUid) {
+
+        //保存所在的房间
+        //查询设备
+        Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> roomList = new ArrayList<>();
+        if (room != null) {
+            roomList.add(room);
+        } else {
+            roomList.addAll(RoomManager.getInstance().getmRooms());
+        }
+        getwayDevice.setRoomList(roomList);
+        boolean result = getwayDevice.save();
+        Log.i(TAG, "更新网关所在房间" + result);
+
     }
 
     public void updateGetwayDeviceName(String name) {
@@ -196,6 +194,7 @@ public class GetwayManager implements LocalConnecteListener {
         devs.add(dev);
         queryCmd.setDevice(devs);
         Gson gson = new Gson();
+        Log.i(TAG,"绑定网关:"+queryCmd.toString());
         String text = gson.toJson(queryCmd);
         packet.packSendDevsData(text.getBytes());
         cachedThreadPool.execute(new Runnable() {
@@ -207,28 +206,25 @@ public class GetwayManager implements LocalConnecteListener {
     }
 
     public void deleteGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                //保存所在的房间
-                //查询设备
-                Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
-                //找到要更行的设备,设置关联的房间
-                List<Room> roomList = new ArrayList<>();
-                roomList.addAll(getwayDevice.getRoomList());
-                for (int i = 0; i < roomList.size(); i++) {
-                    if (roomList.get(i).getRoomName().equals(room.getRoomName())) {
-                        roomList.remove(i);
-                    }
-                }
-                getwayDevice.setRoomList(roomList);
-                boolean saveResult = getwayDevice.save();
-                Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
+
+
+        //保存所在的房间
+        //查询设备
+        Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> roomList = new ArrayList<>();
+        roomList.addAll(getwayDevice.getRoomList());
+        for (int i = 0; i < roomList.size(); i++) {
+            if (roomList.get(i).getRoomName().equals(room.getRoomName())) {
+                roomList.remove(i);
             }
-        });
+        }
+        getwayDevice.setRoomList(roomList);
+        boolean saveResult = getwayDevice.save();
+        Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
+
 
     }
-
 
 
     @Override
