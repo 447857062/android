@@ -66,7 +66,6 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //最大值，最后一个，添加房间
-
                 if (position == mRoomsAdapter.getCount() - 1) {
                     Intent intent = new Intent(AddDeviceActivity.this, AddRommActivity.class);
                     intent.putExtra("fromAddDevice", true);
@@ -98,8 +97,6 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                         }
                     }
                 }
-
-
             }
         });
     }
@@ -137,6 +134,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                 onBackPressed();
                 break;
             case R.id.textview_skip_this_option:
+                RoomManager.getInstance().skipSelectedRoom();
                 startActivity(new Intent(this, AddDeviceQRcodeActivity.class));
                 break;
         }

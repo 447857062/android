@@ -12,7 +12,6 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 /*
 *
  * Created by Administrator on 2017/11/11.
@@ -106,25 +105,25 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
             return;
         }
         switch (listTop.get(position).getRoomType()) {
-            case AppConstant.ROOMTYPE.TYPE_LIVING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchlivingroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_BED:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchbedroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_DINING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchdiningroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_KITCHEN:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchkitchen);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STORAGE:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchstorageroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STUDY:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchstudy);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_TOILET:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchtoilet);
                 break;
         }

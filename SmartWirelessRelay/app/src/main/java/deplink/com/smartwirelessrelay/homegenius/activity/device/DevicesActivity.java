@@ -47,7 +47,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMain
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
@@ -173,20 +173,20 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         case "IRMOTE_V2":
                             startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
                             break;
-                        case "智能空调":
+                        case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
-                        case "智能电视":
+                        case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
                             startActivity(new Intent(DevicesActivity.this, TvMainActivity.class));
                             break;
-                        case "智能机顶盒遥控":
+                        case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
                             startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
                             break;
-                        case AppConstant.DEVICES.TYPE_SWITCH:
+                        case DeviceType.TYPE.TYPE_SWITCH:
                             switch (deviceSubType) {
                                 case "一路开关":
                                     startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));

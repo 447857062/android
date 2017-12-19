@@ -14,7 +14,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 
@@ -68,7 +68,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
                 public void run() {
                     mSmartSwitchDevList = new ArrayList<>();
                     mSmartSwitchDevList.clear();
-                    mSmartSwitchDevList.addAll( DataSupport.where("Type = ?", AppConstant.DEVICES.TYPE_SWITCH).find(SmartDev.class)  );
+                    mSmartSwitchDevList.addAll( DataSupport.where("Type = ?", DeviceType.TYPE.TYPE_SWITCH).find(SmartDev.class)  );
                 }
             });
         }

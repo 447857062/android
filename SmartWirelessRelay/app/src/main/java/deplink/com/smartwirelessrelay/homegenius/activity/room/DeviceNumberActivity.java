@@ -88,25 +88,25 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         currentRoom=mRoomManager.getCurrentSelectedRoom();
         String roomType=currentRoom.getRoomType();
         switch (roomType){
-            case AppConstant.ROOMTYPE.TYPE_LIVING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING:
                 layout_device_number_root.setBackgroundResource(R.drawable.livingroombackground);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_BED:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED:
                 layout_device_number_root.setBackgroundResource(R.drawable.bedroombackground);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_KITCHEN:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN:
                 layout_device_number_root.setBackgroundResource(R.drawable.kitchenbackground);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STUDY:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY:
                 layout_device_number_root.setBackgroundResource(R.drawable.studybackground);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STORAGE:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE:
                 layout_device_number_root.setBackgroundResource(R.drawable.storageroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_TOILET:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET:
                 layout_device_number_root.setBackgroundResource(R.drawable.toiletbackground);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_DINING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING:
                 layout_device_number_root.setBackgroundResource(R.drawable.diningroombackground);
                 break;
         }

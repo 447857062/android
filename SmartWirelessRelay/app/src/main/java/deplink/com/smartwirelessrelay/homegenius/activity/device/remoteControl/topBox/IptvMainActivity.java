@@ -43,7 +43,6 @@ public class IptvMainActivity extends Activity implements View.OnClickListener{
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        image_setting.setOnClickListener(this);
         layout_title_control_base.setOnClickListener(this);
         layout_title_control_number.setOnClickListener(this);
         frame_setting.setOnClickListener(this);

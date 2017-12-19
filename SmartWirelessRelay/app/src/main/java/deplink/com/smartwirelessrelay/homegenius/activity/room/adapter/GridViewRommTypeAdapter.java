@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 /*
 *
  * Created by Administrator on 2017/11/11.
@@ -24,13 +23,13 @@ public class GridViewRommTypeAdapter extends BaseAdapter {
 
     public GridViewRommTypeAdapter(Context mContext) {
         this.mContext = mContext;
-        listTop.add(AppConstant.ROOMTYPE.TYPE_LIVING);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_BED);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_KITCHEN);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_STUDY);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_STORAGE);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_TOILET);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_DINING);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING);
     }
 
     private int selectedPosition = 0;// 选中的位置
@@ -75,25 +74,25 @@ public class GridViewRommTypeAdapter extends BaseAdapter {
             return;
         }
         switch (listTop.get(position)){
-            case AppConstant.ROOMTYPE.TYPE_LIVING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroomlivingroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_BED:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroombedroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_DINING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroomdiningroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_KITCHEN:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroomkitchen);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STORAGE:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroomstorageroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STUDY:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroomstudy);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_TOILET:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.noaddroomtoilet);
                 break;
         }
@@ -108,25 +107,25 @@ public class GridViewRommTypeAdapter extends BaseAdapter {
             return;
         }
         switch (listTop.get(position)){
-            case AppConstant.ROOMTYPE.TYPE_LIVING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroomlivingroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_BED:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroombedroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_DINING:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroomdiningroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_KITCHEN:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroomkitchen);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STORAGE:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroomstorageroom);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_STUDY:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroomstudy);
                 break;
-            case AppConstant.ROOMTYPE.TYPE_TOILET:
+            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.addroomtoilet);
                 break;
         }

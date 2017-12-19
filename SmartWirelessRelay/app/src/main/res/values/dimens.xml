@@ -95,7 +95,7 @@
     <!--个人中心界面尺寸-->
     <dimen name="mine_page_user_image_margintop">112dp</dimen>
     <dimen name="mine_page_top_background_height">234dp</dimen>
-    <dimen name="mine_page_user_image_ridus">65dp</dimen>
+    <dimen name="mine_page_user_image_ridus">62dp</dimen>
     <dimen name="mine_page_logout_margitop">60dp</dimen>
     <dimen name="experience_center_listitem_height">75dp</dimen>
     <dimen name="experience_center_listitem_devicetype_marginleft">10dp</dimen>

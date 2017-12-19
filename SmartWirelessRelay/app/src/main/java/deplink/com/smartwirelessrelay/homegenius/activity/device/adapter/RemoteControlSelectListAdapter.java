@@ -10,17 +10,17 @@ import android.widget.TextView;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 
 /**
  * @author frankLi
  */
-public class GetwaySelectListAdapter extends BaseAdapter {
-    private static final String TAG = "GetwaySelectListAdapter";
-    private List<Device> listTop = null;
+public class RemoteControlSelectListAdapter extends BaseAdapter {
+    private static final String TAG = "RemoteControlAdapter";
+    private List<SmartDev> listTop = null;
     private Context mContext;
 
-    public GetwaySelectListAdapter(Context mContext, List<Device> list) {
+    public RemoteControlSelectListAdapter(Context mContext, List<SmartDev> list) {
         this.mContext = mContext;
         this.listTop = list;
     }
@@ -51,7 +51,7 @@ public class GetwaySelectListAdapter extends BaseAdapter {
 
 
             convertView = LayoutInflater.from(mContext).inflate(
-                    R.layout.getway_select_list_item, null);
+                    R.layout.remotecontrol_select_list_item, null);
             viewHolder.textview_device_name = (TextView) convertView
                     .findViewById(R.id.textview_device_name);
             convertView.setTag(viewHolder);

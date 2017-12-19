@@ -48,7 +48,7 @@
             <ImageView
                 android:id="@+id/image_setting"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:scaleType="centerInside"
                 android:src="@drawable/menuicon" />

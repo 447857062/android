@@ -56,7 +56,9 @@ public class RoomManager {
         }
 
     }
-
+    public void skipSelectedRoom() {
+         currentSelectedRoom=null;
+    }
     public boolean updateGetway(Device getwayDevice) {
         Log.i(TAG, "更新网关=start");
         List<Device> getways = new ArrayList<>();

@@ -14,7 +14,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
 
 /**
  * @author frankLi
@@ -179,11 +179,11 @@ public class DeviceListAdapter extends BaseAdapter {
 
 
             if ("SMART_LOCK".equals(deviceType)) {
-                deviceType = AppConstant.DEVICES.TYPE_LOCK;
+                deviceType = DeviceType.TYPE.TYPE_LOCK;
                 deviceStatu = "在线";
             }
             if ("IRMOTE_V2".equals(deviceType)) {
-                deviceType = AppConstant.DEVICES.TYPE_REMOTECONTROL;
+                deviceType = DeviceType.TYPE.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
             viewHolder.textview_device_status.setText(deviceStatu);
@@ -194,17 +194,17 @@ public class DeviceListAdapter extends BaseAdapter {
 
     private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType, String deviceSubType) {
         switch (deviceType) {
-            case AppConstant.DEVICES.TYPE_ROUTER:
+            case DeviceType.TYPE.TYPE_ROUTER:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.routericon);
                 break;
-            case AppConstant.DEVICES.TYPE_LOCK:
+            case DeviceType.TYPE.TYPE_LOCK:
 
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorlockicon);
                 break;
-            case AppConstant.DEVICES.TYPE_MENLING:
+            case DeviceType.TYPE.TYPE_MENLING:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
-            case AppConstant.DEVICES.TYPE_SWITCH:
+            case DeviceType.TYPE.TYPE_SWITCH:
                 switch (deviceSubType) {
                     case "一路开关":
                         viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
@@ -221,18 +221,18 @@ public class DeviceListAdapter extends BaseAdapter {
                 }
 
                 break;
-            case AppConstant.DEVICES.TYPE_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_REMOTECONTROL:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.infraredremotecontrolicon);
                 break;
-            case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
             case "智能电视":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.tvicon);
                 break;
-            case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
             case "智能空调":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.airconditioningicon);
                 break;
-            case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
             case "智能机顶盒遥控":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.settopboxesicon);
                 break;

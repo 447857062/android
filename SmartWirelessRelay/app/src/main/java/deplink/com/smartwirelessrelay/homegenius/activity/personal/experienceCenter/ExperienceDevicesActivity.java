@@ -24,7 +24,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMa
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 
 public class ExperienceDevicesActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -54,39 +54,39 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
         textview_title.setText("体验中心");
         mExperienceCenterDevices = new ArrayList<>();
         ExperienceCenterDevice device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_SMART_GETWAY);
+        device.setDeviceName(DeviceType.TYPE.TYPE_SMART_GETWAY);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_ROUTER);
+        device.setDeviceName(DeviceType.TYPE.TYPE_ROUTER);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_LOCK);
+        device.setDeviceName(DeviceType.TYPE.TYPE_LOCK);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_MENLING);
+        device.setDeviceName(DeviceType.TYPE.TYPE_MENLING);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_SWITCH);
+        device.setDeviceName(DeviceType.TYPE.TYPE_SWITCH);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_REMOTECONTROL);
+        device.setDeviceName(DeviceType.TYPE.TYPE_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_TV_REMOTECONTROL);
+        device.setDeviceName(DeviceType.TYPE.TYPE_TV_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL);
+        device.setDeviceName(DeviceType.TYPE.TYPE_AIR_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         device = new ExperienceCenterDevice();
-        device.setDeviceName(AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL);
+        device.setDeviceName(DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
         mAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDevices);
@@ -104,40 +104,40 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
         DeviceManager.getInstance().setStartFromExperience(true);
         switch (mExperienceCenterDevices.get(position).getDeviceName()) {
 
-            case AppConstant.DEVICES.TYPE_SMART_GETWAY:
+            case DeviceType.TYPE.TYPE_SMART_GETWAY:
                 Intent intentGetwayDevice = new Intent(ExperienceDevicesActivity.this, GetwayDeviceActivity.class);
                 startActivity(intentGetwayDevice);
                 break;
-            case AppConstant.DEVICES.TYPE_LOCK:
+            case DeviceType.TYPE.TYPE_LOCK:
                 intent = new Intent(this, SmartLockActivity.class);
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_ROUTER:
+            case DeviceType.TYPE.TYPE_ROUTER:
                 intent = new Intent(this, RouterMainActivity.class);
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_MENLING:
+            case DeviceType.TYPE.TYPE_MENLING:
                 intent = new Intent(this, DoorbeelMainActivity.class);
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_SWITCH:
+            case DeviceType.TYPE.TYPE_SWITCH:
                 intent = new Intent(this, SwitchOneActivity.class);
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_REMOTECONTROL:
                 intent = new Intent(this, RemoteControlActivity.class);
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
                 intent = new Intent(this, TvMainActivity.class);
 
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
                 intent = new Intent(this, AirRemoteControlMianActivity.class);
                 startActivity(intent);
                 break;
-            case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
+            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 intent = new Intent(this, IptvMainActivity.class);
                 startActivity(intent);
                 break;

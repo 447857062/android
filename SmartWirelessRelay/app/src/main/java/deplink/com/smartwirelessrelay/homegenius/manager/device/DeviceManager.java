@@ -26,7 +26,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.Proto;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.WifiRelaySet;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -223,6 +223,7 @@ public class DeviceManager implements LocalConnecteListener {
             smartDev.setVer(device.getVer());
             smartDev.setType(device.getTp());
             smartDev.setGetwayDevice(getwayDevice);
+            smartDev.setName(device.getName());
             boolean addResult = smartDev.save();
             Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
             return addResult;
@@ -453,9 +454,9 @@ public class DeviceManager implements LocalConnecteListener {
                 SmartDev dev = new SmartDev();
                 String deviceType = aDeviceList.getSmartDev().get(i).getType();
                 if (deviceType.equals("SMART_LOCK")) {
-                    deviceType = AppConstant.DEVICES.TYPE_LOCK;
+                    deviceType = DeviceType.TYPE.TYPE_LOCK;
                 } else if (deviceType.equals("IRMOTE_V2")) {
-                    deviceType = AppConstant.DEVICES.TYPE_REMOTECONTROL;
+                    deviceType = DeviceType.TYPE.TYPE_REMOTECONTROL;
                 }
                 dev.setUid(aDeviceList.getSmartDev().get(i).getUid());
                 dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());

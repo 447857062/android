@@ -26,6 +26,18 @@ public class SmartDev extends DataSupport implements Serializable {
     private String Ver;
     private String name;
     private Device getwayDevice;
+    /**
+     * 各种类型的遥控器需要指定物理遥控器
+     */
+    private String remotecontrolUid;
+
+    public String getRemotecontrolUid() {
+        return remotecontrolUid;
+    }
+
+    public void setRemotecontrolUid(String remotecontrolUid) {
+        this.remotecontrolUid = remotecontrolUid;
+    }
 
     public Device getGetwayDevice() {
         return getwayDevice;

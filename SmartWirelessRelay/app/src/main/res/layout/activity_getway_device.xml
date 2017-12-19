@@ -6,9 +6,15 @@
     android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.EditSmartLockActivity">
 
-    <include
+    <RelativeLayout
         android:id="@+id/layout_topbar"
-        layout="@layout/layout_title_with_right_have_text_have_textbackground" />
+        android:layout_width="match_parent"
+        android:background="@drawable/gateway"
+        android:layout_height="250dp">
+        <include
+            layout="@layout/layout_title_with_right_have_text_no_textbackground" />
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,11 +47,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:maxLength="10"
                 android:layout_toRightOf="@+id/textview_device_name"
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="我家的网关(最大10个字)"
+                android:maxLength="10"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small" />
 
@@ -53,12 +59,12 @@
 
         <!--房间分类-->
         <RelativeLayout
-            android:background="@drawable/button_delete_background"
             android:id="@+id/layout_select_room"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_getway_name"
             android:layout_marginTop="@dimen/room_list_item_margin_top"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 

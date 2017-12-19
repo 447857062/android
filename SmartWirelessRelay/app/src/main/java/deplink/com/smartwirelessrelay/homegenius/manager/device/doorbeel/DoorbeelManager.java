@@ -153,10 +153,7 @@ public class DoorbeelManager {
      * @param sn
      * @param deviceName
      */
-    public void updateDeviceInWhatRoom(final Room room, final String sn, final String deviceName, final Observer observer) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
+    public void updateDeviceInWhatRoom( Room room,  String sn,  String deviceName,  Observer observer) {
                 Log.i(TAG, "更新智能门铃设备所在的房间=start");
                 //保存所在的房间
                 //查询设备
@@ -178,8 +175,7 @@ public class DoorbeelManager {
                 });
                 mObservable.subscribe(observer);
                 Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
-            }
-        });
+
 
     }
 

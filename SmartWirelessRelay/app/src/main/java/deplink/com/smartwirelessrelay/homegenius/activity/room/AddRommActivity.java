@@ -59,14 +59,14 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private void initDatas() {
         roomManager = RoomManager.getInstance();
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_LIVING);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_BED);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_KITCHEN);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_STUDY);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_STORAGE);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_TOILET);
-        listTop.add(AppConstant.ROOMTYPE.TYPE_DINING);
-        roomType = AppConstant.ROOMTYPE.TYPE_LIVING;
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET);
+        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING);
+        roomType = deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING;
         edittext_room_name.setText(roomType);
         edittext_room_name.setSelection(roomType.length());
         fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);

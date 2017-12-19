@@ -39,8 +39,8 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/textview_device_name_left"
             android:background="@null"
-            android:hint="我家的门锁（最多5个字）"
-            android:maxLength="5"
+            android:hint="我家的门锁（最多10个字）"
+            android:maxLength="10"
             android:textColor="@color/room_type_text"
             android:textColorHint="@color/huise"
             android:textSize="@dimen/text_size_small" />
@@ -127,6 +127,46 @@
             android:src="@drawable/directionicon" />
 
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_remotecontrol_select"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_getway_select"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:paddingRight="@dimen/layout_content_margin_left_right">
+
+        <TextView
+            android:id="@+id/textview_remotecontrol_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="遥控器:"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/textview_select_remotecontrol_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textview_remotecontrol_name"
+            android:gravity="center_vertical"
+            android:text="未设置遥控器"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+
+        <ImageView
+            android:id="@+id/imageview_remotecontrol_arror_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/directionicon" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_getway_list"
@@ -134,11 +174,28 @@
         android:layout_height="match_parent"
         android:background="@color/transparent"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:layout_below="@+id/layout_getway_select"
+        android:layout_below="@+id/layout_remotecontrol_select"
         android:visibility="gone">
 
         <ListView
             android:id="@+id/listview_select_getway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/transparent"
+            android:dividerHeight="@dimen/list_item_textview_margin_top">
+
+        </ListView>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_remotecontrol_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:layout_below="@+id/layout_getway_list"
+        android:visibility="gone">
+        <ListView
+            android:id="@+id/listview_select_remotecontrol"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/transparent"
@@ -151,7 +208,7 @@
         android:id="@+id/button_add_device_sure"
         android:layout_width="@dimen/adddevice_surebutton_width"
         android:layout_height="@dimen/layout_item_content_height"
-        android:layout_below="@+id/layout_getway_list"
+        android:layout_below="@+id/layout_remotecontrol_list"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/adddevice_surebutton_margintop"
         android:background="@drawable/radius22_bg_blue_background"
