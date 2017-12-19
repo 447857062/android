@@ -175,7 +175,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                             DialogThreeBounce.showLoading(EditSmartLockActivity.this);
                             mDeviceManager.deleteSmartDevice();
                         } else {
-
                             startActivity(new Intent(EditSmartLockActivity.this, ExperienceDevicesActivity.class));
                         }
                     }

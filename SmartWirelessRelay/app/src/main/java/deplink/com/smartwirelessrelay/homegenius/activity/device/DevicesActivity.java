@@ -51,6 +51,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -174,6 +175,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
                             break;
                         case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case "路由器":
@@ -181,9 +183,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                         case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, TvMainActivity.class));
                             break;
                         case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
                             break;
                         case DeviceType.TYPE.TYPE_SWITCH:

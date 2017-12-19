@@ -131,7 +131,7 @@
             android:textColor="@color/delete_button"
             android:textSize="@dimen/text_size_small"
             android:layout_marginTop="@dimen/button_delete_button_margin_top"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:text="删除设备" />
     </RelativeLayout>
 </RelativeLayout>

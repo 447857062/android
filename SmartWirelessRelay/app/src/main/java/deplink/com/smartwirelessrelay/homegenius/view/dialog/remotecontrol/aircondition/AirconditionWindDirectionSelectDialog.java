@@ -18,19 +18,18 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 
 /**
  * Created by Administrator on 2017/7/25.
- * 长度限制 SN 20  MAC,序列号 12
+ *
  */
-public class Aircondition_mode_select_Dialog extends Dialog implements View.OnClickListener {
+public class AirconditionWindDirectionSelectDialog extends Dialog implements View.OnClickListener {
     private Context mContext;
-    private RelativeLayout layout_mode_hot;
-    private RelativeLayout layout_mode_code;
-    private RelativeLayout layout_mode_dehumidification;
-    private RelativeLayout layout_mode_weend;
-    private RelativeLayout layout_mode_auto;
+    private RelativeLayout layout_winddirection_up;
+    private RelativeLayout layout_winddirection_middle;
+    private RelativeLayout layout_winddirection_down;
+    private RelativeLayout layout_winddirection_auto;
     private RelativeLayout layout_cancel;
 
 
-    public Aircondition_mode_select_Dialog(Context context) {
+    public AirconditionWindDirectionSelectDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
     }
@@ -42,7 +41,7 @@ public class Aircondition_mode_select_Dialog extends Dialog implements View.OnCl
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
         p.width = (int) Perfence.dp2px(mContext,283);
-        View view = LayoutInflater.from(mContext).inflate(R.layout.aircondition_mode_select_dialog, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.aircondition_winddirection_select_dialog, null);
         setContentView(view, p);
         //初始化界面控件
         initView();
@@ -54,22 +53,20 @@ public class Aircondition_mode_select_Dialog extends Dialog implements View.OnCl
 
 
     private void initView() {
-        layout_mode_hot= (RelativeLayout) findViewById(R.id.layout_mode_hot);
-        layout_mode_code= (RelativeLayout) findViewById(R.id.layout_mode_code);
-        layout_mode_dehumidification= (RelativeLayout) findViewById(R.id.layout_mode_dehumidification);
-        layout_mode_weend= (RelativeLayout) findViewById(R.id.layout_mode_weend);
-        layout_mode_auto= (RelativeLayout) findViewById(R.id.layout_mode_auto);
+        layout_winddirection_up= (RelativeLayout) findViewById(R.id.layout_winddirection_up);
+        layout_winddirection_middle= (RelativeLayout) findViewById(R.id.layout_winddirection_middle);
+        layout_winddirection_down= (RelativeLayout) findViewById(R.id.layout_winddirection_down);
+        layout_winddirection_auto= (RelativeLayout) findViewById(R.id.layout_winddirection_auto);
         layout_cancel= (RelativeLayout) findViewById(R.id.layout_cancel);
 
     }
 
 
     private void initEvent() {
-        layout_mode_hot.setOnClickListener(this);
-        layout_mode_code.setOnClickListener(this);
-        layout_mode_dehumidification.setOnClickListener(this);
-        layout_mode_weend.setOnClickListener(this);
-        layout_mode_auto.setOnClickListener(this);
+        layout_winddirection_up.setOnClickListener(this);
+        layout_winddirection_middle.setOnClickListener(this);
+        layout_winddirection_down.setOnClickListener(this);
+        layout_winddirection_auto.setOnClickListener(this);
         layout_cancel.setOnClickListener(this);
     }
 
@@ -78,26 +75,23 @@ public class Aircondition_mode_select_Dialog extends Dialog implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.layout_mode_hot:
-                mOnModeSelectClickListener.onModeSelect("制热模式");
+            case R.id.layout_winddirection_up:
+                mOnModeSelectClickListener.onModeSelect("风向向上");
                 this.dismiss();
                 break;
-            case R.id.layout_mode_code:
-                mOnModeSelectClickListener.onModeSelect("制冷模式");
+            case R.id.layout_winddirection_middle:
+                mOnModeSelectClickListener.onModeSelect("风向向中");
                 this.dismiss();
                 break;
-            case R.id.layout_mode_dehumidification:
-                mOnModeSelectClickListener.onModeSelect("除湿模式");
+            case R.id.layout_winddirection_down:
+                mOnModeSelectClickListener.onModeSelect("风向向下");
                 this.dismiss();
                 break;
-            case R.id.layout_mode_weend:
-                mOnModeSelectClickListener.onModeSelect("送风模式");
+            case R.id.layout_winddirection_auto:
+                mOnModeSelectClickListener.onModeSelect("自动风向");
                 this.dismiss();
                 break;
-            case R.id.layout_mode_auto:
-                mOnModeSelectClickListener.onModeSelect("自动模式");
-                this.dismiss();
-                break;
+
             case R.id.layout_cancel:
                 this.dismiss();
                 break;

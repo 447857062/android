@@ -139,7 +139,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         }
         switch (deviceType) {
             case "SMART_LOCK":
-                edittext_add_device_input_name.setHint("例如:我家的门锁（最多5个字）");
+                edittext_add_device_input_name.setHint("例如:我家的门锁（最多10个字）");
                 textview_title.setText("智能门锁");
                 break;
             case "IRMOTE_V2":
@@ -437,7 +437,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         if (deviceName.equals("")) {
                             deviceName = "智能机顶盒遥控";
                         }
-                        boolean isTvBoxAdded = RemoteControlManager.getInstance().judgTvDeviceisAdded(deviceName);
+                        boolean isTvBoxAdded = RemoteControlManager.getInstance().judgTvBoxDeviceisAdded(deviceName);
                         if (isTvBoxAdded) {
                             ToastSingleShow.showText(this, "已存在相同名称的电视机顶盒遥控器");
                             return;

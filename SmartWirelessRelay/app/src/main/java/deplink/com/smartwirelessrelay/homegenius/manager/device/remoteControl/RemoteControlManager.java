@@ -205,6 +205,12 @@ public class RemoteControlManager implements LocalConnecteListener {
         Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
         return saveResult;
     }
+    public int deleteCurrentSelectDevice() {
+
+        int affectcolumn = DataSupport.deleteAll(SmartDev.class, "Uid=?",mSelectRemoteControlDevice.getUid());
+        Log.i(TAG, "删除一个智能设备，删除影响的行数=" + affectcolumn);
+        return affectcolumn;
+    }
 
     public void addRemoteControlListener(RemoteControlListener listener) {
         if (listener != null && !mRemoteControlListenerList.contains(listener)) {

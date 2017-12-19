@@ -184,8 +184,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mExperienceCenterDeviceList.add(oneDevice);
         mExperienceCenterListAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDeviceList);
         listview_experience_center.setOnItemClickListener(mExperienceCenterListClickListener);
-
-
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
