@@ -121,16 +121,17 @@
                 android:id="@+id/layout_power"
                 android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/imageview_power"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:clickable="true"
                     android:src="@drawable/button_aircondition_power" />
 
                 <TextView
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_power"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
@@ -144,17 +145,18 @@
             <RelativeLayout
                 android:id="@+id/layout_model"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/aircondition_control_buttom_layout_icon_marginleft"
                 android:layout_toRightOf="@+id/layout_power">
                 <ImageView
                     android:id="@+id/imageview_auto_model"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:clickable="true"
                     android:src="@drawable/button_aircondition_auto_maticmode" />
 
                 <TextView
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_model"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
@@ -168,18 +170,19 @@
             <RelativeLayout
                 android:id="@+id/layout_wind_speed"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/aircondition_control_buttom_layout_icon_marginleft"
                 android:layout_toRightOf="@+id/layout_model">
 
                 <ImageView
                     android:id="@+id/imageview_auto_wind_speed"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:clickable="true"
                     android:src="@drawable/button_aircondition_auto_matic_win_speed" />
 
                 <TextView
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_wind_speed"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
@@ -192,18 +195,19 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true">
 
                 <ImageView
                     android:id="@+id/imageview_wind_center"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:clickable="true"
                     android:src="@drawable/button_aircondition_in" />
 
                 <TextView
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_wind_center"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
