@@ -109,7 +109,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             mSmartLockManager = SmartLockManager.getInstance();
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
-            if (LocalConnectmanager.getInstance().isHandshakeCompleted() && LocalConnectmanager.getInstance().getSslSocket() != null) {
+            if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                 DialogThreeBounce.setmContext(this);
                 DialogThreeBounce.showLoading(this);
                 Message msg = Message.obtain();

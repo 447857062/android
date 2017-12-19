@@ -19,7 +19,6 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDevi
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.add.AddDoorbellTipsActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwayNotifyActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity;
@@ -97,13 +96,13 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
                 break;
             case AppConstant.DEVICES.TYPE_AIR_REMOTECONTROL:
-                List<SmartDev>mRemotecontrol=new ArrayList<>();
+                List<SmartDev> mRemotecontrol = new ArrayList<>();
                 mRemotecontrol.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
-                if(mRemotecontrol.size()==0){
-                    ToastSingleShow.showText(this,"未添加智能遥控，无法添加设备");
-                }else{
+                if (mRemotecontrol.size() == 0) {
+                    ToastSingleShow.showText(this, "未添加智能遥控，无法添加设备");
+                } else {
                     RemoteControlManager.getInstance().setmSelectRemoteControlDevice(mRemotecontrol.get(0));
-                    intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AirconditionChooseBandActivity.class);
+                    intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
                     startActivity(intentQrcodeSn);
                 }
 
@@ -112,10 +111,10 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);
                 break;
             case AppConstant.DEVICES.TYPE_TV_REMOTECONTROL:
-                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddTvDeviceActivity.class));
+                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class));
                 break;
             case AppConstant.DEVICES.TYPE_TVBOX_REMOTECONTROL:
-                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddTopBoxActivity.class));
+                startActivity(new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class));
                 break;
             case AppConstant.DEVICES.TYPE_SWITCH:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
@@ -176,8 +175,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                         intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
                         GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
                         startActivity(intent);
-                    }else {
-                        if(qrCodeResult.length()==12){
+                    } else {
+                        if (qrCodeResult.length() == 12) {
                             intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
                             intent.putExtra("routerSN", qrCodeResult);
                             startActivity(intent);

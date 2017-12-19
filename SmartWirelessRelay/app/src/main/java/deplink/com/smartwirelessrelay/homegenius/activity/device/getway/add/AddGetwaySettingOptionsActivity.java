@@ -85,7 +85,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
         switch (v.getId()) {
             case R.id.button_save:
                 if (currentAddDevice != null) {
-                    if (LocalConnectmanager.getInstance().isHandshakeCompleted() && LocalConnectmanager.getInstance().getSslSocket() != null) {
+                    if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                         Gson gson = new Gson();
                         QrcodeSmartDevice device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         mGetwayManager.bindDevice(device);

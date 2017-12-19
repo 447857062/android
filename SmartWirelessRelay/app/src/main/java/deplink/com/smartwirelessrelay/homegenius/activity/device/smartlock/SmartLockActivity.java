@@ -175,7 +175,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         saveManagetPassword = (mSmartLockManager.getCurrentSelectLock().isRemerberPassword());
                         savedManagePassword = mSmartLockManager.getCurrentSelectLock().getLockPassword();
                         Log.i(TAG, "saveManagetPassword=" + saveManagetPassword + "savedManagePassword=" + savedManagePassword);
-                        if (LocalConnectmanager.getInstance().isHandshakeCompleted() && LocalConnectmanager.getInstance().getSslSocket() != null) {
+                        if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                             if (saveManagetPassword && !savedManagePassword.equals("")) {
                                 mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
                             } else {

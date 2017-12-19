@@ -182,6 +182,10 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
         }
     }
 
+    public boolean isLocalconnectAvailable() {
+        return LocalConnectmanager.getInstance().isHandshakeCompleted() && LocalConnectmanager.getInstance().getSslSocket() != null;
+    }
+
     /**
      * 初始化sslsocket
      */

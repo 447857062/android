@@ -99,4 +99,20 @@ public class TestCode implements Serializable{
     public void setOrder(int order) {
         this.order = order;
     }
+
+    @Override
+    public String toString() {
+        return "TestCode{" +
+                "deviceType='" + deviceType + '\'' +
+                ", codeID=" + codeID +
+                ", brandEN='" + brandEN + '\'' +
+                ", brandCN='" + brandCN + '\'' +
+                ", brandID='" + brandID + '\'' +
+                ", keyName='" + keyName + '\'' +
+                ", codeData='" + codeData + '\'' +
+                ", codeLen=" + codeLen +
+                ", id='" + id + '\'' +
+                ", order=" + order +
+                '}';
+    }
 }

@@ -18,10 +18,13 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryRCCodeResponse;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryTestCodeResponse;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.TestCode;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
+import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +38,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
     private TextView textview_test_press_4;
+    private TextView textview_test_press_2;
     private FrameLayout image_back;
 
     @Override
@@ -46,7 +50,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         initEvents();
     }
 
-    private List<String> codeDatas;
     private static final int MSG_SHOW_GET_KT_CODE = 100;
     private static final int MSG_SEND_CODE = 101;
     private static final int MSG_SHOW_GET_TV_CODE = 102;
@@ -64,7 +67,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     textview_test_press_4.setText("" + testCodeNumber);
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
-                    codeDatas.clear();
 
                     break;
                 case MSG_SHOW_GET_TV_CODE:
@@ -72,7 +74,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     textview_test_press_4.setText("" + code.getValue().size());
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
-                    codeDatas.clear();
 
                     break;
                 case MSG_SHOW_GET_IPTV_CODE:
@@ -80,12 +81,13 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     textview_test_press_4.setText("" + code.getValue().size());
                     controlId = code.getValue().get(0).getCodeID();
                     brandId = code.getValue().get(0).getBrandID();
-                    codeDatas.clear();
 
                     break;
                 case MSG_SEND_CODE:
-                    if (currentTestCodeIndex < codeDatas.size()) {
-                        mRemoteControlManager.sendData(codeDatas.get(currentTestCodeIndex));
+                    if (currentTestCodeIndex < testCodes.size()) {
+                        Log.i(TAG, "发送测试码：第" + currentTestCodeIndex + "个：" + testCodes.get(currentTestCodeIndex).getCodeData());
+                        textview_test_press_2.setText("" + (currentTestCodeIndex + 1));
+                        mRemoteControlManager.sendData(testCodes.get(currentTestCodeIndex).getCodeData());
                         startSend();
                     }
                     break;
@@ -97,10 +99,12 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     };
     private int controlId;
     private String brandId;
+    private List<TestCode> testCodes;
 
     @Override
     protected void onResume() {
         super.onResume();
+        isSendFirst=true;
         switch (type) {
             case "KT":
                 RestfulTools.getSingleton(this).queryTestCode("KT", bandName, "cn", new Callback<QueryTestCodeResponse>() {
@@ -110,6 +114,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                         msg.what = MSG_SHOW_GET_KT_CODE;
                         msg.obj = response.body();
                         Log.i(TAG, "测试码列表大小:" + response.body().getValue().size());
+                        testCodes.clear();
+                        testCodes.addAll(response.body().getValue());
                         mHandler.sendMessage(msg);
                     }
 
@@ -169,6 +175,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         button_ok = (Button) findViewById(R.id.button_ok);
         textview_title = (TextView) findViewById(R.id.textview_title);
         textview_test_press_4 = (TextView) findViewById(R.id.textview_test_press_4);
+        textview_test_press_2 = (TextView) findViewById(R.id.textview_test_press_2);
         image_back = (FrameLayout) findViewById(R.id.image_back);
     }
 
@@ -181,7 +188,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         type = getIntent().getStringExtra("type");
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this, this);
-        codeDatas = new ArrayList<>();
+        testCodes = new ArrayList<>();
     }
 
     @Override
@@ -191,10 +198,12 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 onBackPressed();
                 break;
             case R.id.button_ng:
+                iscanceled = true;
                 currentTestCodeIndex = 0;
                 layout_device_response.setVisibility(View.GONE);
                 break;
             case R.id.button_ok:
+                iscanceled = true;
                 Log.i(TAG, "下载码表 type=" + type + "brandId=" + brandId + "controlId=" + controlId);
                 switch (type) {
                     case "TV":
@@ -214,10 +223,11 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                         });
                         break;
                     case "KT":
-                        RestfulTools.getSingleton(this).downloadIrCode("KT", brandId, controlId, new Callback<QueryRCCodeResponse>() {
+                        TestCode selectedCode = testCodes.get(currentTestCodeIndex);
+                        RestfulTools.getSingleton(this).downloadIrCode("KT", selectedCode.getBrandID(), selectedCode.getCodeID(), new Callback<QueryRCCodeResponse>() {
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
-                                Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
+                                Log.i(TAG, "下载空调码表=" + response.body().getValue().getCode() + "组号：" + response.body().getValue().getGroup());
                                 Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType", "智能空调");
                                 startActivity(intent);
@@ -249,35 +259,46 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
                 break;
             case R.id.button_test:
-                layout_device_response.setVisibility(View.VISIBLE);
+
                 //发送测试码
-                startSend();
+                if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+                    layout_device_response.setVisibility(View.VISIBLE);
+                    startSend();
+                } else {
+                    ToastSingleShow.showText(this, "没有活动网关,请检查网络");
+                }
+
                 break;
         }
     }
 
-    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 10000;
+    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 5000;
     int currentTestCodeIndex = 0;
-
+    private boolean isSendFirst;
     private void startSend() {
-        if (codeDatas.size() > 0) {
-            if (currentTestCodeIndex < codeDatas.size()) {
-                if (currentTestCodeIndex == 0) {
-                    currentTestCodeIndex++;
+        if (!iscanceled) {
+            if (testCodes.size() > 0) {
+                if (currentTestCodeIndex < testCodes.size()) {
                     Message msg = Message.obtain();
                     msg.what = MSG_SEND_CODE;
-                    mHandler.sendMessage(msg);
-                } else {
-                    Message msg = Message.obtain();
-                    msg.what = MSG_SEND_CODE;
-                    mHandler.sendMessageDelayed(msg, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
+                    if(isSendFirst){
+                        isSendFirst=false;
+                        mHandler.sendMessage(msg);
+                    }else{
+                        mHandler.sendMessageDelayed(msg, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
+                    }
                 }
             }
         }
     }
 
+    private boolean iscanceled;
     @Override
     public void responseQueryResult(String result) {
         Log.i(TAG, "测试按键=" + result);
+        //接收到发送红外按键的回应
+        if (!iscanceled) {
+            currentTestCodeIndex++;
+        }
     }
 }
