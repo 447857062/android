@@ -19,6 +19,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.L
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 
 
@@ -91,7 +92,6 @@ public class RemoteControlMenuDialog extends Dialog implements View.OnClickListe
                 this.dismiss();
                 Intent intent;
                 switch (currentType) {
-
                     case TYPE_AIRCONDITION:
                         intent = new Intent(mContext, AirconditionChooseBandActivity.class);
                         intent.putExtra("type","KT");
@@ -112,7 +112,20 @@ public class RemoteControlMenuDialog extends Dialog implements View.OnClickListe
                 break;
             case R.id.textview_edit:
                 this.dismiss();
-                mContext.startActivity(new Intent(mContext, EditRemoteDevicesActivity.class));
+                intent = new Intent(mContext, EditRemoteDevicesActivity.class);
+                switch (currentType){
+                    case TYPE_AIRCONDITION:
+                        intent.putExtra("deviceType", DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
+                        break;
+                    case TYPE_TVBOX:
+                        intent.putExtra("deviceType", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
+                        break;
+                    case TYPE_TV:
+                        intent.putExtra("deviceType", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
+                        break;
+                }
+
+                mContext.startActivity(intent);
                 break;
         }
     }

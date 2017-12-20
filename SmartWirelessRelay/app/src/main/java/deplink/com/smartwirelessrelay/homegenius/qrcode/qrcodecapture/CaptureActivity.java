@@ -24,7 +24,7 @@ import java.util.Vector;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.CameraManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.CaptureActivityHandler;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.InactivityTimer;
@@ -223,7 +223,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             case CAPTURE_TYPE_SWITCH:
                 intent =new Intent(this, AddDeviceNameActivity.class);
                 intent.putExtra("switchqrcode", deviceSn);
-                intent.putExtra("DeviceType", DeviceType.TYPE.TYPE_SWITCH);
+                intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SWITCH);
                 startActivity(intent);
                 finish();
                 break;

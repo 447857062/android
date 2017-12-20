@@ -26,7 +26,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.AP_CLIENT;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.Proto;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.wifi.WifiRelaySet;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -279,7 +279,12 @@ public class DeviceManager implements LocalConnecteListener {
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         packet.packSendSmartDevsData(text.getBytes());
-        mLocalConnectmanager.getOut(packet.data);
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
     }
 
     /**
@@ -312,13 +317,6 @@ public class DeviceManager implements LocalConnecteListener {
                 //查询设备
                 SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 //找到要更行的设备,设置关联的房间
-                /*List<Room> roomList = new ArrayList<>();
-                roomList.addAll(smartDev.getRoomList());
-                for (int i = 0; i < roomList.size(); i++) {
-                    if (roomList.get(i).getRoomName().equals(room.getRoomName())) {
-                        roomList.remove(i);
-                    }
-                }*/
                 smartDev.setRooms(null);
                 boolean saveResult = smartDev.save();
                 Log.i(TAG, "deleteSmartDeviceInWhatRoom saveResult=" + saveResult);
@@ -454,9 +452,9 @@ public class DeviceManager implements LocalConnecteListener {
                 SmartDev dev = new SmartDev();
                 String deviceType = aDeviceList.getSmartDev().get(i).getType();
                 if (deviceType.equals("SMART_LOCK")) {
-                    deviceType = DeviceType.TYPE.TYPE_LOCK;
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
                 } else if (deviceType.equals("IRMOTE_V2")) {
-                    deviceType = DeviceType.TYPE.TYPE_REMOTECONTROL;
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
                 }
                 dev.setUid(aDeviceList.getSmartDev().get(i).getUid());
                 dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());

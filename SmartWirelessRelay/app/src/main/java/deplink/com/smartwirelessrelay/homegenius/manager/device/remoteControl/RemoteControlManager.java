@@ -19,7 +19,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -62,6 +62,21 @@ public class RemoteControlManager implements LocalConnecteListener {
         return newsList;
     }
 
+    /**
+     * 找到遥控器挂载在哪个物理遥控器下面
+     * @return
+     */
+    public List<SmartDev> findRemotecontrolDevice() {
+        List<SmartDev> newsList = DataSupport.where("Uid = ?", mSelectRemoteControlDevice.getRemotecontrolUid()).find(SmartDev.class);
+        Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
+        return newsList;
+    }
+    public List<SmartDev> queryAllRemotecontrol() {
+        List<SmartDev>smartDevs=new ArrayList<>();
+        smartDevs.addAll(DataSupport.where("Type= ? ", "IRMOTE_V2").find(SmartDev.class));
+        Log.i(TAG,"遥控器列表大小="+smartDevs.size());
+        return smartDevs;
+    }
     public static synchronized RemoteControlManager getInstance() {
         if (instance == null) {
             instance = new RemoteControlManager();
@@ -114,9 +129,28 @@ public class RemoteControlManager implements LocalConnecteListener {
 
 
     }
+    /**
+     * 更新设备所在房间
+     */
+    public void updateSelectedDeviceInWhatRoom(Room room) {
+        Log.i(TAG, "更新智能设备所在的房间=start");
+        //保存所在的房间
+        //查询设备
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<>();
+        if (room != null) {
+            rooms.add(room);
+        } else {
+            rooms.addAll(RoomManager.getInstance().getmRooms());
+        }
+        SmartDev smartDev = DataSupport.where("Uid=?", mSelectRemoteControlDevice.getUid()).findFirst(SmartDev.class, true);
+        mSelectRemoteControlDevice.setRooms(rooms);
+        smartDev.setRooms(rooms);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+    }
 
     public void study() {
-
         QueryOptions cmd = new QueryOptions();
         cmd.setOP("SET");
         cmd.setMethod("IrmoteV2");
@@ -165,7 +199,7 @@ public class RemoteControlManager implements LocalConnecteListener {
             rooms.add(atRoom);
         }
         device.setRooms(rooms);
-
+        device.setStatus("在线");
         boolean addResult = device.save();
         if (!addResult) {
             Log.i(TAG, "数据库中已存在相同设备，不必要添加");
@@ -177,33 +211,39 @@ public class RemoteControlManager implements LocalConnecteListener {
     public boolean judgAirconditionDeviceisAdded(String name) {
         //sql 多条件查询
         List<SmartDev> smartDevs = DataSupport.where("Type= ? and name= ? ",
-                DeviceType.TYPE.TYPE_AIR_REMOTECONTROL,name).find(SmartDev.class);
+                DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL,name).find(SmartDev.class);
         return smartDevs.size() > 0;
     }
     public boolean judgTvDeviceisAdded(String name) {
         //sql 多条件查询
         List<SmartDev> smartDevs = DataSupport.where("Type= ? and name= ? ",
-                DeviceType.TYPE.TYPE_TV_REMOTECONTROL,name).find(SmartDev.class);
+                DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL,name).find(SmartDev.class);
         return smartDevs.size() > 0;
     }
     public boolean judgTvBoxDeviceisAdded(String name) {
         //sql 多条件查询
         List<SmartDev> smartDevs = DataSupport.where("Type= ? and name= ? ",
-                DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL,name).find(SmartDev.class);
+                DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL,name).find(SmartDev.class);
         return smartDevs.size() > 0;
     }
-    public List<SmartDev> queryAllRemotecontrol() {
-        List<SmartDev>smartDevs=new ArrayList<>();
-        smartDevs.addAll(DataSupport.where("Type= ? ", "IRMOTE_V2"/*DeviceType.TYPE.TYPE_REMOTECONTROL*/).find(SmartDev.class));
-        Log.i(TAG,"遥控器列表大小="+smartDevs.size());
-        return smartDevs;
-    }
+
     public boolean updateSmartDeviceGetway(Device getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
         mSelectRemoteControlDevice.setGetwayDevice(getwayDevice);
         boolean saveResult = mSelectRemoteControlDevice.save();
         Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
         return saveResult;
+    }
+    public int deleteCurrentSelectDevice() {
+        int affectcolumn = DataSupport.deleteAll(SmartDev.class, "Uid=?",mSelectRemoteControlDevice.getUid());
+        Log.i(TAG, "删除一个智能设备，删除影响的行数=" + affectcolumn);
+        return affectcolumn;
+    }
+    public boolean saveCurrentSelectDeviceName(String name) {
+        mSelectRemoteControlDevice.setName(name);
+        boolean result=mSelectRemoteControlDevice.save();
+        Log.i(TAG, "修改名称=" + result);
+        return result;
     }
 
     public void addRemoteControlListener(RemoteControlListener listener) {

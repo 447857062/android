@@ -38,8 +38,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private TextView textview_title;
     private TextView textview_edit;
     private TextView textview_reload_wifilist;
-
-
+    private boolean isStartFromExperience;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +47,6 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         initDatas();
         initEvents();
     }
-
     private void initEvents() {
         listview_wifi_list.setOnItemClickListener(this);
         image_back.setOnClickListener(this);
@@ -60,7 +58,6 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private void initViews() {
         listview_wifi_list = (ListView) findViewById(R.id.listview_wifi_list);
         textview_title = (TextView) findViewById(R.id.textview_title);
-
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         textview_reload_wifilist = (TextView) findViewById(R.id.textview_reload_wifilist);
@@ -83,14 +80,40 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
             }
         }, 3000);
         mDatas.clear();
-        mWifiListAdapter.notifyDataSetChanged();
-        mDeviceManager.queryWifiList();
+        if(isStartFromExperience){
+            mDatas.clear();
+            List<SSIDList>lists=new ArrayList<>();
+            SSIDList ssidList=new SSIDList();
+            ssidList.setSSID("wifi列表1");
+            ssidList.setQuality("77");
+            ssidList.setEncryption("WPA2PSK");
+            ssidList.setCRYTP("WPA2PSK");
+            lists.add(ssidList);
+             ssidList=new SSIDList();
+            ssidList.setEncryption("WPA2PSK");
+            ssidList.setSSID("wifi列表2");
+            ssidList.setQuality("77");
+            ssidList.setCRYTP("WPA2PSK");
+            lists.add(ssidList);
+             ssidList=new SSIDList();
+            ssidList.setSSID("wifi列表3");
+            ssidList.setEncryption("WPA2PSK");
+            ssidList.setQuality("77");
+            ssidList.setCRYTP("WPA2PSK");
+            lists.add(ssidList);
+            mDatas.addAll(lists);
+            mWifiListAdapter.notifyDataSetChanged();
+        }else{
+            mDeviceManager.queryWifiList();
+        }
+
     }
 
     private boolean isShowSkipOption;
     private List<SSIDList> mDatas;
 
     private void initDatas() {
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_title.setText("配置WiFi网关");
         textview_edit.setText("跳过");
         mDeviceManager = DeviceManager.getInstance();
@@ -152,30 +175,38 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         final AP_CLIENT setCmd = new AP_CLIENT();
         String setApCliSsid = mDatas.get(position).getSSID();
         setCmd.setApCliSsid(setApCliSsid);
-
         String setApCliEncrypType = mDatas.get(position).getEncryption();
         setCmd.setApCliEncrypType(setApCliEncrypType);
-
         String setApCliAuthMode = mDatas.get(position).getCRYTP();
         setCmd.setApCliAuthMode(setApCliAuthMode);
-
         String setChannel = mDatas.get(position).getChannel();
         setCmd.setChannel(setChannel);
         //没有密码直接连接
-        if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
-            setCmd.setApCliWPAPSK("");
-            mDeviceManager.setWifiRelay(setCmd);
-        } else {
+        if(isStartFromExperience){
             wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
                 @Override
                 public void onSureBtnClicked(String password) {
-                    setCmd.setApCliWPAPSK(password);
-                    mDeviceManager.setWifiRelay(setCmd);
                 }
             });
             wifiRelayDialog.show();
             wifiRelayDialog.setTitleText(setApCliSsid);
+        }else{
+            if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
+                setCmd.setApCliWPAPSK("");
+                mDeviceManager.setWifiRelay(setCmd);
+            } else {
+                wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
+                    @Override
+                    public void onSureBtnClicked(String password) {
+                        setCmd.setApCliWPAPSK(password);
+                        mDeviceManager.setWifiRelay(setCmd);
+                    }
+                });
+                wifiRelayDialog.show();
+                wifiRelayDialog.setTitleText(setApCliSsid);
+            }
         }
+
 
     }
 

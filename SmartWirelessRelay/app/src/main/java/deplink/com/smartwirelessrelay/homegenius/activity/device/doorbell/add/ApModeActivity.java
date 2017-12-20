@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 
 public class ApModeActivity extends Activity implements View.OnClickListener{
     private FrameLayout image_back;
@@ -47,7 +47,7 @@ public class ApModeActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.button_next_step:
                 Intent intent=new Intent(this,AddDeviceNameActivity.class);
-                intent.putExtra("DeviceType", DeviceType.TYPE.TYPE_MENLING);
+                intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_MENLING);
                 startActivity(intent);
                 break;
         }

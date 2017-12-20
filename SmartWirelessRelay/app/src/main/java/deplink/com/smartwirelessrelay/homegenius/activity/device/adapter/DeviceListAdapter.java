@@ -14,7 +14,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 
 /**
  * @author frankLi
@@ -152,8 +152,16 @@ public class DeviceListAdapter extends BaseAdapter {
         }
         if (position < TopCount) {
             String statu = listTop.get(position).getStatus();
-            if (statu != null && statu.equalsIgnoreCase("on")) {
-                statu = "在线";
+
+            if (statu != null) {
+                switch (statu){
+                    case "on":
+                        statu = "在线";
+                        break;
+                    case "off":
+                        statu = "离线";
+                        break;
+                }
             } else {
                 statu = "离线";
             }
@@ -169,21 +177,23 @@ public class DeviceListAdapter extends BaseAdapter {
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
             Log.i(TAG,"deviceStatu="+deviceStatu);
             if (deviceStatu != null) {
-                if (deviceStatu.equalsIgnoreCase("on")) {
-                    Log.i(TAG, "deviceType=" + deviceType + "deviceStatu=" + deviceStatu);
-                    deviceStatu = "在线";
-                }  else {
-                    deviceStatu = "离线";
+                switch (deviceStatu){
+                    case "on":
+                        deviceStatu = "在线";
+                        break;
+                    case "off":
+                        deviceStatu = "离线";
+                        break;
                 }
+            }else{
+                deviceStatu = "离线";
             }
-
-
             if ("SMART_LOCK".equals(deviceType)) {
-                deviceType = DeviceType.TYPE.TYPE_LOCK;
+                deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
                 deviceStatu = "在线";
             }
             if ("IRMOTE_V2".equals(deviceType)) {
-                deviceType = DeviceType.TYPE.TYPE_REMOTECONTROL;
+                deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
             viewHolder.textview_device_status.setText(deviceStatu);
@@ -194,17 +204,17 @@ public class DeviceListAdapter extends BaseAdapter {
 
     private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType, String deviceSubType) {
         switch (deviceType) {
-            case DeviceType.TYPE.TYPE_ROUTER:
+            case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.routericon);
                 break;
-            case DeviceType.TYPE.TYPE_LOCK:
+            case DeviceTypeConstant.TYPE.TYPE_LOCK:
 
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorlockicon);
                 break;
-            case DeviceType.TYPE.TYPE_MENLING:
+            case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
-            case DeviceType.TYPE.TYPE_SWITCH:
+            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 switch (deviceSubType) {
                     case "一路开关":
                         viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
@@ -221,18 +231,18 @@ public class DeviceListAdapter extends BaseAdapter {
                 }
 
                 break;
-            case DeviceType.TYPE.TYPE_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.infraredremotecontrolicon);
                 break;
-            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
             case "智能电视":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.tvicon);
                 break;
-            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
             case "智能空调":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.airconditioningicon);
                 break;
-            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
             case "智能机顶盒遥控":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.settopboxesicon);
                 break;

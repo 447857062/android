@@ -42,6 +42,9 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private ClearEditText edittext_input_devie_name;
     private TextView textview_title;
     private TextView textview_edit;
+    private String currentSelectDeviceName;
+    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
+    private DeleteDeviceDialog deleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         initEvents();
     }
 
-    private boolean needUpdateDeviceName;
-    private String currentSelectDeviceName;
     private void initDatas() {
         textview_title.setText("智能网关");
         textview_edit.setText("完成");
@@ -64,13 +65,13 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         } else {
             mGetwayManager = GetwayManager.getInstance();
             mGetwayManager.InitGetwayManager(this, this);
-            currentSelectDeviceName=mGetwayManager.getCurrentSelectGetwayDevice().getName();
+            currentSelectDeviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
             edittext_input_devie_name.setText(currentSelectDeviceName);
             edittext_input_devie_name.setSelection(currentSelectDeviceName.length());
-            List<Room>rooms=mGetwayManager.getCurrentSelectGetwayDevice().getRoomList();
-            if(rooms.size()==1){
+            List<Room> rooms = mGetwayManager.getCurrentSelectGetwayDevice().getRoomList();
+            if (rooms.size() == 1) {
                 textview_select_room_name.setText(rooms.get(0).getRoomName());
-            }else{
+            } else {
                 textview_select_room_name.setText("全部");
             }
 
@@ -97,8 +98,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
 
-    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
-    private DeleteDeviceDialog deleteDialog;
 
     @Override
     public void onClick(View v) {
@@ -117,31 +116,35 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                     }
                 });
                 deleteDialog.show();
-
-
                 break;
             case R.id.layout_config_wifi_getway:
-                Intent inent=new Intent(this, ScanWifiListActivity.class);
-                inent.putExtra("isShowSkipOption",false);
-                startActivity(inent );
+                Intent inent = new Intent(this, ScanWifiListActivity.class);
+                inent.putExtra("isShowSkipOption", false);
+                startActivity(inent);
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
-                intent.putExtra("isFromGetwayMainActivity",true);
+                intent.putExtra("isFromGetwayMainActivity", true);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
                 break;
             case R.id.image_back:
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                String inputDeviceName=edittext_input_devie_name.getText().toString();
-               if(!inputDeviceName.equals(currentSelectDeviceName)) {
-                   mGetwayManager.updateGetwayDeviceName(inputDeviceName);
-               }
+                if (isStartFromExperience) {
+
+                } else {
+                    String inputDeviceName = edittext_input_devie_name.getText().toString();
+                    if (!inputDeviceName.equals(currentSelectDeviceName)) {
+                        mGetwayManager.updateGetwayDeviceName(inputDeviceName);
+                    }
+                }
+
                 this.finish();
                 break;
         }
     }
+
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private Handler mHandler = new Handler() {
         @Override
@@ -162,12 +165,11 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
             String roomName = data.getStringExtra("roomName");
-            Log.i(TAG, "isStartFromExperience=" + isStartFromExperience );
+            Log.i(TAG, "isStartFromExperience=" + isStartFromExperience);
             if (!isStartFromExperience) {
                 Room room = RoomManager.getInstance().findRoom(roomName, true);
                 String deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
                 mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
-
             }
             textview_select_room_name.setText(roomName);
         }

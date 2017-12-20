@@ -2,9 +2,12 @@ package deplink.com.smartwirelessrelay.homegenius.activity.personal.login;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -20,6 +23,8 @@ public class RegistActivity extends Activity implements View.OnClickListener,Vie
     private EditText edittext_input_phone_number;
     private EditText edittext_verification_code;
     private EditText edittext_input_password;
+    private FrameLayout layout_eye;
+    private ImageView imageview_eye;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +43,7 @@ public class RegistActivity extends Activity implements View.OnClickListener,Vie
         edittext_input_phone_number.setOnFocusChangeListener(this);
         edittext_verification_code.setOnFocusChangeListener(this);
         edittext_input_password.setOnFocusChangeListener(this);
+        layout_eye.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -49,6 +55,8 @@ public class RegistActivity extends Activity implements View.OnClickListener,Vie
         edittext_input_phone_number = (EditText) findViewById(R.id.edittext_input_phone_number);
         edittext_verification_code = (EditText) findViewById(R.id.edittext_verification_code);
         edittext_input_password = (EditText) findViewById(R.id.edittext_input_password);
+        layout_eye = (FrameLayout) findViewById(R.id.layout_eye);
+        imageview_eye = (ImageView) findViewById(R.id.imageview_eye);
     }
 
     @Override
@@ -57,6 +65,28 @@ public class RegistActivity extends Activity implements View.OnClickListener,Vie
             case R.id.image_back:
                 onBackPressed();
                 break;
+            case R.id.layout_eye:
+                changeInputCipher();
+                break;
+        }
+    }
+    /**
+     * 设置密文明文之间切换
+     */
+    private void changeInputCipher() {
+        if (edittext_input_password.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            imageview_eye.setImageResource(R.drawable.hideicon);
+            edittext_input_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+
+        } else if (edittext_input_password.getTransformationMethod() instanceof HideReturnsTransformationMethod) {
+
+            imageview_eye.setImageResource(R.drawable.displayicon);
+            edittext_input_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        }
+        int length = edittext_input_password.getText().toString().trim().length();
+        if (length != 0) {
+            edittext_input_password.setSelection(length);
         }
     }
     @Override

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 
 /**
  * Created by Administrator on 2017/11/14.
@@ -57,31 +57,31 @@ public class AddDeviceTypeSelectAdapter extends BaseAdapter {
 
         vh.textview_device_type_name.setText(deviceTypeName);
         switch (deviceTypeName) {
-            case DeviceType.TYPE.TYPE_SMART_GETWAY:
+            case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                 vh.device_type.setImageResource(R.drawable.gatewayicon);
                 break;
-            case DeviceType.TYPE.TYPE_ROUTER:
+            case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                 vh.device_type.setImageResource(R.drawable.routericon);
                 break;
-            case DeviceType.TYPE.TYPE_LOCK:
+            case DeviceTypeConstant.TYPE.TYPE_LOCK:
                 vh.device_type.setImageResource(R.drawable.doorlockicon);
                 break;
-            case DeviceType.TYPE.TYPE_MENLING:
+            case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 vh.device_type.setImageResource(R.drawable.doorbellicon);
                 break;
-            case DeviceType.TYPE.TYPE_SWITCH:
+            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 vh.device_type.setImageResource(R.drawable.switchicon);
                 break;
-            case DeviceType.TYPE.TYPE_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                 vh.device_type.setImageResource(R.drawable.infraredremotecontrolicon);
                 break;
-            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                 vh.device_type.setImageResource(R.drawable.tvicon);
                 break;
-            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                 vh.device_type.setImageResource(R.drawable.airconditioningicon);
                 break;
-            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 vh.device_type.setImageResource(R.drawable.settopboxesicon);
                 break;
         }

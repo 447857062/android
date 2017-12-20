@@ -47,7 +47,6 @@ import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectService;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
@@ -66,7 +65,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private ImageView imageview_home_page;
     private ImageView imageview_rooms;
     private ImageView imageview_personal_center;
-    private LocalConnectmanager mLocalConnectmanager;
     private ImageView imageview_setting;
 
     private List<Room> mRoomList = new ArrayList<>();
@@ -157,13 +155,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG,"onServiceConnected");
-            mLocalConnectmanager = (LocalConnectmanager) service;
 
         }
     };
 
     private void initDatas() {
         Intent bindIntent = new Intent(this, LocalConnectService.class);
+        startService(bindIntent);
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
@@ -175,17 +173,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         oneDevice.setOnline(true);
         mExperienceCenterDeviceList.add(oneDevice);
         oneDevice = new ExperienceCenterDevice();
-        oneDevice.setDeviceName("智能开关");
-        oneDevice.setOnline(false);
-        mExperienceCenterDeviceList.add(oneDevice);
-        oneDevice = new ExperienceCenterDevice();
         oneDevice.setDeviceName("智能网关");
-        oneDevice.setOnline(false);
+        oneDevice.setOnline(true);
         mExperienceCenterDeviceList.add(oneDevice);
         mExperienceCenterListAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDeviceList);
         listview_experience_center.setOnItemClickListener(mExperienceCenterListClickListener);
-
-
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {

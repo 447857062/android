@@ -22,7 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Dev
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
@@ -59,14 +59,14 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private void initDatas() {
         roomManager = RoomManager.getInstance();
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET);
-        listTop.add(deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING);
-        roomType = deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING;
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_LIVING);
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_BED);
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_KITCHEN);
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_STUDY);
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_STORAGE);
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_TOILET);
+        listTop.add(RoomConstant.ROOMTYPE.TYPE_DINING);
+        roomType = RoomConstant.ROOMTYPE.TYPE_LIVING;
         edittext_room_name.setText(roomType);
         edittext_room_name.setSelection(roomType.length());
         fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);

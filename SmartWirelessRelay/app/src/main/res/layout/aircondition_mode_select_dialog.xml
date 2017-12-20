@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
+            android:background="@drawable/halfrectangle_top_buttom_background"
             android:id="@+id/layout_mode_hot"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height">
@@ -28,6 +29,7 @@
                 android:layout_height="1dp"/>
         </RelativeLayout>
         <RelativeLayout
+            android:background="@drawable/button_delete_background"
             android:id="@+id/layout_mode_code"
             android:layout_below="@+id/layout_mode_hot"
             android:layout_width="match_parent"
@@ -46,6 +48,7 @@
                 android:layout_height="1dp"/>
         </RelativeLayout>
         <RelativeLayout
+            android:background="@drawable/button_delete_background"
             android:id="@+id/layout_mode_dehumidification"
             android:layout_below="@+id/layout_mode_code"
             android:layout_width="match_parent"
@@ -64,6 +67,7 @@
                 android:layout_height="1dp"/>
         </RelativeLayout>
         <RelativeLayout
+            android:background="@drawable/button_delete_background"
             android:id="@+id/layout_mode_weend"
             android:layout_below="@+id/layout_mode_dehumidification"
             android:layout_width="match_parent"
@@ -82,6 +86,7 @@
                 android:layout_height="1dp"/>
         </RelativeLayout>
         <RelativeLayout
+            android:background="@drawable/halfrectangle_buttom_button_background"
             android:id="@+id/layout_mode_auto"
             android:layout_below="@+id/layout_mode_weend"
             android:layout_width="match_parent"
@@ -98,8 +103,9 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_cancel"
         android:layout_below="@+id/layout_top_content"
-        android:background="@drawable/radius8_bg_white_layout_background"
+        android:background="@drawable/air_dialog_cancel_button_background"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height">

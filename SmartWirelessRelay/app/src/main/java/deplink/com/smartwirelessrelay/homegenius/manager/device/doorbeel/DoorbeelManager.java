@@ -47,7 +47,6 @@ public class DoorbeelManager {
     }
 
 
-
     public void getDoorbeelAtRooms(final Observer observer) {
         cachedThreadPool.execute(new Runnable() {
             @Override
@@ -89,22 +88,10 @@ public class DoorbeelManager {
      *
      * @param dev 路由器
      */
-    public void saveDoorbeel(final SmartDev dev, final Observer observer) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                final boolean success = dev.save();
-                mObservable = Observable.create(new ObservableOnSubscribe() {
-                    @Override
-                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                        e.onNext(success);
-                    }
-                });
-                mObservable.subscribe(observer);
-                Log.i(TAG, "保存智能门铃设备=" + success);
-            }
-        });
-
+    public boolean saveDoorbeel( SmartDev dev) {
+        boolean success = dev.save();
+        Log.i(TAG, "保存智能门铃设备=" + success);
+        return success;
     }
 
     public void updateDoorbeelName(final String name, final Observer observer) {
@@ -153,28 +140,25 @@ public class DoorbeelManager {
      * @param sn
      * @param deviceName
      */
-    public void updateDeviceInWhatRoom( Room room,  String sn,  String deviceName,  Observer observer) {
-                Log.i(TAG, "更新智能门铃设备所在的房间=start");
-                //保存所在的房间
-                //查询设备
-                SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
-                //找到要更行的设备,设置关联的房间
-               /* List<Room> roomList = new ArrayList<>();
-                roomList.addAll(smartDev.getRoomList());
-                roomList.add(room);*/
-                List<Room>rooms=new ArrayList<Room>();
-                rooms.add(room);
-                smartDev.setRooms(rooms);
-                smartDev.setName(deviceName);
-                final boolean saveResult = smartDev.save();
-                mObservable = Observable.create(new ObservableOnSubscribe() {
-                    @Override
-                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                        e.onNext(saveResult);
-                    }
-                });
-                mObservable.subscribe(observer);
-                Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
+    public void updateDeviceInWhatRoom(Room room, String sn, String deviceName, Observer observer) {
+        Log.i(TAG, "更新智能门铃设备所在的房间=start");
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<Room>();
+        rooms.add(room);
+        smartDev.setRooms(rooms);
+        smartDev.setName(deviceName);
+        final boolean saveResult = smartDev.save();
+        mObservable = Observable.create(new ObservableOnSubscribe() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter e) throws Exception {
+                e.onNext(saveResult);
+            }
+        });
+        mObservable.subscribe(observer);
+        Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
 
 
     }

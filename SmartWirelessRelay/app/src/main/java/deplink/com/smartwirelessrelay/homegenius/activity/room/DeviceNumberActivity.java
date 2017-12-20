@@ -26,7 +26,8 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.t
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
-import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
@@ -84,29 +85,28 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mDeviceManager.InitDeviceManager(this,null);
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,null);
-        String hintRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
         currentRoom=mRoomManager.getCurrentSelectedRoom();
         String roomType=currentRoom.getRoomType();
         switch (roomType){
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING:
+            case RoomConstant.ROOMTYPE.TYPE_LIVING:
                 layout_device_number_root.setBackgroundResource(R.drawable.livingroombackground);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED:
+            case RoomConstant.ROOMTYPE.TYPE_BED:
                 layout_device_number_root.setBackgroundResource(R.drawable.bedroombackground);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN:
+            case RoomConstant.ROOMTYPE.TYPE_KITCHEN:
                 layout_device_number_root.setBackgroundResource(R.drawable.kitchenbackground);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY:
+            case RoomConstant.ROOMTYPE.TYPE_STUDY:
                 layout_device_number_root.setBackgroundResource(R.drawable.studybackground);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE:
+            case RoomConstant.ROOMTYPE.TYPE_STORAGE:
                 layout_device_number_root.setBackgroundResource(R.drawable.storageroom);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET:
+            case RoomConstant.ROOMTYPE.TYPE_TOILET:
                 layout_device_number_root.setBackgroundResource(R.drawable.toiletbackground);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING:
+            case RoomConstant.ROOMTYPE.TYPE_DINING:
                 layout_device_number_root.setBackgroundResource(R.drawable.diningroombackground);
                 break;
         }
@@ -135,17 +135,17 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                         case "IRMOTE_V2":
                             startActivity(new Intent(DeviceNumberActivity.this, RemoteControlActivity.class));
                             break;
-                        case "智能空调":
+                        case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                             startActivity(new Intent(DeviceNumberActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case "路由器":
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
                             break;
-                        case "智能电视":
+                        case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                             startActivity(new Intent(DeviceNumberActivity.this, TvMainActivity.class));
                             break;
-                        case "智能机顶盒遥控":
+                        case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                             startActivity(new Intent(DeviceNumberActivity.this, IptvMainActivity.class));
                             break;
                         case "智能开关":
