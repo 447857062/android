@@ -31,7 +31,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDL
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.RemoteControlSelectListAdapter;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
@@ -146,23 +146,23 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 edittext_add_device_input_name.setHint("例如:智能遥控（最多10个字）");
                 textview_title.setText("智能遥控");
                 break;
-            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                 edittext_add_device_input_name.setHint("例如:智能空调（最多10个字）");
                 textview_title.setText("智能空调遥控器");
                 break;
-            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                 edittext_add_device_input_name.setHint("例如:智能电视（最多10个字）");
                 textview_title.setText("智能电视遥控器");
                 break;
-            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 edittext_add_device_input_name.setHint("例如:智能机顶盒遥控（最多10个字）");
                 textview_title.setText("智能机顶盒遥控");
                 break;
-            case DeviceType.TYPE.TYPE_SWITCH:
+            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 edittext_add_device_input_name.setHint("例如:智能开关（最多10个字）");
                 textview_title.setText("智能开关");
                 break;
-            case DeviceType.TYPE.TYPE_MENLING:
+            case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 edittext_add_device_input_name.setHint("例如:智能门铃（最多10个字）");
                 textview_title.setText("智能门铃");
                 break;
@@ -208,9 +208,9 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
      * 可以设置的布局
      */
     private void showSettinglayout() {
-        if (deviceType.equals(DeviceType.TYPE.TYPE_AIR_REMOTECONTROL) ||
-                deviceType.equals(DeviceType.TYPE.TYPE_TV_REMOTECONTROL) ||
-                deviceType.equals(DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL)) {
+        if (deviceType.equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
+                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
+                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)) {
             layout_remotecontrol_select.setVisibility(View.VISIBLE);
             layout_getway_select.setVisibility(View.GONE);
             if (mRemoteControls.size() > 0) {
@@ -367,7 +367,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         mHandler.sendMessageDelayed(msg, 3000);
                         mDeviceManager.bindSmartDevList(device);
                         break;
-                    case DeviceType.TYPE.TYPE_SWITCH:
+                    case DeviceTypeConstant.TYPE.TYPE_SWITCH:
 
                         if (deviceName.equals("")) {
                             deviceName = "智能开关";
@@ -375,7 +375,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         //TODO
                         device.setAd(switchqrcode);
                         // device.setAd("智能开关uid");
-                        device.setTp(DeviceType.TYPE.TYPE_SWITCH);
+                        device.setTp(DeviceTypeConstant.TYPE.TYPE_SWITCH);
                         mSmartSwitchManager.addDBSwitchDevice(device);
                         mDeviceManager.bindSmartDevList(device);
                         break;
@@ -389,7 +389,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         //TODO 服务没有用调试打开
                         // mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                         break;
-                    case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+                    case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                         if (deviceName.equals("")) {
                             deviceName = "智能空调";
                         }
@@ -400,8 +400,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         }
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         SmartDev addDevice = new SmartDev();
-                        addDevice.setType(DeviceType.TYPE.TYPE_AIR_REMOTECONTROL);
-                        addDevice.setUid(DeviceType.TYPE.TYPE_AIR_REMOTECONTROL + deviceName);
+                        addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
+                        addDevice.setUid(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL + deviceName);
                         addDevice.setName(deviceName);
                         addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                         boolean addresult = RemoteControlManager.getInstance().addDeviceDbLocal(addDevice, currentSelectedRoom);
@@ -411,7 +411,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             ToastSingleShow.showText(this, "添加空调遥控器失败");
                         }
                         break;
-                    case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+                    case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                         if (deviceName.equals("")) {
                             deviceName = "智能电视";
                         }
@@ -422,8 +422,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         }
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         SmartDev tvDevice = new SmartDev();
-                        tvDevice.setType(DeviceType.TYPE.TYPE_TV_REMOTECONTROL);
-                        tvDevice.setUid(DeviceType.TYPE.TYPE_TV_REMOTECONTROL + deviceName);
+                        tvDevice.setType(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
+                        tvDevice.setUid(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL + deviceName);
                         tvDevice.setName(deviceName);
                         tvDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                         boolean addTvresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvDevice, currentSelectedRoom);
@@ -433,7 +433,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             ToastSingleShow.showText(this, "添加电视遥控器失败");
                         }
                         break;
-                    case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                    case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                         if (deviceName.equals("")) {
                             deviceName = "智能机顶盒遥控";
                         }
@@ -444,8 +444,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         }
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         SmartDev tvBoxDevice = new SmartDev();
-                        tvBoxDevice.setType(DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL);
-                        tvBoxDevice.setUid(DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL + deviceName);
+                        tvBoxDevice.setType(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
+                        tvBoxDevice.setUid(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL + deviceName);
                         tvBoxDevice.setName(deviceName);
                         tvBoxDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                         boolean addTvBoxresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvBoxDevice, currentSelectedRoom);
@@ -455,7 +455,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             ToastSingleShow.showText(this, "添加电视机顶盒遥控器失败");
                         }
                         break;
-                    case DeviceType.TYPE.TYPE_MENLING:
+                    case DeviceTypeConstant.TYPE.TYPE_MENLING:
                         //TODO 调试
                         if (device == null) {
                             device = new QrcodeSmartDevice();
@@ -468,66 +468,41 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         SmartDev doorbeelDev = new SmartDev();
                         doorbeelDev.setUid("testuid智能门铃");
                         doorbeelDev.setType("智能门铃");
-                        mDoorbeelManager.saveDoorbeel(doorbeelDev, new Observer() {
+                        boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
+                        if (result) {
+                            mDoorbeelManager.updateDeviceInWhatRoom(currentSelectedRoom, "testuid智能门铃", deviceName, new Observer() {
+                                @Override
+                                public void onSubscribe(@NonNull Disposable d) {
 
-                            @Override
-                            public void onSubscribe(@NonNull Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(@NonNull Object o) {
-                                if ((boolean) o) {
-                                    if (deviceName.equals("")) {
-                                        deviceName = "智能门铃";
-                                    }
-                                    mDoorbeelManager.updateDeviceInWhatRoom(currentSelectedRoom, "testuid智能门铃", deviceName, new Observer() {
-                                        @Override
-                                        public void onSubscribe(@NonNull Disposable d) {
-
-                                        }
-
-                                        @Override
-                                        public void onNext(@NonNull Object o) {
-                                            if ((boolean) o) {
-                                                startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
-                                            } else {
-                                                Message msg = Message.obtain();
-                                                msg.what = MSG_UPDATE_ROOM_FAIL;
-                                                mHandler.sendMessage(msg);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(@NonNull Throwable e) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
-                                        }
-                                    });
-                                } else {
-                                    Message msg = Message.obtain();
-                                    msg.what = MSG_ADD_DOORBEEL_FAIL;
-                                    mHandler.sendMessage(msg);
                                 }
 
+                                @Override
+                                public void onNext(@NonNull Object o) {
+                                    if ((boolean) o) {
+                                        startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                                    } else {
+                                        Message msg = Message.obtain();
+                                        msg.what = MSG_UPDATE_ROOM_FAIL;
+                                        mHandler.sendMessage(msg);
+                                    }
+                                }
 
-                            }
+                                @Override
+                                public void onError(@NonNull Throwable e) {
 
-                            @Override
-                            public void onError(@NonNull Throwable e) {
+                                }
 
-                            }
+                                @Override
+                                public void onComplete() {
 
-                            @Override
-                            public void onComplete() {
+                                }
+                            });
+                        } else {
+                            msg = Message.obtain();
+                            msg.what = MSG_ADD_DOORBEEL_FAIL;
+                            mHandler.sendMessage(msg);
+                        }
 
-                            }
-
-                        });
                         break;
                 }
                 break;

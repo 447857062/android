@@ -24,6 +24,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private ImageView imageview_auto_model;
     private ImageView imageview_auto_wind_speed;
     private ImageView imageview_wind_center;
+    private ImageView imageview_power;
+    private ImageView imageview_temperature_reduce;
+    private ImageView imageview_temperature_plus;
     private Aircondition_mode_select_Dialog modeDialog;
     private AirconditionWindSpeedSelectDialog windSpeedDialog;
     private AirconditionWindDirectionSelectDialog windDirectionDialog;
@@ -44,6 +47,24 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             @Override
             public void onModeSelect(String selectMode) {
                 textview_model.setText(selectMode);
+                switch (selectMode){
+                    case "制热模式":
+                    imageview_auto_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_notlearn);
+                    break;
+                    case "制冷模式":
+                    imageview_auto_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_notlearn);
+                    break;
+                    case "除湿模式":
+                    imageview_auto_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_notlearn);
+                    break;
+                    case "送风模式":
+                    imageview_auto_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_notlearn);
+                    break;
+                    case "自动模式":
+                    imageview_auto_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_notlearn);
+                    break;
+                }
+
             }
         });
         windSpeedDialog=new AirconditionWindSpeedSelectDialog(this);
@@ -51,6 +72,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             @Override
             public void onModeSelect(String selectMode) {
                 textview_wind_speed.setText(selectMode);
+                switch (selectMode){
+                    case "高风":
+                        imageview_auto_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_hight_notlearn);
+                        break;
+                    case "中风":
+                        imageview_auto_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_middle_notlearn);
+                        break;
+                    case "低风":
+                        imageview_auto_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_low_notlearn);
+                        break;
+                    case "自动模式":
+                        imageview_auto_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_auto_notlearn);
+                        break;
+                }
             }
         });
         windDirectionDialog=new AirconditionWindDirectionSelectDialog(this);
@@ -58,6 +93,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             @Override
             public void onModeSelect(String selectMode) {
                 textview_wind_center.setText(selectMode);
+                switch (selectMode){
+                    case "风向向上":
+                        imageview_wind_center.setBackgroundResource(R.drawable.button_aircondition_winddirection_up_notlearn);
+                        break;
+                    case "风向向中":
+                        imageview_wind_center.setBackgroundResource(R.drawable.button_aircondition_winddirection_middle_notlearn);
+                        break;
+                    case "风向向下":
+                        imageview_wind_center.setBackgroundResource(R.drawable.button_aircondition_winddirection_down_notlearn);
+                        break;
+                    case "自动风向":
+                        imageview_wind_center.setBackgroundResource(R.drawable.button_aircondition_winddirection_auto_notlearn);
+                        break;
+                }
             }
         });
         menu_dialog=new RemoteControlMenuDialog(this,RemoteControlMenuDialog.TYPE_AIRCONDITION);
@@ -71,6 +120,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         frame_setting.setOnClickListener(this);
         imageview_auto_wind_speed.setOnClickListener(this);
         imageview_wind_center.setOnClickListener(this);
+        imageview_power.setOnClickListener(this);
+        imageview_temperature_reduce.setOnClickListener(this);
+        imageview_temperature_plus.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -83,6 +135,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         imageview_auto_model= (ImageView) findViewById(R.id.imageview_auto_model);
         imageview_auto_wind_speed= (ImageView) findViewById(R.id.imageview_auto_wind_speed);
         imageview_wind_center= (ImageView) findViewById(R.id.imageview_wind_center);
+        imageview_power= (ImageView) findViewById(R.id.imageview_power);
+        imageview_temperature_reduce= (ImageView) findViewById(R.id.imageview_temperature_reduce);
+        imageview_temperature_plus= (ImageView) findViewById(R.id.imageview_temperature_plus);
         frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
     }
 

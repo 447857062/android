@@ -7,18 +7,21 @@
     android:background="@drawable/roomequipmentbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity">
     <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
-    <ListView
-        android:id="@+id/listview_devies"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:listSelector="@color/transparent"
-        android:layout_below="@+id/layout_title"
-        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-        android:layout_marginRight="@dimen/layout_content_margin_left_right"
-        android:layout_marginTop="@dimen/device_page_devicelist_margintop"
-        android:divider="@null"
-        android:scrollbars="none"
-        android:dividerHeight="@dimen/device_item_divider_height"/>
+
+        <ListView
+            android:id="@+id/listview_devies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:listSelector="@color/transparent"
+            android:layout_below="@+id/layout_title"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/device_page_devicelist_margintop"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:dividerHeight="@dimen/device_item_divider_height"/>
+
+
 
 
 </RelativeLayout>

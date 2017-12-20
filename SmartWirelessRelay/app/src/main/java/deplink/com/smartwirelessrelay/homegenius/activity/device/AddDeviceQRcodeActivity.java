@@ -21,7 +21,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddG
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeActivity;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -65,15 +65,15 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
         mDeviceTypes = new ArrayList<>();
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_SMART_GETWAY);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_ROUTER);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_LOCK);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_REMOTECONTROL);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_SWITCH);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_TV_REMOTECONTROL);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_AIR_REMOTECONTROL);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL);
-        mDeviceTypes.add(DeviceType.TYPE.TYPE_MENLING);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_ROUTER);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_LOCK);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_SWITCH);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_MENLING);
         mAdapter = new AddDeviceTypeSelectAdapter(this, mDeviceTypes);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
@@ -87,38 +87,38 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
         Intent intentEditDeviceMessage = new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
         switch (mDeviceTypes.get(position)) {
-            case DeviceType.TYPE.TYPE_SMART_GETWAY:
+            case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_GETWAY);
                 break;
-            case DeviceType.TYPE.TYPE_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
                 break;
-            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                 List<SmartDev> mRemotecontrol = new ArrayList<>();
                 mRemotecontrol.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
               if (mRemotecontrol.size() == 0) {
                     ToastSingleShow.showText(this, "未添加智能遥控，无法添加设备");
                 } else {
                     RemoteControlManager.getInstance().setmSelectRemoteControlDevice(mRemotecontrol.get(0));
-                    intentEditDeviceMessage.putExtra("DeviceType", DeviceType.TYPE.TYPE_AIR_REMOTECONTROL);
+                    intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
                     startActivity(intentEditDeviceMessage);
                 }
                 break;
-            case DeviceType.TYPE.TYPE_ROUTER:
+            case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);
                 break;
-            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
-                intentEditDeviceMessage.putExtra("DeviceType", DeviceType.TYPE.TYPE_TV_REMOTECONTROL);
+            case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
+                intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
                 startActivity(intentEditDeviceMessage);
                 break;
-            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
-                intentEditDeviceMessage.putExtra("DeviceType", DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL);
+            case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
                 startActivity(intentEditDeviceMessage);
                 break;
-            case DeviceType.TYPE.TYPE_SWITCH:
+            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
                 break;
-            case DeviceType.TYPE.TYPE_MENLING:
+            case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, AddDoorbellTipsActivity.class));
                 break;
             default:

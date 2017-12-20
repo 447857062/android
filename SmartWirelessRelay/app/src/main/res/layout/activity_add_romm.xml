@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:text="家里的网关"
+            android:text="未绑定网关"
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small" />
 

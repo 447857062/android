@@ -53,7 +53,7 @@
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_update_device_name"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:background="@color/white"
+        android:background="@drawable/button_delete_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -93,7 +93,7 @@
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_room_select"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:background="@color/white"
+        android:background="@drawable/button_delete_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -127,13 +127,14 @@
             android:src="@drawable/directionicon" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/layout_remotecontrol_select"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_getway_select"
         android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:background="@color/white"
+        android:background="@drawable/button_delete_background"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -172,9 +173,9 @@
         android:id="@+id/layout_getway_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:layout_below="@+id/layout_remotecontrol_select"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:background="@color/transparent"
         android:visibility="gone">
 
         <ListView
@@ -186,14 +187,16 @@
 
         </ListView>
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/layout_remotecontrol_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
         android:layout_below="@+id/layout_getway_list"
+        android:layout_marginTop="@dimen/list_item_textview_margin_top"
+        android:background="@color/transparent"
         android:visibility="gone">
+
         <ListView
             android:id="@+id/listview_select_remotecontrol"
             android:layout_width="match_parent"
@@ -211,7 +214,7 @@
         android:layout_below="@+id/layout_remotecontrol_list"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/adddevice_surebutton_margintop"
-        android:background="@drawable/radius22_bg_blue_background"
+        android:background="@drawable/radius22_bg_button_background"
         android:text="确定"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_small" />

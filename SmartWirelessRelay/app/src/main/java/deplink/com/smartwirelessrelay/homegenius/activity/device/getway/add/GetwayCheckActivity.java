@@ -1,7 +1,6 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +17,6 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.adapter.GetwayListDevicesAdapter;
-import deplink.com.smartwirelessrelay.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
@@ -155,8 +153,8 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent inent=new Intent(this, ScanWifiListActivity.class);
+      /*  Intent inent=new Intent(this, ScanWifiListActivity.class);
         inent.putExtra("isShowSkipOption",false);
-        startActivity(inent);
+        startActivity(inent);*/
     }
 }

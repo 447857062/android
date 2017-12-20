@@ -79,8 +79,7 @@
                 android:layout_height="@dimen/aircondition_control_reduce_plus_width_height"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:clickable="true"
-                android:src="@drawable/button_temp_reduce" />
+                android:background="@drawable/button_temp_reduce_notlearn" />
 
             <SeekBar
                 android:id="@+id/progressBar"
@@ -105,7 +104,7 @@
                 android:layout_height="@dimen/aircondition_control_reduce_plus_width_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/button_temp_plus" />
+                android:background="@drawable/button_temp_plus_notlearn" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -127,8 +126,7 @@
                     android:id="@+id/imageview_power"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:clickable="true"
-                    android:src="@drawable/button_aircondition_power" />
+                    android:background="@drawable/button_power_notlearn" />
 
                 <TextView
                     android:layout_marginTop="@dimen/list_item_textview_margin_top"
@@ -152,8 +150,7 @@
                     android:id="@+id/imageview_auto_model"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:clickable="true"
-                    android:src="@drawable/button_aircondition_auto_maticmode" />
+                    android:background="@drawable/button_aircondition_mode_auto_notlearn" />
 
                 <TextView
                     android:layout_marginTop="@dimen/list_item_textview_margin_top"
@@ -178,8 +175,7 @@
                     android:id="@+id/imageview_auto_wind_speed"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:clickable="true"
-                    android:src="@drawable/button_aircondition_auto_matic_win_speed" />
+                    android:background="@drawable/button_aircondition_windspeed_auto_notlearn" />
 
                 <TextView
                     android:layout_marginTop="@dimen/list_item_textview_margin_top"
@@ -203,8 +199,7 @@
                     android:id="@+id/imageview_wind_center"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:clickable="true"
-                    android:src="@drawable/button_aircondition_in" />
+                    android:background="@drawable/button_aircondition_winddirection_auto_notlearn" />
 
                 <TextView
                     android:layout_marginTop="@dimen/list_item_textview_margin_top"

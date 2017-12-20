@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
+import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
 /*
 *
  * Created by Administrator on 2017/11/11.
@@ -40,6 +42,8 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
                     .findViewById(R.id.imageview_room_type);
             viewHolder.view_line = convertView
                     .findViewById(R.id.view_line);
+            viewHolder.layout_root = (RelativeLayout) convertView
+                    .findViewById(R.id.layout_root);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -56,7 +60,9 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
         setRoomTypeImageResource(position, viewHolder);
         if(position==listTop.size()-1){
             viewHolder.view_line.setVisibility(View.INVISIBLE);
+            viewHolder.layout_root.setBackgroundResource(R.drawable.halfrectangle_buttom_button_background);
         }else{
+            viewHolder.layout_root.setBackgroundResource(R.drawable.button_delete_background);
             viewHolder.view_line.setVisibility(View.VISIBLE);
         }
         return convertView;
@@ -105,30 +111,31 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
             return;
         }
         switch (listTop.get(position).getRoomType()) {
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_LIVING:
+            case RoomConstant.ROOMTYPE.TYPE_LIVING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchlivingroom);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_BED:
+            case RoomConstant.ROOMTYPE.TYPE_BED:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchbedroom);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_DINING:
+            case RoomConstant.ROOMTYPE.TYPE_DINING:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchdiningroom);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_KITCHEN:
+            case RoomConstant.ROOMTYPE.TYPE_KITCHEN:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchkitchen);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STORAGE:
+            case RoomConstant.ROOMTYPE.TYPE_STORAGE:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchstorageroom);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_STUDY:
+            case RoomConstant.ROOMTYPE.TYPE_STUDY:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchstudy);
                 break;
-            case deplink.com.smartwirelessrelay.homegenius.constant.Room.ROOMTYPE.TYPE_TOILET:
+            case RoomConstant.ROOMTYPE.TYPE_TOILET:
                 viewHolder.imageview_room_type.setImageResource(R.drawable.viewswitchtoilet);
                 break;
         }
     }
     final static class ViewHolder {
+        RelativeLayout layout_root;
         TextView textview_room_item;
         TextView device_number;
         ImageView imageview_room_type;

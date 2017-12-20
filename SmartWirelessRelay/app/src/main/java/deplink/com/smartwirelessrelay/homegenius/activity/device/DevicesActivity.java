@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,7 +46,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMain
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity;
 import deplink.com.smartwirelessrelay.homegenius.application.AppManager;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
@@ -55,6 +54,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.Re
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
@@ -64,7 +64,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-    private ListView listview_devies;
+    private NonScrollableListView listview_devies;
     private DeviceListAdapter mDeviceAdapter;
     /**
      * 上面半部分列表的数据
@@ -172,9 +172,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
                             break;
-                        case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+                        case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
@@ -182,15 +183,15 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
-                        case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+                        case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, TvMainActivity.class));
                             break;
-                        case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                        case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
                             break;
-                        case DeviceType.TYPE.TYPE_SWITCH:
+                        case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                             switch (deviceSubType) {
                                 case "一路开关":
                                     startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
@@ -271,7 +272,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
         layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
-        listview_devies = (ListView) findViewById(R.id.listview_devies);
+        listview_devies = (NonScrollableListView) findViewById(R.id.listview_devies);
         imageview_add_device = (ImageView) findViewById(R.id.imageview_add_device);
         layout_select_room_type = (LinearLayout) findViewById(R.id.layout_select_room_type);
         imageview_devices = (ImageView) findViewById(R.id.imageview_devices);

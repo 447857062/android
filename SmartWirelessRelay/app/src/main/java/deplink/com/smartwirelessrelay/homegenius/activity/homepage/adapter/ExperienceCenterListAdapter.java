@@ -6,13 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
-import deplink.com.smartwirelessrelay.homegenius.constant.DeviceType;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 
 /**
  *
@@ -58,41 +59,51 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
                     .findViewById(R.id.textview_device_name);
             viewHolder.iamgeview_setting = (ImageView) convertView
                     .findViewById(R.id.iamgeview_setting);
+            viewHolder.layout_root = (RelativeLayout) convertView
+                    .findViewById(R.id.layout_root);
+            viewHolder.view_line =  convertView
+                    .findViewById(R.id.view_line);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        if(position==mDatas.size()-1){
+            viewHolder.view_line.setVisibility(View.INVISIBLE);
+            viewHolder.layout_root.setBackgroundResource(R.drawable.halfrectangle_buttom_button_background);
+        }else{
+            viewHolder.layout_root.setBackgroundResource(R.drawable.button_delete_background);
+            viewHolder.view_line.setVisibility(View.VISIBLE);
+        }
 
         viewHolder.textview_device_name.setText(mDatas.get(position).getDeviceName());
         switch (mDatas.get(position).getDeviceName()){
-            case DeviceType.TYPE.TYPE_SMART_GETWAY:
+            case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                 viewHolder.image_device_type.setImageResource(R.drawable.gatewayicon);
                 break;
-            case DeviceType.TYPE.TYPE_ROUTER:
+            case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                 viewHolder.image_device_type.setImageResource(R.drawable.routericon);
                 break;
-            case DeviceType.TYPE.TYPE_LOCK:
+            case DeviceTypeConstant.TYPE.TYPE_LOCK:
             case "智能门锁":
                 viewHolder.image_device_type.setImageResource(R.drawable.doorlockicon);
                 break;
-            case DeviceType.TYPE.TYPE_MENLING:
+            case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 viewHolder.image_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
-            case DeviceType.TYPE.TYPE_SWITCH:
+            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 viewHolder.image_device_type.setImageResource(R.drawable.switchicon);
                 break;
-            case DeviceType.TYPE.TYPE_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                 viewHolder.image_device_type.setImageResource(R.drawable.infraredremotecontrolicon);
                 break;
-            case DeviceType.TYPE.TYPE_TV_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                 viewHolder.image_device_type.setImageResource(R.drawable.tvicon);
                 break;
-            case DeviceType.TYPE.TYPE_AIR_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                 viewHolder.image_device_type.setImageResource(R.drawable.airconditioningicon);
                 break;
-            case DeviceType.TYPE.TYPE_TVBOX_REMOTECONTROL:
+            case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 viewHolder.image_device_type.setImageResource(R.drawable.settopboxesicon);
                 break;
 
@@ -101,9 +112,11 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
     }
 
     final static class ViewHolder {
+        RelativeLayout layout_root;
         ImageView image_device_type;
         TextView textview_device_name;
         ImageView iamgeview_setting;
+        View view_line;
     }
 
 }

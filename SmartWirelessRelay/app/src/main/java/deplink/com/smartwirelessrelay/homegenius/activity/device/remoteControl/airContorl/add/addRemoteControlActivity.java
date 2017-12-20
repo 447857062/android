@@ -65,27 +65,29 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     code = (QueryTestCodeResponse) msg.obj;
                     testCodeNumber = code.getValue().size();
                     textview_test_press_4.setText("" + testCodeNumber);
-                    controlId = code.getValue().get(0).getCodeID();
-                    brandId = code.getValue().get(0).getBrandID();
-
+                    for (int i = 0; i < code.getValue().size(); i++) {
+                        Log.i(TAG, "按键名称:" + code.getValue().get(i).getKeyName());
+                    }
                     break;
                 case MSG_SHOW_GET_TV_CODE:
                     code = (QueryTestCodeResponse) msg.obj;
                     textview_test_press_4.setText("" + code.getValue().size());
-                    controlId = code.getValue().get(0).getCodeID();
-                    brandId = code.getValue().get(0).getBrandID();
-
+                    for (int i = 0; i < code.getValue().size(); i++) {
+                        Log.i(TAG, "按键名称:" + code.getValue().get(i).getKeyName());
+                    }
                     break;
                 case MSG_SHOW_GET_IPTV_CODE:
                     code = (QueryTestCodeResponse) msg.obj;
                     textview_test_press_4.setText("" + code.getValue().size());
-                    controlId = code.getValue().get(0).getCodeID();
-                    brandId = code.getValue().get(0).getBrandID();
-
+                    for (int i = 0; i < code.getValue().size(); i++) {
+                        Log.i(TAG, "按键名称:" + code.getValue().get(i).getKeyName());
+                    }
                     break;
                 case MSG_SEND_CODE:
                     if (currentTestCodeIndex < testCodes.size()) {
-                        Log.i(TAG, "发送测试码：第" + currentTestCodeIndex + "个：" + testCodes.get(currentTestCodeIndex).getCodeData());
+                        Log.i(TAG, "发送测试码：第" + currentTestCodeIndex + "个：" +
+                                testCodes.get(currentTestCodeIndex).getCodeData() +
+                                "按键名称是：" + testCodes.get(currentTestCodeIndex).getKeyName());
                         textview_test_press_2.setText("" + (currentTestCodeIndex + 1));
                         mRemoteControlManager.sendData(testCodes.get(currentTestCodeIndex).getCodeData());
                         startSend();
@@ -104,7 +106,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        isSendFirst=true;
+        isSendFirst = true;
+        Log.i(TAG, "onResume type=" + type);
         switch (type) {
             case "KT":
                 RestfulTools.getSingleton(this).queryTestCode("KT", bandName, "cn", new Callback<QueryTestCodeResponse>() {
@@ -183,7 +186,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private String type;
 
     private void initDatas() {
-        textview_title.setText("添加空调遥控器");
+        textview_title.setText("快速测试");
         bandName = getIntent().getStringExtra("bandname");
         type = getIntent().getStringExtra("type");
         mRemoteControlManager = RemoteControlManager.getInstance();
@@ -204,6 +207,9 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 break;
             case R.id.button_ok:
                 iscanceled = true;
+                TestCode selectedCode = testCodes.get(currentTestCodeIndex);
+                brandId = selectedCode.getBrandID();
+                controlId = selectedCode.getCodeID();
                 Log.i(TAG, "下载码表 type=" + type + "brandId=" + brandId + "controlId=" + controlId);
                 switch (type) {
                     case "TV":
@@ -223,7 +229,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                         });
                         break;
                     case "KT":
-                        TestCode selectedCode = testCodes.get(currentTestCodeIndex);
+
                         RestfulTools.getSingleton(this).downloadIrCode("KT", selectedCode.getBrandID(), selectedCode.getCodeID(), new Callback<QueryRCCodeResponse>() {
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
@@ -275,16 +281,17 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 5000;
     int currentTestCodeIndex = 0;
     private boolean isSendFirst;
+
     private void startSend() {
         if (!iscanceled) {
             if (testCodes.size() > 0) {
                 if (currentTestCodeIndex < testCodes.size()) {
                     Message msg = Message.obtain();
                     msg.what = MSG_SEND_CODE;
-                    if(isSendFirst){
-                        isSendFirst=false;
+                    if (isSendFirst) {
+                        isSendFirst = false;
                         mHandler.sendMessage(msg);
-                    }else{
+                    } else {
                         mHandler.sendMessageDelayed(msg, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
                     }
                 }
@@ -293,6 +300,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private boolean iscanceled;
+
     @Override
     public void responseQueryResult(String result) {
         Log.i(TAG, "测试按键=" + result);

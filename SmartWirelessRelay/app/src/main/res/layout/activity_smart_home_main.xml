@@ -42,71 +42,70 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_room_top"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/home_page_roomselect_top_height"
-        android:layout_below="@+id/layout_title"
-        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-        android:layout_marginRight="@dimen/layout_content_margin_left_right"
-        android:layout_marginTop="100dp"
-        android:alpha="1"
-        android:background="@drawable/homepage_halfrectangle_top_background"
-        android:gravity="center_vertical">
 
-        <ImageView
-            android:id="@+id/imageview_room"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
-            android:src="@drawable/smallroomicon" />
 
-        <TextView
-            android:id="@+id/textview_room_top_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/homepage_room_title_marginleft_room_smallimage"
-            android:layout_toRightOf="@+id/imageview_room"
-            android:gravity="center_vertical"
-            android:text="房间"
-            android:textColor="@color/room_type_text"
-            android:textSize="@dimen/text_size_small" />
-
-        <TextView
-            android:id="@+id/textview_change_show_type"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/layout_content_margin_left_right"
-            android:gravity="center_vertical|right"
-            android:text="视图切换"
-            android:textColor="@color/room_type_text"
-            android:textSize="@dimen/text_size_small" />
-
-    </RelativeLayout>
-
-    <ScrollView
+    <deplink.com.smartwirelessrelay.homegenius.view.MyScrollView
         android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttom_layout"
-        android:layout_below="@+id/layout_room_top">
+        android:layout_below="@+id/layout_title">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <!--水平滚动的房间-->
+            <RelativeLayout
+                android:id="@+id/layout_room_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/home_page_roomselect_top_height"
+                android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+                android:layout_marginRight="@dimen/layout_content_margin_left_right"
+                android:layout_marginTop="100dp"
+                android:alpha="1"
+                android:background="@drawable/homepage_halfrectangle_top_background"
+                android:gravity="center_vertical">
 
+                <ImageView
+                    android:id="@+id/imageview_room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+                    android:src="@drawable/smallroomicon" />
+
+                <TextView
+                    android:id="@+id/textview_room_top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/homepage_room_title_marginleft_room_smallimage"
+                    android:layout_toRightOf="@+id/imageview_room"
+                    android:gravity="center_vertical"
+                    android:text="房间"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+                <TextView
+                    android:id="@+id/textview_change_show_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/layout_content_margin_left_right"
+                    android:gravity="center_vertical|right"
+                    android:text="视图切换"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/frame_room"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:layout_below="@+id/layout_room_top"
                 android:layout_marginLeft="@dimen/layout_content_margin_left_right"
                 android:layout_marginRight="@dimen/layout_content_margin_left_right"
                 android:alpha="0.9"
@@ -114,6 +113,7 @@
 
                 <deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView
                     android:id="@+id/layout_roomselect_changed_ype"
+                    android:listSelector="@color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@null"
@@ -197,6 +197,7 @@
                     android:layout_height="match_parent"
                     android:layout_below="@+id/layout_experience_center_top"
                     android:alpha="0.9"
+                    android:listSelector="@color/transparent"
                     android:background="@drawable/homepage_halfrectangle_buttom_background"
                     android:divider="@null"
                     android:minHeight="@dimen/home_page_roomselect_top_height"
@@ -205,7 +206,7 @@
         </RelativeLayout>
 
 
-    </ScrollView>
+    </deplink.com.smartwirelessrelay.homegenius.view.MyScrollView>
 
 
     <RelativeLayout

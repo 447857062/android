@@ -279,6 +279,7 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
      */
     public int getOut(byte[] message) {
         if (sslSocket == null) {
+            initSocketing=false;
             Log.i(TAG, "socket==null cannot send tcp ip message");
             return -1;
         }
@@ -479,10 +480,9 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                                     mUdpmanager.InitUdpConnect(mContext, LocalConnectmanager.this);
                                 }
                             }
-                        } else if (currentNetStatu == NET_TYPE_WIFI_DISCONNECTED) {
-                            //TODO wifi连接不可用
+                        } else  {
                             if (mContext != null) {
-                                Toast.makeText(mContext, "wifi连接不可用，本地连接已断开", Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(mContext, "wifi连接不可用，本地连接已断开", Toast.LENGTH_SHORT).show();
                             }
                             if (mUdpmanager != null) {
                                 mUdpmanager = null;

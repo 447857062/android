@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
 
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
     <RelativeLayout
         android:background="@color/white_background"
         android:layout_below="@+id/layout_topbar"
@@ -34,10 +34,11 @@
                 android:background="@null"
                 android:layout_centerVertical="true"
                 android:id="@+id/edittext_add_device_input_name"
-                android:hint="我家的遥控器"
+                android:hint="最大10个字"
                 android:textColorHint="@color/huise"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small"
+                android:maxLength="10"
                 android:layout_toRightOf="@+id/textview_device_name_left"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -49,7 +50,7 @@
             android:paddingRight="@dimen/layout_content_margin_left_right"
             android:id="@+id/layout_room_select"
             android:layout_below="@+id/layout_update_device_name"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:layout_height="@dimen/layout_item_content_height">
@@ -83,50 +84,70 @@
 
         </RelativeLayout>
         <RelativeLayout
-            android:paddingLeft="@dimen/layout_content_margin_left_right"
-            android:paddingRight="@dimen/layout_content_margin_left_right"
-            android:id="@+id/layout_getway_select"
-            android:layout_below="@+id/layout_room_select"
-            android:background="@color/white"
+
+            android:id="@+id/layout_remotecontrol_select"
             android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_below="@+id/layout_room_select"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
-            android:layout_height="@dimen/layout_item_content_height">
+            android:background="@drawable/button_delete_background"
+            android:paddingLeft="@dimen/layout_content_margin_left_right"
+            android:paddingRight="@dimen/layout_content_margin_left_right">
+
             <TextView
-                android:layout_centerVertical="true"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:id="@+id/textview_getway_name"
+                android:id="@+id/textview_remotecontrol_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="网关:" />
+                android:layout_centerVertical="true"
+                android:text="遥控器:"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
 
             <TextView
-                android:layout_centerVertical="true"
-                android:text="我家的网关"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small"
-                android:layout_toRightOf="@+id/textview_getway_name"
-                android:gravity="center_vertical"
-                android:id="@+id/textview_select_getway_name"
+                android:id="@+id/textview_select_remotecontrol_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-            <ImageView
                 android:layout_centerVertical="true"
-                android:src="@drawable/directionicon"
-                android:layout_alignParentRight="true"
-                android:id="@+id/imageview_getway_arror_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_toRightOf="@+id/textview_remotecontrol_name"
+                android:gravity="center_vertical"
+                android:text="未设置遥控器"
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
 
+            <ImageView
+                android:id="@+id/imageview_remotecontrol_arror_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/directionicon" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_remotecontrol_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_below="@+id/layout_remotecontrol_select"
+            android:visibility="gone">
+            <ListView
+                android:id="@+id/listview_select_remotecontrol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@color/transparent"
+                android:dividerHeight="@dimen/list_item_textview_margin_top">
+
+            </ListView>
         </RelativeLayout>
 
         <TextView
             android:id="@+id/button_delete_device"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
-            android:layout_below="@+id/layout_getway_select"
+            android:layout_below="@+id/layout_remotecontrol_list"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="@color/delete_button"
             android:textSize="@dimen/text_size_small"

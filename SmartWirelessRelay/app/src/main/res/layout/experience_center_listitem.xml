@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/experience_center_listitem_height"
     android:paddingLeft="@dimen/layout_content_margin_left_right"
+    android:id="@+id/layout_root"
     android:background="@drawable/button_delete_background"
     android:minHeight="@dimen/experience_center_listitem_height"
    >

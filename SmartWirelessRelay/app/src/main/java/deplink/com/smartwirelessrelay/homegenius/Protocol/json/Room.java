@@ -77,13 +77,5 @@ public class Room extends DataSupport implements Serializable{
         this.mDevices = mDevices;
     }
 
-    @Override
-    public String toString() {
-        return "Room{" +
-                "roomName='" + roomName + '\'' +
-                ", roomOrdinalNumber=" + roomOrdinalNumber +
-                ", mDevices=" + mDevices.size()+
-                ", mGetways=" + mGetwayDevices.size()+
-                '}';
-    }
+
 }
