@@ -12,19 +12,25 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyCode;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvboxKeyCode;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvboxLearnStatu;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryRCCodeResponse;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryTestCodeResponse;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.TestCode;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
-import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
-import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -135,6 +141,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                         Message msg = Message.obtain();
                         msg.what = MSG_SHOW_GET_TV_CODE;
                         msg.obj = response.body();
+                        testCodes.clear();
+                        testCodes.addAll(response.body().getValue());
                         mHandler.sendMessage(msg);
                     }
 
@@ -145,12 +153,14 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 });
                 break;
             case "智能机顶盒遥控":
-                RestfulTools.getSingleton(this).queryTestCode("IPTV", bandName, "cn", new Callback<QueryTestCodeResponse>() {
+                RestfulTools.getSingleton(this).queryTestCode("STB", bandName, "cn", new Callback<QueryTestCodeResponse>() {
                     @Override
                     public void onResponse(Call<QueryTestCodeResponse> call, Response<QueryTestCodeResponse> response) {
                         Message msg = Message.obtain();
                         msg.what = MSG_SHOW_GET_IPTV_CODE;
                         msg.obj = response.body();
+                        testCodes.clear();
+                        testCodes.addAll(response.body().getValue());
                         mHandler.sendMessage(msg);
                     }
 
@@ -184,13 +194,15 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
     private String bandName;
     private String type;
+    private String currentSelectDeviceUid;
 
     private void initDatas() {
-        textview_title.setText("快速测试");
+        textview_title.setText("快速学习");
         bandName = getIntent().getStringExtra("bandname");
         type = getIntent().getStringExtra("type");
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this, this);
+        currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
         testCodes = new ArrayList<>();
     }
 
@@ -216,7 +228,16 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                         RestfulTools.getSingleton(this).downloadIrCode("TV", brandId, controlId, new Callback<QueryRCCodeResponse>() {
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
-                                Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
+                                Log.i(TAG, "下载电视码表=" + response.body().getValue().getCode() + "组号：" + response.body().getValue().getGroup());
+                                TvKeyCode mTvKeyCode = DataSupport.findFirst(TvKeyCode.class);
+                                mTvKeyCode.setGroupData(response.body().getValue().getGroup());
+                                mTvKeyCode.setKeycode(response.body().getValue().getCode());
+                                mTvKeyCode.setmAirconditionUid(currentSelectDeviceUid);
+                                mTvKeyCode.save();
+                                TvKeyLearnStatu mTvKeyLearnStatu = DataSupport.findFirst(TvKeyLearnStatu.class);
+                                mTvKeyLearnStatu.seAllKeyLearned();
+                                mTvKeyLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
+                                mTvKeyLearnStatu.save();
                                 Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType", "智能电视");
                                 startActivity(intent);
@@ -234,6 +255,16 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载空调码表=" + response.body().getValue().getCode() + "组号：" + response.body().getValue().getGroup());
+
+                                AirconditionKeyCode mAirconditionKeyCode = DataSupport.findFirst(AirconditionKeyCode.class);
+                                mAirconditionKeyCode.setGroupData(response.body().getValue().getGroup());
+                                mAirconditionKeyCode.setKeycode(response.body().getValue().getCode());
+                                mAirconditionKeyCode.setmAirconditionUid(currentSelectDeviceUid);
+                                mAirconditionKeyCode.save();
+                                AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.findFirst(AirconditionKeyLearnStatu.class);
+                                mAirconditionKeyLearnStatu.seAllKeyLearned();
+                                mAirconditionKeyLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
+                                mAirconditionKeyLearnStatu.save();
                                 Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType", "智能空调");
                                 startActivity(intent);
@@ -246,10 +277,19 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                         });
                         break;
                     case "智能机顶盒遥控":
-                        RestfulTools.getSingleton(this).downloadIrCode("IPTV", brandId, controlId, new Callback<QueryRCCodeResponse>() {
+                        RestfulTools.getSingleton(this).downloadIrCode("STB", brandId, controlId, new Callback<QueryRCCodeResponse>() {
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
-                                Log.i(TAG, "下载码表=" + response.body().getValue().getCode());
+                                Log.i(TAG, "下载码表 code=" + response.body().getValue().getCode() + "group=" + response.body().getValue().getGroup());
+                                TvboxKeyCode mTvboxKeyCode = DataSupport.findFirst(TvboxKeyCode.class);
+                                mTvboxKeyCode.setGroupData(response.body().getValue().getGroup());
+                                mTvboxKeyCode.setKeycode(response.body().getValue().getCode());
+                                mTvboxKeyCode.setmAirconditionUid(currentSelectDeviceUid);
+                                mTvboxKeyCode.save();
+                                TvboxLearnStatu mTvboxLearnStatu = DataSupport.findFirst(TvboxLearnStatu.class);
+                                mTvboxLearnStatu.seAllKeyLearned();
+                                mTvboxLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
+                                mTvboxLearnStatu.save();
                                 Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
                                 intent.putExtra("DeviceType", "智能机顶盒遥控");
                                 startActivity(intent);
@@ -267,12 +307,12 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
             case R.id.button_test:
 
                 //发送测试码
-                if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-                    layout_device_response.setVisibility(View.VISIBLE);
-                    startSend();
-                } else {
-                    ToastSingleShow.showText(this, "没有活动网关,请检查网络");
-                }
+                // if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+                layout_device_response.setVisibility(View.VISIBLE);
+                startSend();
+                //  } else {
+                //      ToastSingleShow.showText(this, "没有活动网关,请检查网络");
+                //   }
 
                 break;
         }

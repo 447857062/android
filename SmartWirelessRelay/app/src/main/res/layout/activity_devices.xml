@@ -74,13 +74,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/equipmentemptystate" />
-        <deplink.com.smartwirelessrelay.homegenius.view.MyScrollView
-            android:layout_width="match_parent"
-            android:scrollbars="none"
-            android:layout_marginTop="@dimen/device_page_devicelist_margintop"
-            android:layout_height="match_parent">
-            <deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView
+
+            <ListView
                 android:id="@+id/listview_devies"
+                android:layout_marginTop="@dimen/device_page_devicelist_margintop"
                 android:listSelector="@color/transparent"
                 android:scrollbars="none"
                 android:background="@null"
@@ -90,7 +87,7 @@
                 android:layout_marginRight="@dimen/layout_content_margin_left_right"
                 android:divider="@null"
                 android:dividerHeight="@dimen/device_item_divider_height" />
-        </deplink.com.smartwirelessrelay.homegenius.view.MyScrollView>
+
 
     </RelativeLayout>
 

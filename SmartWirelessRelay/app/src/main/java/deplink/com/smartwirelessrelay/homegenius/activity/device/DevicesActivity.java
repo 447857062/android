@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -54,7 +55,6 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.Re
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
-import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
@@ -64,7 +64,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-    private NonScrollableListView listview_devies;
+    private ListView listview_devies;
     private DeviceListAdapter mDeviceAdapter;
     /**
      * 上面半部分列表的数据
@@ -272,7 +272,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
         layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
         layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
-        listview_devies = (NonScrollableListView) findViewById(R.id.listview_devies);
+        listview_devies = (ListView) findViewById(R.id.listview_devies);
         imageview_add_device = (ImageView) findViewById(R.id.imageview_add_device);
         layout_select_room_type = (LinearLayout) findViewById(R.id.layout_select_room_type);
         imageview_devices = (ImageView) findViewById(R.id.imageview_devices);

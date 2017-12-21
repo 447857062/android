@@ -8,23 +8,54 @@ import java.io.Serializable;
  * Created by Administrator on 2017/10/30.
  * 按键的学习状态
  */
-public class AirconditionKeyLearnStatu extends DataSupport implements Serializable{
-   private boolean key_tempature_reduce;
-   private boolean key_tempature_plus;
-   private boolean key_power;
-   private boolean key_mode_hot;
-   private boolean key_mode_cold;
-   private boolean key_mode_dehumit;
-   private boolean key_mode_wind;
-   private boolean key_mode_auto;
-   private boolean key_windspeed_hight;
-   private boolean key_windspeed_middle;
-   private boolean key_windspeed_low;
-   private boolean key_windspeed_auto;
-   private boolean key_winddirection_up;
-   private boolean key_winddirection_middle;
-   private boolean key_winddirection_down;
-   private boolean key_winddirection_auto;
+public class AirconditionKeyLearnStatu extends DataSupport implements Serializable {
+    private boolean key_tempature_reduce;
+    private boolean key_tempature_plus;
+    private boolean key_power;
+    private boolean key_mode_hot;
+    private boolean key_mode_cold;
+    private boolean key_mode_dehumit;
+    private boolean key_mode_wind;
+    private boolean key_mode_auto;
+    private boolean key_windspeed_hight;
+    private boolean key_windspeed_middle;
+    private boolean key_windspeed_low;
+    private boolean key_windspeed_auto;
+    private boolean key_winddirection_up;
+    private boolean key_winddirection_middle;
+    private boolean key_winddirection_down;
+    private boolean key_winddirection_auto;
+    /**
+     * 当前code绑定的智能设备UID
+     */
+    private String mAirconditionUid;
+
+
+    public String getmAirconditionUid() {
+        return mAirconditionUid;
+    }
+
+    public void setmAirconditionUid(String mAirconditionUid) {
+        this.mAirconditionUid = mAirconditionUid;
+    }
+    public void seAllKeyLearned() {
+        key_tempature_reduce = true;
+        key_tempature_plus = true;
+        key_power = true;
+        key_mode_hot = true;
+        key_mode_cold = true;
+        key_mode_dehumit = true;
+        key_mode_wind = true;
+        key_mode_auto = true;
+        key_windspeed_hight = true;
+        key_windspeed_middle = true;
+        key_windspeed_low = true;
+        key_windspeed_auto = true;
+        key_winddirection_up = true;
+        key_winddirection_middle = true;
+        key_winddirection_down = true;
+        key_winddirection_auto = true;
+    }
 
     public boolean isKey_tempature_reduce() {
         return key_tempature_reduce;

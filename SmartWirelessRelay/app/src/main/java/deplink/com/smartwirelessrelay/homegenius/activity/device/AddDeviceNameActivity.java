@@ -31,6 +31,9 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.SSIDL
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.RemoteControlSelectListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
@@ -39,6 +42,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayMan
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.ConfigRemoteControlDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import io.reactivex.Observer;
@@ -81,7 +85,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private SmartDev currentSelectRemotecontrol;
     private RelativeLayout layout_remotecontrol_select;
     private RelativeLayout layout_remotecontrol_list;
-
+    private ConfigRemoteControlDialog configRemoteControlDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +136,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switchqrcode = getIntent().getStringExtra("switchqrcode");
         //get current room
         currentSelectedRoom = RoomManager.getInstance().getCurrentSelectedRoom();
+        configRemoteControlDialog=new ConfigRemoteControlDialog(this);
         if (currentSelectedRoom != null) {
             textview_select_room_name.setText(currentSelectedRoom.getRoomName());
         } else {
@@ -406,7 +411,20 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                         boolean addresult = RemoteControlManager.getInstance().addDeviceDbLocal(addDevice, currentSelectedRoom);
                         if (addresult) {
-                            startActivity(new Intent(this, DevicesActivity.class));
+                            configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
+                                @Override
+                                public void onSureBtnClicked() {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, AirconditionChooseBandActivity.class));
+                                }
+                            });
+                            configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
+                                @Override
+                                public void onCancelBtnClicked() {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                                }
+                            });
+                            configRemoteControlDialog.show();
+
                         } else {
                             ToastSingleShow.showText(this, "添加空调遥控器失败");
                         }
@@ -428,7 +446,19 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         tvDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                         boolean addTvresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvDevice, currentSelectedRoom);
                         if (addTvresult) {
-                            startActivity(new Intent(this, DevicesActivity.class));
+                            configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
+                                @Override
+                                public void onSureBtnClicked() {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
+                                }
+                            });
+                            configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
+                                @Override
+                                public void onCancelBtnClicked() {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                                }
+                            });
+                            configRemoteControlDialog.show();
                         } else {
                             ToastSingleShow.showText(this, "添加电视遥控器失败");
                         }
@@ -450,7 +480,19 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         tvBoxDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                         boolean addTvBoxresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvBoxDevice, currentSelectedRoom);
                         if (addTvBoxresult) {
-                            startActivity(new Intent(this, DevicesActivity.class));
+                            configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
+                                @Override
+                                public void onSureBtnClicked() {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
+                                }
+                            });
+                            configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
+                                @Override
+                                public void onCancelBtnClicked() {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, AddTopBoxActivity.class));
+                                }
+                            });
+                            configRemoteControlDialog.show();
                         } else {
                             ToastSingleShow.showText(this, "添加电视机顶盒遥控器失败");
                         }

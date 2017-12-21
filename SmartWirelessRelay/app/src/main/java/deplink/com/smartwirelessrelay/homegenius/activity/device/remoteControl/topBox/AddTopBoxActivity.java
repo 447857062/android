@@ -54,16 +54,14 @@ public class AddTopBoxActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
-        RestfulTools.getSingleton(this).queryBand("IPTV", "cn", new Callback<QueryBandResponse>() {
+        RestfulTools.getSingleton(this).queryBand("STB", "cn", new Callback<QueryBandResponse>() {
             @Override
             public void onResponse(Call<QueryBandResponse> call, Response<QueryBandResponse> response) {
                 if(response.body().getValue().size()>0){
-
                         SourceDateList.clear();
                         SourceDateList.addAll(filledData(response.body().getValue()));
                         Collections.sort(SourceDateList, pinyinComparator);
                         adapter.notifyDataSetChanged();
-
                 }
             }
             @Override

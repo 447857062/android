@@ -11,8 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
 
 public class SideBar extends View {
 	private OnTouchingLetterChangedListener onTouchingLetterChangedListener;
@@ -54,7 +52,7 @@ public class SideBar extends View {
 			paint.setColor(Color.rgb(33, 65, 98));
 			paint.setTypeface(Typeface.DEFAULT_BOLD);
 			paint.setAntiAlias(true);
-			paint.setTextSize(20);
+			paint.setTextSize(25);
 			if (i == choose) {
 				paint.setColor(Color.parseColor("#3399ff"));
 				paint.setFakeBoldText(true);
@@ -69,13 +67,10 @@ public class SideBar extends View {
 	
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
-		
 		final int action = event.getAction();
 		final float y = event.getY();
 		final int oldChoose = choose;
-		
 		final OnTouchingLetterChangedListener listener = onTouchingLetterChangedListener;
-		
 		final int c = (int)(y / getHeight() * b.length);
 		
 		switch (action) {
@@ -89,7 +84,6 @@ public class SideBar extends View {
 			break;
 
 		default:
-			setBackgroundResource(R.drawable.sidebar_background);
 			if (oldChoose != c) {
 				if (c>=0 && c<b.length) {
 					if (listener != null) {
@@ -105,10 +99,6 @@ public class SideBar extends View {
 			}
 			break;
 		}
-		
-		
-		
-		
 		return true;
 	}
 
@@ -119,7 +109,6 @@ public class SideBar extends View {
 	
 
 	public interface OnTouchingLetterChangedListener {
-		public void onTouchingLetterChanged(String s);
+		void onTouchingLetterChanged(String s);
 	}
-
 }

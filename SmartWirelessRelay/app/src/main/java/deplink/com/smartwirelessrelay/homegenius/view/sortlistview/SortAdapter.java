@@ -46,7 +46,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		ViewHolder viewHolder = null;
+		ViewHolder viewHolder;
 		final SortModel mContent = list.get(position);
 		if (convertView== null) {
 			viewHolder = new ViewHolder();

@@ -34,7 +34,44 @@ public class TvKeyLearnStatu extends DataSupport implements Serializable{
     //-/-- 按钮
    private boolean key_number_left;
    private boolean key_number_avtv;
+    public void seAllKeyLearned() {
+        key_up=true;
+        key_down=true;
+        key_left=true;
+        key_right=true;
+        key_ok=true;
+        key_power=true;
+        key_ch_reduce=true;
+        key_ch_plus=true;
+        key_volum_reduce=true;
+        key_volum_plus=true;
+        key_mute=true;
+        key_list=true;
+        key_return=true;
+        key_number_0=true;
+        key_number_1=true;
+        key_number_2=true;
+        key_number_3=true;
+        key_number_4=true;
+        key_number_5=true;
+        key_number_6=true;
+        key_number_7=true;
+        key_number_8=true;
+        key_number_9=true;
+    }
+    /**
+     * 当前code绑定的智能设备UID
+     */
+    private String mAirconditionUid;
 
+
+    public String getmAirconditionUid() {
+        return mAirconditionUid;
+    }
+
+    public void setmAirconditionUid(String mAirconditionUid) {
+        this.mAirconditionUid = mAirconditionUid;
+    }
     public boolean isKey_up() {
         return key_up;
     }

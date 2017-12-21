@@ -105,21 +105,16 @@
                     android:layout_height="@dimen/alllearn_button_width_height"
                     android:layout_below="@+id/imageview_power"
                     android:layout_centerHorizontal="true"
+                    android:background="@drawable/alldontlearn"
                     android:layout_marginTop="@dimen/basecontrol_frame_content_margin_top">
-                    <ImageView
-                        android:clickable="true"
-                        android:id="@+id/imageview_center"
-                        android:layout_width="@dimen/learn_ok_button_width_height"
-                        android:layout_height="@dimen/learn_ok_button_width_height"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        android:src="@drawable/learnok" />
+
                     <ImageView
                         android:clickable="true"
                         android:id="@+id/imageview_left"
                         android:layout_width="@dimen/learn_button_leftright_width"
                         android:layout_height="@dimen/learn_button_leftright_height"
                         android:layout_gravity="left|center_vertical"
-                        android:src="@drawable/button_click_left" />
+                        android:src="@drawable/button_click_left_notlearn" />
 
                     <ImageView
                         android:clickable="true"
@@ -127,7 +122,7 @@
                         android:layout_width="@dimen/learn_button_leftright_width"
                         android:layout_height="@dimen/learn_button_leftright_height"
                         android:layout_gravity="right|center_vertical"
-                        android:src="@drawable/button_click_right" />
+                        android:src="@drawable/button_click_right_notlearn" />
 
                     <ImageView
                         android:clickable="true"
@@ -135,7 +130,7 @@
                         android:layout_width="@dimen/learn_button_updown_width"
                         android:layout_height="@dimen/learn_button_updown_height"
                         android:layout_gravity="top|center_horizontal"
-                        android:src="@drawable/button_click_up" />
+                        android:src="@drawable/button_click_up_notlearn" />
 
                     <ImageView
                         android:clickable="true"
@@ -143,9 +138,15 @@
                         android:layout_width="@dimen/learn_button_updown_width"
                         android:layout_height="@dimen/learn_button_updown_height"
                         android:layout_gravity="bottom|center_horizontal"
-                        android:src="@drawable/button_click_down" />
+                        android:src="@drawable/button_click_down_notlearn" />
 
-
+                    <ImageView
+                        android:clickable="true"
+                        android:id="@+id/imageview_center"
+                        android:layout_width="@dimen/learn_ok_button_width_height"
+                        android:layout_height="@dimen/learn_ok_button_width_height"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:src="@drawable/button_ok_notlearn" />
                 </FrameLayout>
 
                 <LinearLayout
@@ -167,7 +168,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_learn_ch_reduce" />
+                        android:src="@drawable/button_learn_ch_reduce_notlearn" />
 
                     <ImageView
                         android:scaleType="centerInside"
@@ -176,7 +177,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_learn_ch_add" />
+                        android:src="@drawable/button_learn_ch_add_notlearn" />
 
                     <ImageView
                         android:scaleType="centerInside"
@@ -194,7 +195,7 @@
                         android:clickable="true"
                         android:id="@+id/imageview_volum_add"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_learn_volum_add" />
+                        android:src="@drawable/button_volum_add_notlearn" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -215,7 +216,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_click_mute" />
+                        android:src="@drawable/button_mute_notlearn" />
 
                     <ImageView
                         android:scaleType="centerInside"
@@ -223,7 +224,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_click_menu" />
+                        android:src="@drawable/button_menu_notlearn" />
 
                     <ImageView
                         android:scaleType="centerInside"
@@ -231,7 +232,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_click_back" />
+                        android:src="@drawable/button_back_notlearn" />
                 </LinearLayout>
             </RelativeLayout>
             <!--数字控制-->
@@ -257,7 +258,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
-                        android:src="@drawable/button_1" />
+                        android:src="@drawable/button_1_notlearn" />
 
                     <ImageView
                         android:id="@+id/imageview_number_2"
@@ -265,7 +266,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:clickable="true"
-                        android:src="@drawable/button_2"/>
+                        android:src="@drawable/button_2_notlearn"/>
 
                     <ImageView
                         android:id="@+id/imageview_number_3"
@@ -273,7 +274,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:clickable="true"
-                        android:src="@drawable/button_3" />
+                        android:src="@drawable/button_3_notlearn" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -290,7 +291,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:clickable="true"
-                        android:src="@drawable/button_4" />
+                        android:src="@drawable/button_4_notlearn" />
 
                     <ImageView
                         android:id="@+id/imageview_number_5"
@@ -298,7 +299,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:clickable="true"
-                        android:src="@drawable/button_5" />
+                        android:src="@drawable/button_5_notlearn" />
 
                     <ImageView
                         android:id="@+id/imageview_number_6"
@@ -306,7 +307,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:clickable="true"
-                        android:src="@drawable/button_6" />
+                        android:src="@drawable/button_6_notlearn" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -323,7 +324,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:clickable="true"
-                        android:src="@drawable/button_7" />
+                        android:src="@drawable/button_7_notlearn" />
 
                     <ImageView
                         android:id="@+id/imageview_number_8"
@@ -331,7 +332,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:clickable="true"
-                        android:src="@drawable/button_8"/>
+                        android:src="@drawable/button_8_notlearn"/>
 
                     <ImageView
                         android:id="@+id/imageview_number_9"
@@ -339,7 +340,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:clickable="true"
-                        android:src="@drawable/button_9" />
+                        android:src="@drawable/button_9_notlearn" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -356,7 +357,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
-                        android:src="@drawable/button_enter"/>
+                        android:src="@drawable/button_enter_notlearn"/>
 
                     <ImageView
                         android:id="@+id/imageview_number_0"
@@ -364,7 +365,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:clickable="true"
-                        android:src="@drawable/button_0"/>
+                        android:src="@drawable/button_0_notlearn"/>
 
                     <ImageView
                         android:id="@+id/imageview_number_av_tv"
@@ -372,7 +373,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:clickable="true"
-                        android:src="@drawable/button_avtv"/>
+                        android:src="@drawable/button_avtv_notlearn"/>
                 </RelativeLayout>
             </RelativeLayout>
         </FrameLayout>

@@ -32,7 +32,6 @@ import retrofit2.Response;
 
 public class AirconditionChooseBandActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "AirChooseBandActivity";
-
     private ListView listview_band;
     private TextView textview_title;
     private FrameLayout image_back;
@@ -43,7 +42,6 @@ public class AirconditionChooseBandActivity extends Activity implements AdapterV
     private CharacterParser characterParser;
     private List<SortModel> SourceDateList = new ArrayList<>();
     private PinyinComparator pinyinComparator;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

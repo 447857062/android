@@ -6,20 +6,24 @@
     android:orientation="vertical" >
 
     <TextView
+        android:paddingRight="@dimen/layout_content_margin_left_right"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/catalog"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#E0E0E0"
+        android:background="@color/white"
         android:textColor="@color/room_type_text"
         android:textSize="@dimen/text_size_small"
         android:layout_weight="1.0"
-        android:paddingLeft="5dip"
         android:paddingTop="5dip"
         android:paddingBottom="5dip"
         android:text="A"/>
 
     <TextView
+        android:paddingRight="@dimen/layout_content_margin_left_right"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:id="@+id/title"
+        android:background="@drawable/choose_band_background"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center_vertical"
@@ -27,7 +31,6 @@
         android:layout_weight="1.0"
         android:textColor="@color/room_type_text"
         android:textSize="@dimen/text_size_small"
-        android:layout_marginLeft="5dip"
         android:paddingTop="10dip"
         android:paddingBottom="10dip"
         android:text="hhhh"/>

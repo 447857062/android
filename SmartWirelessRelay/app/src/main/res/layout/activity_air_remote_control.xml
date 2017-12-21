@@ -59,19 +59,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_top_content"
         android:layout_marginTop="@dimen/aircondition_control_layout_margin_top"
-        android:background="@color/white_background">
+        android:background="@color/white_background"
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:id="@+id/layout_temperature_control"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/aircondition_control_layout_margin_left_right"
-            android:layout_marginRight="@dimen/aircondition_control_layout_margin_left_right"
-            >
+            android:layout_marginRight="@dimen/aircondition_control_layout_margin_left_right">
 
             <ImageView
                 android:id="@+id/imageview_temperature_reduce"
@@ -118,9 +117,9 @@
 
             <RelativeLayout
                 android:id="@+id/layout_power"
-                android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true">
 
                 <ImageView
                     android:id="@+id/imageview_power"
@@ -129,11 +128,11 @@
                     android:background="@drawable/button_power_notlearn" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_power"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageview_power"
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:gravity="center_horizontal|center_vertical"
                     android:text="开/关"
                     android:textColor="@color/room_type_text"
@@ -146,6 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/aircondition_control_buttom_layout_icon_marginleft"
                 android:layout_toRightOf="@+id/layout_power">
+
                 <ImageView
                     android:id="@+id/imageview_auto_model"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
@@ -153,11 +153,11 @@
                     android:background="@drawable/button_aircondition_mode_auto_notlearn" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_model"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageview_auto_model"
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:gravity="center_horizontal|center_vertical"
                     android:text="自动模式"
                     android:textColor="@color/room_type_text"
@@ -178,11 +178,11 @@
                     android:background="@drawable/button_aircondition_windspeed_auto_notlearn" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_wind_speed"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageview_auto_wind_speed"
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:gravity="center_horizontal|center_vertical"
                     android:text="自动风速"
                     android:textColor="@color/room_type_text"
@@ -199,14 +199,14 @@
                     android:id="@+id/imageview_wind_center"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="@dimen/aircondition_control_buttom_control_icon_width_height"
-                    android:background="@drawable/button_aircondition_winddirection_auto_notlearn" />
+                    android:background="@drawable/button_aircondition_winddirection_middle_notlearn" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:id="@+id/textview_wind_center"
                     android:layout_width="@dimen/aircondition_control_buttom_control_icon_width_height"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageview_wind_center"
+                    android:layout_marginTop="@dimen/list_item_textview_margin_top"
                     android:gravity="center_horizontal|center_vertical"
                     android:text="风向居中"
                     android:textColor="@color/room_type_text"
