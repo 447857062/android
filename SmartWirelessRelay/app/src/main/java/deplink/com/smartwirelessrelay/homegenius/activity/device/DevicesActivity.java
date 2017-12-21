@@ -35,7 +35,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.Doorbe
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchFourActivity;
@@ -189,7 +189,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DevicesActivity.this, IptvMainActivity.class));
+                            startActivity(new Intent(DevicesActivity.this, TvBoxMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                             switch (deviceSubType) {

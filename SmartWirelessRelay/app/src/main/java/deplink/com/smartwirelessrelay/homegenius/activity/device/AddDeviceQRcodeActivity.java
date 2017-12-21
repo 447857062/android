@@ -86,6 +86,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
         Intent intentEditDeviceMessage = new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
+        List<SmartDev> mRemotecontrol = new ArrayList<>();
         switch (mDeviceTypes.get(position)) {
             case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_GETWAY);
@@ -94,9 +95,9 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
-                List<SmartDev> mRemotecontrol = new ArrayList<>();
+                RemoteControlManager.getInstance().setCurrentActionIsAddDevice(true);
                 mRemotecontrol.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
-              if (mRemotecontrol.size() == 0) {
+                if (mRemotecontrol.size() == 0) {
                     ToastSingleShow.showText(this, "未添加智能遥控，无法添加设备");
                 } else {
                     RemoteControlManager.getInstance().setmSelectRemoteControlDevice(mRemotecontrol.get(0));
@@ -108,12 +109,28 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
-                intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
-                startActivity(intentEditDeviceMessage);
+                RemoteControlManager.getInstance().setCurrentActionIsAddDevice(true);
+                mRemotecontrol.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
+                if (mRemotecontrol.size() == 0) {
+                    ToastSingleShow.showText(this, "未添加智能遥控，无法添加设备");
+                } else {
+                    RemoteControlManager.getInstance().setmSelectRemoteControlDevice(mRemotecontrol.get(0));
+                    intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
+                    startActivity(intentEditDeviceMessage);
+                }
+
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
-                intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
-                startActivity(intentEditDeviceMessage);
+                RemoteControlManager.getInstance().setCurrentActionIsAddDevice(true);
+                mRemotecontrol.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
+                if (mRemotecontrol.size() == 0) {
+                    ToastSingleShow.showText(this, "未添加智能遥控，无法添加设备");
+                } else {
+                    RemoteControlManager.getInstance().setmSelectRemoteControlDevice(mRemotecontrol.get(0));
+                    intentEditDeviceMessage.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
+                    startActivity(intentEditDeviceMessage);
+                }
+
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));

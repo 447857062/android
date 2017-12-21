@@ -22,7 +22,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceL
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
@@ -146,7 +146,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             startActivity(new Intent(DeviceNumberActivity.this, TvMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
-                            startActivity(new Intent(DeviceNumberActivity.this, IptvMainActivity.class));
+                            startActivity(new Intent(DeviceNumberActivity.this, TvBoxMainActivity.class));
                             break;
                         case "智能开关":
                             // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));

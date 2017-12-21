@@ -18,7 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.Doorbe
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity;
@@ -138,7 +138,7 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 startActivity(intent);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
-                intent = new Intent(this, IptvMainActivity.class);
+                intent = new Intent(this, TvBoxMainActivity.class);
                 startActivity(intent);
                 break;
         }

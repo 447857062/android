@@ -3,19 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.IptvMainActivity">
-    <include layout="@layout/layout_title_with_right_have_image_have_textbackground" android:id="@+id/layout_title"/>
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity">
+
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/layout_title_with_right_have_image_have_textbackground" />
+
     <RelativeLayout
-        android:layout_below="@+id/layout_title"
-        android:background="@color/white_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_title"
+        android:background="@color/white_background">
+
         <RelativeLayout
-            android:background="@color/white"
             android:id="@+id/layout_select_show_current_list"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
-            >
+            android:background="@color/white">
 
             <RelativeLayout
                 android:id="@+id/layout_title_control_base"
@@ -77,9 +81,9 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:background="@color/white_background"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layout_select_show_current_list">
+            android:layout_below="@+id/layout_select_show_current_list"
+            android:background="@color/white_background">
             <!--基本控制-->
             <RelativeLayout
                 android:id="@+id/layout_control_base"
@@ -87,14 +91,14 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:clickable="true"
-                    android:layout_marginTop="@dimen/first_frame_content_margintop"
-                    android:layout_marginRight="@dimen/first_frame_content_margin_left_right"
                     android:id="@+id/imageview_power"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/button_power_learned" />
+                    android:layout_marginRight="@dimen/first_frame_content_margin_left_right"
+                    android:layout_marginTop="@dimen/first_frame_content_margintop"
+                    android:background="@drawable/button_power_notlearn"
+                    android:clickable="true" />
 
 
                 <FrameLayout
@@ -103,46 +107,48 @@
                     android:layout_height="@dimen/alllearn_button_width_height"
                     android:layout_below="@+id/imageview_power"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/button_all_learn"
-                    android:layout_marginTop="@dimen/basecontrol_frame_content_margin_top">
+                    android:layout_marginTop="@dimen/basecontrol_frame_content_margin_top"
+                    android:background="@drawable/button_all_learn">
+
                     <ImageView
-                        android:clickable="true"
                         android:id="@+id/imageview_center"
                         android:layout_width="@dimen/learn_ok_button_width_height"
                         android:layout_height="@dimen/learn_ok_button_width_height"
                         android:layout_gravity="center_horizontal|center_vertical"
-                        android:src="@drawable/learnok" />
+                        android:background="@drawable/button_ok_notlearn"
+                        android:clickable="true" />
+
                     <ImageView
-                        android:clickable="true"
                         android:id="@+id/imageview_left"
                         android:layout_width="@dimen/learn_button_leftright_width"
                         android:layout_height="@dimen/learn_button_leftright_height"
                         android:layout_gravity="left|center_vertical"
-                        android:src="@drawable/button_click_left_notlearn" />
+                        android:background="@drawable/button_click_left_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
-                        android:clickable="true"
                         android:id="@+id/imageview_right"
                         android:layout_width="@dimen/learn_button_leftright_width"
                         android:layout_height="@dimen/learn_button_leftright_height"
                         android:layout_gravity="right|center_vertical"
-                        android:src="@drawable/button_click_right_notlearn" />
+                        android:background="@drawable/button_click_right_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
-                        android:clickable="true"
                         android:id="@+id/imageview_top"
                         android:layout_width="@dimen/learn_button_updown_width"
                         android:layout_height="@dimen/learn_button_updown_height"
                         android:layout_gravity="top|center_horizontal"
-                        android:src="@drawable/button_click_up_notlearn" />
+                        android:background="@drawable/button_click_up_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
-                        android:clickable="true"
-                        android:id="@+id/imageview_button"
+                        android:id="@+id/imageview_down"
                         android:layout_width="@dimen/learn_button_updown_width"
                         android:layout_height="@dimen/learn_button_updown_height"
                         android:layout_gravity="bottom|center_horizontal"
-                        android:src="@drawable/button_click_down_notlearn" />
+                        android:background="@drawable/button_click_down_notlearn"
+                        android:clickable="true" />
 
 
                 </FrameLayout>
@@ -151,86 +157,84 @@
                     android:id="@+id/layout_ch_volume"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/learn_ch_volum_button_width_height"
-                    android:weightSum="4"
-                    android:orientation="horizontal"
                     android:layout_below="@+id/framelayout_center_control"
                     android:layout_marginLeft="@dimen/first_frame_content_margin_left_right"
                     android:layout_marginRight="@dimen/first_frame_content_margin_left_right"
                     android:layout_marginTop="@dimen/basecontrol_frame_content_margin_top"
-                    >
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
                     <ImageView
-                        android:clickable="true"
                         android:id="@+id/imageview_ch_reduce"
-                        android:scaleType="centerInside"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="@dimen/learn_ch_volum_button_width_height"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_learn_ch_reduce_notlearn" />
+                        android:background="@drawable/button_learn_ch_reduce_notlearn"
+                        android:clickable="true"
+                        android:scaleType="centerInside" />
 
                     <ImageView
-                        android:scaleType="centerInside"
-                        android:clickable="true"
                         android:id="@+id/imageview_ch_add"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="@dimen/learn_ch_volum_button_width_height"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_learn_ch_add_notlearn" />
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/button_learn_ch_add_notlearn"
+                        android:clickable="true"
+                        android:scaleType="centerInside" />
 
                     <ImageView
-                        android:scaleType="centerInside"
-                        android:clickable="true"
                         android:id="@+id/imageview_volum_reduce"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="@dimen/learn_ch_volum_button_width_height"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_learn_volum_reduce" />
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/button_volum_reduce_notlearn"
+                        android:clickable="true"
+                        android:scaleType="centerInside" />
 
                     <ImageView
-                        android:scaleType="centerInside"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
                         android:id="@+id/imageview_volum_add"
+                        android:layout_width="@dimen/learn_ch_volum_button_width_height"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_volum_add_notlearn" />
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/button_volum_add_notlearn"
+                        android:clickable="true"
+                        android:scaleType="centerInside" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/learn_mute_menu_return_button_width_height"
-                    android:weightSum="3"
-                    android:orientation="horizontal"
                     android:layout_below="@+id/layout_ch_volume"
                     android:layout_marginLeft="@dimen/first_frame_content_margin_left_right"
                     android:layout_marginRight="@dimen/first_frame_content_margin_left_right"
                     android:layout_marginTop="@dimen/basecontrol_frame_content_margin_top"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
                     <ImageView
-                        android:scaleType="centerInside"
                         android:id="@+id/imageview_volume_on_off"
+                        android:layout_width="@dimen/learn_mute_menu_return_button_width_height"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/button_guide_notlearn"
                         android:clickable="true"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/button_guide" />
+                        android:scaleType="centerInside" />
 
                     <ImageView
-                        android:scaleType="centerInside"
                         android:id="@+id/imageview_control_list"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="@dimen/learn_mute_menu_return_button_width_height"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_menu_notlearn" />
+                        android:layout_marginLeft="30dp"
+                        android:background="@drawable/button_menu_notlearn"
+                        android:scaleType="centerInside" />
 
                     <ImageView
-                        android:scaleType="centerInside"
                         android:id="@+id/imageview_control_back"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="@dimen/learn_mute_menu_return_button_width_height"
                         android:layout_height="match_parent"
-                        android:src="@drawable/button_back_notlearn" />
+                        android:layout_marginLeft="30dp"
+                        android:background="@drawable/button_back_notlearn"
+                        android:scaleType="centerInside" />
                 </LinearLayout>
             </RelativeLayout>
             <!--数字控制-->
@@ -239,9 +243,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/first_frame_content_margintop"
                 android:layout_marginLeft="@dimen/first_frame_content_margin_left_right"
                 android:layout_marginRight="@dimen/first_frame_content_margin_left_right"
+                android:layout_marginTop="@dimen/first_frame_content_margintop"
                 android:visibility="gone">
 
                 <RelativeLayout
@@ -252,27 +256,27 @@
 
                     <ImageView
                         android:id="@+id/imageview_number_1"
-                        android:layout_alignParentLeft="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:src="@drawable/button_1_notlearn" />
+                        android:layout_alignParentLeft="true"
+                        android:background="@drawable/button_1_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
                         android:id="@+id/imageview_number_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_2_notlearn"/>
+                        android:background="@drawable/button_2_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
                         android:id="@+id/imageview_number_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_3_notlearn" />
+                        android:background="@drawable/button_3_notlearn"
+                        android:clickable="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -288,24 +292,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_4_notlearn" />
+                        android:background="@drawable/button_4_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
                         android:id="@+id/imageview_number_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_5_notlearn" />
+                        android:background="@drawable/button_5_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
                         android:id="@+id/imageview_number_6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_6_notlearn" />
+                        android:background="@drawable/button_6_notlearn"
+                        android:clickable="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -321,24 +325,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_7_notlearn" />
+                        android:background="@drawable/button_7_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
                         android:id="@+id/imageview_number_8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_8_notlearn"/>
+                        android:background="@drawable/button_8_notlearn"
+                        android:clickable="true" />
 
                     <ImageView
                         android:id="@+id/imageview_number_9"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_9_notlearn" />
+                        android:background="@drawable/button_9_notlearn"
+                        android:clickable="true" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -350,14 +354,13 @@
                     android:gravity="center_horizontal">
 
 
-
                     <ImageView
                         android:id="@+id/imageview_number_0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:clickable="true"
-                        android:src="@drawable/button_0_notlearn"/>
+                        android:background="@drawable/button_0_notlearn"
+                        android:clickable="true" />
 
 
                 </RelativeLayout>

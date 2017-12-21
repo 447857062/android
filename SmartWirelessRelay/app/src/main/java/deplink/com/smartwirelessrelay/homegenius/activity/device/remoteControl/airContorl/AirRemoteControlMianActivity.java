@@ -39,7 +39,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private RemoteControlMenuDialog menu_dialog;
     private FrameLayout frame_setting;
     private RelativeLayout layout_top_content;
-
+    /**
+     * 空调各个按键的学习状态
+     */
     private boolean key_tempature_reduce;
     private boolean key_tempature_plus;
     private boolean key_power;
@@ -56,8 +58,11 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private boolean key_winddirection_middle;
     private boolean key_winddirection_down;
     private boolean key_winddirection_auto;
+    /**
+     * 未学习按键的提示
+     */
     private KeynotlearnDialog mKeynotlearnDialog;
-
+    private RemoteControlManager mRemoteControlManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +72,15 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         initEvents();
     }
 
-    private void initDatas() {
+    @Override
+    protected void onResume() {
+        super.onResume();
         initKeylearnStatus();
+    }
+
+    private void initDatas() {
+
+        mRemoteControlManager=RemoteControlManager.getInstance();
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         modeDialog = new Aircondition_mode_select_Dialog(this);
         modeDialog.setmOnModeSelectClickListener(new Aircondition_mode_select_Dialog.onModeSelectClickListener() {
@@ -208,7 +220,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     }
 
     private void initKeylearnStatus() {
-        String currentDeviceUid = RemoteControlManager.getInstance().getmSelectRemoteControlDevice().getUid();
+        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
         AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyLearnStatu.class);
         if (mAirconditionKeyLearnStatu != null) {
             key_tempature_reduce = mAirconditionKeyLearnStatu.isKey_tempature_reduce();

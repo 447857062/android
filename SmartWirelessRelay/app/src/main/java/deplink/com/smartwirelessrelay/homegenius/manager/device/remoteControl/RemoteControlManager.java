@@ -47,27 +47,44 @@ public class RemoteControlManager implements LocalConnecteListener {
      * 当前选中的遥控设备
      */
     private SmartDev mSelectRemoteControlDevice;
+    /**
+     * 当前选中的遥控器设备绑定的物理遥控器
+     */
+    private SmartDev mRealRemoteControlDevice;
+
+    public SmartDev getmRealRemoteControlDevice() {
+
+        return  findRemotecontrolDevice().get(0);
+    }
+
+    public void setmRealRemoteControlDevice(SmartDev mRealRemoteControlDevice) {
+        this.mRealRemoteControlDevice = mRealRemoteControlDevice;
+    }
+
+    private boolean currentActionIsAddDevice;
+    /**
+     * 当前是添加设备还是配置遥控器按键列表（快速学习）
+     * @return
+     */
+    public boolean isCurrentActionIsAddDevice() {
+        return currentActionIsAddDevice;
+    }
+
+    public void setCurrentActionIsAddDevice(boolean currentActionIsAddDevice) {
+        this.currentActionIsAddDevice = currentActionIsAddDevice;
+    }
 
     public SmartDev getmSelectRemoteControlDevice() {
         return mSelectRemoteControlDevice;
     }
 
     public void setmSelectRemoteControlDevice(SmartDev mSelectRemoteControlDevice) {
+        Log.i(TAG,"当前选中的遥控器UID="+mSelectRemoteControlDevice.getUid()+"物理遥控器uid="+mSelectRemoteControlDevice.getRemotecontrolUid());
         this.mSelectRemoteControlDevice = mSelectRemoteControlDevice;
     }
 
     public List<SmartDev> findAllRemotecontrolDevice() {
         List<SmartDev> newsList = DataSupport.where("Type = ?", "IRMOTE_V2").find(SmartDev.class);
-        Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
-        return newsList;
-    }
-
-    /**
-     * 找到遥控器挂载在哪个物理遥控器下面
-     * @return
-     */
-    public List<SmartDev> findRemotecontrolDevice() {
-        List<SmartDev> newsList = DataSupport.where("Uid = ?", mSelectRemoteControlDevice.getRemotecontrolUid()).find(SmartDev.class);
         Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
         return newsList;
     }
@@ -77,6 +94,16 @@ public class RemoteControlManager implements LocalConnecteListener {
         Log.i(TAG,"遥控器列表大小="+smartDevs.size());
         return smartDevs;
     }
+    /**
+     * 找到遥控器挂载在哪个物理遥控器下面
+     * @return
+     */
+    public List<SmartDev> findRemotecontrolDevice() {
+        Log.i(TAG, "查找绑定的物理遥控器,uid=" + mSelectRemoteControlDevice.getRemotecontrolUid());
+        List<SmartDev> newsList = DataSupport.where("Uid = ?", mSelectRemoteControlDevice.getRemotecontrolUid()).find(SmartDev.class);
+        return newsList;
+    }
+
     public static synchronized RemoteControlManager getInstance() {
         if (instance == null) {
             instance = new RemoteControlManager();
@@ -88,7 +115,6 @@ public class RemoteControlManager implements LocalConnecteListener {
         this.mContext = context;
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            // mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -98,9 +124,9 @@ public class RemoteControlManager implements LocalConnecteListener {
         mRemoteControlDeviceList = new ArrayList<>();
         mRemoteControlDeviceList.addAll(DataSupport.where("Type=?", "IRMOTE_V2").find(SmartDev.class));
         //TODO 当前选中的遥控器
-        if (mRemoteControlDeviceList.size() > 0) {
-            mSelectRemoteControlDevice = mRemoteControlDeviceList.get(0);
-        }
+       // if (mRemoteControlDeviceList.size() > 0) {
+        //    mSelectRemoteControlDevice = mRemoteControlDeviceList.get(0);
+     //   }
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
@@ -155,7 +181,7 @@ public class RemoteControlManager implements LocalConnecteListener {
         cmd.setOP("SET");
         cmd.setMethod("IrmoteV2");
         cmd.setTimestamp();
-        cmd.setSmartUid(mSelectRemoteControlDevice.getUid());
+        cmd.setSmartUid(mSelectRemoteControlDevice.getRemotecontrolUid());
         cmd.setCommand("Study");
         String text = gson.toJson(cmd);
         packet.packRemoteControlData(text.getBytes(), null);
@@ -168,16 +194,17 @@ public class RemoteControlManager implements LocalConnecteListener {
 
     }
 
-    public void sendData(final String data) {
+    public void sendData(String data) {
+        Log.i(TAG,"mSelectRemoteControlDevice="+mSelectRemoteControlDevice.getUid());
         QueryOptions cmd = new QueryOptions();
         cmd.setOP("SET");
         cmd.setMethod("IrmoteV2");
         cmd.setTimestamp();
-        cmd.setSmartUid(mSelectRemoteControlDevice.getUid());
+        cmd.setSmartUid(mSelectRemoteControlDevice.getRemotecontrolUid());
         cmd.setCommand("Send");
         cmd.setData(data);
         String text = gson.toJson(cmd);
-        packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getUid());
+        packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getRemotecontrolUid());
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,28 +11,29 @@ import android.widget.TextView;
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvboxLearnStatu;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
-public class TvMainActivity extends Activity implements View.OnClickListener {
+public class TvBoxMainActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "TvBoxMainActivity";
     private FrameLayout image_back;
-    private RelativeLayout layout_control_base;
-    private RelativeLayout layout_control_number;
-    private TextView textview_title;
-    private ImageView image_setting;
     private RelativeLayout layout_title_control_base;
     private RelativeLayout layout_title_control_number;
+    private RelativeLayout layout_control_base;
+    private RelativeLayout layout_control_number;
     private View view_control_base;
     private View view_control_number;
     private TextView textview_control_base;
     private TextView textview_control_number;
+    private TextView textview_title;
+    private ImageView image_setting;
     private RemoteControlMenuDialog menu_dialog;
     private FrameLayout frame_setting;
     private RemoteControlManager mRemoteControlManager;
     /**
-     * 电视遥控器各个按键的学习状态
+     * 电视机顶盒遥控器各个按键的学习状态
      */
     private boolean key_up;
     private boolean key_down;
@@ -44,7 +45,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private boolean key_ch_plus;
     private boolean key_volum_reduce;
     private boolean key_volum_plus;
-    private boolean key_mute;
+    private boolean key_navi;
     private boolean key_list;
     private boolean key_return;
     private boolean key_number_0;
@@ -85,14 +86,16 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private ImageView imageview_number_8;
     private ImageView imageview_number_9;
     private ImageView imageview_number_0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tv_main);
+        setContentView(R.layout.activity_iptv_main);
         initViews();
         initDatas();
         initEvents();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -104,153 +107,153 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
      * 初始化按键的背景，学习过和未学习的按键背景不一样，点击效果也不一样
      */
     private void initImageViewKeyBackground() {
-        if(key_up){
-            imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
-        }else{
-            imageview_top.setBackgroundResource(R.drawable.button_click_up_notlearn);
-        }
-        if(key_down){
-            imageview_down.setBackgroundResource(R.drawable.button_click_down_learned);
+       if(key_up){
+           imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
+       }else{
+           imageview_top.setBackgroundResource(R.drawable.button_click_up_notlearn);
+       }
+       if(key_down){
+           imageview_down.setBackgroundResource(R.drawable.button_click_down_learned);
 
-        }else{
-            imageview_down.setBackgroundResource(R.drawable.button_click_down_notlearn);
-        }
-        if(key_left){
-            imageview_left.setBackgroundResource(R.drawable.button_click_left_learned);
-        }else{
-            imageview_left.setBackgroundResource(R.drawable.button_click_left_notlearn);
-        }
-        if(key_right){
-            imageview_right.setBackgroundResource(R.drawable.button_click_right_learned);
-        }else{
-            imageview_right.setBackgroundResource(R.drawable.button_click_right_notlearn);
-        }
-        if(key_ok){
-            imageview_center.setBackgroundResource(R.drawable.button_ok_learned);
-        }else{
-            imageview_center.setBackgroundResource(R.drawable.button_ok_notlearn);
-        }
-        if(key_power){
-            imageview_power.setBackgroundResource(R.drawable.button_power_learned);
-        }else{
-            imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
-        }
-        if(key_ch_reduce){
-            imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_learned);
-        }else{
-            imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_notlearn);
-        }
-        if(key_ch_plus){
-            imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_learned);
-        }else{
-            imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_notlearn);
-        }
-        if(key_volum_reduce){
-            imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_learned);
-        }else{
-            imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_notlearn);
-        }
-        if(key_volum_plus){
-            imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_learned);
-        }else{
-            imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_notlearn);
-        }
-        if(key_mute){
-            imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_learned);
-        }else{
-            imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_notlearn);
-        }
-        if(key_list){
-            imageview_control_list.setBackgroundResource(R.drawable.button_menu_learned);
-        }else{
-            imageview_control_list.setBackgroundResource(R.drawable.button_menu_notlearn);
-        }
-        if(key_return){
-            imageview_control_back.setBackgroundResource(R.drawable.button_back_learned);
-        }else{
-            imageview_control_back.setBackgroundResource(R.drawable.button_back_notlearn);
-        }
-        if(key_number_0){
-            imageview_number_0.setBackgroundResource(R.drawable.button_0_learn);
-        }else{
-            imageview_number_0.setBackgroundResource(R.drawable.button_0_notlearn);
-        }
-        if(key_number_1){
-            imageview_number_1.setBackgroundResource(R.drawable.button_1_learn);
-        }else{
-            imageview_number_1.setBackgroundResource(R.drawable.button_1_notlearn);
-        }
-        if(key_number_2){
-            imageview_number_2.setBackgroundResource(R.drawable.button_2_learned);
-        }else{
-            imageview_number_2.setBackgroundResource(R.drawable.button_2_notlearn);
-        }
-        if(key_number_3){
-            imageview_number_3.setBackgroundResource(R.drawable.button_3_learned);
-        }else{
-            imageview_number_3.setBackgroundResource(R.drawable.button_3_notlearn);
-        }
-        if(key_number_4){
-            imageview_number_4.setBackgroundResource(R.drawable.button_4_learned);
-        }else{
-            imageview_number_4.setBackgroundResource(R.drawable.button_4_notlearn);
-        }
-        if(key_number_5){
-            imageview_number_5.setBackgroundResource(R.drawable.button_5_learned);
-        }else{
-            imageview_number_5.setBackgroundResource(R.drawable.button_5_notlearn);
-        }
-        if(key_number_6){
-            imageview_number_6.setBackgroundResource(R.drawable.button_6_learned);
-        }else{
-            imageview_number_6.setBackgroundResource(R.drawable.button_6_notlearn);
-        }
-        if(key_number_7){
-            imageview_number_7.setBackgroundResource(R.drawable.button_7_learned);
-        }else{
-            imageview_number_7.setBackgroundResource(R.drawable.button_7_notlearn);
-        }
-        if(key_number_8){
-            imageview_number_8.setBackgroundResource(R.drawable.button_8_learned);
-        }else{
-            imageview_number_8.setBackgroundResource(R.drawable.button_8_notlearn);
-        }
-        if(key_number_9){
-            imageview_number_9.setBackgroundResource(R.drawable.button_9_learned);
-        }else{
-            imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
-        }
+       }else{
+           imageview_down.setBackgroundResource(R.drawable.button_click_down_notlearn);
+       }
+       if(key_left){
+           imageview_left.setBackgroundResource(R.drawable.button_click_left_learned);
+       }else{
+           imageview_left.setBackgroundResource(R.drawable.button_click_left_notlearn);
+       }
+       if(key_right){
+           imageview_right.setBackgroundResource(R.drawable.button_click_right_learned);
+       }else{
+           imageview_right.setBackgroundResource(R.drawable.button_click_right_notlearn);
+       }
+       if(key_ok){
+           imageview_center.setBackgroundResource(R.drawable.button_ok_learned);
+       }else{
+           imageview_center.setBackgroundResource(R.drawable.button_ok_notlearn);
+       }
+       if(key_power){
+           imageview_power.setBackgroundResource(R.drawable.button_power_learned);
+       }else{
+           imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
+       }
+       if(key_ch_reduce){
+           imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_learned);
+       }else{
+           imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_notlearn);
+       }
+       if(key_ch_plus){
+           imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_learned);
+       }else{
+           imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_notlearn);
+       }
+       if(key_volum_reduce){
+           imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_learned);
+       }else{
+           imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_notlearn);
+       }
+       if(key_volum_plus){
+           imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_learned);
+       }else{
+           imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_notlearn);
+       }
+       if(key_navi){
+           imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_learned);
+       }else{
+           imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_notlearn);
+       }
+       if(key_list){
+           imageview_control_list.setBackgroundResource(R.drawable.button_menu_learned);
+       }else{
+           imageview_control_list.setBackgroundResource(R.drawable.button_menu_notlearn);
+       }
+       if(key_return){
+           imageview_control_back.setBackgroundResource(R.drawable.button_back_learned);
+       }else{
+           imageview_control_back.setBackgroundResource(R.drawable.button_back_notlearn);
+       }
+       if(key_number_0){
+           imageview_number_0.setBackgroundResource(R.drawable.button_0_learn);
+       }else{
+           imageview_number_0.setBackgroundResource(R.drawable.button_0_notlearn);
+       }
+       if(key_number_1){
+           imageview_number_1.setBackgroundResource(R.drawable.button_1_learn);
+       }else{
+           imageview_number_1.setBackgroundResource(R.drawable.button_1_notlearn);
+       }
+       if(key_number_2){
+           imageview_number_2.setBackgroundResource(R.drawable.button_2_learned);
+       }else{
+           imageview_number_2.setBackgroundResource(R.drawable.button_2_notlearn);
+       }
+       if(key_number_3){
+           imageview_number_3.setBackgroundResource(R.drawable.button_3_learned);
+       }else{
+           imageview_number_3.setBackgroundResource(R.drawable.button_3_notlearn);
+       }
+       if(key_number_4){
+           imageview_number_4.setBackgroundResource(R.drawable.button_4_learned);
+       }else{
+           imageview_number_4.setBackgroundResource(R.drawable.button_4_notlearn);
+       }
+       if(key_number_5){
+           imageview_number_5.setBackgroundResource(R.drawable.button_5_learned);
+       }else{
+           imageview_number_5.setBackgroundResource(R.drawable.button_5_notlearn);
+       }
+       if(key_number_6){
+           imageview_number_6.setBackgroundResource(R.drawable.button_6_learned);
+       }else{
+           imageview_number_6.setBackgroundResource(R.drawable.button_6_notlearn);
+       }
+       if(key_number_7){
+           imageview_number_7.setBackgroundResource(R.drawable.button_7_learned);
+       }else{
+           imageview_number_7.setBackgroundResource(R.drawable.button_7_notlearn);
+       }
+       if(key_number_8){
+           imageview_number_8.setBackgroundResource(R.drawable.button_8_learned);
+       }else{
+           imageview_number_8.setBackgroundResource(R.drawable.button_8_notlearn);
+       }
+       if(key_number_9){
+           imageview_number_9.setBackgroundResource(R.drawable.button_9_learned);
+       }else{
+           imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
+       }
 
 
     }
 
     private void initKeylearnStatus() {
         String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        TvKeyLearnStatu mTvKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyLearnStatu.class);
-        if (mTvKeyLearnStatu != null) {
-            key_up = mTvKeyLearnStatu.isKey_up();
-            key_down = mTvKeyLearnStatu.isKey_down();
-            key_left = mTvKeyLearnStatu.isKey_left();
-            key_right = mTvKeyLearnStatu.isKey_right();
-            key_ok = mTvKeyLearnStatu.isKey_ok();
-            key_power = mTvKeyLearnStatu.isKey_power();
-            key_ch_reduce = mTvKeyLearnStatu.isKey_ch_reduce();
-            key_ch_plus = mTvKeyLearnStatu.isKey_ch_plus();
-            key_volum_reduce = mTvKeyLearnStatu.isKey_volum_reduce();
-            key_volum_plus = mTvKeyLearnStatu.isKey_volum_plus();
-            key_mute = mTvKeyLearnStatu.isKey_mute();
-            key_list = mTvKeyLearnStatu.isKey_list();
-            key_return = mTvKeyLearnStatu.isKey_return();
-            key_number_0 = mTvKeyLearnStatu.isKey_number_0();
-            key_number_1 = mTvKeyLearnStatu.isKey_number_1();
-            key_number_2 = mTvKeyLearnStatu.isKey_number_2();
-            key_number_3 = mTvKeyLearnStatu.isKey_number_3();
-            key_number_4 = mTvKeyLearnStatu.isKey_number_4();
-            key_number_5 = mTvKeyLearnStatu.isKey_number_5();
-            key_number_6 = mTvKeyLearnStatu.isKey_number_6();
-            key_number_7 = mTvKeyLearnStatu.isKey_number_7();
-            key_number_8 = mTvKeyLearnStatu.isKey_number_8();
-            key_number_9 = mTvKeyLearnStatu.isKey_number_9();
+        TvboxLearnStatu mTvboxLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxLearnStatu.class);
+        if (mTvboxLearnStatu != null) {
+            key_up = mTvboxLearnStatu.isKey_up();
+            key_down = mTvboxLearnStatu.isKey_down();
+            key_left = mTvboxLearnStatu.isKey_left();
+            key_right = mTvboxLearnStatu.isKey_right();
+            key_ok = mTvboxLearnStatu.isKey_ok();
+            key_power = mTvboxLearnStatu.isKey_power();
+            key_ch_reduce = mTvboxLearnStatu.isKey_ch_reduce();
+            key_ch_plus = mTvboxLearnStatu.isKey_ch_plus();
+            key_volum_reduce = mTvboxLearnStatu.isKey_volum_reduce();
+            key_volum_plus = mTvboxLearnStatu.isKey_volum_plus();
+            key_navi = mTvboxLearnStatu.isKey_navi();
+            key_list = mTvboxLearnStatu.isKey_list();
+            key_return = mTvboxLearnStatu.isKey_return();
+            key_number_0 = mTvboxLearnStatu.isKey_number_0();
+            key_number_1 = mTvboxLearnStatu.isKey_number_1();
+            key_number_2 = mTvboxLearnStatu.isKey_number_2();
+            key_number_3 = mTvboxLearnStatu.isKey_number_3();
+            key_number_4 = mTvboxLearnStatu.isKey_number_4();
+            key_number_5 = mTvboxLearnStatu.isKey_number_5();
+            key_number_6 = mTvboxLearnStatu.isKey_number_6();
+            key_number_7 = mTvboxLearnStatu.isKey_number_7();
+            key_number_8 = mTvboxLearnStatu.isKey_number_8();
+            key_number_9 = mTvboxLearnStatu.isKey_number_9();
         } else {
             key_up = false;
             key_down = false;
@@ -262,7 +265,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
             key_ch_plus = false;
             key_volum_reduce = false;
             key_volum_plus = false;
-            key_mute = false;
+            key_navi = false;
             key_list = false;
             key_return = false;
             key_number_0 = false;
@@ -279,10 +282,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initDatas() {
-        mKeynotlearnDialog=new KeynotlearnDialog(this);
         mRemoteControlManager = RemoteControlManager.getInstance();
-        textview_title.setText("电视遥控");
-        menu_dialog=new RemoteControlMenuDialog(this,RemoteControlMenuDialog.TYPE_TV);
+        textview_title.setText("机顶盒遥控");
+        mKeynotlearnDialog = new KeynotlearnDialog(this);
+        menu_dialog = new RemoteControlMenuDialog(this, RemoteControlMenuDialog.TYPE_TVBOX);
         image_setting.setImageResource(R.drawable.menuicon);
     }
 
@@ -317,18 +320,18 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_setting= (ImageView) findViewById(R.id.image_setting);
+        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        image_setting = (ImageView) findViewById(R.id.image_setting);
         image_back = (FrameLayout) findViewById(R.id.image_back);
+        view_control_base = findViewById(R.id.view_control_base);
+        view_control_number = findViewById(R.id.view_control_number);
+        textview_control_base = (TextView) findViewById(R.id.textview_control_base);
+        textview_control_number = (TextView) findViewById(R.id.textview_control_number);
         layout_title_control_base = (RelativeLayout) findViewById(R.id.layout_title_control_base);
         layout_title_control_number = (RelativeLayout) findViewById(R.id.layout_title_control_number);
         layout_control_base = (RelativeLayout) findViewById(R.id.layout_control_base);
         layout_control_number = (RelativeLayout) findViewById(R.id.layout_control_number);
-        view_control_base =  findViewById(R.id.view_control_base);
-        view_control_number =  findViewById(R.id.view_control_number);
-        textview_control_base = (TextView) findViewById(R.id.textview_control_base);
-        textview_control_number = (TextView) findViewById(R.id.textview_control_number);
-        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
         imageview_power = (ImageView) findViewById(R.id.imageview_power);
         imageview_center = (ImageView) findViewById(R.id.imageview_center);
         imageview_power = (ImageView) findViewById(R.id.imageview_power);
@@ -432,7 +435,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.imageview_volume_on_off:
-                if (key_mute) {
+                if (key_navi) {
 
                 } else {
                     mKeynotlearnDialog.show();
@@ -522,6 +525,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     mKeynotlearnDialog.show();
                 }
                 break;
+
             case R.id.image_back:
                 onBackPressed();
                 break;
