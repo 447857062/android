@@ -36,4 +36,5 @@
     </string>
     <string name="rate_format">%.1f</string>
     <string name="ip_address_digits">0123456789.</string>
+    <string name="remotecontrol_learn_auto_tips">请逐个点击下方显示的测试案件,并观察设备是否有相\n应的反应.您也可以点击[连续测试]按钮自定轮流测试</string>
 </resources>

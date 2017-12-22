@@ -3,5 +3,5 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" android:drawable="@drawable/clickright"/>
 
-    <item android:drawable="@drawable/learnright" android:state_focused="false" android:state_pressed="false"/>
+    <item android:drawable="@drawable/learnoneright" android:state_focused="false" android:state_pressed="false"/>
 </selector>

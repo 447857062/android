@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
@@ -27,6 +27,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
  * Created by Administrator on 2017/7/25.
  */
 public class RemoteControlMenuDialog extends Dialog implements View.OnClickListener {
+    private static final String TAG="RemoteControlMenuDialog";
     public static final int TYPE_AIRCONDITION = 1;
     public static final int TYPE_TVBOX = 2;
     public static final int TYPE_TV = 3;
@@ -76,7 +77,16 @@ public class RemoteControlMenuDialog extends Dialog implements View.OnClickListe
         textview_hand_learn.setOnClickListener(this);
     }
 
+    private onLearnHandClickListener mLearnHandClickListener;
 
+    public void setmLearnHandClickListener(onLearnHandClickListener mLearnHandClickListener) {
+        Log.i(TAG,"setmLearnHandClickListener");
+        this.mLearnHandClickListener = mLearnHandClickListener;
+    }
+
+    public interface onLearnHandClickListener {
+        void onLearnHandBtnClicked();
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -85,8 +95,8 @@ public class RemoteControlMenuDialog extends Dialog implements View.OnClickListe
                 this.dismiss();
                 break;
             case R.id.textview_hand_learn:
+                mLearnHandClickListener.onLearnHandBtnClicked();
                 this.dismiss();
-                mContext.startActivity(new Intent(mContext, LearnByHandActivity.class));
                 break;
             case R.id.textview_quick_learn:
                 this.dismiss();

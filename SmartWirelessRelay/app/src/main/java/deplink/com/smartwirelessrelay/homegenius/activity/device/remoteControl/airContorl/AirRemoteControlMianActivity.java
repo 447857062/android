@@ -2,6 +2,7 @@ package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -11,8 +12,10 @@ import android.widget.TextView;
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
+import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.aircondition.AirconditionWindDirectionSelectDialog;
@@ -63,6 +66,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
      */
     private KeynotlearnDialog mKeynotlearnDialog;
     private RemoteControlManager mRemoteControlManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +80,29 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     protected void onResume() {
         super.onResume();
         initKeylearnStatus();
+        initKeyCodeData();
+    }
+
+    private int group;
+    private String code;
+
+    private void initKeyCodeData() {
+        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        AirconditionKeyCode mAirconditionKeyCode =
+                DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyCode.class);
+        if (mAirconditionKeyCode != null) {
+            Log.i(TAG, "mAirconditionKeyCode=" + mAirconditionKeyCode.toString());
+            group = mAirconditionKeyCode.getGroupData();
+            code = mAirconditionKeyCode.getKeycode();
+
+        }
+
     }
 
     private void initDatas() {
 
-        mRemoteControlManager=RemoteControlManager.getInstance();
+        mRemoteControlManager = RemoteControlManager.getInstance();
+        mRemoteControlManager.InitRemoteControlManager(this, null);
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         modeDialog = new Aircondition_mode_select_Dialog(this);
         modeDialog.setmOnModeSelectClickListener(new Aircondition_mode_select_Dialog.onModeSelectClickListener() {
@@ -288,6 +310,8 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         layout_top_content = (RelativeLayout) findViewById(R.id.layout_top_content);
     }
 
+    private byte[] data;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -296,7 +320,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 break;
             case R.id.imageview_temperature_reduce:
                 if (key_tempature_reduce) {
-                   //TODO
+                    //TODO
                 } else {
                     mKeynotlearnDialog.show();
                 }
@@ -334,12 +358,54 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 break;
             case R.id.imageview_power:
                 if (key_power) {
-                    //TODO 发送数据
+                    Log.i(TAG, "code=" + code + "bytelength=" + code.getBytes().length + "length2=" + DataExchange.dbString_ToBytes(code).length);
+                    if (code == null) {
+                        return;
+                    }
+                    data = packData();
+                    mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                     layout_top_content.setBackgroundResource(R.drawable.airconditioningon);
                 } else {
                     mKeynotlearnDialog.show();
                 }
                 break;
         }
+    }
+
+    /**
+     * 包装空调数据
+     * @return
+     */
+    public byte[] packData() {
+        int len = 0;
+        byte[] codeByte = DataExchange.dbString_ToBytes(code);
+        byte[] func = new byte[7];
+        func[0] = (byte) 0x13;
+        func[1] = (byte) 0x1;
+        func[2] = (byte) 0x2;
+        func[3] = (byte) 0x1;
+        func[4] = (byte) 0x1;
+        func[5] = (byte) 0x1;
+        func[6] = (byte) 0x1;
+        data = new byte[13 + codeByte.length];
+        data[len++] = (byte) 0x30;
+        data[len++] = (byte) 0x01;
+        byte[] groupByte = DataExchange.intToTwoByte(group);
+        System.arraycopy(groupByte, 0, data, len, 2);
+        len += 2;
+        System.arraycopy(func, 0, data, len, 7);
+        len += 7;
+        data[len++] = (byte) (codeByte[0] + 1);
+        System.arraycopy(codeByte, 1, data, len, codeByte.length - 1);
+        len += codeByte.length - 1;
+        data[len++] = (byte) 0xff;
+        byte crc = 0;
+        for (int i = 0; i < len - 1; i++) {
+            crc += data[i];
+        }
+        data[len] = (byte) (crc & 0xff);//最后一个检验位
+        Log.i(TAG, "打包空调控制数据=" + DataExchange.byteArrayToHexString(data));
+        Log.i(TAG, "打包空调控制数据dbBytesToString=" + DataExchange.dbBytesToString(data));
+        return data;
     }
 }

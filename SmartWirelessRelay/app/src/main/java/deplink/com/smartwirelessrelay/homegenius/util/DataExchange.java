@@ -119,7 +119,23 @@ public class DataExchange {
         }
         return data;
     }
+    public static byte[] dbString_ToBytes(String str) {
+        if (str == null)
+            return null;
+        byte[] data = null;
+        String[] xstr = str.split("-");
+        data = new byte[xstr.length];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = strTobyte(xstr[i]);
+        }
+        return data;
+    }
 
+    /**
+     * byte[]转成字符创 ,例如byte 34 35 67 变成343567
+     * @param data
+     * @return
+     */
     public static String dbBytesToString(byte[] data) {
         if (data == null)
             return null;

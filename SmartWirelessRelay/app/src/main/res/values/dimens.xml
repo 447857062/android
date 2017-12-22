@@ -192,7 +192,7 @@
     <dimen name="search_band_icon_marginright">10dp</dimen>
     <dimen name="search_band_layout_margintop">7dp</dimen>
     <dimen name="band_select_layout_height">30dp</dimen>
-    <dimen name="aircondition_test_explan_info1_margintop">96dp</dimen>
+    <dimen name="aircondition_test_explan_info1_margintop">66dp</dimen>
     <dimen name="aircondition_test_explan_info2_margintop">48dp</dimen>
     <dimen name="test_response_layout">94dp</dimen>
     <dimen name="test_response_button_height">40dp</dimen>

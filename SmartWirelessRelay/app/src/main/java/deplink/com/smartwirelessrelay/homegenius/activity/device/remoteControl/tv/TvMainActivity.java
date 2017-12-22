@@ -1,7 +1,9 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -11,12 +13,17 @@ import android.widget.TextView;
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyCode;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.TvKeyNameConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
+import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
 public class TvMainActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "TvMainActivity";
     private FrameLayout image_back;
     private RelativeLayout layout_control_base;
     private RelativeLayout layout_control_number;
@@ -85,6 +92,9 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private ImageView imageview_number_8;
     private ImageView imageview_number_9;
     private ImageView imageview_number_0;
+    private TextView textview_cancel;
+    private TextView textview_tips;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,131 +103,255 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         initDatas();
         initEvents();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         initKeylearnStatus();
         initImageViewKeyBackground();
+        initKeyCodeData();
+    }
+
+    private int group;
+    private String code;
+
+    /**
+     * 按键对应的byte数据
+     */
+    private byte[] data_key_vol_reduce = new byte[2];
+    private byte[] data_key_vol_add = new byte[2];
+    private byte[] data_key_ch_reduce = new byte[2];
+    private byte[] data_key_ch_add = new byte[2];
+    private byte[] data_key_menu = new byte[2];
+    private byte[] data_key_power = new byte[2];
+    private byte[] data_key_mute = new byte[2];
+    private byte[] data_key_1 = new byte[2];
+    private byte[] data_key_2 = new byte[2];
+    private byte[] data_key_3 = new byte[2];
+    private byte[] data_key_4 = new byte[2];
+    private byte[] data_key_5 = new byte[2];
+    private byte[] data_key_6 = new byte[2];
+    private byte[] data_key_7 = new byte[2];
+    private byte[] data_key_8 = new byte[2];
+    private byte[] data_key_9 = new byte[2];
+    private byte[] data_key_0 = new byte[2];
+    private byte[] data_key_enter = new byte[2];
+    private byte[] data_key_avtv = new byte[2];
+    private byte[] data_key_back = new byte[2];
+    private byte[] data_key_sure = new byte[2];
+    private byte[] data_key_up = new byte[2];
+    private byte[] data_key_down = new byte[2];
+    private byte[] data_key_left = new byte[2];
+    private byte[] data_key_right = new byte[2];
+
+    private void initKeyCodeData() {
+        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        TvKeyCode mTvKeyCode =
+                DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyCode.class);
+        if (mTvKeyCode != null) {
+            Log.i(TAG, "mAirconditionKeyCode=" + mTvKeyCode.toString());
+            group = mTvKeyCode.getGroupData();
+            code = mTvKeyCode.getKeycode();
+            Log.i(TAG, "code=" + code);
+            byte[] codeByte = DataExchange.dbString_ToBytes(code);
+
+            System.arraycopy(codeByte, 1, data_key_vol_reduce, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_vol_reduce));
+
+            System.arraycopy(codeByte, 3, data_key_ch_add, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_ch_add));
+
+            System.arraycopy(codeByte, 5, data_key_menu, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_menu));
+
+            System.arraycopy(codeByte, 7, data_key_ch_reduce, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_ch_reduce));
+
+            System.arraycopy(codeByte, 9, data_key_vol_add, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_vol_add));
+
+            System.arraycopy(codeByte, 11, data_key_power, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_power));
+
+            System.arraycopy(codeByte, 13, data_key_mute, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_mute));
+
+            System.arraycopy(codeByte, 15, data_key_1, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_1));
+
+            System.arraycopy(codeByte, 17, data_key_2, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_2));
+
+            System.arraycopy(codeByte, 19, data_key_3, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_3));
+
+            System.arraycopy(codeByte, 21, data_key_4, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_4));
+
+            System.arraycopy(codeByte, 23, data_key_5, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_5));
+
+            System.arraycopy(codeByte, 25, data_key_6, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_6));
+
+            System.arraycopy(codeByte, 27, data_key_7, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_7));
+
+            System.arraycopy(codeByte, 29, data_key_8, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_8));
+
+            System.arraycopy(codeByte, 31, data_key_9, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_9));
+
+            System.arraycopy(codeByte, 33, data_key_enter, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_enter));
+
+            System.arraycopy(codeByte, 35, data_key_0, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_0));
+
+            System.arraycopy(codeByte, 37, data_key_avtv, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_avtv));
+
+            System.arraycopy(codeByte, 39, data_key_back, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_back));
+
+            System.arraycopy(codeByte, 41, data_key_sure, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_sure));
+
+            System.arraycopy(codeByte, 43, data_key_up, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_up));
+
+            System.arraycopy(codeByte, 45, data_key_down, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_down));
+
+            System.arraycopy(codeByte, 47, data_key_left, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_left));
+
+            System.arraycopy(codeByte, 49, data_key_right, 0, 2);
+            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_right));
+
+        }
+
     }
 
     /**
      * 初始化按键的背景，学习过和未学习的按键背景不一样，点击效果也不一样
      */
     private void initImageViewKeyBackground() {
-        if(key_up){
+        if (key_up) {
             imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
-        }else{
+        } else {
             imageview_top.setBackgroundResource(R.drawable.button_click_up_notlearn);
         }
-        if(key_down){
+        if (key_down) {
             imageview_down.setBackgroundResource(R.drawable.button_click_down_learned);
 
-        }else{
+        } else {
             imageview_down.setBackgroundResource(R.drawable.button_click_down_notlearn);
         }
-        if(key_left){
+        if (key_left) {
             imageview_left.setBackgroundResource(R.drawable.button_click_left_learned);
-        }else{
+        } else {
             imageview_left.setBackgroundResource(R.drawable.button_click_left_notlearn);
         }
-        if(key_right){
+        if (key_right) {
             imageview_right.setBackgroundResource(R.drawable.button_click_right_learned);
-        }else{
+        } else {
             imageview_right.setBackgroundResource(R.drawable.button_click_right_notlearn);
         }
-        if(key_ok){
+        if (key_ok) {
             imageview_center.setBackgroundResource(R.drawable.button_ok_learned);
-        }else{
+        } else {
             imageview_center.setBackgroundResource(R.drawable.button_ok_notlearn);
         }
-        if(key_power){
+        if (key_power) {
             imageview_power.setBackgroundResource(R.drawable.button_power_learned);
-        }else{
+        } else {
             imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
         }
-        if(key_ch_reduce){
+        if (key_ch_reduce) {
             imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_learned);
-        }else{
+        } else {
             imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_notlearn);
         }
-        if(key_ch_plus){
+        if (key_ch_plus) {
             imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_learned);
-        }else{
+        } else {
             imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_notlearn);
         }
-        if(key_volum_reduce){
+        if (key_volum_reduce) {
             imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_learned);
-        }else{
+        } else {
             imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_notlearn);
         }
-        if(key_volum_plus){
+        if (key_volum_plus) {
             imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_learned);
-        }else{
+        } else {
             imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_notlearn);
         }
-        if(key_mute){
+        if (key_mute) {
             imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_learned);
-        }else{
+        } else {
             imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_notlearn);
         }
-        if(key_list){
+        if (key_list) {
             imageview_control_list.setBackgroundResource(R.drawable.button_menu_learned);
-        }else{
+        } else {
             imageview_control_list.setBackgroundResource(R.drawable.button_menu_notlearn);
         }
-        if(key_return){
+        if (key_return) {
             imageview_control_back.setBackgroundResource(R.drawable.button_back_learned);
-        }else{
+        } else {
             imageview_control_back.setBackgroundResource(R.drawable.button_back_notlearn);
         }
-        if(key_number_0){
+        if (key_number_0) {
             imageview_number_0.setBackgroundResource(R.drawable.button_0_learn);
-        }else{
+        } else {
             imageview_number_0.setBackgroundResource(R.drawable.button_0_notlearn);
         }
-        if(key_number_1){
+        if (key_number_1) {
             imageview_number_1.setBackgroundResource(R.drawable.button_1_learn);
-        }else{
+        } else {
             imageview_number_1.setBackgroundResource(R.drawable.button_1_notlearn);
         }
-        if(key_number_2){
+        if (key_number_2) {
             imageview_number_2.setBackgroundResource(R.drawable.button_2_learned);
-        }else{
+        } else {
             imageview_number_2.setBackgroundResource(R.drawable.button_2_notlearn);
         }
-        if(key_number_3){
+        if (key_number_3) {
             imageview_number_3.setBackgroundResource(R.drawable.button_3_learned);
-        }else{
+        } else {
             imageview_number_3.setBackgroundResource(R.drawable.button_3_notlearn);
         }
-        if(key_number_4){
+        if (key_number_4) {
             imageview_number_4.setBackgroundResource(R.drawable.button_4_learned);
-        }else{
+        } else {
             imageview_number_4.setBackgroundResource(R.drawable.button_4_notlearn);
         }
-        if(key_number_5){
+        if (key_number_5) {
             imageview_number_5.setBackgroundResource(R.drawable.button_5_learned);
-        }else{
+        } else {
             imageview_number_5.setBackgroundResource(R.drawable.button_5_notlearn);
         }
-        if(key_number_6){
+        if (key_number_6) {
             imageview_number_6.setBackgroundResource(R.drawable.button_6_learned);
-        }else{
+        } else {
             imageview_number_6.setBackgroundResource(R.drawable.button_6_notlearn);
         }
-        if(key_number_7){
+        if (key_number_7) {
             imageview_number_7.setBackgroundResource(R.drawable.button_7_learned);
-        }else{
+        } else {
             imageview_number_7.setBackgroundResource(R.drawable.button_7_notlearn);
         }
-        if(key_number_8){
+        if (key_number_8) {
             imageview_number_8.setBackgroundResource(R.drawable.button_8_learned);
-        }else{
+        } else {
             imageview_number_8.setBackgroundResource(R.drawable.button_8_notlearn);
         }
-        if(key_number_9){
+        if (key_number_9) {
             imageview_number_9.setBackgroundResource(R.drawable.button_9_learned);
-        }else{
+        } else {
             imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
         }
 
@@ -278,16 +412,29 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    private boolean isLearnByHand;
+
     private void initDatas() {
-        mKeynotlearnDialog=new KeynotlearnDialog(this);
+        mKeynotlearnDialog = new KeynotlearnDialog(this);
         mRemoteControlManager = RemoteControlManager.getInstance();
+        mRemoteControlManager.InitRemoteControlManager(this, null);
         textview_title.setText("电视遥控");
-        menu_dialog=new RemoteControlMenuDialog(this,RemoteControlMenuDialog.TYPE_TV);
+        menu_dialog = new RemoteControlMenuDialog(this, RemoteControlMenuDialog.TYPE_TV);
+        menu_dialog.setmLearnHandClickListener(new RemoteControlMenuDialog.onLearnHandClickListener() {
+            @Override
+            public void onLearnHandBtnClicked() {
+                isLearnByHand = true;
+                textview_cancel.setVisibility(View.VISIBLE);
+                image_setting.setVisibility(View.GONE);
+                textview_tips.setVisibility(View.VISIBLE);
+            }
+        });
         image_setting.setImageResource(R.drawable.menuicon);
     }
 
     private void initEvents() {
         image_back.setOnClickListener(this);
+        textview_cancel.setOnClickListener(this);
         layout_title_control_base.setOnClickListener(this);
         layout_title_control_number.setOnClickListener(this);
         frame_setting.setOnClickListener(this);
@@ -317,15 +464,17 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_setting= (ImageView) findViewById(R.id.image_setting);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        textview_tips = (TextView) findViewById(R.id.textview_tips);
+        textview_cancel = (TextView) findViewById(R.id.textview_cancel);
+        image_setting = (ImageView) findViewById(R.id.image_setting);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_title_control_base = (RelativeLayout) findViewById(R.id.layout_title_control_base);
         layout_title_control_number = (RelativeLayout) findViewById(R.id.layout_title_control_number);
         layout_control_base = (RelativeLayout) findViewById(R.id.layout_control_base);
         layout_control_number = (RelativeLayout) findViewById(R.id.layout_control_number);
-        view_control_base =  findViewById(R.id.view_control_base);
-        view_control_number =  findViewById(R.id.view_control_number);
+        view_control_base = findViewById(R.id.view_control_base);
+        view_control_number = findViewById(R.id.view_control_number);
         textview_control_base = (TextView) findViewById(R.id.textview_control_base);
         textview_control_number = (TextView) findViewById(R.id.textview_control_number);
         frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
@@ -355,172 +504,413 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         imageview_number_0 = (ImageView) findViewById(R.id.imageview_number_0);
     }
 
+    private byte[] data;
+    private Intent intent;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.frame_setting:
                 menu_dialog.show();
                 break;
+            case R.id.textview_cancel:
+                textview_tips.setVisibility(View.GONE);
+                textview_cancel.setVisibility(View.GONE);
+                image_setting.setVisibility(View.VISIBLE);
+                isLearnByHand = false;
+                break;
             case R.id.imageview_power:
-                if (key_power) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_POWER);
+                    intent = new Intent(this, LearnByHandActivity.class);
+                    startActivity(intent);
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_power);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_center:
-                if (key_ok) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_SURE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_ok) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_sure);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_left:
-                if (key_left) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_LEFT);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_left) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_left);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_right:
-                if (key_right) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_RIGHT);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_right) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_right);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_top:
-                if (key_up) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_UP);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_up) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_up);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_down:
-                if (key_down) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_DOWN);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_down) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_down);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_ch_reduce:
-                if (key_ch_reduce) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_CH_REDUCE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_ch_reduce) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_ch_reduce);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_ch_add:
-                if (key_ch_plus) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_CH_PLUS);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_ch_plus) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_ch_add);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_volum_reduce:
-                if (key_volum_reduce) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_VOL_REDUCE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_volum_reduce) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_vol_reduce);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_volum_add:
-                if (key_volum_plus) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_VOL_PLUS);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_volum_plus) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_vol_add);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_volume_on_off:
-                if (key_mute) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_MUTE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_mute) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_mute);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_control_list:
-                if (key_list) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_MUTE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_list) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_menu);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_control_back:
-                if (key_return) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_RETURN);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_return) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_back);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_1:
-                if (key_number_1) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_1);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_1) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_1);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_2:
-                if (key_number_2) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_2);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_2) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_2);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_3:
-                if (key_number_3) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_3);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_3) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_3);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_4:
-                if (key_number_4) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_4);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_4) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_4);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_5:
-                if (key_number_5) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_5);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_5) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_5);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_6:
-                if (key_number_6) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_6);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_6) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_6);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_7:
-                if (key_number_7) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_7);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_7) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_7);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_8:
-                if (key_number_8) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_8);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_8) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_8);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_9:
-                if (key_number_9) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_9);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_9) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_9);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.imageview_number_0:
-                if (key_number_0) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_0);
+                    intent = new Intent(this, LearnByHandActivity.class);
+                    startActivity(intent);
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_number_0) {
+                        if (code == null) {
+                            return;
+                        }
+                        data = packData(data_key_0);
+                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
+
                 break;
             case R.id.image_back:
                 onBackPressed();
@@ -543,4 +933,29 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
+
+    private byte[] packData(byte func[]) {
+        data = new byte[10];
+        int len = 0;
+        byte[] codeByte = DataExchange.dbString_ToBytes(code);
+        data[len++] = (byte) 0x30;
+        data[len++] = (byte) 0x00;
+        data[len++] = codeByte[0];
+        System.arraycopy(func, 0, data, len, 2);
+        len += 2;
+        byte[] last4CodeBytes = new byte[4];
+        System.arraycopy(codeByte, codeByte.length - 4, last4CodeBytes, 0, 4);
+        Log.i(TAG, "最后4个字节=" + DataExchange.byteArrayToHexString(last4CodeBytes));
+        System.arraycopy(last4CodeBytes, 0, data, len, 4);
+        len += 4;
+        byte crc = 0;
+        for (int i = 0; i < 9; i++) {
+            crc += data[i];
+        }
+        data[len] = (byte) (crc & 0xff);//最后一个检验位
+        Log.i(TAG, "打包电视控制数据dbBytesToString=" + DataExchange.dbBytesToString(data));
+        return data;
+    }
+
+
 }

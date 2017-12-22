@@ -283,6 +283,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRemoteControlManager = RemoteControlManager.getInstance();
+        mRemoteControlManager.InitRemoteControlManager(this,null);
         textview_title.setText("机顶盒遥控");
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         menu_dialog = new RemoteControlMenuDialog(this, RemoteControlMenuDialog.TYPE_TVBOX);

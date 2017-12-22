@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -50,7 +51,10 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private TextView textview_test_press_4;
     private TextView textview_test_press_2;
     private FrameLayout image_back;
-
+    private Button button_test_consecutively;
+    private ImageView imageview_left;
+    private ImageView imageview_right;
+    private TextView textview_key_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,30 +79,151 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                     code = (QueryTestCodeResponse) msg.obj;
                     testCodeNumber = code.getValue().size();
                     textview_test_press_4.setText("" + testCodeNumber);
-                    for (int i = 0; i < code.getValue().size(); i++) {
-                        Log.i(TAG, "按键名称:" + code.getValue().get(i).getKeyName());
-                    }
+                    textview_key_name.setText("开关");
                     break;
                 case MSG_SHOW_GET_TV_CODE:
                     code = (QueryTestCodeResponse) msg.obj;
-                    textview_test_press_4.setText("" + code.getValue().size());
-                    for (int i = 0; i < code.getValue().size(); i++) {
-                        Log.i(TAG, "按键名称:" + code.getValue().get(i).getKeyName());
-                    }
+                    testCodeNumber = code.getValue().size();
+                    textview_test_press_4.setText("" + testCodeNumber);
                     break;
                 case MSG_SHOW_GET_IPTV_CODE:
                     code = (QueryTestCodeResponse) msg.obj;
-                    textview_test_press_4.setText("" + code.getValue().size());
-                    for (int i = 0; i < code.getValue().size(); i++) {
-                        Log.i(TAG, "按键名称:" + code.getValue().get(i).getKeyName());
-                    }
+                    testCodeNumber = code.getValue().size();
+                    textview_test_press_4.setText("" + testCodeNumber);
+
                     break;
                 case MSG_SEND_CODE:
                     if (currentTestCodeIndex < testCodes.size()) {
                         Log.i(TAG, "发送测试码：第" + currentTestCodeIndex + "个：" +
                                 testCodes.get(currentTestCodeIndex).getCodeData() +
                                 "按键名称是：" + testCodes.get(currentTestCodeIndex).getKeyName());
+                        String keyName= testCodes.get(currentTestCodeIndex).getKeyName();
                         textview_test_press_2.setText("" + (currentTestCodeIndex + 1));
+                        switch (type){
+                            case "TV":
+                                switch (keyName){
+                                    case "100":
+                                        button_test.setBackgroundResource(R.drawable.tv100testswitch);
+                                        textview_key_name.setText("开关");
+                                        break;
+                                    case "101":
+                                        button_test.setBackgroundResource(R.drawable.tv101testmute);
+                                        textview_key_name.setText("静音");
+                                        break;
+                                    case "102":
+                                        button_test.setBackgroundResource(R.drawable.tv102teston);
+                                        textview_key_name.setText("上");
+                                        break;
+                                    case "103":
+                                        button_test.setBackgroundResource(R.drawable.tv103testleft);
+                                        textview_key_name.setText("左");
+                                        break;
+                                    case "104":
+                                        button_test.setBackgroundResource(R.drawable.tv104testsure);
+                                        textview_key_name.setText("OK");
+                                        break;
+                                    case "105":
+                                        button_test.setBackgroundResource(R.drawable.tv105testright);
+                                        textview_key_name.setText("右");
+                                        break;
+                                    case "106":
+                                        button_test.setBackgroundResource(R.drawable.tv106testnext);
+                                        textview_key_name.setText("下");
+                                        break;
+                                    case "107":
+                                        button_test.setBackgroundResource(R.drawable.tv107testvolumeless);
+                                        textview_key_name.setText("音量减");
+                                        break;
+                                    case "108":
+                                        button_test.setBackgroundResource(R.drawable.tv108testvolumeadd);
+                                        textview_key_name.setText("音量加");
+                                        break;
+                                    case "109":
+                                        button_test.setBackgroundResource(R.drawable.tv109testchannelless);
+                                        textview_key_name.setText("频道减");
+                                        break;
+                                    case "110":
+                                        button_test.setBackgroundResource(R.drawable.tv110testchanneladd);
+                                        textview_key_name.setText("频道加");
+                                        break;
+                                    case "111":
+                                        button_test.setBackgroundResource(R.drawable.tv111testmenu);
+                                        textview_key_name.setText("菜单");
+                                        break;
+                                    case "115":
+                                        button_test.setBackgroundResource(R.drawable.tv115testreturn);
+                                        textview_key_name.setText("返回");
+                                        break;
+                                    case "116":
+                                        button_test.setBackgroundResource(R.drawable.tv116testhome);
+                                        textview_key_name.setText("主页");
+                                        break;
+                                }
+
+                                break;
+                            case "智能机顶盒遥控":
+                                switch (keyName){
+                                    case "100":
+                                        button_test.setBackgroundResource(R.drawable.jdh100testswitch);
+                                        textview_key_name.setText("开关");
+                                        break;
+                                    case "101":
+                                        button_test.setBackgroundResource(R.drawable.jdh101testreturn);
+                                        textview_key_name.setText("返回");
+                                        break;
+                                    case "102":
+                                        button_test.setBackgroundResource(R.drawable.jdh102teston);
+                                        textview_key_name.setText("上");
+                                        break;
+                                    case "103":
+                                        button_test.setBackgroundResource(R.drawable.jdh103testleft);
+                                        textview_key_name.setText("左");
+                                        break;
+                                    case "104":
+                                        button_test.setBackgroundResource(R.drawable.jdh104testsure);
+                                        textview_key_name.setText("OK");
+                                        break;
+                                    case "105":
+                                        button_test.setBackgroundResource(R.drawable.jdh105testright);
+                                        textview_key_name.setText("右");
+                                        break;
+                                    case "106":
+                                        button_test.setBackgroundResource(R.drawable.jdh106testnext);
+                                        textview_key_name.setText("下");
+                                        break;
+                                    case "107":
+                                        button_test.setBackgroundResource(R.drawable.jdh107testvolumeless);
+                                        textview_key_name.setText("音量减");
+                                        break;
+                                    case "108":
+                                        button_test.setBackgroundResource(R.drawable.jdh108testvolumeadd);
+                                        textview_key_name.setText("音量加");
+                                        break;
+                                    case "109":
+                                        button_test.setBackgroundResource(R.drawable.jdh109testchannelless);
+                                        textview_key_name.setText("频道减");
+                                        break;
+                                    case "110":
+                                        button_test.setBackgroundResource(R.drawable.jdh110testchanneladd);
+                                        textview_key_name.setText("频道加");
+                                        break;
+                                    case "111":
+                                        button_test.setBackgroundResource(R.drawable.jdh111testmenu);
+                                        textview_key_name.setText("菜单");
+                                        break;
+                                    case "113":
+                                        button_test.setBackgroundResource(R.drawable.jdh113testguide);
+                                        textview_key_name.setText("高级");
+                                        break;
+                                    case "115":
+                                        button_test.setBackgroundResource(R.drawable.jdh115testhome);
+                                        textview_key_name.setText("返回");
+                                        break;
+
+                                }
+                                break;
+                        }
+
                         mRemoteControlManager.sendData(testCodes.get(currentTestCodeIndex).getCodeData());
                         startSend();
                     }
@@ -179,10 +304,22 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private void initEvents() {
-        button_test.setOnClickListener(this);
         button_ng.setOnClickListener(this);
         button_ok.setOnClickListener(this);
         image_back.setOnClickListener(this);
+        button_test.setOnClickListener(this);
+        imageview_left.setOnClickListener(this);
+        imageview_right.setOnClickListener(this);
+        button_test_consecutively.setOnClickListener(this);
+        switch (type) {
+            case "KT":
+                button_test.setBackgroundResource(R.drawable.air99100testswitch);
+                break;
+            case "TV":
+                break;
+            case "智能机顶盒遥控":
+                break;
+        }
     }
 
     private void initViews() {
@@ -194,6 +331,10 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         textview_test_press_4 = (TextView) findViewById(R.id.textview_test_press_4);
         textview_test_press_2 = (TextView) findViewById(R.id.textview_test_press_2);
         image_back = (FrameLayout) findViewById(R.id.image_back);
+        button_test_consecutively = (Button) findViewById(R.id.button_test_consecutively);
+        imageview_right = (ImageView) findViewById(R.id.imageview_right);
+        imageview_left = (ImageView) findViewById(R.id.imageview_left);
+        textview_key_name = (TextView) findViewById(R.id.textview_key_name);
     }
 
     private String bandName;
@@ -210,11 +351,58 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         testCodes = new ArrayList<>();
     }
 
+    private int currentButtonStage = 1;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.imageview_right:
+                currentTestCodeIndex++;
+                if (currentTestCodeIndex > testCodes.size()) {
+                    currentTestCodeIndex = 0;
+                }
+                textview_test_press_2.setText(""+currentTestCodeIndex);
+                break;
+            case R.id.imageview_left:
+                currentTestCodeIndex--;
+                if (currentTestCodeIndex < 0) {
+                    currentTestCodeIndex = testCodes.size();
+                }
+                textview_test_press_2.setText(""+currentTestCodeIndex);
+                break;
+            case R.id.button_test:
+                startSend();
+                layout_device_response.setVisibility(View.VISIBLE);
+                break;
+            case R.id.button_test_consecutively:
+                //TODO 没有调试的时候注释去掉
+                //发送测试码
+                // if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+                if (currentButtonStage == 1) {
+                    currentButtonStage = 2;
+                    button_test_consecutively.setText("暂停测试");
+                    button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_red_background);
+
+                    startSend();
+                } else if (currentButtonStage == 2) {
+                    currentButtonStage = 3;
+                    iscanceled = true;
+                    layout_device_response.setVisibility(View.VISIBLE);
+                    button_test_consecutively.setText("继续测试");
+
+                    button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_button_background);
+                } else if (currentButtonStage == 3) {
+                    //TODO 继续测试
+                    iscanceled = false;
+                    layout_device_response.setVisibility(View.GONE);
+                }
+                //  } else {
+                //      ToastSingleShow.showText(this, "没有活动网关,请检查网络");
+                //   }
+
                 break;
             case R.id.button_ng:
                 iscanceled = true;
@@ -254,11 +442,12 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                     intent.putExtra("DeviceType", "智能电视");
                                     startActivity(intent);
                                 } else {
+
                                     ToastSingleShow.showText(AddRemoteControlActivity.this, "电视遥控器按键已学习");
                                     Intent intent = new Intent(AddRemoteControlActivity.this, TvMainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
-
                             }
 
                             @Override
@@ -296,6 +485,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 } else {
                                     ToastSingleShow.showText(AddRemoteControlActivity.this, "空调遥控器按键已学习");
                                     Intent intent = new Intent(AddRemoteControlActivity.this, AirRemoteControlMianActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
 
@@ -335,6 +525,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 } else {
                                     ToastSingleShow.showText(AddRemoteControlActivity.this, "电视机顶盒遥控器按键已学习");
                                     Intent intent = new Intent(AddRemoteControlActivity.this, TvBoxMainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
 
@@ -349,17 +540,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 }
 
                 break;
-            case R.id.button_test:
-                //TODO 没有调试的时候注释去掉
-                //发送测试码
-                // if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-                layout_device_response.setVisibility(View.VISIBLE);
-                startSend();
-                //  } else {
-                //      ToastSingleShow.showText(this, "没有活动网关,请检查网络");
-                //   }
 
-                break;
+
         }
     }
 

@@ -40,4 +40,13 @@ public class AirconditionKeyCode extends DataSupport implements Serializable{
     public void setGroupData(int groupData) {
         this.groupData = groupData;
     }
+
+    @Override
+    public String toString() {
+        return "AirconditionKeyCode{" +
+                "groupData=" + groupData +
+                ", keycode='" + keycode + '\'' +
+                ", mAirconditionUid='" + mAirconditionUid + '\'' +
+                '}';
+    }
 }

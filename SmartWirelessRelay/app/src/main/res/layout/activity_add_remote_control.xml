@@ -20,11 +20,10 @@
             android:id="@+id/textview_introduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/aircondition_test_explan_info1_margintop"
             android:gravity="center_horizontal"
-            android:text="请对准空调按测试按键，空调响应时请立即暂停测试" />
+            android:text="@string/remotecontrol_learn_auto_tips" />
 
         <RelativeLayout
             android:id="@+id/layout_test_press"
@@ -69,14 +68,67 @@
                 android:text=")" />
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/button_test"
-            android:layout_width="@dimen/startthetestbutton_size"
-            android:layout_height="@dimen/startthetestbutton_size"
+        <RelativeLayout
+            android:id="@+id/layout_test_key_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/layout_test_press"
+            android:layout_marginTop="30dp">
+
+            <ImageView
+                android:id="@+id/imageview_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/testprevious" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true">
+
+                <Button
+                    android:id="@+id/button_test"
+                    android:layout_width="@dimen/startthetestbutton_size"
+                    android:layout_height="@dimen/startthetestbutton_size"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/startthetestbutton" />
+
+                <TextView
+                    android:id="@+id/textview_key_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/button_test"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:text="开关"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/imageview_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/testnext" />
+        </RelativeLayout>
+        <!--测试,暂停测试-->
+        <Button
+            android:id="@+id/button_test_consecutively"
+            android:background="@drawable/radius22_bg_button_background"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/layout_test_key_view"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/aircondition_test_explan_info2_margintop"
-            android:background="@drawable/startthetestbutton" />
+            android:text="连续测试"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/layout_item_content_height" />
     </RelativeLayout>
 
 

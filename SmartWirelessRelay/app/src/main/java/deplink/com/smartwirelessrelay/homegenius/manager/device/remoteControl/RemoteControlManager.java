@@ -51,6 +51,15 @@ public class RemoteControlManager implements LocalConnecteListener {
      * 当前选中的遥控器设备绑定的物理遥控器
      */
     private SmartDev mRealRemoteControlDevice;
+    private int currentLearnByHandKeyName;
+
+    public int getCurrentLearnByHandKeyName() {
+        return currentLearnByHandKeyName;
+    }
+
+    public void setCurrentLearnByHandKeyName(int currentLearnByHandKeyName) {
+        this.currentLearnByHandKeyName = currentLearnByHandKeyName;
+    }
 
     public SmartDev getmRealRemoteControlDevice() {
 
@@ -119,7 +128,9 @@ public class RemoteControlManager implements LocalConnecteListener {
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         mRemoteControlListenerList = new ArrayList<>();
-        addRemoteControlListener(listener);
+        if(listener!=null){
+            addRemoteControlListener(listener);
+        }
         gson = new Gson();
         mRemoteControlDeviceList = new ArrayList<>();
         mRemoteControlDeviceList.addAll(DataSupport.where("Type=?", "IRMOTE_V2").find(SmartDev.class));
@@ -184,7 +195,7 @@ public class RemoteControlManager implements LocalConnecteListener {
         cmd.setSmartUid(mSelectRemoteControlDevice.getRemotecontrolUid());
         cmd.setCommand("Study");
         String text = gson.toJson(cmd);
-        packet.packRemoteControlData(text.getBytes(), null);
+        packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getRemotecontrolUid());
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -195,7 +206,7 @@ public class RemoteControlManager implements LocalConnecteListener {
     }
 
     public void sendData(String data) {
-        Log.i(TAG,"mSelectRemoteControlDevice="+mSelectRemoteControlDevice.getUid());
+        Log.i(TAG,"mSelectRemoteControlDevice="+mSelectRemoteControlDevice.getRemotecontrolUid());
         QueryOptions cmd = new QueryOptions();
         cmd.setOP("SET");
         cmd.setMethod("IrmoteV2");
@@ -203,7 +214,9 @@ public class RemoteControlManager implements LocalConnecteListener {
         cmd.setSmartUid(mSelectRemoteControlDevice.getRemotecontrolUid());
         cmd.setCommand("Send");
         cmd.setData(data);
+        Log.i(TAG,""+(cmd!=null));
         String text = gson.toJson(cmd);
+        Log.i(TAG,""+text);
         packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getRemotecontrolUid());
         cachedThreadPool.execute(new Runnable() {
             @Override
