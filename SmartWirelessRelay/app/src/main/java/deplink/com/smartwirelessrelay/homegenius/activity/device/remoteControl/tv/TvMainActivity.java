@@ -16,9 +16,9 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyCode;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.TvKeyNameConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
-import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
@@ -112,124 +112,15 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         initKeyCodeData();
     }
 
-    private int group;
-    private String code;
 
-    /**
-     * 按键对应的byte数据
-     */
-    private byte[] data_key_vol_reduce = new byte[2];
-    private byte[] data_key_vol_add = new byte[2];
-    private byte[] data_key_ch_reduce = new byte[2];
-    private byte[] data_key_ch_add = new byte[2];
-    private byte[] data_key_menu = new byte[2];
-    private byte[] data_key_power = new byte[2];
-    private byte[] data_key_mute = new byte[2];
-    private byte[] data_key_1 = new byte[2];
-    private byte[] data_key_2 = new byte[2];
-    private byte[] data_key_3 = new byte[2];
-    private byte[] data_key_4 = new byte[2];
-    private byte[] data_key_5 = new byte[2];
-    private byte[] data_key_6 = new byte[2];
-    private byte[] data_key_7 = new byte[2];
-    private byte[] data_key_8 = new byte[2];
-    private byte[] data_key_9 = new byte[2];
-    private byte[] data_key_0 = new byte[2];
-    private byte[] data_key_enter = new byte[2];
-    private byte[] data_key_avtv = new byte[2];
-    private byte[] data_key_back = new byte[2];
-    private byte[] data_key_sure = new byte[2];
-    private byte[] data_key_up = new byte[2];
-    private byte[] data_key_down = new byte[2];
-    private byte[] data_key_left = new byte[2];
-    private byte[] data_key_right = new byte[2];
 
+    private TvKeyCode mTvKeyCode;
     private void initKeyCodeData() {
         String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        TvKeyCode mTvKeyCode =
+         mTvKeyCode =
                 DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyCode.class);
         if (mTvKeyCode != null) {
             Log.i(TAG, "mAirconditionKeyCode=" + mTvKeyCode.toString());
-            group = mTvKeyCode.getGroupData();
-            code = mTvKeyCode.getKeycode();
-            Log.i(TAG, "code=" + code);
-            byte[] codeByte = DataExchange.dbString_ToBytes(code);
-
-            System.arraycopy(codeByte, 1, data_key_vol_reduce, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_vol_reduce));
-
-            System.arraycopy(codeByte, 3, data_key_ch_add, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_ch_add));
-
-            System.arraycopy(codeByte, 5, data_key_menu, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_menu));
-
-            System.arraycopy(codeByte, 7, data_key_ch_reduce, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_ch_reduce));
-
-            System.arraycopy(codeByte, 9, data_key_vol_add, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_vol_add));
-
-            System.arraycopy(codeByte, 11, data_key_power, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_power));
-
-            System.arraycopy(codeByte, 13, data_key_mute, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_mute));
-
-            System.arraycopy(codeByte, 15, data_key_1, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_1));
-
-            System.arraycopy(codeByte, 17, data_key_2, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_2));
-
-            System.arraycopy(codeByte, 19, data_key_3, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_3));
-
-            System.arraycopy(codeByte, 21, data_key_4, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_4));
-
-            System.arraycopy(codeByte, 23, data_key_5, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_5));
-
-            System.arraycopy(codeByte, 25, data_key_6, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_6));
-
-            System.arraycopy(codeByte, 27, data_key_7, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_7));
-
-            System.arraycopy(codeByte, 29, data_key_8, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_8));
-
-            System.arraycopy(codeByte, 31, data_key_9, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_9));
-
-            System.arraycopy(codeByte, 33, data_key_enter, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_enter));
-
-            System.arraycopy(codeByte, 35, data_key_0, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_0));
-
-            System.arraycopy(codeByte, 37, data_key_avtv, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_avtv));
-
-            System.arraycopy(codeByte, 39, data_key_back, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_back));
-
-            System.arraycopy(codeByte, 41, data_key_sure, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_sure));
-
-            System.arraycopy(codeByte, 43, data_key_up, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_up));
-
-            System.arraycopy(codeByte, 45, data_key_down, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_down));
-
-            System.arraycopy(codeByte, 47, data_key_left, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_left));
-
-            System.arraycopy(codeByte, 49, data_key_right, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_key_right));
-
         }
 
     }
@@ -238,6 +129,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
      * 初始化按键的背景，学习过和未学习的按键背景不一样，点击效果也不一样
      */
     private void initImageViewKeyBackground() {
+        Log.i(TAG,"key_up learn statu="+key_up);
         if (key_up) {
             imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
         } else {
@@ -354,8 +246,6 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         } else {
             imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
         }
-
-
     }
 
     private void initKeylearnStatus() {
@@ -423,6 +313,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         menu_dialog.setmLearnHandClickListener(new RemoteControlMenuDialog.onLearnHandClickListener() {
             @Override
             public void onLearnHandBtnClicked() {
+                mRemoteControlManager.setCurrentLearnByHandTypeName(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
                 isLearnByHand = true;
                 textview_cancel.setVisibility(View.VISIBLE);
                 image_setting.setVisibility(View.GONE);
@@ -504,7 +395,6 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         imageview_number_0 = (ImageView) findViewById(R.id.imageview_number_0);
     }
 
-    private byte[] data;
     private Intent intent;
 
     @Override
@@ -526,11 +416,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(intent);
                 } else {
                     if (key_power) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_power);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_power());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -543,11 +432,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_ok) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_sure);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_enter());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -560,11 +448,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_left) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_left);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_left());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -577,11 +464,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_right) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_right);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_right());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -594,11 +480,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_up) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_up);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_up());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -611,11 +496,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_down) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_down);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_down());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -628,11 +512,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_ch_reduce) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_ch_reduce);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_ch_reduce());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -645,11 +528,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_ch_plus) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_ch_add);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_ch_add());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -662,11 +544,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_volum_reduce) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_vol_reduce);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_vol_reduce());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -679,11 +560,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_volum_plus) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_vol_add);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_vol_add());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -696,11 +576,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_mute) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_mute);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_mute());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -713,11 +592,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_list) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_menu);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_mute());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -730,11 +608,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_return) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_back);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_back());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -747,11 +624,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_1) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_1);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_1());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -764,11 +640,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_2) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_2);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_2());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -781,11 +656,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_3) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_3);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_3());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -798,11 +672,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_4) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_4);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_4());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -815,11 +688,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_5) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_5);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_5());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -832,11 +704,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_6) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_6);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_6());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -849,11 +720,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_7) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_7);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_7());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -866,11 +736,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_8) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_8);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_8());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -883,11 +752,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_9) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_9);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_9());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -901,11 +769,10 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(intent);
                 } else {
                     if (key_number_0) {
-                        if (code == null) {
+                        if (mTvKeyCode == null) {
                             return;
                         }
-                        data = packData(data_key_0);
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_0());
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -933,29 +800,5 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
-
-    private byte[] packData(byte func[]) {
-        data = new byte[10];
-        int len = 0;
-        byte[] codeByte = DataExchange.dbString_ToBytes(code);
-        data[len++] = (byte) 0x30;
-        data[len++] = (byte) 0x00;
-        data[len++] = codeByte[0];
-        System.arraycopy(func, 0, data, len, 2);
-        len += 2;
-        byte[] last4CodeBytes = new byte[4];
-        System.arraycopy(codeByte, codeByte.length - 4, last4CodeBytes, 0, 4);
-        Log.i(TAG, "最后4个字节=" + DataExchange.byteArrayToHexString(last4CodeBytes));
-        System.arraycopy(last4CodeBytes, 0, data, len, 4);
-        len += 4;
-        byte crc = 0;
-        for (int i = 0; i < 9; i++) {
-            crc += data[i];
-        }
-        data[len] = (byte) (crc & 0xff);//最后一个检验位
-        Log.i(TAG, "打包电视控制数据dbBytesToString=" + DataExchange.dbBytesToString(data));
-        return data;
-    }
-
 
 }

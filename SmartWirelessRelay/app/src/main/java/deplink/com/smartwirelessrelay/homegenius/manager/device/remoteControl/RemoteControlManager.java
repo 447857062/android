@@ -52,6 +52,15 @@ public class RemoteControlManager implements LocalConnecteListener {
      */
     private SmartDev mRealRemoteControlDevice;
     private int currentLearnByHandKeyName;
+    private String currentLearnByHandTypeName;
+
+    public String getCurrentLearnByHandTypeName() {
+        return currentLearnByHandTypeName;
+    }
+
+    public void setCurrentLearnByHandTypeName(String currentLearnByHandTypeName) {
+        this.currentLearnByHandTypeName = currentLearnByHandTypeName;
+    }
 
     public int getCurrentLearnByHandKeyName() {
         return currentLearnByHandKeyName;
@@ -314,9 +323,16 @@ public class RemoteControlManager implements LocalConnecteListener {
         RemoteControlOpResult result = gson.fromJson(setResult, RemoteControlOpResult.class);
         Log.i(TAG, TAG + ":获取设置结果setResult=" + setResult);
         if (result != null) {
-            for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
-                mRemoteControlListenerList.get(i).responseQueryResult(result.getCommand() + result.getResult());
+            if(setResult.contains("Study")){
+                for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                    mRemoteControlListenerList.get(i).responseQueryResult(setResult);
+                }
+            }else{
+                for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                    mRemoteControlListenerList.get(i).responseQueryResult(result.getCommand() + result.getResult());
+                }
             }
+
         }
 
     }

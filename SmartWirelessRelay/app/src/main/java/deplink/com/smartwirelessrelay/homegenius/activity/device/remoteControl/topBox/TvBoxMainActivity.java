@@ -1,7 +1,9 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -11,7 +13,11 @@ import android.widget.TextView;
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvboxKeyCode;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvboxLearnStatu;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.TvBoxNameConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
@@ -73,7 +79,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
     private ImageView imageview_ch_add;
     private ImageView imageview_volum_reduce;
     private ImageView imageview_volum_add;
-    private ImageView imageview_volume_on_off;
+    private ImageView imageview_guide;
     private ImageView imageview_control_list;
     private ImageView imageview_control_back;
     private ImageView imageview_number_1;
@@ -86,6 +92,9 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
     private ImageView imageview_number_8;
     private ImageView imageview_number_9;
     private ImageView imageview_number_0;
+    private TextView textview_cancel;
+    private TextView textview_tips;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,128 +110,139 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
         super.onResume();
         initKeylearnStatus();
         initImageViewKeyBackground();
+        initKeyCodeData();
+    }
+private TvboxKeyCode mTvboxKeyCode;
+    private void initKeyCodeData() {
+        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+         mTvboxKeyCode =
+                DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxKeyCode.class);
+        if (mTvboxKeyCode != null) {
+            Log.i(TAG, "mAirconditionKeyCode=" + mTvboxKeyCode.toString());
+        }
+
     }
 
     /**
      * 初始化按键的背景，学习过和未学习的按键背景不一样，点击效果也不一样
      */
     private void initImageViewKeyBackground() {
-       if(key_up){
-           imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
-       }else{
-           imageview_top.setBackgroundResource(R.drawable.button_click_up_notlearn);
-       }
-       if(key_down){
-           imageview_down.setBackgroundResource(R.drawable.button_click_down_learned);
+        if (key_up) {
+            imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
+        } else {
+            imageview_top.setBackgroundResource(R.drawable.button_click_up_notlearn);
+        }
+        if (key_down) {
+            imageview_down.setBackgroundResource(R.drawable.button_click_down_learned);
 
-       }else{
-           imageview_down.setBackgroundResource(R.drawable.button_click_down_notlearn);
-       }
-       if(key_left){
-           imageview_left.setBackgroundResource(R.drawable.button_click_left_learned);
-       }else{
-           imageview_left.setBackgroundResource(R.drawable.button_click_left_notlearn);
-       }
-       if(key_right){
-           imageview_right.setBackgroundResource(R.drawable.button_click_right_learned);
-       }else{
-           imageview_right.setBackgroundResource(R.drawable.button_click_right_notlearn);
-       }
-       if(key_ok){
-           imageview_center.setBackgroundResource(R.drawable.button_ok_learned);
-       }else{
-           imageview_center.setBackgroundResource(R.drawable.button_ok_notlearn);
-       }
-       if(key_power){
-           imageview_power.setBackgroundResource(R.drawable.button_power_learned);
-       }else{
-           imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
-       }
-       if(key_ch_reduce){
-           imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_learned);
-       }else{
-           imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_notlearn);
-       }
-       if(key_ch_plus){
-           imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_learned);
-       }else{
-           imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_notlearn);
-       }
-       if(key_volum_reduce){
-           imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_learned);
-       }else{
-           imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_notlearn);
-       }
-       if(key_volum_plus){
-           imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_learned);
-       }else{
-           imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_notlearn);
-       }
-       if(key_navi){
-           imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_learned);
-       }else{
-           imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_notlearn);
-       }
-       if(key_list){
-           imageview_control_list.setBackgroundResource(R.drawable.button_menu_learned);
-       }else{
-           imageview_control_list.setBackgroundResource(R.drawable.button_menu_notlearn);
-       }
-       if(key_return){
-           imageview_control_back.setBackgroundResource(R.drawable.button_back_learned);
-       }else{
-           imageview_control_back.setBackgroundResource(R.drawable.button_back_notlearn);
-       }
-       if(key_number_0){
-           imageview_number_0.setBackgroundResource(R.drawable.button_0_learn);
-       }else{
-           imageview_number_0.setBackgroundResource(R.drawable.button_0_notlearn);
-       }
-       if(key_number_1){
-           imageview_number_1.setBackgroundResource(R.drawable.button_1_learn);
-       }else{
-           imageview_number_1.setBackgroundResource(R.drawable.button_1_notlearn);
-       }
-       if(key_number_2){
-           imageview_number_2.setBackgroundResource(R.drawable.button_2_learned);
-       }else{
-           imageview_number_2.setBackgroundResource(R.drawable.button_2_notlearn);
-       }
-       if(key_number_3){
-           imageview_number_3.setBackgroundResource(R.drawable.button_3_learned);
-       }else{
-           imageview_number_3.setBackgroundResource(R.drawable.button_3_notlearn);
-       }
-       if(key_number_4){
-           imageview_number_4.setBackgroundResource(R.drawable.button_4_learned);
-       }else{
-           imageview_number_4.setBackgroundResource(R.drawable.button_4_notlearn);
-       }
-       if(key_number_5){
-           imageview_number_5.setBackgroundResource(R.drawable.button_5_learned);
-       }else{
-           imageview_number_5.setBackgroundResource(R.drawable.button_5_notlearn);
-       }
-       if(key_number_6){
-           imageview_number_6.setBackgroundResource(R.drawable.button_6_learned);
-       }else{
-           imageview_number_6.setBackgroundResource(R.drawable.button_6_notlearn);
-       }
-       if(key_number_7){
-           imageview_number_7.setBackgroundResource(R.drawable.button_7_learned);
-       }else{
-           imageview_number_7.setBackgroundResource(R.drawable.button_7_notlearn);
-       }
-       if(key_number_8){
-           imageview_number_8.setBackgroundResource(R.drawable.button_8_learned);
-       }else{
-           imageview_number_8.setBackgroundResource(R.drawable.button_8_notlearn);
-       }
-       if(key_number_9){
-           imageview_number_9.setBackgroundResource(R.drawable.button_9_learned);
-       }else{
-           imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
-       }
+        } else {
+            imageview_down.setBackgroundResource(R.drawable.button_click_down_notlearn);
+        }
+        if (key_left) {
+            imageview_left.setBackgroundResource(R.drawable.button_click_left_learned);
+        } else {
+            imageview_left.setBackgroundResource(R.drawable.button_click_left_notlearn);
+        }
+        if (key_right) {
+            imageview_right.setBackgroundResource(R.drawable.button_click_right_learned);
+        } else {
+            imageview_right.setBackgroundResource(R.drawable.button_click_right_notlearn);
+        }
+        if (key_ok) {
+            imageview_center.setBackgroundResource(R.drawable.button_ok_learned);
+        } else {
+            imageview_center.setBackgroundResource(R.drawable.button_ok_notlearn);
+        }
+        if (key_power) {
+            imageview_power.setBackgroundResource(R.drawable.button_power_learned);
+        } else {
+            imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
+        }
+        if (key_ch_reduce) {
+            imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_learned);
+        } else {
+            imageview_ch_reduce.setBackgroundResource(R.drawable.button_learn_ch_reduce_notlearn);
+        }
+        if (key_ch_plus) {
+            imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_learned);
+        } else {
+            imageview_ch_add.setBackgroundResource(R.drawable.button_learn_ch_add_notlearn);
+        }
+        if (key_volum_reduce) {
+            imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_learned);
+        } else {
+            imageview_volum_reduce.setBackgroundResource(R.drawable.button_volum_reduce_notlearn);
+        }
+        if (key_volum_plus) {
+            imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_learned);
+        } else {
+            imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_notlearn);
+        }
+        if (key_navi) {
+            imageview_guide.setBackgroundResource(R.drawable.button_guide_learned);
+        } else {
+            imageview_guide.setBackgroundResource(R.drawable.button_guide_notlearn);
+        }
+        if (key_list) {
+            imageview_control_list.setBackgroundResource(R.drawable.button_menu_learned);
+        } else {
+            imageview_control_list.setBackgroundResource(R.drawable.button_menu_notlearn);
+        }
+        if (key_return) {
+            imageview_control_back.setBackgroundResource(R.drawable.button_back_learned);
+        } else {
+            imageview_control_back.setBackgroundResource(R.drawable.button_back_notlearn);
+        }
+        if (key_number_0) {
+            imageview_number_0.setBackgroundResource(R.drawable.button_0_learn);
+        } else {
+            imageview_number_0.setBackgroundResource(R.drawable.button_0_notlearn);
+        }
+        if (key_number_1) {
+            imageview_number_1.setBackgroundResource(R.drawable.button_1_learn);
+        } else {
+            imageview_number_1.setBackgroundResource(R.drawable.button_1_notlearn);
+        }
+        if (key_number_2) {
+            imageview_number_2.setBackgroundResource(R.drawable.button_2_learned);
+        } else {
+            imageview_number_2.setBackgroundResource(R.drawable.button_2_notlearn);
+        }
+        if (key_number_3) {
+            imageview_number_3.setBackgroundResource(R.drawable.button_3_learned);
+        } else {
+            imageview_number_3.setBackgroundResource(R.drawable.button_3_notlearn);
+        }
+        if (key_number_4) {
+            imageview_number_4.setBackgroundResource(R.drawable.button_4_learned);
+        } else {
+            imageview_number_4.setBackgroundResource(R.drawable.button_4_notlearn);
+        }
+        if (key_number_5) {
+            imageview_number_5.setBackgroundResource(R.drawable.button_5_learned);
+        } else {
+            imageview_number_5.setBackgroundResource(R.drawable.button_5_notlearn);
+        }
+        if (key_number_6) {
+            imageview_number_6.setBackgroundResource(R.drawable.button_6_learned);
+        } else {
+            imageview_number_6.setBackgroundResource(R.drawable.button_6_notlearn);
+        }
+        if (key_number_7) {
+            imageview_number_7.setBackgroundResource(R.drawable.button_7_learned);
+        } else {
+            imageview_number_7.setBackgroundResource(R.drawable.button_7_notlearn);
+        }
+        if (key_number_8) {
+            imageview_number_8.setBackgroundResource(R.drawable.button_8_learned);
+        } else {
+            imageview_number_8.setBackgroundResource(R.drawable.button_8_notlearn);
+        }
+        if (key_number_9) {
+            imageview_number_9.setBackgroundResource(R.drawable.button_9_learned);
+        } else {
+            imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
+        }
 
 
     }
@@ -283,15 +303,26 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this,null);
+        mRemoteControlManager.InitRemoteControlManager(this, null);
         textview_title.setText("机顶盒遥控");
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         menu_dialog = new RemoteControlMenuDialog(this, RemoteControlMenuDialog.TYPE_TVBOX);
+        menu_dialog.setmLearnHandClickListener(new RemoteControlMenuDialog.onLearnHandClickListener() {
+            @Override
+            public void onLearnHandBtnClicked() {
+                isLearnByHand = true;
+                mRemoteControlManager.setCurrentLearnByHandTypeName(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
+                textview_cancel.setVisibility(View.VISIBLE);
+                image_setting.setVisibility(View.GONE);
+                textview_tips.setVisibility(View.VISIBLE);
+            }
+        });
         image_setting.setImageResource(R.drawable.menuicon);
     }
 
     private void initEvents() {
         image_back.setOnClickListener(this);
+        textview_cancel.setOnClickListener(this);
         layout_title_control_base.setOnClickListener(this);
         layout_title_control_number.setOnClickListener(this);
         frame_setting.setOnClickListener(this);
@@ -305,7 +336,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
         imageview_ch_add.setOnClickListener(this);
         imageview_volum_reduce.setOnClickListener(this);
         imageview_volum_add.setOnClickListener(this);
-        imageview_volume_on_off.setOnClickListener(this);
+        imageview_guide.setOnClickListener(this);
         imageview_control_list.setOnClickListener(this);
         imageview_control_back.setOnClickListener(this);
         imageview_number_1.setOnClickListener(this);
@@ -323,6 +354,8 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
     private void initViews() {
         frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
         textview_title = (TextView) findViewById(R.id.textview_title);
+        textview_tips = (TextView) findViewById(R.id.textview_tips);
+        textview_cancel = (TextView) findViewById(R.id.textview_cancel);
         image_setting = (ImageView) findViewById(R.id.image_setting);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         view_control_base = findViewById(R.id.view_control_base);
@@ -344,7 +377,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
         imageview_ch_add = (ImageView) findViewById(R.id.imageview_ch_add);
         imageview_volum_reduce = (ImageView) findViewById(R.id.imageview_volum_reduce);
         imageview_volum_add = (ImageView) findViewById(R.id.imageview_volum_add);
-        imageview_volume_on_off = (ImageView) findViewById(R.id.imageview_volume_on_off);
+        imageview_guide = (ImageView) findViewById(R.id.imageview_guide);
         imageview_control_list = (ImageView) findViewById(R.id.imageview_control_list);
         imageview_control_back = (ImageView) findViewById(R.id.imageview_control_back);
         imageview_number_1 = (ImageView) findViewById(R.id.imageview_number_1);
@@ -359,171 +392,363 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
         imageview_number_0 = (ImageView) findViewById(R.id.imageview_number_0);
     }
 
+    private boolean isLearnByHand;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.textview_cancel:
+                textview_tips.setVisibility(View.GONE);
+                textview_cancel.setVisibility(View.GONE);
+                image_setting.setVisibility(View.VISIBLE);
+                isLearnByHand = false;
+                break;
             case R.id.frame_setting:
                 menu_dialog.show();
                 break;
             case R.id.imageview_power:
-                if (key_power) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_POWER);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_power());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_center:
-                if (key_ok) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_SURE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ok());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_left:
-                if (key_left) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_LEFT);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_left());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_right:
-                if (key_right) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_RIGHT);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_right());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_top:
-                if (key_up) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_UP);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_up());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_down:
-                if (key_down) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_DOWN);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_down());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_ch_reduce:
-                if (key_ch_reduce) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_CH_REDUCE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ch_reduce());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_ch_add:
-                if (key_ch_plus) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_CH_PLUS);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ch_plus());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_volum_reduce:
-                if (key_volum_reduce) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_VOL_REDUCE);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_volum_reduce());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_volum_add:
-                if (key_volum_plus) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_VOL_PLUS);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_volum_reduce());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
-            case R.id.imageview_volume_on_off:
-                if (key_navi) {
-
+            case R.id.imageview_guide:
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NAVI);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_navi());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_control_list:
-                if (key_list) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_MENU);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_list());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_control_back:
-                if (key_return) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_RETURN);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_return) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_return());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_1:
-                if (key_number_1) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_1);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_1());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_2:
-                if (key_number_2) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_2);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_2());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_3:
-                if (key_number_3) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_3);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_3());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_4:
-                if (key_number_4) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_4);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_4());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_5:
-                if (key_number_5) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_5);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_5());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_6:
-                if (key_number_6) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_6);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_6());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_7:
-                if (key_number_7) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_7);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_7());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_8:
-                if (key_number_8) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_8);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_8());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_9:
-                if (key_number_9) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_9);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_9());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
             case R.id.imageview_number_0:
-                if (key_number_0) {
-
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvBoxNameConstant.KEYNAME.KEYNAME_NUMBER_0);
+                    startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
-                    mKeynotlearnDialog.show();
+                    if (key_power) {
+                        if (mTvboxKeyCode == null) {
+                            return;
+                        }
+                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_0());
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
                 }
                 break;
 
@@ -548,4 +773,6 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                 break;
         }
     }
+
+
 }

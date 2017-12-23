@@ -7,68 +7,70 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/10/30.
  * 按键的学习状态
+ * 不能使用byte数据
  */
-public class AirconditionInitKeyValue extends DataSupport implements Serializable{
-   private byte tempature;
-   private byte wind;
-   private byte directionHand;
-   private byte directionAuto;
-   private byte power;
-   private byte currentPressedKey;
-   private byte mode;
-    public byte getTempature() {
+public class AirconditionInitKeyValue extends DataSupport implements Serializable {
+    private int tempature;
+    private int wind;
+    private int directionHand;
+    private int directionAuto;
+    private int keyPower;
+    private int currentPressedKey;
+    private int mode;
+
+    public int getTempature() {
         return tempature;
     }
 
-    public void setTempature(byte tempature) {
+    public void setTempature(int tempature) {
         this.tempature = tempature;
     }
 
-    public byte getWind() {
+    public int getWind() {
         return wind;
     }
 
-    public void setWind(byte wind) {
+    public void setWind(int wind) {
         this.wind = wind;
     }
 
-    public byte getDirectionHand() {
+    public int getDirectionHand() {
         return directionHand;
     }
 
-    public void setDirectionHand(byte directionHand) {
+    public void setDirectionHand(int directionHand) {
         this.directionHand = directionHand;
     }
 
-    public byte getDirectionAuto() {
+    public int getDirectionAuto() {
         return directionAuto;
     }
 
-    public void setDirectionAuto(byte directionAuto) {
+    public void setDirectionAuto(int directionAuto) {
         this.directionAuto = directionAuto;
     }
 
-    public byte getPower() {
-        return power;
+    public int getKeyPower() {
+        return keyPower;
     }
 
-    public void setPower(byte power) {
-        this.power = power;
+    public void setKeyPower(int keyPower) {
+        this.keyPower = keyPower;
     }
 
-    public byte getCurrentPressedKey() {
+    public int getCurrentPressedKey() {
         return currentPressedKey;
     }
 
-    public void setCurrentPressedKey(byte currentPressedKey) {
+    public void setCurrentPressedKey(int currentPressedKey) {
         this.currentPressedKey = currentPressedKey;
     }
 
-    public byte getMode() {
+    public int getMode() {
         return mode;
     }
 
-    public void setMode(byte mode) {
+    public void setMode(int mode) {
         this.mode = mode;
     }
 }

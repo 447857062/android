@@ -5,9 +5,70 @@
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity">
 
-    <include
+    <RelativeLayout
         android:id="@+id/layout_title"
-        layout="@layout/layout_title_with_right_have_image_have_textbackground" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/title_blue_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
+            <FrameLayout
+                android:id="@+id/image_back"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/returnicon" />
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+            <FrameLayout
+                android:id="@+id/frame_setting"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true">
+                <TextView
+                    android:visibility="gone"
+                    android:gravity="center_vertical|right"
+                    android:id="@+id/textview_cancel"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_small"
+                    android:text="取消"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/image_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:clickable="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/menuicon" />
+            </FrameLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -213,7 +274,7 @@
                     android:weightSum="3">
 
                     <ImageView
-                        android:id="@+id/imageview_volume_on_off"
+                        android:id="@+id/imageview_guide"
                         android:layout_width="@dimen/learn_mute_menu_return_button_width_height"
                         android:layout_height="match_parent"
                         android:background="@drawable/button_guide_notlearn"
@@ -365,6 +426,17 @@
 
                 </RelativeLayout>
             </RelativeLayout>
+            <TextView
+                android:background="@color/room_type_text"
+                android:visibility="gone"
+                android:id="@+id/textview_tips"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_smallest"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center_horizontal|bottom"
+                android:text="现在处于手动学习模式,学习完成后点击取消退出学习"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
         </FrameLayout>
     </RelativeLayout>
 

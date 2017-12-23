@@ -20,6 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.a
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 
 
@@ -90,7 +91,6 @@ public class RemoteControlMenuDialog extends Dialog implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.view_mode_menu:
                 this.dismiss();
                 break;
@@ -101,6 +101,7 @@ public class RemoteControlMenuDialog extends Dialog implements View.OnClickListe
             case R.id.textview_quick_learn:
                 this.dismiss();
                 Intent intent;
+                RemoteControlManager.getInstance().setCurrentActionIsAddDevice(false);
                 switch (currentType) {
                     case TYPE_AIRCONDITION:
                         intent = new Intent(mContext, AirconditionChooseBandActivity.class);
