@@ -112,10 +112,12 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
         initImageViewKeyBackground();
         initKeyCodeData();
     }
-private TvboxKeyCode mTvboxKeyCode;
+
+    private TvboxKeyCode mTvboxKeyCode;
+
     private void initKeyCodeData() {
         String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-         mTvboxKeyCode =
+        mTvboxKeyCode =
                 DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxKeyCode.class);
         if (mTvboxKeyCode != null) {
             Log.i(TAG, "mAirconditionKeyCode=" + mTvboxKeyCode.toString());

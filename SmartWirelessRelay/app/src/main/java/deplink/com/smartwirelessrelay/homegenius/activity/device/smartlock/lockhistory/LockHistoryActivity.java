@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private TextView textview_title;
     private TextView textview_empty_record;
     private FrameLayout image_back;
-
+    private ImageView imageview_no_lockhostory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +81,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         textview_title = (TextView) findViewById(R.id.textview_title);
         textview_empty_record = (TextView) findViewById(R.id.textview_empty_record);
         image_back = (FrameLayout) findViewById(R.id.image_back);
+        imageview_no_lockhostory = (ImageView) findViewById(R.id.imageview_no_lockhostory);
 
     }
 
@@ -146,6 +148,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                         }
                     }
                     textview_empty_record.setVisibility(View.GONE);
+                    imageview_no_lockhostory.setVisibility(View.GONE);
                     Log.i(TAG, "mRecordListId=" + mRecordListId.size());
                     recordAdapter.notifyDataSetChanged();
                     DialogThreeBounce.hideLoading();
@@ -165,6 +168,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     break;
                 case MSG_GET_HISRECORD:
                     if(mRecordList.size()==0){
+                        imageview_no_lockhostory.setVisibility(View.VISIBLE);
                         textview_empty_record.setVisibility(View.VISIBLE);
                     }
                     DialogThreeBounce.hideLoading();

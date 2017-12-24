@@ -303,32 +303,63 @@
             android:id="@+id/frame_devicelist_content_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/layout_no_connected_device"
+                android:visibility="gone"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iamgeview_no_connected_device"
+                    android:background="@drawable/connectthedevice"
+                    android:scaleType="centerInside"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_below="@+id/iamgeview_no_connected_device"
+                    android:id="@+id/textview_show_query_device_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/text_size_small"
+                    android:gravity="center_horizontal" />
 
+            </RelativeLayout>
             <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
                 android:id="@+id/listview_device_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null" />
 
-            <TextView
-                android:id="@+id/textview_show_query_device_result"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_horizontal" />
+
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/frame_blacklist_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textview_show_blacklist_device_result"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <RelativeLayout
+                android:id="@+id/layout_no_blacklist"
+                android:visibility="gone"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_horizontal" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iamgeview_no_blacklist"
+                    android:background="@drawable/blacklist"
+                    android:scaleType="centerInside"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_below="@+id/iamgeview_no_blacklist"
+                    android:id="@+id/textview_show_blacklist_device_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/room_type_text"
+                    android:textSize="@dimen/text_size_small"
+                    android:gravity="center_horizontal" />
+            </RelativeLayout>
+
 
             <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
                 android:id="@+id/listview_black_list"

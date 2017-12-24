@@ -101,6 +101,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private float Yoffset = 0;
     private Handler mHandler = new Handler();
     private TextView textview_show_blacklist_device_result;
+    private RelativeLayout layout_no_blacklist;
+    private RelativeLayout layout_no_connected_device;
     private boolean isMqttConnect = true;
     private FrameLayout frame_blacklist_content;
     private FrameLayout frame_devicelist_content_content;
@@ -354,9 +356,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
                                 if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
                                     if (routerDevice.getDevicesOnlineRoot().getBLACKLIST().size() == 0) {
+                                        layout_no_blacklist.setVisibility(View.VISIBLE);
+                                        layout_no_connected_device.setVisibility(View.VISIBLE);
                                         textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
                                         textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
                                     } else {
+                                        layout_no_blacklist.setVisibility(View.GONE);
+                                        layout_no_connected_device.setVisibility(View.GONE);
                                         textview_show_blacklist_device_result.setVisibility(View.GONE);
                                     }
                                     mBlackListDatas.clear();
@@ -632,6 +638,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         textview_memory_use = (TextView) findViewById(R.id.textview_memory_use);
         textview_upload_speed = (TextView) findViewById(R.id.textview_upload_speed);
         textview_download_speend = (TextView) findViewById(R.id.textview_download_speend);
+        layout_no_blacklist = (RelativeLayout) findViewById(R.id.layout_no_blacklist);
+        layout_no_connected_device = (RelativeLayout) findViewById(R.id.layout_no_connected_device);
     }
 
     @Override

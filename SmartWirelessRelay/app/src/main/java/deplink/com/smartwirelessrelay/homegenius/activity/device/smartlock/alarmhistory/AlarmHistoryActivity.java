@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
     private boolean isStartFromExperience;
     private TextView textview_title;
     private FrameLayout image_back;
-
+    private RelativeLayout layout_no_alarm_recoed;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,13 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
             mSmartLockManager.InitSmartLockManager(this);
             mLockHistory.clear();
             if (mSmartLockManager.getAlarmRecord() != null) {
-                mLockHistory.addAll(mSmartLockManager.getAlarmRecord());
+                if(mSmartLockManager.getAlarmRecord()!=null && mSmartLockManager.getAlarmRecord().size()>0){
+                    mLockHistory.addAll(mSmartLockManager.getAlarmRecord());
+                    layout_no_alarm_recoed.setVisibility(View.GONE);
+                }else{
+                    layout_no_alarm_recoed.setVisibility(View.VISIBLE);
+                }
+
             }
             mAlarmHistoryAdapter.notifyDataSetChanged();
         }
@@ -76,6 +83,7 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
         list_alart_histroy = (ListView) findViewById(R.id.list_alart_histroy);
         textview_title = (TextView) findViewById(R.id.textview_title);
         image_back = (FrameLayout) findViewById(R.id.image_back);
+        layout_no_alarm_recoed = (RelativeLayout) findViewById(R.id.layout_no_alarm_recoed);
     }
 
     private void initDatas() {
