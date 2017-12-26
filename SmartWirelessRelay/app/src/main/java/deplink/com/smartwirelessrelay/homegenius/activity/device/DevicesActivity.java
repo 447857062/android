@@ -116,7 +116,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceManager.queryDeviceList();
         datasTop.clear();
         datasBottom.clear();
-        datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
         mDeviceAdapter.setTopList(datasTop);
         mDeviceAdapter.setBottomList(datasBottom);
@@ -181,7 +181,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case "路由器":
-                            RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
+                           RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
@@ -303,7 +303,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         datasTop.clear();
                         datasBottom.clear();
                         if (mRooms.get(position).equals("全部")) {
-                            datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+                            datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
                             datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
                             mDeviceAdapter.setTopList(datasTop);
                             mDeviceAdapter.setBottomList(datasBottom);
@@ -377,7 +377,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 case MSG_GET_DEVS:
                     datasTop.clear();
                     datasBottom.clear();
-                    datasTop.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+                    datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
                     datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
                     List<Device> tempDevice = new ArrayList<>();
                     List<SmartDev> tempSmartDevice = new ArrayList<>();
