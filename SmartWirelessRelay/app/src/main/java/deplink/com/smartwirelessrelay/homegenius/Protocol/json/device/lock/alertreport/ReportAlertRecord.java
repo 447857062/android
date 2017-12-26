@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/30.
- * 这个解析的json不是对象，是字符串类型。
  */
 public class ReportAlertRecord implements Serializable {
     private String OP="REPORT";

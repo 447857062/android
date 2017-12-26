@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
-import deplink.com.smartwirelessrelay.homegenius.Protocol.json.ResultType;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.DeviceList;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
@@ -214,7 +213,7 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        packet.packSetSmartLockData(text.getBytes(), currentSelectLock.getUid());
+        packet.packSetCmdData(text.getBytes(), currentSelectLock.getUid());
 
         cachedThreadPool.execute(new Runnable() {
             @Override
@@ -262,7 +261,7 @@ public class SmartLockManager implements LocalConnecteListener {
     @Override
     public void OnGetSetresult(String setResult) {
         Gson gson = new Gson();
-        ResultType type = gson.fromJson(setResult, ResultType.class);
+        OpResult type = gson.fromJson(setResult, OpResult.class);
         if (type != null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
             OpResult result = gson.fromJson(setResult, OpResult.class);
             switch (result.getCommand()) {

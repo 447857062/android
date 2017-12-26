@@ -54,6 +54,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayMan
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
@@ -192,6 +193,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, TvBoxMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                             switch (deviceSubType) {
                                 case "一路开关":
                                     startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));

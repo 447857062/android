@@ -29,9 +29,11 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryRCCodeR
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryTestCodeResponse;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.TestCode;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
@@ -95,7 +97,13 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
                     break;
                 case MSG_SEND_CODE:
-                    if (currentTestCodeIndex < testCodes.size()) {
+                    if (currentTestCodeIndex > testCodes.size()) {
+                        currentTestCodeIndex = 0;
+                    } else if (currentTestCodeIndex < 0) {
+                        currentTestCodeIndex = testCodes.size();
+                    }
+                    Log.i(TAG, "当前发送的遥控器型号下标=" + currentTestCodeIndex);
+                    if (currentTestCodeIndex <= testCodes.size() && currentTestCodeIndex >= 0) {
                         Log.i(TAG, "发送测试码：第" + currentTestCodeIndex + "个：" +
                                 testCodes.get(currentTestCodeIndex).getCodeData() +
                                 "按键名称是：" + testCodes.get(currentTestCodeIndex).getKeyName());
@@ -225,7 +233,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 }
                                 break;
                         }
-
                         mRemoteControlManager.sendData(testCodes.get(currentTestCodeIndex).getCodeData());
                         startSend();
                     }
@@ -382,28 +389,27 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
             case R.id.button_test_consecutively:
                 //TODO 没有调试的时候注释去掉
                 //发送测试码
-                // if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-                if (currentButtonStage == 1) {
-                    currentButtonStage = 2;
-                    button_test_consecutively.setText("暂停测试");
-                    button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_red_background);
+                if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+                    if (currentButtonStage == 1) {
+                        currentButtonStage = 2;
+                        button_test_consecutively.setText("暂停测试");
+                        button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_red_background);
 
-                    startSend();
-                } else if (currentButtonStage == 2) {
-                    currentButtonStage = 3;
-                    iscanceled = true;
-                    layout_device_response.setVisibility(View.VISIBLE);
-                    button_test_consecutively.setText("继续测试");
-
-                    button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_button_background);
-                } else if (currentButtonStage == 3) {
-                    //TODO 继续测试
-                    iscanceled = false;
-                    layout_device_response.setVisibility(View.GONE);
+                        startSend();
+                    } else if (currentButtonStage == 2) {
+                        currentButtonStage = 3;
+                        iscanceled = true;
+                        layout_device_response.setVisibility(View.VISIBLE);
+                        button_test_consecutively.setText("继续测试");
+                        button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_button_background);
+                    } else if (currentButtonStage == 3) {
+                        //TODO 继续测试
+                        iscanceled = false;
+                        layout_device_response.setVisibility(View.GONE);
+                    }
+                } else {
+                    ToastSingleShow.showText(this, "没有活动网关,请检查网络");
                 }
-                //  } else {
-                //      ToastSingleShow.showText(this, "没有活动网关,请检查网络");
-                //   }
 
                 break;
             case R.id.button_ng:
@@ -413,7 +419,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 break;
             case R.id.button_ok:
                 iscanceled = true;
-
                 TestCode selectedCode = testCodes.get(currentTestCodeIndex);
                 brandId = selectedCode.getBrandID();
                 controlId = selectedCode.getCodeID();
@@ -457,9 +462,16 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 mAirconditionKeyLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
                                 mAirconditionKeyLearnStatu.save();
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
-                                    Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
-                                    intent.putExtra("DeviceType", "智能空调");
-                                    startActivity(intent);
+                                    if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
+                                        mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
+                                        Intent intent = new Intent(AddRemoteControlActivity.this, DevicesActivity.class);
+                                        startActivity(intent);
+                                    }else{
+                                        Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                        intent.putExtra("DeviceType", "智能空调");
+                                        startActivity(intent);
+                                    }
+
                                 } else {
                                     ToastSingleShow.showText(AddRemoteControlActivity.this, "空调遥控器按键已学习");
                                     Intent intent = new Intent(AddRemoteControlActivity.this, AirRemoteControlMianActivity.class);
@@ -483,9 +495,16 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 saveTvBoxKeycode(response);
                                 saveTvBoxKeyLearnStatus();
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
-                                    Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
-                                    intent.putExtra("DeviceType", "智能机顶盒遥控");
-                                    startActivity(intent);
+                                    if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
+                                        mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
+                                        Intent intent = new Intent(AddRemoteControlActivity.this, DevicesActivity.class);
+                                        startActivity(intent);
+                                    }else{
+                                        Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                        intent.putExtra("DeviceType", "智能机顶盒遥控");
+                                        startActivity(intent);
+                                    }
+
                                 } else {
                                     ToastSingleShow.showText(AddRemoteControlActivity.this, "电视机顶盒遥控器按键已学习");
                                     Intent intent = new Intent(AddRemoteControlActivity.this, TvBoxMainActivity.class);
@@ -518,8 +537,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         mTvboxLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
         mTvboxLearnStatu.save();
     }
-
-
     private String data_tvboxkey_up;
     private String data_tvboxkey_down;
     private String data_tvboxkey_left;
@@ -570,56 +587,58 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private byte[] data_bytes_tvbox_key_number_8 = new byte[2];
     private byte[] data_bytes_tvbox_key_number_9 = new byte[2];
     private String mTvBoxKeyCodeString;
+
     private void initTvBoxKeyCodeBytesData() {
-            Log.i(TAG, "mTvBoxKeyCodeString=" + mTvBoxKeyCodeString);
-            byte[] codeByte = DataExchange.dbString_ToBytes(mTvBoxKeyCodeString);
-            System.arraycopy(codeByte, 1,  data_bytes_tvbox_key_power, 0, 2);
+        Log.i(TAG, "mTvBoxKeyCodeString=" + mTvBoxKeyCodeString);
+        byte[] codeByte = DataExchange.dbString_ToBytes(mTvBoxKeyCodeString);
+        System.arraycopy(codeByte, 1, data_bytes_tvbox_key_power, 0, 2);
 
-            System.arraycopy(codeByte, 3,  data_bytes_tvbox_key_number_1, 0, 2);
+        System.arraycopy(codeByte, 3, data_bytes_tvbox_key_number_1, 0, 2);
 
-            System.arraycopy(codeByte, 5, data_bytes_tvbox_key_number_2, 0, 2);
+        System.arraycopy(codeByte, 5, data_bytes_tvbox_key_number_2, 0, 2);
 
-            System.arraycopy(codeByte, 7, data_bytes_tvbox_key_number_3, 0, 2);
+        System.arraycopy(codeByte, 7, data_bytes_tvbox_key_number_3, 0, 2);
 
-            System.arraycopy(codeByte, 9, data_bytes_tvbox_key_number_4, 0, 2);
+        System.arraycopy(codeByte, 9, data_bytes_tvbox_key_number_4, 0, 2);
 
-            System.arraycopy(codeByte, 11, data_bytes_tvbox_key_number_5, 0, 2);
+        System.arraycopy(codeByte, 11, data_bytes_tvbox_key_number_5, 0, 2);
 
-            System.arraycopy(codeByte, 13, data_bytes_tvbox_key_number_6, 0, 2);
+        System.arraycopy(codeByte, 13, data_bytes_tvbox_key_number_6, 0, 2);
 
-            System.arraycopy(codeByte, 15, data_bytes_tvbox_key_number_7, 0, 2);
+        System.arraycopy(codeByte, 15, data_bytes_tvbox_key_number_7, 0, 2);
 
-            System.arraycopy(codeByte, 17, data_bytes_tvbox_key_number_8, 0, 2);
+        System.arraycopy(codeByte, 17, data_bytes_tvbox_key_number_8, 0, 2);
 
-            System.arraycopy(codeByte, 19, data_bytes_tvbox_key_number_9, 0, 2);
+        System.arraycopy(codeByte, 19, data_bytes_tvbox_key_number_9, 0, 2);
 
-            System.arraycopy(codeByte, 21, data_bytes_tvbox_key_navi, 0, 2);
+        System.arraycopy(codeByte, 21, data_bytes_tvbox_key_navi, 0, 2);
 
-            System.arraycopy(codeByte, 23,data_bytes_tvbox_key_number_0, 0, 2);
+        System.arraycopy(codeByte, 23, data_bytes_tvbox_key_number_0, 0, 2);
 
-            System.arraycopy(codeByte, 25, data_bytes_tvbox_key_return, 0, 2);
+        System.arraycopy(codeByte, 25, data_bytes_tvbox_key_return, 0, 2);
 
-            System.arraycopy(codeByte, 27, data_bytes_tvbox_key_up, 0, 2);
+        System.arraycopy(codeByte, 27, data_bytes_tvbox_key_up, 0, 2);
 
-            System.arraycopy(codeByte, 29, data_bytes_tvbox_key_left, 0, 2);
+        System.arraycopy(codeByte, 29, data_bytes_tvbox_key_left, 0, 2);
 
-            System.arraycopy(codeByte, 31, data_bytes_tvbox_key_ok, 0, 2);
+        System.arraycopy(codeByte, 31, data_bytes_tvbox_key_ok, 0, 2);
 
-            System.arraycopy(codeByte, 33, data_bytes_tvbox_key_right, 0, 2);
+        System.arraycopy(codeByte, 33, data_bytes_tvbox_key_right, 0, 2);
 
-            System.arraycopy(codeByte, 35, data_bytes_tvbox_key_down, 0, 2);
+        System.arraycopy(codeByte, 35, data_bytes_tvbox_key_down, 0, 2);
 
-            System.arraycopy(codeByte, 37, data_bytes_tvbox_key_volum_plus, 0, 2);
+        System.arraycopy(codeByte, 37, data_bytes_tvbox_key_volum_plus, 0, 2);
 
-            System.arraycopy(codeByte, 39, data_bytes_tvbox_key_volum_reduce, 0, 2);
+        System.arraycopy(codeByte, 39, data_bytes_tvbox_key_volum_reduce, 0, 2);
 
-            System.arraycopy(codeByte, 41, data_bytes_tvbox_key_ch_plus, 0, 2);
+        System.arraycopy(codeByte, 41, data_bytes_tvbox_key_ch_plus, 0, 2);
 
-            System.arraycopy(codeByte, 43, data_bytes_tvbox_key_ch_reduce, 0, 2);
+        System.arraycopy(codeByte, 43, data_bytes_tvbox_key_ch_reduce, 0, 2);
 
-            System.arraycopy(codeByte, 45, data_bytes_tvbox_key_list, 0, 2);
+        System.arraycopy(codeByte, 45, data_bytes_tvbox_key_list, 0, 2);
 
     }
+
     private byte[] packTvBoxData(byte func[]) {
         data = new byte[10];
         int len = 0;
@@ -642,141 +661,148 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         Log.i(TAG, "打包机顶盒控制数据dbBytesToString=" + DataExchange.dbBytesToString(data));
         return data;
     }
+
     private void saveTvBoxKeycode(Response<QueryRCCodeResponse> response) {
         TvboxKeyCode mTvboxKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(TvboxKeyCode.class);
         if (mTvboxKeyCode == null) {
             mTvboxKeyCode = new TvboxKeyCode();
         }
-        mTvBoxKeyCodeString=response.body().getValue().getCode();
+        mTvBoxKeyCodeString = response.body().getValue().getCode();
         initTvBoxKeyCodeBytesData();
         mTvboxKeyCode.setGroupData(response.body().getValue().getGroup());
         mTvboxKeyCode.setKeycode(response.body().getValue().getCode());
         mTvboxKeyCode.setmAirconditionUid(currentSelectDeviceUid);
-
         //保存按键的字符串
-        data =packTvBoxData(data_bytes_tvbox_key_up);
-        data_tvboxkey_up=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_up);
+        data_tvboxkey_up = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_up(data_tvboxkey_up);
-        Log.i(TAG,"data_tvboxkey_up="+data_tvboxkey_up);
+        Log.i(TAG, "data_tvboxkey_up=" + data_tvboxkey_up);
 
-        data =packTvBoxData(data_bytes_tvbox_key_down);
-        data_tvboxkey_down=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_down);
+        data_tvboxkey_down = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_down(data_tvboxkey_down);
-        Log.i(TAG,"data_tvboxkey_down="+data_tvboxkey_down);
+        Log.i(TAG, "data_tvboxkey_down=" + data_tvboxkey_down);
 
-        data =packTvBoxData(data_bytes_tvbox_key_left);
-        data_tvboxkey_left=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_left);
+        data_tvboxkey_left = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_left(data_tvboxkey_left);
-        Log.i(TAG,"data_tvboxkey_left="+data_tvboxkey_left);
+        Log.i(TAG, "data_tvboxkey_left=" + data_tvboxkey_left);
 
-        data =packTvBoxData(data_bytes_tvbox_key_right);
-        data_tvboxkey_right=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_right);
+        data_tvboxkey_right = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_right(data_tvboxkey_right);
-        Log.i(TAG,"data_tvboxkey_right="+data_tvboxkey_right);
+        Log.i(TAG, "data_tvboxkey_right=" + data_tvboxkey_right);
 
-        data =packTvBoxData(data_bytes_tvbox_key_ok);
-        data_tvboxkey_ok=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_ok);
+        data_tvboxkey_ok = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_ok(data_tvboxkey_ok);
-        Log.i(TAG,"data_tvboxkey_ok="+data_tvboxkey_ok);
+        Log.i(TAG, "data_tvboxkey_ok=" + data_tvboxkey_ok);
 
-        data =packTvBoxData(data_bytes_tvbox_key_power);
-        data_tvboxkey_power=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_power);
+        data_tvboxkey_power = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_power(data_tvboxkey_power);
-        Log.i(TAG,"data_tvboxkey_power="+data_tvboxkey_power);
+        Log.i(TAG, "data_tvboxkey_power=" + data_tvboxkey_power);
 
-        data =packTvBoxData(data_bytes_tvbox_key_ch_reduce);
-        data_tvboxkey_ch_reduce=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_ch_reduce);
+        data_tvboxkey_ch_reduce = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_ch_reduce(data_tvboxkey_ch_reduce);
-        Log.i(TAG,"data_tvboxkey_ch_reduce="+data_tvboxkey_ch_reduce);
+        Log.i(TAG, "data_tvboxkey_ch_reduce=" + data_tvboxkey_ch_reduce);
 
-        data =packTvBoxData(data_bytes_tvbox_key_ch_plus);
-        data_tvboxkey_ch_plus=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_ch_plus);
+        data_tvboxkey_ch_plus = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_ch_plus(data_tvboxkey_ch_plus);
-        Log.i(TAG,"data_tvboxkey_ch_plus="+data_tvboxkey_ch_plus);
+        Log.i(TAG, "data_tvboxkey_ch_plus=" + data_tvboxkey_ch_plus);
 
-        data =packTvBoxData(data_bytes_tvbox_key_volum_reduce);
-        data_tvboxkey_volum_reduce=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_volum_reduce);
+        data_tvboxkey_volum_reduce = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_volum_reduce(data_tvboxkey_volum_reduce);
-        Log.i(TAG,"data_tvboxkey_volum_reduce="+data_tvboxkey_volum_reduce);
+        Log.i(TAG, "data_tvboxkey_volum_reduce=" + data_tvboxkey_volum_reduce);
 
-        data =packTvBoxData(data_bytes_tvbox_key_volum_plus);
-        data_tvboxkey_volum_plus=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_volum_plus);
+        data_tvboxkey_volum_plus = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_volum_plus(data_tvboxkey_volum_plus);
-        Log.i(TAG,"data_tvboxkey_volum_plus="+data_tvboxkey_volum_plus);
+        Log.i(TAG, "data_tvboxkey_volum_plus=" + data_tvboxkey_volum_plus);
 
-        data =packTvBoxData(data_bytes_tvbox_key_navi);
-        data_tvboxkey_navi=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_navi);
+        data_tvboxkey_navi = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_navi(data_tvboxkey_navi);
-        Log.i(TAG,"data_tvboxkey_navi="+data_tvboxkey_navi);
+        Log.i(TAG, "data_tvboxkey_navi=" + data_tvboxkey_navi);
 
-        data =packTvBoxData(data_bytes_tvbox_key_list);
-        data_tvboxkey_list=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_list);
+        data_tvboxkey_list = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_list(data_tvboxkey_list);
-        Log.i(TAG,"data_tvboxkey_list="+data_tvboxkey_list);
+        Log.i(TAG, "data_tvboxkey_list=" + data_tvboxkey_list);
 
-        data =packTvBoxData(data_bytes_tvbox_key_return);
-        data_tvboxkey_return=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_return);
+        data_tvboxkey_return = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_return(data_tvboxkey_return);
-        Log.i(TAG,"data_tvboxkey_return="+data_tvboxkey_return);
+        Log.i(TAG, "data_tvboxkey_return=" + data_tvboxkey_return);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_0);
-        data_tvboxkey_number_0=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_0);
+        data_tvboxkey_number_0 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_0(data_tvboxkey_number_0);
-        Log.i(TAG,"data_tvboxkey_number_0="+data_tvboxkey_number_0);
+        Log.i(TAG, "data_tvboxkey_number_0=" + data_tvboxkey_number_0);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_1);
-        data_tvboxkey_number_1=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_1);
+        data_tvboxkey_number_1 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_1(data_tvboxkey_number_1);
-        Log.i(TAG,"data_tvboxkey_number_1="+data_tvboxkey_number_1);
+        Log.i(TAG, "data_tvboxkey_number_1=" + data_tvboxkey_number_1);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_2);
-        data_tvboxkey_number_2=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_2);
+        data_tvboxkey_number_2 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_2(data_tvboxkey_number_2);
-        Log.i(TAG,"data_tvboxkey_number_2="+data_tvboxkey_number_2);
+        Log.i(TAG, "data_tvboxkey_number_2=" + data_tvboxkey_number_2);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_3);
-        data_tvboxkey_number_3=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_3);
+        data_tvboxkey_number_3 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_3(data_tvboxkey_number_3);
-        Log.i(TAG,"data_tvboxkey_number_3="+data_tvboxkey_number_3);
+        Log.i(TAG, "data_tvboxkey_number_3=" + data_tvboxkey_number_3);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_4);
-        data_tvboxkey_number_4=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_4);
+        data_tvboxkey_number_4 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_4(data_tvboxkey_number_4);
-        Log.i(TAG,"data_tvboxkey_number_4="+data_tvboxkey_number_4);
+        Log.i(TAG, "data_tvboxkey_number_4=" + data_tvboxkey_number_4);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_5);
-        data_tvboxkey_number_5=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_5);
+        data_tvboxkey_number_5 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_5(data_tvboxkey_number_5);
-        Log.i(TAG,"data_tvboxkey_number_5="+data_tvboxkey_number_5);
+        Log.i(TAG, "data_tvboxkey_number_5=" + data_tvboxkey_number_5);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_6);
-        data_tvboxkey_number_6=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_6);
+        data_tvboxkey_number_6 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_6(data_tvboxkey_number_6);
-        Log.i(TAG,"data_tvboxkey_number_6="+data_tvboxkey_number_6);
+        Log.i(TAG, "data_tvboxkey_number_6=" + data_tvboxkey_number_6);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_7);
-        data_tvboxkey_number_7=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_7);
+        data_tvboxkey_number_7 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_7(data_tvboxkey_number_7);
-        Log.i(TAG,"data_tvboxkey_number_7="+data_tvboxkey_number_7);
+        Log.i(TAG, "data_tvboxkey_number_7=" + data_tvboxkey_number_7);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_8);
-        data_tvboxkey_number_8=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_8);
+        data_tvboxkey_number_8 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_8(data_tvboxkey_number_8);
-        Log.i(TAG,"data_tvboxkey_number_8="+data_tvboxkey_number_8);
+        Log.i(TAG, "data_tvboxkey_number_8=" + data_tvboxkey_number_8);
 
-        data =packTvBoxData(data_bytes_tvbox_key_number_9);
-        data_tvboxkey_number_9=DataExchange.dbBytesToString(data);
+        data = packTvBoxData(data_bytes_tvbox_key_number_9);
+        data_tvboxkey_number_9 = DataExchange.dbBytesToString(data);
         mTvboxKeyCode.setKey_number_9(data_tvboxkey_number_9);
-        Log.i(TAG,"data_tvboxkey_number_9="+data_tvboxkey_number_9);
+        Log.i(TAG, "data_tvboxkey_number_9=" + data_tvboxkey_number_9);
         mTvboxKeyCode.save();
     }
 
 
     private void switchActivity() {
         if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
-            Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
-            intent.putExtra("DeviceType", "智能电视");
-            startActivity(intent);
+            if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
+                mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
+                Intent intent = new Intent(AddRemoteControlActivity.this, DevicesActivity.class);
+                startActivity(intent);
+            }else{
+                Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                intent.putExtra("DeviceType", "智能电视");
+                startActivity(intent);
+            }
+
         } else {
             ToastSingleShow.showText(AddRemoteControlActivity.this, "电视遥控器按键已学习");
             Intent intent = new Intent(AddRemoteControlActivity.this, TvMainActivity.class);
@@ -851,6 +877,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private byte[] data_bytes_key_right = new byte[2];
     private byte[] data;
     private String mTvKeyCodeString;
+
     private byte[] packTvData(byte func[]) {
         data = new byte[10];
         int len = 0;
@@ -873,224 +900,224 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         Log.i(TAG, "打包电视控制数据dbBytesToString=" + DataExchange.dbBytesToString(data));
         return data;
     }
+
     private void initTvKeyCodeBytesData() {
-            byte[] codeByte = DataExchange.dbString_ToBytes(mTvKeyCodeString);
-            System.arraycopy(codeByte, 1, data_bytes_key_vol_reduce, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_vol_reduce));
+        byte[] codeByte = DataExchange.dbString_ToBytes(mTvKeyCodeString);
+        System.arraycopy(codeByte, 1, data_bytes_key_vol_reduce, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_vol_reduce));
 
-            System.arraycopy(codeByte, 3, data_bytes_key_ch_add, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_ch_add));
+        System.arraycopy(codeByte, 3, data_bytes_key_ch_add, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_ch_add));
 
-            System.arraycopy(codeByte, 5, data_bytes_key_menu, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_menu));
+        System.arraycopy(codeByte, 5, data_bytes_key_menu, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_menu));
 
-            System.arraycopy(codeByte, 7, data_bytes_key_ch_reduce, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_ch_reduce));
+        System.arraycopy(codeByte, 7, data_bytes_key_ch_reduce, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_ch_reduce));
 
-            System.arraycopy(codeByte, 9, data_bytes_key_vol_add, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_vol_add));
+        System.arraycopy(codeByte, 9, data_bytes_key_vol_add, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_vol_add));
 
-            System.arraycopy(codeByte, 11, data_bytes_key_power, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_power));
+        System.arraycopy(codeByte, 11, data_bytes_key_power, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_power));
 
-            System.arraycopy(codeByte, 13, data_bytes_key_mute, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_mute));
+        System.arraycopy(codeByte, 13, data_bytes_key_mute, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_mute));
 
-            System.arraycopy(codeByte, 15, data_bytes_key_1, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_1));
+        System.arraycopy(codeByte, 15, data_bytes_key_1, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_1));
 
-            System.arraycopy(codeByte, 17, data_bytes_key_2, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_2));
+        System.arraycopy(codeByte, 17, data_bytes_key_2, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_2));
 
-            System.arraycopy(codeByte, 19, data_bytes_key_3, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_3));
+        System.arraycopy(codeByte, 19, data_bytes_key_3, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_3));
 
-            System.arraycopy(codeByte, 21, data_bytes_key_4, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_4));
+        System.arraycopy(codeByte, 21, data_bytes_key_4, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_4));
 
-            System.arraycopy(codeByte, 23, data_bytes_key_5, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_5));
+        System.arraycopy(codeByte, 23, data_bytes_key_5, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_5));
 
-            System.arraycopy(codeByte, 25, data_bytes_key_6, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_6));
+        System.arraycopy(codeByte, 25, data_bytes_key_6, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_6));
 
-            System.arraycopy(codeByte, 27, data_bytes_key_7, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_7));
+        System.arraycopy(codeByte, 27, data_bytes_key_7, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_7));
 
-            System.arraycopy(codeByte, 29, data_bytes_key_8, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_8));
+        System.arraycopy(codeByte, 29, data_bytes_key_8, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_8));
 
-            System.arraycopy(codeByte, 31, data_bytes_key_9, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_9));
+        System.arraycopy(codeByte, 31, data_bytes_key_9, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_9));
 
-            System.arraycopy(codeByte, 33, data_bytes_key_enter, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_enter));
+        System.arraycopy(codeByte, 33, data_bytes_key_enter, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_enter));
 
-            System.arraycopy(codeByte, 35, data_bytes_key_0, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_0));
+        System.arraycopy(codeByte, 35, data_bytes_key_0, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_0));
 
-            System.arraycopy(codeByte, 37, data_bytes_key_avtv, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_avtv));
+        System.arraycopy(codeByte, 37, data_bytes_key_avtv, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_avtv));
 
-            System.arraycopy(codeByte, 39, data_bytes_key_back, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_back));
+        System.arraycopy(codeByte, 39, data_bytes_key_back, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_back));
 
-            System.arraycopy(codeByte, 41, data_bytes_key_sure, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_sure));
+        System.arraycopy(codeByte, 41, data_bytes_key_sure, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_sure));
 
-            System.arraycopy(codeByte, 43, data_bytes_key_up, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_up));
+        System.arraycopy(codeByte, 43, data_bytes_key_up, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_up));
 
-            System.arraycopy(codeByte, 45, data_bytes_key_down, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_down));
+        System.arraycopy(codeByte, 45, data_bytes_key_down, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_down));
 
-            System.arraycopy(codeByte, 47, data_bytes_key_left, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_left));
+        System.arraycopy(codeByte, 47, data_bytes_key_left, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_left));
 
-            System.arraycopy(codeByte, 49, data_bytes_key_right, 0, 2);
-            Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_right));
+        System.arraycopy(codeByte, 49, data_bytes_key_right, 0, 2);
+        Log.i(TAG, "codeByte=" + "data_key_vol_reduce=" + DataExchange.byteArrayToHexString(data_bytes_key_right));
 
     }
+
     private void saveTvKeyCode(Response<QueryRCCodeResponse> response) {
         TvKeyCode mTvKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(TvKeyCode.class);
         if (mTvKeyCode == null) {
             mTvKeyCode = new TvKeyCode();
         }
-        mTvKeyCodeString=response.body().getValue().getCode();
+        mTvKeyCodeString = response.body().getValue().getCode();
         initTvKeyCodeBytesData();
         mTvKeyCode.setGroupData(response.body().getValue().getGroup());
         mTvKeyCode.setKeycode(response.body().getValue().getCode());
         mTvKeyCode.setmAirconditionUid(currentSelectDeviceUid);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_vol_reduce);
-        data_key_vol_reduce=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_vol_reduce);
+        data_key_vol_reduce = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_vol_reduce(data_key_vol_reduce);
-        Log.i(TAG,"data_key_vol_reduce="+data_key_vol_reduce);
+        Log.i(TAG, "data_key_vol_reduce=" + data_key_vol_reduce);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_ch_add);
-        data_key_ch_add=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_ch_add);
+        data_key_ch_add = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_ch_add(data_key_ch_add);
-        Log.i(TAG,"data_key_ch_add="+data_key_ch_add);
+        Log.i(TAG, "data_key_ch_add=" + data_key_ch_add);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_menu);
-        data_key_menu=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_menu);
+        data_key_menu = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_menu(data_key_menu);
-        Log.i(TAG,"data_key_menu="+data_key_menu);
+        Log.i(TAG, "data_key_menu=" + data_key_menu);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_ch_reduce);
-        data_key_ch_reduce=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_ch_reduce);
+        data_key_ch_reduce = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_ch_reduce(data_key_ch_reduce);
-        Log.i(TAG,"data_key_ch_reduce="+data_key_ch_reduce);
+        Log.i(TAG, "data_key_ch_reduce=" + data_key_ch_reduce);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_vol_add);
-        data_key_vol_add=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_vol_add);
+        data_key_vol_add = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_vol_add(data_key_vol_add);
-        Log.i(TAG,"data_key_vol_add="+data_key_vol_add);
+        Log.i(TAG, "data_key_vol_add=" + data_key_vol_add);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_power);
-        data_key_power=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_power);
+        data_key_power = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_power(data_key_power);
-        Log.i(TAG,"data_key_power="+data_key_power);
+        Log.i(TAG, "data_key_power=" + data_key_power);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_mute);
-        data_key_mute=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_mute);
+        data_key_mute = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_mute(data_key_mute);
-        Log.i(TAG,"data_key_mute="+data_key_mute);
+        Log.i(TAG, "data_key_mute=" + data_key_mute);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_1);
-        data_key_1=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_1);
+        data_key_1 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_1(data_key_1);
-        Log.i(TAG,"data_key_1="+data_key_1);
+        Log.i(TAG, "data_key_1=" + data_key_1);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_2);
-        data_key_2=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_2);
+        data_key_2 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_2(data_key_2);
-        Log.i(TAG,"data_key_2="+data_key_2);
+        Log.i(TAG, "data_key_2=" + data_key_2);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_3);
-        data_key_3=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_3);
+        data_key_3 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_3(data_key_3);
-        Log.i(TAG,"data_key_3="+data_key_3);
+        Log.i(TAG, "data_key_3=" + data_key_3);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_4);
-        data_key_4=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_4);
+        data_key_4 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_4(data_key_4);
-        Log.i(TAG,"data_key_4="+data_key_4);
+        Log.i(TAG, "data_key_4=" + data_key_4);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_5);
-        data_key_5=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_5);
+        data_key_5 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_5(data_key_5);
-        Log.i(TAG,"data_key_5="+data_key_5);
+        Log.i(TAG, "data_key_5=" + data_key_5);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_6);
-        data_key_6=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_6);
+        data_key_6 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_6(data_key_6);
-        Log.i(TAG,"data_key_6="+data_key_6);
+        Log.i(TAG, "data_key_6=" + data_key_6);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_7);
-        data_key_7=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_7);
+        data_key_7 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_7(data_key_7);
-        Log.i(TAG,"data_key_7="+data_key_7);
+        Log.i(TAG, "data_key_7=" + data_key_7);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_8);
-        data_key_8=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_8);
+        data_key_8 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_8(data_key_8);
-        Log.i(TAG,"data_key_8="+data_key_8);
+        Log.i(TAG, "data_key_8=" + data_key_8);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_9);
-        data_key_9=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_9);
+        data_key_9 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_9(data_key_9);
-        Log.i(TAG,"data_key_9="+data_key_9);
+        Log.i(TAG, "data_key_9=" + data_key_9);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_0);
-        data_key_0=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_0);
+        data_key_0 = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_0(data_key_0);
-        Log.i(TAG,"data_key_0="+data_key_0);
+        Log.i(TAG, "data_key_0=" + data_key_0);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_enter);
-        data_key_enter=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_enter);
+        data_key_enter = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_enter(data_key_enter);
-        Log.i(TAG,"data_key_enter="+data_key_enter);
+        Log.i(TAG, "data_key_enter=" + data_key_enter);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_avtv);
-        data_key_avtv=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_avtv);
+        data_key_avtv = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_avtv(data_key_avtv);
-        Log.i(TAG,"data_key_avtv="+data_key_avtv);
+        Log.i(TAG, "data_key_avtv=" + data_key_avtv);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_back);
-        data_key_back=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_back);
+        data_key_back = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_back(data_key_back);
-        Log.i(TAG,"data_key_back="+data_key_back);
+        Log.i(TAG, "data_key_back=" + data_key_back);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_sure);
-        data_key_sure=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_sure);
+        data_key_sure = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_sure(data_key_sure);
-        Log.i(TAG,"data_key_sure="+data_key_sure);
+        Log.i(TAG, "data_key_sure=" + data_key_sure);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_up);
-        data_key_up=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_up);
+        data_key_up = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_up(data_key_up);
-        Log.i(TAG,"data_key_up="+data_key_up);
+        Log.i(TAG, "data_key_up=" + data_key_up);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_down);
-        data_key_down=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_down);
+        data_key_down = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_down(data_key_down);
-        Log.i(TAG,"data_key_down="+data_key_down);
+        Log.i(TAG, "data_key_down=" + data_key_down);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_left);
-        data_key_left=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_left);
+        data_key_left = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_left(data_key_left);
-        Log.i(TAG,"data_key_left="+data_key_left);
+        Log.i(TAG, "data_key_left=" + data_key_left);
         //保存按键的字符串
-        data =packTvData(data_bytes_key_right);
-        data_key_right=DataExchange.dbBytesToString(data);
+        data = packTvData(data_bytes_key_right);
+        data_key_right = DataExchange.dbBytesToString(data);
         mTvKeyCode.setData_key_right(data_key_right);
-        Log.i(TAG,"data_key_right="+data_key_right);
+        Log.i(TAG, "data_key_right=" + data_key_right);
 
         mTvKeyCode.save();
     }
-
-
 
 
     private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 5000;

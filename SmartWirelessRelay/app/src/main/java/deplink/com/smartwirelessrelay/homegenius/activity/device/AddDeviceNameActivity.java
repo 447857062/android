@@ -45,9 +45,6 @@ import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.ConfigRemoteControlDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 
 public class AddDeviceNameActivity extends Activity implements DeviceListener, View.OnClickListener {
     private static final String TAG = "AddDeviceNameActivity";
@@ -86,6 +83,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private RelativeLayout layout_remotecontrol_select;
     private RelativeLayout layout_remotecontrol_list;
     private ConfigRemoteControlDialog configRemoteControlDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +134,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switchqrcode = getIntent().getStringExtra("switchqrcode");
         //get current room
         currentSelectedRoom = RoomManager.getInstance().getCurrentSelectedRoom();
-        configRemoteControlDialog=new ConfigRemoteControlDialog(this);
+        configRemoteControlDialog = new ConfigRemoteControlDialog(this);
         if (currentSelectedRoom != null) {
             textview_select_room_name.setText(currentSelectedRoom.getRoomName());
         } else {
@@ -291,10 +289,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         Gson gson = new Gson();
         final DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
         boolean success;
+        Log.i(TAG, "绑定结果 type=" + deviceType);
         success = isSmartDeviceAddSuccess(aDeviceList);
-        mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
         switch (deviceType) {
             case "SMART_LOCK":
+                mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                         mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
@@ -303,7 +302,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 DialogThreeBounce.hideLoading();
                 break;
             case "IRMOTE_V2":
-                // 智能遥控添加结果
+                mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                         mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
@@ -312,17 +311,13 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
                 break;
             case "智能开关":
-                // 智能遥控添加结果
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                            if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                                mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
-                            }
-                        }
+                mSmartSwitchManager.addDBSwitchDevice(device);
+                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
+                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
+                        mSmartSwitchManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
                     }
-                });
+                }
+
                 break;
         }
         Message msg = Message.obtain();
@@ -344,7 +339,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private boolean isSmartDeviceAddSuccess(DeviceList aDeviceList) {
         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
             if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-
                 return true;
             }
         }
@@ -373,15 +367,12 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         mDeviceManager.bindSmartDevList(device);
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_SWITCH:
-
                         if (deviceName.equals("")) {
                             deviceName = "智能开关";
                         }
-                        //TODO
-                        device.setAd(switchqrcode);
-                        // device.setAd("智能开关uid");
-                        device.setTp(DeviceTypeConstant.TYPE.TYPE_SWITCH);
-                        mSmartSwitchManager.addDBSwitchDevice(device);
+                        Log.i(TAG, "智能开关二维码=" + switchqrcode);
+                        device = gson.fromJson(switchqrcode, QrcodeSmartDevice.class);
+                        device.setName(deviceName);
                         mDeviceManager.bindSmartDevList(device);
                         break;
                     case "IRMOTE_V2":
@@ -414,6 +405,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
                                 @Override
                                 public void onSureBtnClicked() {
+                                    RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
                                     startActivity(new Intent(AddDeviceNameActivity.this, AirconditionChooseBandActivity.class));
                                 }
                             });
@@ -449,6 +441,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
                                 @Override
                                 public void onSureBtnClicked() {
+                                    RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
                                     startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
                                 }
                             });
@@ -483,6 +476,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
                                 @Override
                                 public void onSureBtnClicked() {
+                                    RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
                                     startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
                                 }
                             });
@@ -512,33 +506,15 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         doorbeelDev.setType("智能门铃");
                         boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
                         if (result) {
-                            mDoorbeelManager.updateDeviceInWhatRoom(currentSelectedRoom, "testuid智能门铃", deviceName, new Observer() {
-                                @Override
-                                public void onSubscribe(@NonNull Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(@NonNull Object o) {
-                                    if ((boolean) o) {
-                                        startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
-                                    } else {
-                                        Message msg = Message.obtain();
-                                        msg.what = MSG_UPDATE_ROOM_FAIL;
-                                        mHandler.sendMessage(msg);
-                                    }
-                                }
-
-                                @Override
-                                public void onError(@NonNull Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
+                            boolean updateRoomResult = mDoorbeelManager.
+                                    updateDeviceInWhatRoom(currentSelectedRoom, "testuid智能门铃", deviceName);
+                            if (updateRoomResult) {
+                                startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                            } else {
+                                msg = Message.obtain();
+                                msg.what = MSG_UPDATE_ROOM_FAIL;
+                                mHandler.sendMessage(msg);
+                            }
                         } else {
                             msg = Message.obtain();
                             msg.what = MSG_ADD_DOORBEEL_FAIL;

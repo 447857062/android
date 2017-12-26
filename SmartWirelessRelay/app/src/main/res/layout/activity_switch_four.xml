@@ -20,35 +20,33 @@
             android:layout_height="@dimen/smart_switch_mainpage_center_image_width_height">
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:id="@+id/button_switch_left"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/fourwayswitchlefton"
+
                  />
             <Button
                 android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:id="@+id/button_switch_2"
-                android:background="@drawable/fourwayswitchrighton"
+
                  />
             <Button
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:id="@+id/button_switch_3"
-                android:background="@drawable/fourwayswitchleftnext"
                 />
 
             <Button
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:id="@+id/button_switch_right"
-                android:background="@drawable/fourwayswitchrightnext"
                  />
         </RelativeLayout>
 

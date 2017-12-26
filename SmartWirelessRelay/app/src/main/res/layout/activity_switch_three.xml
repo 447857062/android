@@ -25,24 +25,24 @@
 
             <Button
                 android:id="@+id/button_switch_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="82dp"
+                android:layout_height="240dp"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/threewayswitchlefton" />
+                 />
 
             <Button
                 android:id="@+id/button_switch_middle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="82dp"
+                android:layout_height="240dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/threewayswitchcenteron" />
+               />
 
             <Button
                 android:id="@+id/button_switch_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="82dp"
+                android:layout_height="240dp"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/threewayswitchrighton" />
+               />
         </RelativeLayout>
 
     </RelativeLayout>

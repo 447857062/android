@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/30.
- * 保存管理密码
  */
 public class QueryWifiListResult implements Serializable{
     private String OP="REPORT";

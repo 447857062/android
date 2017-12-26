@@ -207,7 +207,6 @@ public class DeviceManager implements LocalConnecteListener {
         });
     }
 
-
     /**
      * 如果数据库中没有这个设备，需要修改数据库
      * 如果有这个设备就不处理

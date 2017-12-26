@@ -94,7 +94,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private ImageView imageview_number_0;
     private TextView textview_cancel;
     private TextView textview_tips;
-
+    private FrameLayout framelayout_center_control;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +130,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
      */
     private void initImageViewKeyBackground() {
         Log.i(TAG,"key_up learn statu="+key_up);
+        Log.i(TAG,"key_power learn statu="+key_power);
+        Log.i(TAG,"key_mute learn statu="+key_mute);
         if (key_up) {
             imageview_top.setBackgroundResource(R.drawable.button_click_up_learned);
         } else {
@@ -155,6 +157,11 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
             imageview_center.setBackgroundResource(R.drawable.button_ok_learned);
         } else {
             imageview_center.setBackgroundResource(R.drawable.button_ok_notlearn);
+        }
+        if(key_up && key_down&& key_left&& key_right&& key_ok){
+            framelayout_center_control.setBackgroundResource(R.drawable.alllearn);
+        }else{
+            framelayout_center_control.setBackgroundResource(R.drawable.alldontlearn);
         }
         if (key_power) {
             imageview_power.setBackgroundResource(R.drawable.button_power_learned);
@@ -182,9 +189,9 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
             imageview_volum_add.setBackgroundResource(R.drawable.button_volum_add_notlearn);
         }
         if (key_mute) {
-            imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_learned);
+            imageview_volume_on_off.setBackgroundResource(R.drawable.button_mute_learn);
         } else {
-            imageview_volume_on_off.setBackgroundResource(R.drawable.button_guide_notlearn);
+            imageview_volume_on_off.setBackgroundResource(R.drawable.button_mute_notlearn);
         }
         if (key_list) {
             imageview_control_list.setBackgroundResource(R.drawable.button_menu_learned);
@@ -393,6 +400,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         imageview_number_8 = (ImageView) findViewById(R.id.imageview_number_8);
         imageview_number_9 = (ImageView) findViewById(R.id.imageview_number_9);
         imageview_number_0 = (ImageView) findViewById(R.id.imageview_number_0);
+        framelayout_center_control = (FrameLayout) findViewById(R.id.framelayout_center_control);
     }
 
     private Intent intent;
@@ -419,6 +427,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                         if (mTvKeyCode == null) {
                             return;
                         }
+                        Log.i(TAG,"电源键:"+mTvKeyCode.getData_key_power());
                         mRemoteControlManager.sendData(mTvKeyCode.getData_key_power());
                     } else {
                         mKeynotlearnDialog.show();

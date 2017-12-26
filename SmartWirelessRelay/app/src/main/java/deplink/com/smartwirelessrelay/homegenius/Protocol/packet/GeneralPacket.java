@@ -59,9 +59,7 @@ public class GeneralPacket extends BasicPacket {
      *设置智能设备参数
      * @return
      */
-    public int packSetSmartLockData( byte[]xdata,String controlUid) {
-
-
+    public int packSetCmdData(byte[]xdata, String controlUid) {
         return packData(xdata,ComandID.SET_CMD,true,controlUid);
     }
     /**

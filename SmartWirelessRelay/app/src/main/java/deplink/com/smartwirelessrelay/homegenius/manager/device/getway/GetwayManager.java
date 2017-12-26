@@ -80,6 +80,11 @@ public class GetwayManager implements LocalConnecteListener {
             this.mGetwayListenerList.add(listener);
         }
     }
+    public void removeGetwayListener(GetwayListener listener) {
+        if (listener != null && mGetwayListenerList.contains(listener)) {
+            this.mGetwayListenerList.remove(listener);
+        }
+    }
 
     /**
      * 删除数据库中的一个网关设备
@@ -90,11 +95,7 @@ public class GetwayManager implements LocalConnecteListener {
         return affectcolumn;
     }
 
-    public void removeGetwayListener(GetwayListener listener) {
-        if (listener != null && mGetwayListenerList.contains(listener)) {
-            this.mGetwayListenerList.remove(listener);
-        }
-    }
+
 
     public List<Device> queryAllGetwayDevice() {
         List<Device> list = DataSupport.findAll(Device.class, true);

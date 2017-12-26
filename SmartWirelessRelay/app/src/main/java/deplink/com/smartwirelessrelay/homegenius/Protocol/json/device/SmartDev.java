@@ -25,11 +25,59 @@ public class SmartDev extends DataSupport implements Serializable {
     private String Org;
     private String Ver;
     private String name;
+    /*绑定的网关*/
     private Device getwayDevice;
+    private boolean switch_one_open;
+    private boolean switch_two_open;
+    private boolean switch_three_open;
+    private boolean switch_four_open;
+    /**
+     * 数据库中的关联关系必须要初始化好列表
+     */
+    @Column(nullable = false)
+    private List<Room> rooms = new ArrayList<>();
+    private String routerDeviceKey;
+
     /**
      * 各种类型的遥控器需要指定物理遥控器
      */
     private String remotecontrolUid;
+    private String lockPassword = "";
+    private boolean remerberPassword = true;
+    private List<Info> alarmInfo = new ArrayList<>();
+
+    public boolean isSwitch_one_open() {
+        return switch_one_open;
+    }
+
+    public void setSwitch_one_open(boolean switch_one_open) {
+        this.switch_one_open = switch_one_open;
+    }
+
+    public boolean isSwitch_two_open() {
+        return switch_two_open;
+    }
+
+    public void setSwitch_two_open(boolean switch_two_open) {
+        this.switch_two_open = switch_two_open;
+    }
+
+    public boolean isSwitch_three_open() {
+        return switch_three_open;
+    }
+
+    public void setSwitch_three_open(boolean switch_three_open) {
+        this.switch_three_open = switch_three_open;
+    }
+
+    public boolean isSwitch_four_open() {
+        return switch_four_open;
+    }
+
+    public void setSwitch_four_open(boolean switch_four_open) {
+        this.switch_four_open = switch_four_open;
+    }
+
 
     public String getRemotecontrolUid() {
         return remotecontrolUid;
@@ -47,8 +95,6 @@ public class SmartDev extends DataSupport implements Serializable {
         this.getwayDevice = getwayDevice;
     }
 
-    private List<Info> alarmInfo = new ArrayList<>();
-
     public List<Info> getAlarmInfo() {
         return alarmInfo;
     }
@@ -56,9 +102,6 @@ public class SmartDev extends DataSupport implements Serializable {
     public void setAlarmInfo(List<Info> alarmInfo) {
         this.alarmInfo = alarmInfo;
     }
-
-    private String lockPassword = "";
-    private boolean remerberPassword = true;
 
     public boolean isRemerberPassword() {
         return remerberPassword;
@@ -75,13 +118,6 @@ public class SmartDev extends DataSupport implements Serializable {
     public void setLockPassword(String lockPassword) {
         this.lockPassword = lockPassword;
     }
-
-    /**
-     * 数据库中的关联关系必须要初始化好列表
-     */
-    @Column(nullable = false)
-    private List<Room> rooms = new ArrayList<>();
-    private String routerDeviceKey;
 
     public String getRouterDeviceKey() {
         return routerDeviceKey;

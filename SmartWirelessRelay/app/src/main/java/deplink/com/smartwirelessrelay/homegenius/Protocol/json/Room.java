@@ -29,15 +29,6 @@ public class Room extends DataSupport implements Serializable{
      */
     private int roomOrdinalNumber;
     private String roomType;
-
-    public String getRoomType() {
-        return roomType;
-    }
-
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
     /**
      * 智能设备和房间是多对对的关系
      */
@@ -46,6 +37,13 @@ public class Room extends DataSupport implements Serializable{
      * 网关设备（中继器）和房间也有一个多对多的关系
      */
     private List<Device>mGetwayDevices=new ArrayList<>();
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
+    }
 
     public List<Device> getmGetwayDevices() {
         return mGetwayDevices;

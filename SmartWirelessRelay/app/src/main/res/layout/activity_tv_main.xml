@@ -159,7 +159,7 @@
                     android:layout_marginRight="@dimen/first_frame_content_margin_left_right"
                     android:layout_marginTop="15dp"
                     android:clickable="true"
-                    android:src="@drawable/button_power_notlearn" />
+                    android:background="@drawable/button_power_notlearn" />
 
                 <FrameLayout
                     android:id="@+id/framelayout_center_control"
@@ -276,7 +276,7 @@
                         android:layout_height="match_parent"
                         android:clickable="true"
                         android:scaleType="centerInside"
-                        android:src="@drawable/button_mute_notlearn" />
+                        android:background="@drawable/button_mute_notlearn" />
 
                     <ImageView
                         android:id="@+id/imageview_control_list"

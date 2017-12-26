@@ -78,6 +78,15 @@ public class RemoteControlManager implements LocalConnecteListener {
     public void setmRealRemoteControlDevice(SmartDev mRealRemoteControlDevice) {
         this.mRealRemoteControlDevice = mRealRemoteControlDevice;
     }
+    private boolean currentActionIsAddactionQuickLearn;
+
+    public boolean isCurrentActionIsAddactionQuickLearn() {
+        return currentActionIsAddactionQuickLearn;
+    }
+
+    public void setCurrentActionIsAddactionQuickLearn(boolean currentActionIsAddactionQuickLearn) {
+        this.currentActionIsAddactionQuickLearn = currentActionIsAddactionQuickLearn;
+    }
 
     private boolean currentActionIsAddDevice;
     /**
@@ -118,10 +127,10 @@ public class RemoteControlManager implements LocalConnecteListener {
      */
     public List<SmartDev> findRemotecontrolDevice() {
         Log.i(TAG, "查找绑定的物理遥控器,uid=" + mSelectRemoteControlDevice.getRemotecontrolUid());
+        Log.i(TAG, "查找绑定的物理遥控器,uid=" + mSelectRemoteControlDevice.getUid());
         List<SmartDev> newsList = DataSupport.where("Uid = ?", mSelectRemoteControlDevice.getRemotecontrolUid()).find(SmartDev.class);
         return newsList;
     }
-
     public static synchronized RemoteControlManager getInstance() {
         if (instance == null) {
             instance = new RemoteControlManager();
@@ -215,18 +224,23 @@ public class RemoteControlManager implements LocalConnecteListener {
     }
 
     public void sendData(String data) {
+        //TODO 当前选中的遥控器和当前选中的物理遥控器混乱
         Log.i(TAG,"mSelectRemoteControlDevice="+mSelectRemoteControlDevice.getRemotecontrolUid());
+        String controlUid=mSelectRemoteControlDevice.getRemotecontrolUid();
+        if(mSelectRemoteControlDevice.getRemotecontrolUid()==null){
+            controlUid=mSelectRemoteControlDevice.getUid();
+        }
         QueryOptions cmd = new QueryOptions();
         cmd.setOP("SET");
         cmd.setMethod("IrmoteV2");
         cmd.setTimestamp();
-        cmd.setSmartUid(mSelectRemoteControlDevice.getRemotecontrolUid());
+        cmd.setSmartUid(controlUid);
         cmd.setCommand("Send");
         cmd.setData(data);
-        Log.i(TAG,""+(cmd!=null));
         String text = gson.toJson(cmd);
-        Log.i(TAG,""+text);
-        packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getRemotecontrolUid());
+        Log.i(TAG,"mSelectRemoteControlDevice!=null"+(mSelectRemoteControlDevice!=null));
+        Log.i(TAG,""+text+" mSelectRemoteControlDevice.getRemotecontrolUid()!=null"+( mSelectRemoteControlDevice.getRemotecontrolUid()));
+        packet.packRemoteControlData(text.getBytes(), controlUid);
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {

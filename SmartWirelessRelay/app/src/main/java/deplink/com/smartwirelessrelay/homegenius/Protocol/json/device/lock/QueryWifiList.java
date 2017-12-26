@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/10/30.
- * 保存管理密码
  */
 public class QueryWifiList implements Serializable{
     private String OP="QUERY";

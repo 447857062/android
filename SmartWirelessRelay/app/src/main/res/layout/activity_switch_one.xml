@@ -13,7 +13,6 @@
         <Button
             android:id="@+id/button_switch"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/button_smartswitch_oneway"
             android:layout_marginTop="@dimen/smart_switch_mainpage_center_image_margintop"
             android:layout_width="@dimen/smart_switch_mainpage_center_image_width_height"
             android:layout_height="@dimen/smart_switch_mainpage_center_image_width_height" />
