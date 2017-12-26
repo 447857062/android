@@ -62,7 +62,7 @@ public class BasicPacket {
         // 设备uid，必填
         String uid;
         //tcp连接发送默认的uid
-        uid = "77685180654101946200316696479445";
+        uid =AppConstant.BIND_APP_MAC;
         System.arraycopy(uid.getBytes(), 0, data, len, 32);
         //uid32位，最后一个结束标志0
         len += 32;
@@ -138,7 +138,7 @@ public class BasicPacket {
         // 设备uid，必填
         String uid;
         //连接发送默认的uid
-        uid = "77685180654101946200316696479445";
+        uid = AppConstant.BIND_APP_MAC;
         System.arraycopy(uid.getBytes(), 0, data, len, 32);
         //uid32位，最后一个结束标志0
         len += 32;

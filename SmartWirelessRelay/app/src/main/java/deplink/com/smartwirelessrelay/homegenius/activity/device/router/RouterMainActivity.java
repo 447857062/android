@@ -336,7 +336,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     Log.i(TAG, "deviceOpSuccess op=" + op);
                     switch (op) {
                         case RouterDevice.OP_GET_DEVICES:
-
                             try {
                                 DialogThreeBounce.hideLoading();
                                 if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
@@ -346,9 +345,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                     }
                                     Log.i(TAG, "设备界面：获取已连接设备列表:" + mConnectedDevices.size());
                                     if (mConnectedDevices.size() == 0) {
+                                        layout_no_connected_device.setVisibility(View.VISIBLE);
                                         textview_show_query_device_result.setVisibility(View.VISIBLE);
                                         textview_show_query_device_result.setText("没有设备连接当前的路由器");
                                     } else {
+                                        layout_no_connected_device.setVisibility(View.GONE);
                                         textview_show_query_device_result.setVisibility(View.GONE);
                                     }
                                     mAdapter.notifyDataSetChanged();
@@ -357,12 +358,10 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                 if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
                                     if (routerDevice.getDevicesOnlineRoot().getBLACKLIST().size() == 0) {
                                         layout_no_blacklist.setVisibility(View.VISIBLE);
-                                        layout_no_connected_device.setVisibility(View.VISIBLE);
                                         textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
                                         textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
                                     } else {
                                         layout_no_blacklist.setVisibility(View.GONE);
-                                        layout_no_connected_device.setVisibility(View.GONE);
                                         textview_show_blacklist_device_result.setVisibility(View.GONE);
                                     }
                                     mBlackListDatas.clear();
