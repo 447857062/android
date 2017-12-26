@@ -176,7 +176,8 @@
                         android:layout_height="@dimen/learn_button_leftright_height"
                         android:layout_gravity="left|center_vertical"
                         android:clickable="true"
-                        android:background="@drawable/button_click_left_notlearn" />
+                        android:background="@drawable/button_click_left_notlearn"
+                        />
 
                     <ImageView
                         android:id="@+id/imageview_right"
@@ -184,7 +185,8 @@
                         android:layout_height="@dimen/learn_button_leftright_height"
                         android:layout_gravity="right|center_vertical"
                         android:clickable="true"
-                        android:background="@drawable/button_click_right_notlearn" />
+                        android:background="@drawable/button_click_right_notlearn"
+                        />
 
                     <ImageView
                         android:id="@+id/imageview_top"

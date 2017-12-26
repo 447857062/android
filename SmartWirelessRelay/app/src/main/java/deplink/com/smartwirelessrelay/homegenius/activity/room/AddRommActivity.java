@@ -72,7 +72,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);
 
         mGetways = new ArrayList<>();
-        mGetways.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         if(mGetways.size()>0){
             currentSelectGetway=mGetways.get(0);
         }

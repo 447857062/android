@@ -82,7 +82,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this, this);
         mGetways = new ArrayList<>();
-        mGetways.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {

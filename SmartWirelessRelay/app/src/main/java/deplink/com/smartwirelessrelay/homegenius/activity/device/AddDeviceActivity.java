@@ -15,8 +15,6 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceGridViewAdapter;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.EditSmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -40,17 +38,20 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
         initEvents();
     }
 
-    private boolean isFromGetwayMainActivity;
-    private boolean isStartFromExperience;
+    /**
+     * startactivityforresult中结束后应该返回的界面
+     */
     private boolean addDeviceSelectRoom;
+
+    private boolean isStartFromExperience;
+
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
-        isFromGetwayMainActivity = getIntent().getBooleanExtra("isFromGetwayMainActivity", false);
         addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
-        if (isFromGetwayMainActivity || addDeviceSelectRoom) {
+        if ( addDeviceSelectRoom) {
             textview_show_select_room.setText("请选择设备所在的房间");
             textview_skip_this_option.setVisibility(View.GONE);
         } else {
@@ -82,16 +83,12 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                         finish();
                     } else {
                         if ( addDeviceSelectRoom) {
-                            Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, EditSmartLockActivity.class);
+                            Intent intentSeleteedRoom = new Intent();
                             intentSeleteedRoom.putExtra("roomName", currentAddRomm);
                             AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
                             finish();
-                        } else if (isFromGetwayMainActivity) {
-                            Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, GetwayDeviceActivity.class);
-                            intentSeleteedRoom.putExtra("roomName", currentAddRomm);
-                            AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
-                            finish();
-                        } else {
+                        }
+                        else {
                             Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
                             startActivity(intent);
                         }

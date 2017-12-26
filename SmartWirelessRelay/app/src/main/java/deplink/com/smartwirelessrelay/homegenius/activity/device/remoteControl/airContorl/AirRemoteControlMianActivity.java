@@ -114,7 +114,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         directionAuto = mAirconditionInitKeyValue.getDirectionAuto();
         tempature = mAirconditionInitKeyValue.getTempature();
         power = mAirconditionInitKeyValue.getKeyPower();
-        textview_temperature.setText("" + tempature);
+        textview_temperature.setText("" + tempature+"℃");
         temptureProgress = (int) (((tempature - 16) / 15.0) * 100);
         progressBar.setProgress(temptureProgress);
 
@@ -717,7 +717,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 Log.i(TAG, "temptureTemp=" + temptureTemp);
                 temptureProgress = progress;
                 tempature = (int) temptureTemp;
-                textview_temperature.setText("" + tempature);
+                textview_temperature.setText("" + tempature+"℃");
                 mAirconditionInitKeyValue.setTempature(tempature);
                 mAirconditionInitKeyValue.save();
             }
@@ -782,7 +782,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         if (tempature > 19) {
                             func[0] = (byte) (tempature--);
                             func[5] = (byte) (0x07);
-                            textview_temperature.setText("" + tempature);
+                            textview_temperature.setText("" + tempature+"℃");
                             mAirconditionInitKeyValue.setTempature(tempature);
                             mAirconditionInitKeyValue.save();
                         }
@@ -808,7 +808,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         if (tempature < 30) {
                             func[0] = (byte) (tempature++);
                             func[5] = (byte) (0x06);
-                            textview_temperature.setText("" + tempature);
+                            textview_temperature.setText("" + tempature+"℃");
                             mAirconditionInitKeyValue.setTempature(tempature);
                             mAirconditionInitKeyValue.save();
                         }

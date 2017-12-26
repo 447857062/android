@@ -52,7 +52,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
         mUdpmanager.InitUdpConnect(this, this);
         getwayManager = GetwayManager.getInstance();
         mBindGetway = new ArrayList<>();
-        mBindGetway = getwayManager.queryAllGetwayDevice();
+        mBindGetway = getwayManager.getAllGetwayDevice();
         mDevices = new ArrayList<>();
         mAdapter = new GetwayListDevicesAdapter(this, mDevices, mBindGetway);
 
@@ -122,7 +122,7 @@ public class GetwayCheckActivity extends Activity implements View.OnClickListene
                     if (addToDevices) {
                         mDevices.add(device);
                         textview_no_getway.setVisibility(View.GONE);
-                        mBindGetway = getwayManager.queryAllGetwayDevice();
+                        mBindGetway = getwayManager.getAllGetwayDevice();
                         mAdapter.notifyDataSetChanged();
                     }
 

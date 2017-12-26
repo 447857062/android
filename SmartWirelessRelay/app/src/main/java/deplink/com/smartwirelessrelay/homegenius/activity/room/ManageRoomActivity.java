@@ -63,7 +63,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         textview_room_name.setText(mRoomName);
         Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
         mGetways = new ArrayList<>();
-        mGetways.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {

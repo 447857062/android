@@ -18,4 +18,11 @@ public class SmartLock extends SmartDev {
     public void setInfo(List<Info> info) {
         this.info = info;
     }
+
+    @Override
+    public String toString() {
+        return "SmartLock{" +
+                "info=" + info +
+                '}';
+    }
 }

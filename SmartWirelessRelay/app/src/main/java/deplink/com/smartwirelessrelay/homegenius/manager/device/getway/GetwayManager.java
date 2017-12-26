@@ -97,7 +97,7 @@ public class GetwayManager implements LocalConnecteListener {
 
 
 
-    public List<Device> queryAllGetwayDevice() {
+    public List<Device> getAllGetwayDevice() {
         List<Device> list = DataSupport.findAll(Device.class, true);
         if (list.size() > 0) {
             Log.i(TAG, "查询到的网关设备个数=" + list.size() + list.get(0).getUid());

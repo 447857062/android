@@ -102,16 +102,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_aircontrol_temp" />
 
-                <TextView
-                    android:id="@+id/textview_temperature_inner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textview_temperature"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/aircondition_inner_temp_margin_top"
-                    android:text="室内温度20℃"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_smallest" />
+
             </RelativeLayout>
         </FrameLayout>
 

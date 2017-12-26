@@ -78,6 +78,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         layout_select_room.setOnClickListener(this);
 
         layout_getway.setOnClickListener(this);
+
     }
 
     private boolean isStartFromExperience;
@@ -98,7 +99,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         deleteDialog = new DeleteDeviceDialog(this);
 
         mGetways = new ArrayList<>();
-        mGetways.addAll(GetwayManager.getInstance().queryAllGetwayDevice());
+        mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -215,6 +216,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
             }
 
             if (!isOnActivityResult) {
+                isOnActivityResult=false;
                 if (mSmartLockManager.getCurrentSelectLock().getRooms().size() == 1) {
                     textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
                 } else {

@@ -118,7 +118,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/textview_getway"
                 android:gravity="center_vertical"
-                android:text="我家的网关"
+                android:text="未绑定网关"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small" />
 
