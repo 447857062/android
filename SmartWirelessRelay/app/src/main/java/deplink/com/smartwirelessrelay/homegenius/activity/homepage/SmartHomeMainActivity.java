@@ -1,12 +1,15 @@
 package deplink.com.smartwirelessrelay.homegenius.activity.homepage;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,7 +34,17 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
+import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +68,9 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 智能家居主页
@@ -98,15 +114,103 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
             //以下只列举部分获取地址相关的结果信息
             //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
-           // String addr = location.getAddrStr();    //获取详细地址信息
+            // String addr = location.getAddrStr();    //获取详细地址信息
            // String country = location.getCountry();    //获取国家
-           // String province = location.getProvince();    //获取省份
+            String province = location.getProvince();    //获取省份
             String city = location.getCity();    //获取城市
             //String district = location.getDistrict();    //获取区县
-           // String street = location.getStreet();    //获取街道信息
+            // String street = location.getStreet();    //获取街道信息
+            Log.i(TAG, "city=" + city);
+            Log.i(TAG, "province=" + city);
+           // Log.i(TAG, "country=" + city);
+            city="深圳市";
+            Log.i(TAG,"city.substring(city.length()-1,city.length())="+city.substring(city.length()-1,city.length()));
+           if(city.substring(city.length()-1,city.length()).equals("市")){
+               city=city.substring(0,city.length()-1);
+           }
             Log.i(TAG, "city=" + city);
             textview_city.setText(city);
+            try {
+                cityCode = getCityCodeFromCityName("广东", city);
+                Log.i(TAG, "cityCode=" + cityCode);
+                initWaetherData();
+            } catch (XmlPullParserException | IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public String getCityCodeFromCityName(String provinceName, String cityName) throws XmlPullParserException, IOException {
+        String cityCode = null;
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        //获取XmlPullParser实例
+        XmlPullParser pullParser = factory.newPullParser();
+        InputStream in = this.getAssets().open("city_code_data.xml");
+        pullParser.setInput(in, "UTF-8");
+        //开始
+        int eventCode = pullParser.getEventType();
+        boolean ifExit = false;
+        boolean ifProvinceCatched = false;
+        boolean ifCityCatched = false;
+        while (eventCode != XmlPullParser.END_DOCUMENT) {
+            String nodeName = pullParser.getName();
+            switch (eventCode) {
+                case XmlPullParser.START_DOCUMENT:
+                    break;
+                case XmlPullParser.START_TAG:
+                    if ("Province".equals(nodeName)) {
+                        int i = 0;
+                        while (i < pullParser.getAttributeCount()) {
+                            if (ifProvinceCatched)
+                                break;
+                            String name = pullParser.getAttributeName(i);
+                            String value = pullParser.getAttributeValue(i);
+                            if (name.equalsIgnoreCase("name"))
+                                if (value.equalsIgnoreCase(provinceName)) {
+                                    ifProvinceCatched = true;
+                                    break;
+                                }
+                            i++;
+                        }
+                    } else if ("City".equals(nodeName)) {
+                        int i = 0;
+                        String tempCityCode = null;
+                        while (i < pullParser.getAttributeCount()) {
+                            if ( !ifProvinceCatched)
+                                break;
+                            String name = pullParser.getAttributeName(i);
+                            String value = pullParser.getAttributeValue(i);
+                            Log.i(TAG,"name="+name+"value="+value);
+
+                            if (name.equalsIgnoreCase("ID")) {
+                                tempCityCode = pullParser.getAttributeValue(i);
+                                Log.i(TAG,"tempCityCode="+tempCityCode);
+                            }
+                            if (name.equalsIgnoreCase("name")){
+                                if (value.equalsIgnoreCase(cityName)) {
+                                    Log.i(TAG,"value.equalsIgnoreCase(cityName)="+cityName);
+                                    ifCityCatched = true;
+                                }
+                            }
+                            if(ifCityCatched){
+                                cityCode=tempCityCode;
+                                ifExit=true;
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    break;
+                default:
+                    break;
+            }
+            if (ifExit)
+                break;
+            eventCode = pullParser.next();
+        }
+        return cityCode;
     }
 
     @Override
@@ -122,7 +226,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         //注册监听函数
         LocationClientOption option = new LocationClientOption();
 
-       // option.setIsNeedAddress(true);
+        // option.setIsNeedAddress(true);
 //可选，是否需要地址信息，默认为不需要，即参数为false
 //如果开发者需要获得当前点的地址信息，此处必须为true
         mLocationClient.setLocOption(option);
@@ -130,6 +234,73 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
 //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
+
+    }
+
+    String cityCode = null;
+
+    public void initWaetherData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "cityCode=" + cityCode);
+                RestfulToolsWeather.getSingleton().getWeatherInfo(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                        if (response.code() == 200) {
+                            JsonObject jsonObjectGson = response.body();
+                            Log.i(TAG, "cityCode=" + jsonObjectGson.toString());
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonObjectGson.toString());
+
+                                JSONObject weatherObject = jsonObject
+                                        .getJSONObject("weatherinfo");
+                                Message message = new Message();
+                                message.obj = weatherObject;
+                                handler.sendMessage(message);
+
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                    }
+                }, cityCode);
+
+            }
+        }).start();
+    }
+
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            JSONObject object = (JSONObject) msg.obj;
+            try {
+                //  Log.i(TAG,"城市天气："+object.getString("city"));
+               /* txt_weather_city.setText(object.getString("city"));
+                txt_weather_temp.setText(object.getString("temp2") + "/"
+                        + object.getString("temp1"));
+                txt_weather_detail.setText(object.getString("weather"));*/
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void queryStringForGet(String cityCode) {
+
+
     }
 
     private RoomManager mRoomManager;

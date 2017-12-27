@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:appcompat-v7:25.1.0'
@@ -51,4 +51,5 @@ dependencies {
     compile project(':pullToRefresh')
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile files('libs/BaiduLBS_Android.jar')
+
 }
