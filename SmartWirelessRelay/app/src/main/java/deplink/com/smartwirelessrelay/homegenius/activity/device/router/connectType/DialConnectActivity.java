@@ -27,6 +27,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
@@ -144,11 +145,14 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
         edittext_mac = (EditText) findViewById(R.id.edittext_mac);
         textview_edit = (TextView) findViewById(R.id.textview_edit);
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
+        if(!isStartFromExperience){
+            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        }
         manager.addEventCallback(ec);
     }
 

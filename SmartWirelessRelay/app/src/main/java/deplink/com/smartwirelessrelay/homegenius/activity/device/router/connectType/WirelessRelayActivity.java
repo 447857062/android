@@ -36,6 +36,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
@@ -198,23 +199,27 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         super.onPause();
         manager.removeEventCallback(ec);
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
-        manager.addEventCallback(ec);
-        getRouterDevice();
-        handlerResumeDialogShowing();
-        Log.i(TAG, "op_type=" + op_type);
-        if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
-            initLocalPulltorefreshView();
-            getLocalWirelessRelay();
-        } else {
-            initMqttPulltoRefreshView();
-            if (routerDevice != null) {
-                routerDevice.queryWifiRelay();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
+        if(!isStartFromExperience){
+            manager.addEventCallback(ec);
+            getRouterDevice();
+            handlerResumeDialogShowing();
+            Log.i(TAG, "op_type=" + op_type);
+            if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
+                initLocalPulltorefreshView();
+                getLocalWirelessRelay();
+            } else {
+                initMqttPulltoRefreshView();
+                if (routerDevice != null) {
+                    routerDevice.queryWifiRelay();
+                }
             }
         }
+
     }
 
     /**
@@ -666,13 +671,18 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                 onBackPressed();
                 break;
             case R.id.button_reload_wifirelay:
-                if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
-                    getLocalWirelessRelay();
-                } else {
-                    if (routerDevice != null) {
-                        routerDevice.queryWifiRelay();
+                if(!isStartFromExperience) {
+                    if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
+
+                        getLocalWirelessRelay();
+
+                    } else {
+                        if (routerDevice != null) {
+                            routerDevice.queryWifiRelay();
+                        }
                     }
                 }
+
                 break;
         }
     }

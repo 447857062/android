@@ -18,6 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecont
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.TvKeyNameConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
@@ -103,10 +104,11 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         initDatas();
         initEvents();
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
         initKeylearnStatus();
         initImageViewKeyBackground();
         initKeyCodeData();
@@ -116,13 +118,14 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
 
     private TvKeyCode mTvKeyCode;
     private void initKeyCodeData() {
-        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-         mTvKeyCode =
-                DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyCode.class);
-        if (mTvKeyCode != null) {
-            Log.i(TAG, "mAirconditionKeyCode=" + mTvKeyCode.toString());
+        if(!isStartFromExperience){
+            String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+            mTvKeyCode =
+                    DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyCode.class);
+            if (mTvKeyCode != null) {
+                Log.i(TAG, "mAirconditionKeyCode=" + mTvKeyCode.toString());
+            }
         }
-
     }
 
     /**
@@ -256,57 +259,84 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initKeylearnStatus() {
-        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        TvKeyLearnStatu mTvKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyLearnStatu.class);
-        if (mTvKeyLearnStatu != null) {
-            key_up = mTvKeyLearnStatu.isKey_up();
-            key_down = mTvKeyLearnStatu.isKey_down();
-            key_left = mTvKeyLearnStatu.isKey_left();
-            key_right = mTvKeyLearnStatu.isKey_right();
-            key_ok = mTvKeyLearnStatu.isKey_ok();
-            key_power = mTvKeyLearnStatu.isKey_power();
-            key_ch_reduce = mTvKeyLearnStatu.isKey_ch_reduce();
-            key_ch_plus = mTvKeyLearnStatu.isKey_ch_plus();
-            key_volum_reduce = mTvKeyLearnStatu.isKey_volum_reduce();
-            key_volum_plus = mTvKeyLearnStatu.isKey_volum_plus();
-            key_mute = mTvKeyLearnStatu.isKey_mute();
-            key_list = mTvKeyLearnStatu.isKey_list();
-            key_return = mTvKeyLearnStatu.isKey_return();
-            key_number_0 = mTvKeyLearnStatu.isKey_number_0();
-            key_number_1 = mTvKeyLearnStatu.isKey_number_1();
-            key_number_2 = mTvKeyLearnStatu.isKey_number_2();
-            key_number_3 = mTvKeyLearnStatu.isKey_number_3();
-            key_number_4 = mTvKeyLearnStatu.isKey_number_4();
-            key_number_5 = mTvKeyLearnStatu.isKey_number_5();
-            key_number_6 = mTvKeyLearnStatu.isKey_number_6();
-            key_number_7 = mTvKeyLearnStatu.isKey_number_7();
-            key_number_8 = mTvKeyLearnStatu.isKey_number_8();
-            key_number_9 = mTvKeyLearnStatu.isKey_number_9();
-        } else {
-            key_up = false;
-            key_down = false;
-            key_left = false;
-            key_right = false;
-            key_ok = false;
-            key_power = false;
-            key_ch_reduce = false;
-            key_ch_plus = false;
-            key_volum_reduce = false;
-            key_volum_plus = false;
-            key_mute = false;
-            key_list = false;
-            key_return = false;
-            key_number_0 = false;
-            key_number_1 = false;
-            key_number_2 = false;
-            key_number_3 = false;
-            key_number_4 = false;
-            key_number_5 = false;
-            key_number_6 = false;
-            key_number_7 = false;
-            key_number_8 = false;
-            key_number_9 = false;
+        if(isStartFromExperience){
+            key_up = true;
+            key_down = true;
+            key_left = true;
+            key_right = true;
+            key_ok = true;
+            key_power = true;
+            key_ch_reduce = true;
+            key_ch_plus = true;
+            key_volum_reduce = true;
+            key_volum_plus = true;
+            key_mute = true;
+            key_list = true;
+            key_return = true;
+            key_number_0 = true;
+            key_number_1 = true;
+            key_number_2 = true;
+            key_number_3 = true;
+            key_number_4 = true;
+            key_number_5 = true;
+            key_number_6 = true;
+            key_number_7 = true;
+            key_number_8 = true;
+            key_number_9 = true;
+        }else{
+            String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+            TvKeyLearnStatu mTvKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyLearnStatu.class);
+            if (mTvKeyLearnStatu != null) {
+                key_up = mTvKeyLearnStatu.isKey_up();
+                key_down = mTvKeyLearnStatu.isKey_down();
+                key_left = mTvKeyLearnStatu.isKey_left();
+                key_right = mTvKeyLearnStatu.isKey_right();
+                key_ok = mTvKeyLearnStatu.isKey_ok();
+                key_power = mTvKeyLearnStatu.isKey_power();
+                key_ch_reduce = mTvKeyLearnStatu.isKey_ch_reduce();
+                key_ch_plus = mTvKeyLearnStatu.isKey_ch_plus();
+                key_volum_reduce = mTvKeyLearnStatu.isKey_volum_reduce();
+                key_volum_plus = mTvKeyLearnStatu.isKey_volum_plus();
+                key_mute = mTvKeyLearnStatu.isKey_mute();
+                key_list = mTvKeyLearnStatu.isKey_list();
+                key_return = mTvKeyLearnStatu.isKey_return();
+                key_number_0 = mTvKeyLearnStatu.isKey_number_0();
+                key_number_1 = mTvKeyLearnStatu.isKey_number_1();
+                key_number_2 = mTvKeyLearnStatu.isKey_number_2();
+                key_number_3 = mTvKeyLearnStatu.isKey_number_3();
+                key_number_4 = mTvKeyLearnStatu.isKey_number_4();
+                key_number_5 = mTvKeyLearnStatu.isKey_number_5();
+                key_number_6 = mTvKeyLearnStatu.isKey_number_6();
+                key_number_7 = mTvKeyLearnStatu.isKey_number_7();
+                key_number_8 = mTvKeyLearnStatu.isKey_number_8();
+                key_number_9 = mTvKeyLearnStatu.isKey_number_9();
+            } else {
+                key_up = false;
+                key_down = false;
+                key_left = false;
+                key_right = false;
+                key_ok = false;
+                key_power = false;
+                key_ch_reduce = false;
+                key_ch_plus = false;
+                key_volum_reduce = false;
+                key_volum_plus = false;
+                key_mute = false;
+                key_list = false;
+                key_return = false;
+                key_number_0 = false;
+                key_number_1 = false;
+                key_number_2 = false;
+                key_number_3 = false;
+                key_number_4 = false;
+                key_number_5 = false;
+                key_number_6 = false;
+                key_number_7 = false;
+                key_number_8 = false;
+                key_number_9 = false;
+            }
         }
+
     }
 
     private boolean isLearnByHand;
@@ -424,11 +454,14 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(intent);
                 } else {
                     if (key_power) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            Log.i(TAG,"电源键:"+mTvKeyCode.getData_key_power());
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_power());
                         }
-                        Log.i(TAG,"电源键:"+mTvKeyCode.getData_key_power());
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_power());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -441,10 +474,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_ok) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_enter());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_enter());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -457,10 +493,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_left) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_left());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_left());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -473,10 +512,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_right) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_right());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_right());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -489,10 +531,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_up) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_up());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_up());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -505,10 +550,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_down) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_down());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_down());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -521,10 +569,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_ch_reduce) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_ch_reduce());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_ch_reduce());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -537,10 +588,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_ch_plus) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_ch_add());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_ch_add());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -553,10 +607,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_volum_reduce) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_vol_reduce());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_vol_reduce());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -569,10 +626,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_volum_plus) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_vol_add());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_vol_add());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -585,10 +645,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_mute) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_mute());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_mute());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -601,10 +664,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_list) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_mute());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_mute());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -617,10 +683,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_return) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_back());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_back());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -633,10 +702,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_1) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_1());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_1());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -649,10 +721,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_2) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_2());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_2());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -665,10 +740,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_3) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_3());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_3());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -681,10 +759,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_4) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_4());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_4());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -697,10 +778,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_5) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_5());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_5());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -713,10 +797,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_6) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_6());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_6());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -729,10 +816,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_7) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_7());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_7());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -745,10 +835,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_8) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_8());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_8());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -761,10 +854,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_number_9) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_9());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_9());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -778,10 +874,13 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                     startActivity(intent);
                 } else {
                     if (key_number_0) {
-                        if (mTvKeyCode == null) {
-                            return;
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_0());
                         }
-                        mRemoteControlManager.sendData(mTvKeyCode.getData_key_0());
+
                     } else {
                         mKeynotlearnDialog.show();
                     }

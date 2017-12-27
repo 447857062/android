@@ -18,6 +18,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecont
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.TvBoxNameConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
@@ -95,7 +96,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
     private TextView textview_cancel;
     private TextView textview_tips;
 
-
+    private boolean isStartFromExperience;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +109,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
         initKeylearnStatus();
         initImageViewKeyBackground();
         initKeyCodeData();
@@ -116,12 +118,15 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
     private TvboxKeyCode mTvboxKeyCode;
 
     private void initKeyCodeData() {
-        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        mTvboxKeyCode =
-                DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxKeyCode.class);
-        if (mTvboxKeyCode != null) {
-            Log.i(TAG, "mAirconditionKeyCode=" + mTvboxKeyCode.toString());
+        if(!isStartFromExperience){
+            String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+            mTvboxKeyCode =
+                    DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxKeyCode.class);
+            if (mTvboxKeyCode != null) {
+                Log.i(TAG, "mAirconditionKeyCode=" + mTvboxKeyCode.toString());
+            }
         }
+
 
     }
 
@@ -245,62 +250,87 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
         } else {
             imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
         }
-
-
     }
 
     private void initKeylearnStatus() {
-        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        TvboxLearnStatu mTvboxLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxLearnStatu.class);
-        if (mTvboxLearnStatu != null) {
-            key_up = mTvboxLearnStatu.isKey_up();
-            key_down = mTvboxLearnStatu.isKey_down();
-            key_left = mTvboxLearnStatu.isKey_left();
-            key_right = mTvboxLearnStatu.isKey_right();
-            key_ok = mTvboxLearnStatu.isKey_ok();
-            key_power = mTvboxLearnStatu.isKey_power();
-            key_ch_reduce = mTvboxLearnStatu.isKey_ch_reduce();
-            key_ch_plus = mTvboxLearnStatu.isKey_ch_plus();
-            key_volum_reduce = mTvboxLearnStatu.isKey_volum_reduce();
-            key_volum_plus = mTvboxLearnStatu.isKey_volum_plus();
-            key_navi = mTvboxLearnStatu.isKey_navi();
-            key_list = mTvboxLearnStatu.isKey_list();
-            key_return = mTvboxLearnStatu.isKey_return();
-            key_number_0 = mTvboxLearnStatu.isKey_number_0();
-            key_number_1 = mTvboxLearnStatu.isKey_number_1();
-            key_number_2 = mTvboxLearnStatu.isKey_number_2();
-            key_number_3 = mTvboxLearnStatu.isKey_number_3();
-            key_number_4 = mTvboxLearnStatu.isKey_number_4();
-            key_number_5 = mTvboxLearnStatu.isKey_number_5();
-            key_number_6 = mTvboxLearnStatu.isKey_number_6();
-            key_number_7 = mTvboxLearnStatu.isKey_number_7();
-            key_number_8 = mTvboxLearnStatu.isKey_number_8();
-            key_number_9 = mTvboxLearnStatu.isKey_number_9();
-        } else {
-            key_up = false;
-            key_down = false;
-            key_left = false;
-            key_right = false;
-            key_ok = false;
-            key_power = false;
-            key_ch_reduce = false;
-            key_ch_plus = false;
-            key_volum_reduce = false;
-            key_volum_plus = false;
-            key_navi = false;
-            key_list = false;
-            key_return = false;
-            key_number_0 = false;
-            key_number_1 = false;
-            key_number_2 = false;
-            key_number_3 = false;
-            key_number_4 = false;
-            key_number_5 = false;
-            key_number_6 = false;
-            key_number_7 = false;
-            key_number_8 = false;
-            key_number_9 = false;
+        if(isStartFromExperience){
+            key_up = true;
+            key_down = true;
+            key_left = true;
+            key_right = true;
+            key_ok = true;
+            key_power = true;
+            key_ch_reduce = true;
+            key_ch_plus = true;
+            key_volum_reduce = true;
+            key_volum_plus = true;
+            key_navi = true;
+            key_list = true;
+            key_return = true;
+            key_number_0 = true;
+            key_number_1 = true;
+            key_number_2 = true;
+            key_number_3 = true;
+            key_number_4 = true;
+            key_number_5 = true;
+            key_number_6 = true;
+            key_number_7 = true;
+            key_number_8 = true;
+            key_number_9 = true;
+        }else{
+            String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+            TvboxLearnStatu mTvboxLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvboxLearnStatu.class);
+            if (mTvboxLearnStatu != null) {
+                key_up = mTvboxLearnStatu.isKey_up();
+                key_down = mTvboxLearnStatu.isKey_down();
+                key_left = mTvboxLearnStatu.isKey_left();
+                key_right = mTvboxLearnStatu.isKey_right();
+                key_ok = mTvboxLearnStatu.isKey_ok();
+                key_power = mTvboxLearnStatu.isKey_power();
+                key_ch_reduce = mTvboxLearnStatu.isKey_ch_reduce();
+                key_ch_plus = mTvboxLearnStatu.isKey_ch_plus();
+                key_volum_reduce = mTvboxLearnStatu.isKey_volum_reduce();
+                key_volum_plus = mTvboxLearnStatu.isKey_volum_plus();
+                key_navi = mTvboxLearnStatu.isKey_navi();
+                key_list = mTvboxLearnStatu.isKey_list();
+                key_return = mTvboxLearnStatu.isKey_return();
+                key_number_0 = mTvboxLearnStatu.isKey_number_0();
+                key_number_1 = mTvboxLearnStatu.isKey_number_1();
+                key_number_2 = mTvboxLearnStatu.isKey_number_2();
+                key_number_3 = mTvboxLearnStatu.isKey_number_3();
+                key_number_4 = mTvboxLearnStatu.isKey_number_4();
+                key_number_5 = mTvboxLearnStatu.isKey_number_5();
+                key_number_6 = mTvboxLearnStatu.isKey_number_6();
+                key_number_7 = mTvboxLearnStatu.isKey_number_7();
+                key_number_8 = mTvboxLearnStatu.isKey_number_8();
+                key_number_9 = mTvboxLearnStatu.isKey_number_9();
+            } else {
+                key_up = false;
+                key_down = false;
+                key_left = false;
+                key_right = false;
+                key_ok = false;
+                key_power = false;
+                key_ch_reduce = false;
+                key_ch_plus = false;
+                key_volum_reduce = false;
+                key_volum_plus = false;
+                key_navi = false;
+                key_list = false;
+                key_return = false;
+                key_number_0 = false;
+                key_number_1 = false;
+                key_number_2 = false;
+                key_number_3 = false;
+                key_number_4 = false;
+                key_number_5 = false;
+                key_number_6 = false;
+                key_number_7 = false;
+                key_number_8 = false;
+                key_number_9 = false;
+            }
         }
+
     }
 
     private void initDatas() {
@@ -417,7 +447,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_power());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_power());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -432,7 +465,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ok());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ok());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -447,7 +483,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_left());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_left());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -462,7 +501,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_right());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_right());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -477,7 +519,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_up());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_up());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -492,7 +537,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_down());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_down());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -507,7 +555,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ch_reduce());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ch_reduce());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -522,7 +573,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ch_plus());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_ch_plus());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -537,7 +591,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_volum_reduce());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_volum_reduce());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -552,7 +609,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_volum_reduce());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_volum_reduce());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -567,7 +627,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_navi());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_navi());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -582,7 +645,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_list());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_list());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -597,7 +663,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_return());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_return());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -612,7 +681,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_1());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_1());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -627,7 +699,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_2());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_2());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -642,7 +717,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_3());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_3());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -657,7 +735,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_4());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_4());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -672,7 +753,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_5());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_5());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -687,7 +771,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_6());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_6());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -702,7 +789,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_7());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_7());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -717,7 +807,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_8());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_8());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -732,7 +825,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_9());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_9());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -747,7 +843,10 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
                         if (mTvboxKeyCode == null) {
                             return;
                         }
-                        mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_0());
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(mTvboxKeyCode.getKey_number_0());
+                        }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }

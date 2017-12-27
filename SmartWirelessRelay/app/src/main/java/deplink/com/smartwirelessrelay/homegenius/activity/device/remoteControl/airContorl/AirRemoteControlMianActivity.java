@@ -20,6 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecont
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AirKeyNameConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
@@ -89,9 +90,12 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         initEvents();
     }
 
+    private boolean isStartFromExperience;
+
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         initKeylearnStatus();
         initImageViewKeyBackground();
         initKeyCodeData();
@@ -114,7 +118,8 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         directionAuto = mAirconditionInitKeyValue.getDirectionAuto();
         tempature = mAirconditionInitKeyValue.getTempature();
         power = mAirconditionInitKeyValue.getKeyPower();
-        textview_temperature.setText("" + tempature+"℃");
+
+        textview_temperature.setText("" + tempature + "℃");
         temptureProgress = (int) (((tempature - 16) / 15.0) * 100);
         progressBar.setProgress(temptureProgress);
 
@@ -122,6 +127,12 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             imageview_power.setBackgroundResource(R.drawable.button_power_learned);
         } else {
             imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
+        }
+        //空调开关时设置其他按键的可不可以点击
+        if (power==1) {
+            setAirconditionEnable();
+        } else {
+            setAirconditionDisable();
         }
         switch (currentMode) {
             case 0x01:
@@ -238,17 +249,109 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
 
     }
 
+    private String data_key_power;
+    private String data_key_mode_hot;
+    private String data_key_mode_cold;
+    private String data_key_mode_dehumit;
+    private String data_key_mode_wind;
+    private String data_key_mode_auto;
+    private String data_key_windspeed_hight;
+    private String data_key_windspeed_middle;
+    private String data_key_windspeed_low;
+    private String data_key_windspeed_auto;
+    private String data_key_winddirection_up;
+    private String data_key_winddirection_middle;
+    private String data_key_winddirection_down;
+    private String data_key_winddirection_auto;
 
+
+    private String data_key_tempature_hot_16;
+    private String data_key_tempature_hot_17;
+    private String data_key_tempature_hot_18;
+    private String data_key_tempature_hot_19;
+    private String data_key_tempature_hot_20;
+    private String data_key_tempature_hot_21;
+    private String data_key_tempature_hot_22;
+    private String data_key_tempature_hot_23;
+    private String data_key_tempature_hot_24;
+    private String data_key_tempature_hot_25;
+    private String data_key_tempature_hot_26;
+    private String data_key_tempature_hot_27;
+    private String data_key_tempature_hot_28;
+    private String data_key_tempature_hot_29;
+    private String data_key_tempature_hot_30;
+    private String data_key_tempature_cold_16;
+    private String data_key_tempature_cold_17;
+    private String data_key_tempature_cold_18;
+    private String data_key_tempature_cold_19;
+    private String data_key_tempature_cold_20;
+    private String data_key_tempature_cold_21;
+    private String data_key_tempature_cold_22;
+    private String data_key_tempature_cold_23;
+    private String data_key_tempature_cold_24;
+    private String data_key_tempature_cold_25;
+    private String data_key_tempature_cold_26;
+    private String data_key_tempature_cold_27;
+    private String data_key_tempature_cold_28;
+    private String data_key_tempature_cold_29;
+    private String data_key_tempature_cold_30;
     private void initKeyCodeData() {
-        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        AirconditionKeyCode mAirconditionKeyCode =
-                DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyCode.class);
-        if (mAirconditionKeyCode != null) {
-            Log.i(TAG, "mAirconditionKeyCode=" + mAirconditionKeyCode.toString());
-            group = mAirconditionKeyCode.getGroupData();
-            code = mAirconditionKeyCode.getKeycode();
-        }
+        if (!isStartFromExperience) {
+            String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+            AirconditionKeyCode mAirconditionKeyCode =
+                    DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyCode.class);
+            if (mAirconditionKeyCode != null) {
+                Log.i(TAG, "mAirconditionKeyCode=" + mAirconditionKeyCode.toString());
+                group = mAirconditionKeyCode.getGroupData();
+                code = mAirconditionKeyCode.getKeycode();
+                //手动学习的按键
+                data_key_power = mAirconditionKeyCode.getKey_power();
+                data_key_mode_hot = mAirconditionKeyCode.getKey_mode_hot();
+                data_key_mode_cold = mAirconditionKeyCode.getKey_mode_cold();
+                data_key_mode_dehumit = mAirconditionKeyCode.getKey_mode_dehumit();
+                data_key_mode_wind = mAirconditionKeyCode.getKey_mode_wind();
+                data_key_mode_auto = mAirconditionKeyCode.getKey_mode_auto();
+                data_key_windspeed_hight = mAirconditionKeyCode.getKey_windspeed_hight();
+                data_key_windspeed_middle = mAirconditionKeyCode.getKey_windspeed_middle();
+                data_key_windspeed_low = mAirconditionKeyCode.getKey_windspeed_low();
+                data_key_windspeed_auto = mAirconditionKeyCode.getKey_windspeed_auto();
+                data_key_winddirection_up = mAirconditionKeyCode.getKey_winddirection_up();
+                data_key_winddirection_middle = mAirconditionKeyCode.getKey_winddirection_middle();
+                data_key_winddirection_down = mAirconditionKeyCode.getKey_winddirection_down();
+                data_key_winddirection_auto = mAirconditionKeyCode.getKey_winddirection_auto();
 
+                data_key_tempature_hot_16= mAirconditionKeyCode.getKey_tempature_hot_16();
+                data_key_tempature_hot_17= mAirconditionKeyCode.getKey_tempature_hot_17();
+                data_key_tempature_hot_18= mAirconditionKeyCode.getKey_tempature_hot_18();
+                data_key_tempature_hot_19= mAirconditionKeyCode.getKey_tempature_hot_19();
+                data_key_tempature_hot_20= mAirconditionKeyCode.getKey_tempature_hot_20();
+                data_key_tempature_hot_21= mAirconditionKeyCode.getKey_tempature_hot_21();
+                data_key_tempature_hot_22= mAirconditionKeyCode.getKey_tempature_hot_22();
+                data_key_tempature_hot_23= mAirconditionKeyCode.getKey_tempature_hot_23();
+                data_key_tempature_hot_24= mAirconditionKeyCode.getKey_tempature_hot_24();
+                data_key_tempature_hot_25= mAirconditionKeyCode.getKey_tempature_hot_25();
+                data_key_tempature_hot_26= mAirconditionKeyCode.getKey_tempature_hot_26();
+                data_key_tempature_hot_27= mAirconditionKeyCode.getKey_tempature_hot_27();
+                data_key_tempature_hot_28= mAirconditionKeyCode.getKey_tempature_hot_28();
+                data_key_tempature_hot_29= mAirconditionKeyCode.getKey_tempature_hot_29();
+                data_key_tempature_hot_30= mAirconditionKeyCode.getKey_tempature_hot_30();
+                data_key_tempature_cold_16= mAirconditionKeyCode.getKey_tempature_cold_16();
+                data_key_tempature_cold_17= mAirconditionKeyCode.getKey_tempature_cold_17();
+                data_key_tempature_cold_18= mAirconditionKeyCode.getKey_tempature_cold_18();
+                data_key_tempature_cold_19= mAirconditionKeyCode.getKey_tempature_cold_19();
+                data_key_tempature_cold_20= mAirconditionKeyCode.getKey_tempature_cold_20();
+                data_key_tempature_cold_21= mAirconditionKeyCode.getKey_tempature_cold_21();
+                data_key_tempature_cold_22= mAirconditionKeyCode.getKey_tempature_cold_22();
+                data_key_tempature_cold_23= mAirconditionKeyCode.getKey_tempature_cold_23();
+                data_key_tempature_cold_24= mAirconditionKeyCode.getKey_tempature_cold_24();
+                data_key_tempature_cold_25= mAirconditionKeyCode.getKey_tempature_cold_25();
+                data_key_tempature_cold_26= mAirconditionKeyCode.getKey_tempature_cold_26();
+                data_key_tempature_cold_27= mAirconditionKeyCode.getKey_tempature_cold_27();
+                data_key_tempature_cold_28= mAirconditionKeyCode.getKey_tempature_cold_28();
+                data_key_tempature_cold_29= mAirconditionKeyCode.getKey_tempature_cold_29();
+                data_key_tempature_cold_30= mAirconditionKeyCode.getKey_tempature_cold_30();
+            }
+        }
     }
 
     private AirconditionInitKeyValue mAirconditionInitKeyValue;
@@ -288,18 +391,24 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_hot) {
-                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[6] = (byte) 0x04;
-                                currentMode = 0x04;
-                                mAirconditionInitKeyValue.setMode(currentMode);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_learned);
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[6] = (byte) 0x05;
+                                    currentMode = 0x05;
+                                    mAirconditionInitKeyValue.setMode(currentMode);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_mode_hot != null) {
+                                        mRemoteControlManager.sendData(data_key_mode_hot);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                }
                             } else {
                                 imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_notlearn);
                                 mKeynotlearnDialog.show();
@@ -313,18 +422,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_cold) {
-                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[6] = (byte) 0x01;
-                                currentMode = 0x01;
-                                mAirconditionInitKeyValue.setMode(currentMode);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_learned);
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[6] = (byte) 0x02;
+                                    currentMode = 0x02;
+                                    mAirconditionInitKeyValue.setMode(currentMode);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_mode_cold != null) {
+                                        mRemoteControlManager.sendData(data_key_mode_cold);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+
+                                }
+
                             } else {
                                 imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_notlearn);
                                 mKeynotlearnDialog.show();
@@ -339,18 +456,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_dehumit) {
-                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[6] = (byte) 0x02;
-                                currentMode = 0x02;
-                                mAirconditionInitKeyValue.setMode(currentMode);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_learned);
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[6] = (byte) 0x03;
+                                    currentMode = 0x03;
+                                    mAirconditionInitKeyValue.setMode(currentMode);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_mode_dehumit != null) {
+                                        mRemoteControlManager.sendData(data_key_mode_dehumit);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+
+                                }
+
                             } else {
                                 imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_notlearn);
                                 mKeynotlearnDialog.show();
@@ -365,18 +490,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_wind) {
-                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[6] = (byte) 0x03;
-                                currentMode = 0x03;
-                                mAirconditionInitKeyValue.setMode(currentMode);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_learned);
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[6] = (byte) 0x04;
+                                    currentMode = 0x04;
+                                    mAirconditionInitKeyValue.setMode(currentMode);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_mode_wind != null) {
+                                        mRemoteControlManager.sendData(data_key_mode_wind);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+
+                                }
+
                             } else {
                                 imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_notlearn);
                                 mKeynotlearnDialog.show();
@@ -391,18 +524,24 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_auto) {
-                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[6] = (byte) 0x05;
-                                currentMode = 0x05;
-                                mAirconditionInitKeyValue.setMode(currentMode);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_learned);
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[6] = (byte) 0x01;
+                                    currentMode = 0x01;
+                                    mAirconditionInitKeyValue.setMode(currentMode);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_mode_auto != null) {
+                                        mRemoteControlManager.sendData(data_key_mode_auto);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                }
                             } else {
                                 imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_notlearn);
                                 mKeynotlearnDialog.show();
@@ -428,17 +567,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_windspeed_hight) {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_hight_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[1] = (byte) 0x04;
-                                wind = 0x04;
-                                mAirconditionInitKeyValue.setWind(wind);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[1] = (byte) 0x04;
+                                    wind = 0x04;
+                                    mAirconditionInitKeyValue.setWind(wind);
+                                    mAirconditionInitKeyValue.save();
+
+                                    data = packData();
+                                    if (data_key_windspeed_hight != null) {
+                                        mRemoteControlManager.sendData(data_key_windspeed_hight);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+
+                                }
+
                             } else {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_hight_notlearn);
                                 mKeynotlearnDialog.show();
@@ -454,17 +602,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_windspeed_middle) {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_middle_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[1] = (byte) 0x03;
-                                wind = 0x03;
-                                mAirconditionInitKeyValue.setWind(wind);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[1] = (byte) 0x03;
+                                    wind = 0x03;
+                                    mAirconditionInitKeyValue.setWind(wind);
+                                    mAirconditionInitKeyValue.save();
+
+                                    data = packData();
+                                    if (data_key_windspeed_middle != null) {
+                                        mRemoteControlManager.sendData(data_key_windspeed_middle);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_middle_notlearn);
                                 mKeynotlearnDialog.show();
@@ -480,17 +637,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_windspeed_low) {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_low_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[1] = (byte) 0x02;
-                                wind = 0x02;
-                                mAirconditionInitKeyValue.setWind(wind);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[1] = (byte) 0x02;
+                                    wind = 0x02;
+                                    mAirconditionInitKeyValue.setWind(wind);
+                                    mAirconditionInitKeyValue.save();
+
+                                    data = packData();
+                                    if (data_key_windspeed_low != null) {
+                                        mRemoteControlManager.sendData(data_key_windspeed_low);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_low_notlearn);
                                 mKeynotlearnDialog.show();
@@ -506,17 +672,26 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_windspeed_auto) {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_auto_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x02;
-                                func[1] = (byte) 0x01;
-                                wind = 0x01;
-                                mAirconditionInitKeyValue.setWind(wind);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x02;
+                                    func[1] = (byte) 0x01;
+                                    wind = 0x01;
+                                    mAirconditionInitKeyValue.setWind(wind);
+                                    mAirconditionInitKeyValue.save();
+
+                                    data = packData();
+                                    if (data_key_windspeed_auto != null) {
+                                        mRemoteControlManager.sendData(data_key_windspeed_auto);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_auto_notlearn);
                                 mKeynotlearnDialog.show();
@@ -539,19 +714,28 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             mRemoteControlManager.setCurrentLearnByHandKeyName(AirKeyNameConstant.KEYNAME.KEYNAME_WIND_DIRECTION_UP);
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
+                            imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_up_learned);
                             if (key_winddirection_up) {
-                                imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_up_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x03;
-                                func[2] = (byte) 0x01;
-                                directionHand = 0x01;
-                                mAirconditionInitKeyValue.setDirectionHand(directionHand);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x03;
+                                    func[2] = (byte) 0x01;
+                                    directionHand = 0x01;
+                                    mAirconditionInitKeyValue.setDirectionHand(directionHand);
+                                    mAirconditionInitKeyValue.save();
+
+                                    data = packData();
+                                    if (data_key_winddirection_up != null) {
+                                        mRemoteControlManager.sendData(data_key_winddirection_up);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_up_notlearn);
                                 mKeynotlearnDialog.show();
@@ -567,17 +751,25 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_winddirection_middle) {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_middle_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x03;
-                                func[2] = (byte) 0x02;
-                                directionHand = 0x02;
-                                mAirconditionInitKeyValue.setDirectionHand(directionHand);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x03;
+                                    func[2] = (byte) 0x02;
+                                    directionHand = 0x02;
+                                    mAirconditionInitKeyValue.setDirectionHand(directionHand);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_winddirection_middle != null) {
+                                        mRemoteControlManager.sendData(data_key_winddirection_middle);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_middle_notlearn);
                                 mKeynotlearnDialog.show();
@@ -593,17 +785,25 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_winddirection_down) {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_down_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x03;
-                                func[2] = (byte) 0x03;
-                                directionHand = 0x03;
-                                mAirconditionInitKeyValue.setDirectionHand(directionHand);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x03;
+                                    func[2] = (byte) 0x03;
+                                    directionHand = 0x03;
+                                    mAirconditionInitKeyValue.setDirectionHand(directionHand);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_winddirection_down != null) {
+                                        mRemoteControlManager.sendData(data_key_winddirection_down);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_down_notlearn);
                                 mKeynotlearnDialog.show();
@@ -619,17 +819,25 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                         } else {
                             if (key_winddirection_auto) {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_auto_learned);
-                                if (code == null) {
-                                    return;
-                                }
-                                func[5] = (byte) 0x04;
-                                func[3] = (byte) 0x01;
-                                directionAuto = 0x01;
-                                mAirconditionInitKeyValue.setDirectionAuto(directionAuto);
-                                mAirconditionInitKeyValue.save();
+                                if (!isStartFromExperience) {
+                                    if (code == null) {
+                                        return;
+                                    }
+                                    func[5] = (byte) 0x04;
+                                    func[3] = (byte) 0x01;
+                                    directionAuto = 0x01;
+                                    mAirconditionInitKeyValue.setDirectionAuto(directionAuto);
+                                    mAirconditionInitKeyValue.save();
 
-                                data = packData();
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    data = packData();
+                                    if (data_key_winddirection_auto != null) {
+                                        mRemoteControlManager.sendData(data_key_winddirection_auto);
+                                    } else {
+                                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                    }
+                                    ;
+                                }
+
                             } else {
                                 imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_auto_notlearn);
                                 mKeynotlearnDialog.show();
@@ -659,44 +867,62 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private boolean isLearnByHand;
 
     private void initKeylearnStatus() {
-        String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-        AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyLearnStatu.class);
-        if (mAirconditionKeyLearnStatu != null) {
-            key_tempature_reduce = mAirconditionKeyLearnStatu.isKey_tempature_reduce();
-            key_tempature_plus = mAirconditionKeyLearnStatu.isKey_tempature_plus();
-            key_power = mAirconditionKeyLearnStatu.isKey_power();
-            key_mode_hot = mAirconditionKeyLearnStatu.isKey_mode_hot();
-            key_mode_cold = mAirconditionKeyLearnStatu.isKey_mode_cold();
-            key_mode_dehumit = mAirconditionKeyLearnStatu.isKey_mode_dehumit();
-            key_mode_wind = mAirconditionKeyLearnStatu.isKey_mode_wind();
-            key_mode_auto = mAirconditionKeyLearnStatu.isKey_mode_auto();
-            key_windspeed_hight = mAirconditionKeyLearnStatu.isKey_windspeed_hight();
-            key_windspeed_middle = mAirconditionKeyLearnStatu.isKey_windspeed_middle();
-            key_windspeed_low = mAirconditionKeyLearnStatu.isKey_windspeed_low();
-            key_windspeed_auto = mAirconditionKeyLearnStatu.isKey_windspeed_auto();
-            key_winddirection_up = mAirconditionKeyLearnStatu.isKey_winddirection_up();
-            key_winddirection_middle = mAirconditionKeyLearnStatu.isKey_winddirection_middle();
-            key_winddirection_down = mAirconditionKeyLearnStatu.isKey_winddirection_down();
-            key_winddirection_auto = mAirconditionKeyLearnStatu.isKey_winddirection_auto();
+        if (isStartFromExperience) {
+            key_tempature_reduce = true;
+            key_tempature_plus = true;
+            key_power = true;
+            key_mode_hot = true;
+            key_mode_cold = true;
+            key_mode_dehumit = true;
+            key_mode_wind = true;
+            key_mode_auto = true;
+            key_windspeed_hight = true;
+            key_windspeed_middle = true;
+            key_windspeed_low = true;
+            key_windspeed_auto = true;
+            key_winddirection_up = true;
+            key_winddirection_middle = true;
+            key_winddirection_down = true;
+            key_winddirection_auto = true;
         } else {
-            key_tempature_reduce = false;
-            key_tempature_plus = false;
-            key_power = false;
-            key_mode_hot = false;
-            key_mode_cold = false;
-            key_mode_dehumit = false;
-            key_mode_wind = false;
-            key_mode_auto = false;
-            key_windspeed_hight = false;
-            key_windspeed_middle = false;
-            key_windspeed_low = false;
-            key_windspeed_auto = false;
-            key_winddirection_up = false;
-            key_winddirection_middle = false;
-            key_winddirection_down = false;
-            key_winddirection_auto = false;
+            String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+            AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyLearnStatu.class);
+            if (mAirconditionKeyLearnStatu != null) {
+                key_tempature_reduce = mAirconditionKeyLearnStatu.isKey_tempature_reduce();
+                key_tempature_plus = mAirconditionKeyLearnStatu.isKey_tempature_plus();
+                key_power = mAirconditionKeyLearnStatu.isKey_power();
+                key_mode_hot = mAirconditionKeyLearnStatu.isKey_mode_hot();
+                key_mode_cold = mAirconditionKeyLearnStatu.isKey_mode_cold();
+                key_mode_dehumit = mAirconditionKeyLearnStatu.isKey_mode_dehumit();
+                key_mode_wind = mAirconditionKeyLearnStatu.isKey_mode_wind();
+                key_mode_auto = mAirconditionKeyLearnStatu.isKey_mode_auto();
+                key_windspeed_hight = mAirconditionKeyLearnStatu.isKey_windspeed_hight();
+                key_windspeed_middle = mAirconditionKeyLearnStatu.isKey_windspeed_middle();
+                key_windspeed_low = mAirconditionKeyLearnStatu.isKey_windspeed_low();
+                key_windspeed_auto = mAirconditionKeyLearnStatu.isKey_windspeed_auto();
+                key_winddirection_up = mAirconditionKeyLearnStatu.isKey_winddirection_up();
+                key_winddirection_middle = mAirconditionKeyLearnStatu.isKey_winddirection_middle();
+                key_winddirection_down = mAirconditionKeyLearnStatu.isKey_winddirection_down();
+                key_winddirection_auto = mAirconditionKeyLearnStatu.isKey_winddirection_auto();
+            } else {
+                key_tempature_reduce = false;
+                key_tempature_plus = false;
+                key_power = false;
+                key_mode_hot = false;
+                key_mode_cold = false;
+                key_mode_dehumit = false;
+                key_mode_wind = false;
+                key_mode_auto = false;
+                key_windspeed_hight = false;
+                key_windspeed_middle = false;
+                key_windspeed_low = false;
+                key_windspeed_auto = false;
+                key_winddirection_up = false;
+                key_winddirection_middle = false;
+                key_winddirection_down = false;
+                key_winddirection_auto = false;
+            }
         }
-
     }
 
     private void initEvents() {
@@ -717,7 +943,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 Log.i(TAG, "temptureTemp=" + temptureTemp);
                 temptureProgress = progress;
                 tempature = (int) temptureTemp;
-                textview_temperature.setText("" + tempature+"℃");
+                textview_temperature.setText("" + tempature + "℃");
                 mAirconditionInitKeyValue.setTempature(tempature);
                 mAirconditionInitKeyValue.save();
             }
@@ -771,25 +997,474 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 break;
             case R.id.imageview_temperature_reduce:
                 if (isLearnByHand) {
-                    mRemoteControlManager.setCurrentLearnByHandKeyName(AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_REDUCE);
+                    switch (currentMode){
+                        case 2://制冷
+                            switch (tempature){
+                                case 16:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_16);
+                                    break;
+                                case 17:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_17);
+                                    break;
+                                case 18:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_18);
+                                    break;
+                                case 19:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_19);
+                                    break;
+                                case 20:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_20);
+                                    break;
+                                case 21:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_21);
+                                    break;
+                                case 22:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_22);
+                                    break;
+                                case 23:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_23);
+                                    break;
+                                case 24:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_24);
+                                    break;
+                                case 25:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_25);
+                                    break;
+                                case 26:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_26);
+                                    break;
+                                case 27:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_27);
+                                    break;
+                                case 28:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_28);
+                                    break;
+                                case 29:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_29);
+                                    break;
+                                case 30:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_30);
+                                    break;
+                            }
+                            break;
+                        case 5://制热
+                            switch (tempature){
+                                case 16:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_16);
+                                    break;
+                                case 17:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_17);
+                                    break;
+                                case 18:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_18);
+                                    break;
+                                case 19:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_19);
+                                    break;
+                                case 20:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_20);
+                                    break;
+                                case 21:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_21);
+                                    break;
+                                case 22:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_22);
+                                    break;
+                                case 23:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_23);
+                                    break;
+                                case 24:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_24);
+                                    break;
+                                case 25:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_25);
+                                    break;
+                                case 26:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_26);
+                                    break;
+                                case 27:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_27);
+                                    break;
+                                case 28:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_28);
+                                    break;
+                                case 29:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_29);
+                                    break;
+                                case 30:
+                                    mRemoteControlManager.setCurrentLearnByHandKeyName
+                                            (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_30);
+                                    break;
+                            }
+                            break;
+                    }
+
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_tempature_reduce) {
-                        if (code == null) {
-                            return;
+                        if (!isStartFromExperience) {
+                            if (code == null) {
+                                return;
+                            }
+                            Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
+                            if (tempature > 16) {
+                                func[0] = (byte) (tempature--);
+                                func[5] = (byte) (0x07);
+                                textview_temperature.setText("" + tempature + "℃");
+                                mAirconditionInitKeyValue.setTempature(tempature);
+                                mAirconditionInitKeyValue.save();
+                            }
+                            data = packData();
+                            switch (tempature){
+                                case 16:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_16!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_16);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                            default:
+                                                if(data_key_tempature_hot_16!=null){
+                                                    mRemoteControlManager.sendData(data_key_tempature_hot_16);
+                                                }else{
+
+                                                    mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                                }
+                                                break;
+                                    }
+                                    break;
+                                case 17:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_17!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_17);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_17!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_17);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 18:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_18!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_18);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_18!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_18);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 19:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_19!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_19);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_19!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_19);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 20:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_20!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_20);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_20!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_20);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 21:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_21!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_21);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_21!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_21);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 22:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_22!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_22);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_22!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_22);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 23:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_23!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_23);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_23!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_23);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 24:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_24!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_24);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_24!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_24);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 25:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_25!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_25);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_25!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_25);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 26:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_26!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_26);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_26!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_26);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 27:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_27!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_27);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_27!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_27);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 28:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_28!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_28);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_28!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_28);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 29:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_29!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_29);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_29!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_29);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 30:
+                                    switch (currentMode){
+                                        case 2:
+                                            if(data_key_tempature_cold_30!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_30);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if(data_key_tempature_hot_30!=null){
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_30);
+                                            }else{
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                            }
+
+                            temptureProgress -= 7;
+                            progressBar.setProgress(temptureProgress);
                         }
-                        Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
-                        if (tempature > 19) {
-                            func[0] = (byte) (tempature--);
-                            func[5] = (byte) (0x07);
-                            textview_temperature.setText("" + tempature+"℃");
-                            mAirconditionInitKeyValue.setTempature(tempature);
-                            mAirconditionInitKeyValue.save();
-                        }
-                        data = packData();
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                        temptureProgress -= 7;
-                        progressBar.setProgress(temptureProgress);
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -797,25 +1472,27 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 break;
             case R.id.imageview_temperature_plus:
                 if (isLearnByHand) {
-                    mRemoteControlManager.setCurrentLearnByHandKeyName(AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_ADD);
+                    //mRemoteControlManager.setCurrentLearnByHandKeyName(AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_ADD);
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_tempature_plus) {
-                        if (code == null) {
-                            return;
+                        if (!isStartFromExperience) {
+                            if (code == null) {
+                                return;
+                            }
+                            Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
+                            if (tempature < 30) {
+                                func[0] = (byte) (tempature++);
+                                func[5] = (byte) (0x06);
+                                textview_temperature.setText("" + tempature + "℃");
+                                mAirconditionInitKeyValue.setTempature(tempature);
+                                mAirconditionInitKeyValue.save();
+                            }
+                            data = packData();
+                            mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                            temptureProgress += 7;
+                            progressBar.setProgress(temptureProgress);
                         }
-                        Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
-                        if (tempature < 30) {
-                            func[0] = (byte) (tempature++);
-                            func[5] = (byte) (0x06);
-                            textview_temperature.setText("" + tempature+"℃");
-                            mAirconditionInitKeyValue.setTempature(tempature);
-                            mAirconditionInitKeyValue.save();
-                        }
-                        data = packData();
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                        temptureProgress += 7;
-                        progressBar.setProgress(temptureProgress);
                     } else {
                         mKeynotlearnDialog.show();
                     }
@@ -863,7 +1540,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_power) {
-                        Log.i(TAG, "code=" + code + "bytelength=" + code.getBytes().length + "length2=" + DataExchange.dbString_ToBytes(code).length);
                         if (code == null) {
                             return;
                         }
@@ -874,24 +1550,49 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             power = (byte) 0x01;
                             mAirconditionInitKeyValue.setKeyPower(0x01);
                             mAirconditionInitKeyValue.save();
-                            layout_top_content.setBackgroundResource(R.drawable.airconditioningoff);
+                            setAirconditionEnable();
+
                         } else if (power == 0x01) {
                             power = (byte) 0x0;
                             mAirconditionInitKeyValue.setKeyPower(0x00);
                             mAirconditionInitKeyValue.save();
-                            layout_top_content.setBackgroundResource(R.drawable.airconditioningon);
+                            setAirconditionDisable();
+
+
                         }
-                        data = packData();
-                        mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                        layout_top_content.setBackgroundResource(R.drawable.airconditioningon);
+                        if (!isStartFromExperience) {
+                            data = packData();
+                            if (data_key_power != null) {
+                                mRemoteControlManager.sendData(data_key_power);
+                            } else {
+                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                            }
+                            ;
+                        }
                     } else {
                         mKeynotlearnDialog.show();
                     }
                 }
-
-
                 break;
         }
+    }
+
+    private void setAirconditionDisable() {
+        layout_top_content.setBackgroundResource(R.drawable.airconditioningoff);
+        imageview_model.setEnabled(false);
+        imageview_wind_speed.setEnabled(false);
+        imageview_wind_direction.setEnabled(false);
+        imageview_temperature_reduce.setEnabled(false);
+        imageview_temperature_plus.setEnabled(false);
+    }
+
+    private void setAirconditionEnable() {
+        layout_top_content.setBackgroundResource(R.drawable.airconditioningon);
+        imageview_model.setEnabled(true);
+        imageview_wind_speed.setEnabled(true);
+        imageview_wind_direction.setEnabled(true);
+        imageview_temperature_reduce.setEnabled(true);
+        imageview_temperature_plus.setEnabled(true);
     }
 
     byte[] func = new byte[7];

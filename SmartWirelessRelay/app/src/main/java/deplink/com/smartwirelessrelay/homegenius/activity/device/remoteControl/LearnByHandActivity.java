@@ -13,6 +13,8 @@ import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyCode;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.remotecontrol.TvboxKeyCode;
@@ -87,39 +89,576 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
             String codeData = resultQueryOptions.getData();
             Log.i(TAG, "学习结果=" + codeData);
             switch (currentLearnByHandType) {
+
                 case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
+                    AirconditionKeyCode mAirconditionKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyCode.class);
+                    if (mAirconditionKeyCode == null) {
+                        mAirconditionKeyCode = new AirconditionKeyCode();
+                    }
+                    AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyLearnStatu.class);
+                    if (mAirconditionKeyLearnStatu == null) {
+                        mAirconditionKeyLearnStatu = new AirconditionKeyLearnStatu();
+                    }
                     switch (currentLearnByHand) {
-                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_ADD:
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_16:
+                            mAirconditionKeyCode.setKey_tempature_hot_16(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
                             break;
-                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_REDUCE:
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_17:
+                            mAirconditionKeyCode.setKey_tempature_hot_17(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
                             break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_18:
+                            mAirconditionKeyCode.setKey_tempature_hot_18(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_19:
+                            mAirconditionKeyCode.setKey_tempature_hot_19(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_20:
+                            mAirconditionKeyCode.setKey_tempature_hot_20(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_21:
+                            mAirconditionKeyCode.setKey_tempature_hot_21(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_22:
+                            mAirconditionKeyCode.setKey_tempature_hot_22(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_23:
+                            mAirconditionKeyCode.setKey_tempature_hot_23(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_24:
+                            mAirconditionKeyCode.setKey_tempature_hot_24(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_25:
+                            mAirconditionKeyCode.setKey_tempature_hot_25(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_26:
+                            mAirconditionKeyCode.setKey_tempature_hot_26(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_27:
+                            mAirconditionKeyCode.setKey_tempature_hot_27(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_28:
+                            mAirconditionKeyCode.setKey_tempature_hot_28(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_29:
+                            mAirconditionKeyCode.setKey_tempature_hot_29(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_30:
+                            mAirconditionKeyCode.setKey_tempature_hot_30(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_16:
+                            mAirconditionKeyCode.setKey_tempature_cold_16(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_17:
+                            mAirconditionKeyCode.setKey_tempature_cold_17(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_18:
+                            mAirconditionKeyCode.setKey_tempature_cold_18(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_19:
+                            mAirconditionKeyCode.setKey_tempature_cold_19(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_20:
+                            mAirconditionKeyCode.setKey_tempature_cold_20(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_21:
+                            mAirconditionKeyCode.setKey_tempature_cold_21(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_22:
+                            mAirconditionKeyCode.setKey_tempature_cold_22(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_23:
+                            mAirconditionKeyCode.setKey_tempature_cold_23(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_24:
+                            mAirconditionKeyCode.setKey_tempature_cold_24(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_25:
+                            mAirconditionKeyCode.setKey_tempature_cold_25(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_26:
+                            mAirconditionKeyCode.setKey_tempature_cold_26(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_27:
+                            mAirconditionKeyCode.setKey_tempature_cold_27(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_28:
+                            mAirconditionKeyCode.setKey_tempature_cold_28(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_29:
+                            mAirconditionKeyCode.setKey_tempature_cold_29(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+                        case AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_30:
+                            mAirconditionKeyCode.setKey_tempature_cold_30(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_tempature_plus(true);
+                            mAirconditionKeyLearnStatu.setKey_tempature_reduce(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键已学习");
+                                }
+                            });
+                            break;
+
+
                         case AirKeyNameConstant.KEYNAME.KEYNAME_POWER_OPEN:
+                            mAirconditionKeyCode.setKey_power(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_power(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"开关已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_DIRECTION_AUTO:
+                            mAirconditionKeyCode.setKey_winddirection_auto(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_winddirection_auto(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"自动风向已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_DIRECTION_DOWN:
+                            mAirconditionKeyCode.setKey_winddirection_down(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_winddirection_down(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"风向下已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_DIRECTION_MIDDLE:
+                            mAirconditionKeyCode.setKey_winddirection_middle(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_winddirection_middle(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"风向中已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_DIRECTION_UP:
+                            mAirconditionKeyCode.setKey_winddirection_up(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_winddirection_up(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"风向上已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_AUTO:
+                            mAirconditionKeyCode.setKey_windspeed_auto(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_windspeed_auto(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"自动风量已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_LOW:
+                            mAirconditionKeyCode.setKey_windspeed_low(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_windspeed_low(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"低风已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_MIDDLE:
+                            mAirconditionKeyCode.setKey_windspeed_middle(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_windspeed_middle(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"中风已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_WIND_HIGH:
+                            mAirconditionKeyCode.setKey_windspeed_hight(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_windspeed_hight(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"高风已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_MODE_HOT:
+                            mAirconditionKeyCode.setKey_mode_hot(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_mode_hot(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"制热模式已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_MODE_COLD:
+                            mAirconditionKeyCode.setKey_mode_cold(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_mode_cold(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"制冷模式已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_MODE_DEHUMIT:
+                            mAirconditionKeyCode.setKey_mode_dehumit(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_mode_dehumit(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"除湿模式已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_MODE_WIND:
+                            mAirconditionKeyCode.setKey_mode_wind(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_mode_wind(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"送风模式已学习");
+                                }
+                            });
                             break;
                         case AirKeyNameConstant.KEYNAME.KEYNAME_MODE_AUTO:
+                            mAirconditionKeyCode.setKey_mode_auto(codeData);
+                            mAirconditionKeyCode.save();
+                            mAirconditionKeyLearnStatu.setKey_mode_auto(true);
+                            mAirconditionKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"自动模式已学习");
+                                }
+                            });
                             break;
 
                     }

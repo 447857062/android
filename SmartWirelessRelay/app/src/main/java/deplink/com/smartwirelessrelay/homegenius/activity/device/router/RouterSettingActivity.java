@@ -26,7 +26,6 @@ import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
-import java.io.IOException;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -444,8 +443,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                     try {
                         String text = response.errorBody().string();
                         Gson gson = new Gson();
-                        ErrorResponse errorResponse = null;
-
+                        ErrorResponse errorResponse;
                         errorResponse = gson.fromJson(text, ErrorResponse.class);
                         switch (errorResponse.getErrcode()) {
                             case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_TOKEN:
@@ -492,7 +490,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                                 break;
 
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     ToastSingleShow.showText(RouterSettingActivity.this, errorMsg);

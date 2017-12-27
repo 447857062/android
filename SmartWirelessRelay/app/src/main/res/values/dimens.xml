@@ -39,6 +39,7 @@
     <!--新app ui尺寸-->
     <!--字体大小-->
     <dimen name="text_size_aircontrol_temp">48dp</dimen>
+    <dimen name="text_size_home_tempature">34dp</dimen>
     <dimen name="layout_top_bar_item_text_size">18dp</dimen>
     <dimen name="delete_textview_size">16dp</dimen>
     <dimen name="text_size_small">14dp</dimen>
@@ -225,11 +226,11 @@
     <dimen name="first_frame_content_margin_left_right">48dp</dimen>
     <dimen name="basecontrol_frame_content_margin_top">28dp</dimen>
     <dimen name="alllearn_button_width_height">222dp</dimen>
-    <dimen name="learn_button_updown_width">158dp</dimen>
-    <dimen name="learn_button_updown_height">77dp</dimen>
-    <dimen name="learn_button_leftright_width">77dp</dimen>
-    <dimen name="learn_button_leftright_height">158dp</dimen>
-    <dimen name="learn_ok_button_width_height">98dp</dimen>
+    <dimen name="learn_button_updown_width">157dp</dimen>
+    <dimen name="learn_button_updown_height">76dp</dimen>
+    <dimen name="learn_button_leftright_width">76dp</dimen>
+    <dimen name="learn_button_leftright_height">157dp</dimen>
+    <dimen name="learn_ok_button_width_height">99dp</dimen>
     <dimen name="learn_ch_volum_button_width_height">43dp</dimen>
     <dimen name="learn_ch_volum_button_marginleft_to_other">30dp</dimen>
     <dimen name="learn_mute_menu_return_button_width_height">57dp</dimen>

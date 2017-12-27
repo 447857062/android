@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -414,7 +414,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                 break;
             case R.id.button_ng:
                 iscanceled = true;
-                currentTestCodeIndex = 0;
                 layout_device_response.setVisibility(View.GONE);
                 break;
             case R.id.button_ok:
@@ -433,7 +432,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 saveTvKeyLearnStatu();
                                 switchActivity();
                             }
-
                             @Override
                             public void onFailure(Call<QueryRCCodeResponse> call, Throwable t) {
 
@@ -445,22 +443,8 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载空调码表=" + response.body().getValue().getCode() + "组号：" + response.body().getValue().getGroup());
-
-                                AirconditionKeyCode mAirconditionKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyCode.class);
-                                if (mAirconditionKeyCode == null) {
-                                    mAirconditionKeyCode = new AirconditionKeyCode();
-                                }
-                                mAirconditionKeyCode.setGroupData(response.body().getValue().getGroup());
-                                mAirconditionKeyCode.setKeycode(response.body().getValue().getCode());
-                                mAirconditionKeyCode.setmAirconditionUid(currentSelectDeviceUid);
-                                mAirconditionKeyCode.save();
-                                AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyLearnStatu.class);
-                                if (mAirconditionKeyLearnStatu == null) {
-                                    mAirconditionKeyLearnStatu = new AirconditionKeyLearnStatu();
-                                }
-                                mAirconditionKeyLearnStatu.seAllKeyLearned();
-                                mAirconditionKeyLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
-                                mAirconditionKeyLearnStatu.save();
+                                saveAirConditionKeycode(response);
+                                saveAirRemoteControlLearnStatus();
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
                                     if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
                                         mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
@@ -526,6 +510,27 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
 
         }
+    }
+
+    private void saveAirConditionKeycode(Response<QueryRCCodeResponse> response) {
+        AirconditionKeyCode mAirconditionKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyCode.class);
+        if (mAirconditionKeyCode == null) {
+            mAirconditionKeyCode = new AirconditionKeyCode();
+        }
+        mAirconditionKeyCode.setGroupData(response.body().getValue().getGroup());
+        mAirconditionKeyCode.setKeycode(response.body().getValue().getCode());
+        mAirconditionKeyCode.setmAirconditionUid(currentSelectDeviceUid);
+        mAirconditionKeyCode.save();
+    }
+
+    private void saveAirRemoteControlLearnStatus() {
+        AirconditionKeyLearnStatu mAirconditionKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyLearnStatu.class);
+        if (mAirconditionKeyLearnStatu == null) {
+            mAirconditionKeyLearnStatu = new AirconditionKeyLearnStatu();
+        }
+        mAirconditionKeyLearnStatu.seAllKeyLearned();
+        mAirconditionKeyLearnStatu.setmAirconditionUid(currentSelectDeviceUid);
+        mAirconditionKeyLearnStatu.save();
     }
 
     private void saveTvBoxKeyLearnStatus() {

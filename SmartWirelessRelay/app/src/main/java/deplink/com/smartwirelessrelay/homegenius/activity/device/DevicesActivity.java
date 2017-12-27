@@ -209,6 +209,23 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                                     break;
                             }
                             break;
+                        case "SmartWallSwitch4":
+                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
+                            break;
+                        case "SmartWallSwitch3":
+                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DevicesActivity.this, SwitchThreeActivity.class));
+                            break;
+                        case "SmartWallSwitch2":
+                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DevicesActivity.this, SwitchTwoActivity.class));
+                            break;
+                        case "SmartWallSwitch1":
+                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
+                            break;
+
                         case "智能门铃":
                             startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
                             break;

@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="layout_item_content_height">44dp</dimen>
+    <dimen name="title_bar_content_margin_top">20dp</dimen>
+    <dimen name="title_bar_height">64dp</dimen>
+</resources>

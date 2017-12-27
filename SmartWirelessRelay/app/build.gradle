@@ -18,16 +18,17 @@ android {
     }
     productFlavors {
     }
+    sourceSets{
+        main{
+            jniLibs.srcDir 'libs'
+            jni.srcDirs=[]
+        }
+    }
 }
 repositories {
     maven { url "https://jitpack.io" }
 }
-sourceSets{
-    main{
-        jniLibs.srcDir 'libs'
-        jni.srcDirs=[]
-    }
-}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'

@@ -14,12 +14,30 @@
         android:background="@color/title_blue_bg">
 
         <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
-
+            <ImageView
+                android:id="@+id/iamgeview_position_icon"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/positioningicon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_toRightOf="@+id/iamgeview_position_icon"
+                android:id="@+id/textview_city"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_small" />
             <TextView
                 android:id="@+id/textview_title"
                 android:layout_width="wrap_content"
@@ -43,13 +61,87 @@
     </RelativeLayout>
 
 
+    <RelativeLayout
+        android:layout_below="@+id/layout_title"
+        android:id="@+id/layout_weather"
+        android:alpha="0.9"
+       android:background="@color/title_blue_bg"
+        android:layout_width="match_parent"
+        android:layout_height="75dp">
+        <RelativeLayout
+            android:layout_toLeftOf="@+id/imageview_weather_dirver"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/layout_tempature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/textview_tempature"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:textSize="@dimen/text_size_home_tempature"
+                    android:textColor="@color/white"
+                    android:text="22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/textview_tempature"
+                    android:gravity="center_horizontal"
+                    android:textSize="@dimen/delete_textview_size"
+                    android:textColor="@color/white"
+                    android:text="℃"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
+            </RelativeLayout>
+
+            <TextView
+                android:layout_below="@+id/layout_tempature"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="@dimen/delete_textview_size"
+                android:textColor="@color/white"
+                android:text="室外温度"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <ImageView
+            android:id="@+id/imageview_weather_dirver"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/weatherdividers"
+            android:layout_centerVertical="true"
+            android:scaleType="centerInside"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:layout_toRightOf="@+id/imageview_weather_dirver"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textview_pm25"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="@dimen/text_size_home_tempature"
+                android:textColor="@color/white"
+                android:text="23"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_below="@+id/textview_pm25"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="@dimen/delete_textview_size"
+                android:textColor="@color/white"
+                android:text="PM2.5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </RelativeLayout>
     <deplink.com.smartwirelessrelay.homegenius.view.MyScrollView
         android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttom_layout"
-        android:layout_below="@+id/layout_title">
+        android:layout_below="@+id/layout_weather">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -61,7 +153,7 @@
                 android:layout_height="@dimen/home_page_roomselect_top_height"
                 android:layout_marginLeft="@dimen/layout_content_margin_left_right"
                 android:layout_marginRight="@dimen/layout_content_margin_left_right"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="25dp"
                 android:alpha="1"
                 android:background="@drawable/homepage_halfrectangle_top_background"
                 android:gravity="center_vertical">

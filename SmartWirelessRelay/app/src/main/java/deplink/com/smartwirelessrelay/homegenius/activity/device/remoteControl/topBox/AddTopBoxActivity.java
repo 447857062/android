@@ -18,7 +18,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryBandResponse;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AddRemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.AddRemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 import deplink.com.smartwirelessrelay.homegenius.view.sortlistview.CharacterParser;
