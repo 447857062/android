@@ -10,10 +10,22 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            storeFile file("C:/Users/Administrator/Desktop/工作/deplink.jks")
+            storePassword "17033Bfe50818aAd"
+            keyAlias "deplink"
+            keyPassword "40A06b4350878D1"
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     productFlavors {
@@ -24,6 +36,7 @@ android {
             jni.srcDirs=[]
         }
     }
+
 }
 repositories {
     maven { url "https://jitpack.io" }

@@ -90,6 +90,7 @@
                     android:layout_toRightOf="@+id/textview_tempature"
                     android:gravity="center_horizontal"
                     android:textSize="@dimen/delete_textview_size"
+                    android:visibility="gone"
                     android:textColor="@color/white"
                     android:text="℃"
                     android:layout_width="wrap_content"

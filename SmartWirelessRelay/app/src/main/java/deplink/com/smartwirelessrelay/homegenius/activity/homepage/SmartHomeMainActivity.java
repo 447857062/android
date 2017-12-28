@@ -34,6 +34,7 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsPm25;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
 import com.google.gson.JsonObject;
 
@@ -107,7 +108,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private TextView textview_city;
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
-
+    private TextView textview_tempature;
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -121,23 +122,64 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             //String district = location.getDistrict();    //获取区县
             // String street = location.getStreet();    //获取街道信息
             Log.i(TAG, "city=" + city);
-            Log.i(TAG, "province=" + city);
-           // Log.i(TAG, "country=" + city);
-            city="深圳市";
-            Log.i(TAG,"city.substring(city.length()-1,city.length())="+city.substring(city.length()-1,city.length()));
-           if(city.substring(city.length()-1,city.length()).equals("市")){
-               city=city.substring(0,city.length()-1);
-           }
-            Log.i(TAG, "city=" + city);
-            textview_city.setText(city);
-            try {
-                cityCode = getCityCodeFromCityName("广东", city);
-                Log.i(TAG, "cityCode=" + cityCode);
-                initWaetherData();
-            } catch (XmlPullParserException | IOException e) {
-                e.printStackTrace();
+            Log.i(TAG, "province=" + province);
+            if(city!=null && province!=null){
+                Log.i(TAG,"city.substring(city.length()-1,city.length())="+city.substring(city.length()-1,city.length()));
+                if(city.substring(city.length()-1,city.length()).equals("市")){
+                    city=city.substring(0,city.length()-1);
+                }
+                if(province.substring(province.length()-1,province.length()).equals("省")){
+                    province=province.substring(0,province.length()-1);
+                }
+                Log.i(TAG, "city=" + city);
+                textview_city.setText(city);
+                try {
+                    cityCode = getCityCodeFromCityName(province, city);
+                    Log.i(TAG, "cityCode=" + cityCode);
+                    initWaetherData();
+                    initPm25data(city);
+                } catch (XmlPullParserException | IOException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
+    }
+
+    private void initPm25data(final String city) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RestfulToolsPm25.getSingleton().getPm25(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        Log.i(TAG,"response.code()="+response.code());
+                        if (response.code() == 200) {
+                            JsonObject jsonObjectGson = response.body();
+                            Log.i(TAG, "pm25=" + jsonObjectGson.toString());
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonObjectGson.toString());
+                                JSONObject pm25Object = jsonObject
+                                        .getJSONObject("pm2_5");
+                                Message message = new Message();
+                                message.obj = pm25Object;
+                                handler.sendMessage(message);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                    }
+                }, city);
+
+            }
+        }).start();
     }
 
     public String getCityCodeFromCityName(String provinceName, String cityName) throws XmlPullParserException, IOException {
@@ -226,7 +268,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         //注册监听函数
         LocationClientOption option = new LocationClientOption();
 
-        // option.setIsNeedAddress(true);
+        option.setIsNeedAddress(true);
 //可选，是否需要地址信息，默认为不需要，即参数为false
 //如果开发者需要获得当前点的地址信息，此处必须为true
         mLocationClient.setLocOption(option);
@@ -261,7 +303,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                                 handler.sendMessage(message);
 
                             } catch (JSONException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
 
@@ -286,11 +327,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             super.handleMessage(msg);
             JSONObject object = (JSONObject) msg.obj;
             try {
-                //  Log.i(TAG,"城市天气："+object.getString("city"));
-               /* txt_weather_city.setText(object.getString("city"));
-                txt_weather_temp.setText(object.getString("temp2") + "/"
-                        + object.getString("temp1"));
-                txt_weather_detail.setText(object.getString("weather"));*/
+                textview_tempature.setText(object.getString("temp2"));
+
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -507,6 +545,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
         textview_city = (TextView) findViewById(R.id.textview_city);
+        textview_tempature = (TextView) findViewById(R.id.textview_tempature);
 
         layout_roomselect_normal = (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
         layout_roomselect_changed_ype = (NonScrollableListView) findViewById(R.id.layout_roomselect_changed_ype);

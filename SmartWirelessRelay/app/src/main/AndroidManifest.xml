@@ -61,7 +61,9 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="A7rCS1P20vbiBgG6Fg57cStFR67RlT53"></meta-data>
+            android:value="UNM3ippSYuEo7Zn0xtxrfuhHUlaQK00r">
+
+        </meta-data>
 
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity"
