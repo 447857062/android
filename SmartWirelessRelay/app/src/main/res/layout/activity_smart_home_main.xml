@@ -179,18 +179,24 @@
                     android:text="房间"
                     android:textColor="@color/room_type_text"
                     android:textSize="@dimen/text_size_small" />
-
-                <TextView
+                <FrameLayout
                     android:id="@+id/textview_change_show_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_width="48dp"
                     android:layout_marginRight="@dimen/layout_content_margin_left_right"
-                    android:gravity="center_vertical|right"
-                    android:text="视图切换"
-                    android:textColor="@color/room_type_text"
-                    android:textSize="@dimen/text_size_small" />
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_gravity="right|center_vertical"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_switchview"
+                        android:gravity="center_vertical|right"
+                        android:textColor="@color/room_type_text"
+                        android:textSize="@dimen/text_size_small" />
+                </FrameLayout>
+
 
             </RelativeLayout>
 

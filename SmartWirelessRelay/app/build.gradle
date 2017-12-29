@@ -39,7 +39,12 @@ android {
 
 }
 repositories {
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
     maven { url "https://jitpack.io" }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
@@ -64,5 +69,9 @@ dependencies {
     compile project(':pullToRefresh')
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile files('libs/BaiduLBS_Android.jar')
+    compile name: 'SMSSDK-2.1.1', ext: 'aar'
+    compile files('libs/MobCommons-2016.0928.1455.jar')
+    compile files('libs/MobTools-2016.0928.1455.jar')
+    compile 'com.zxy.android:tiny:0.1.0'
 
 }

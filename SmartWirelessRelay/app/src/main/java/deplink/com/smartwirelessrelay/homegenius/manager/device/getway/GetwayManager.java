@@ -265,4 +265,5 @@ public class GetwayManager implements LocalConnecteListener {
     public void onGetalarmRecord(List<Info> alarmList) {
 
     }
+
 }

@@ -27,6 +27,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
     private Button button_switch_3;
     private Button button_switch_right;
     private SmartSwitchManager mSmartSwitchManager;
+    private Button button_all_switch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         button_switch_2.setOnClickListener(this);
         button_switch_3.setOnClickListener(this);
         button_switch_right.setOnClickListener(this);
+        button_all_switch.setOnClickListener(this);
 
     }
 
@@ -60,6 +62,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         switch_three_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_three_open();
         switch_four_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_four_open();
         setSwitchImageviewBackground();
+        mSmartSwitchManager.querySwitchStatus("query");
     }
 
     private void setSwitchImageviewBackground() {
@@ -87,6 +90,11 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         } else {
             button_switch_right.setBackgroundResource(R.color.transparent);
         }
+        if (switch_one_open && switch_two_open && switch_three_open && switch_four_open) {
+            button_all_switch.setBackgroundResource(R.drawable.noallswitch);
+        } else {
+            button_all_switch.setBackgroundResource(R.drawable.allswitch);
+        }
     }
 
     private void initDatas() {
@@ -105,17 +113,26 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         button_switch_2 = (Button) findViewById(R.id.button_switch_2);
         button_switch_3 = (Button) findViewById(R.id.button_switch_3);
         button_switch_right = (Button) findViewById(R.id.button_switch_right);
+        button_all_switch = (Button) findViewById(R.id.button_all_switch);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mSmartSwitchManager.removeSmartSwitchListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.button_all_switch:
+                if (switch_one_open || switch_two_open || switch_three_open || switch_four_open) {
+                    mSmartSwitchManager.setSwitchCommand("close_all");
+                } else {
+                    mSmartSwitchManager.setSwitchCommand("open_all");
+                }
+                break;
             case R.id.button_switch_left:
                 Log.i(TAG, "switch_one_open=" + switch_one_open);
                 if (switch_one_open) {
@@ -166,50 +183,77 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
     public void responseResult(String result) {
         Gson gson = new Gson();
         OpResult mOpResult = gson.fromJson(result, OpResult.class);
-        if (mOpResult != null) {
-            switch (mOpResult.getCommand()) {
-                case "close1":
-                    switch_one_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
-                    break;
-                case "close2":
-                    switch_two_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
-                    break;
-                case "close3":
-                    switch_three_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
-                    break;
-                case "close4":
-                    switch_four_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
-                    break;
-                case "open1":
-                    switch_one_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
-                    break;
-                case "open2":
-                    switch_two_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
-                    break;
-                case "open3":
-                    switch_three_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
-                    break;
-                case "open4":
-                    switch_four_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
-                    break;
+        String  mSwitchStatus=mOpResult.getSwitchStatus();
+        String[] sourceStrArray = mSwitchStatus.split(" ",4);
+        Log.i(TAG,"sourceStrArray[0]"+sourceStrArray[0]);
+        Log.i(TAG,"sourceStrArray[1]"+sourceStrArray[1]);
+        Log.i(TAG,"sourceStrArray[2]"+sourceStrArray[2]);
+        Log.i(TAG,"sourceStrArray[3]"+sourceStrArray[3]);
+            if(sourceStrArray[0].equals("01")){
+                switch_one_open=true;
+            }else if(sourceStrArray[0].equals("02")){
+                switch_one_open=false;
             }
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setSwitchImageviewBackground();
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
-                }
-            });
-
-
+            mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+            if(sourceStrArray[1].equals("01")){
+                switch_two_open=true;
+            }else if(sourceStrArray[1].equals("02")){
+                switch_two_open=false;
+            }
+            mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
+            if(sourceStrArray[2].equals("01")){
+                switch_three_open=true;
+            }else if(sourceStrArray[2].equals("02")){
+                switch_three_open=false;
+            }
+            mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
+            if(sourceStrArray[3].equals("01")){
+                switch_four_open=true;
+            }else if(sourceStrArray[3].equals("02")){
+                switch_four_open=false;
+            }
+            mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
+        switch (mOpResult.getCommand()) {
+            case "close1":
+                switch_one_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                break;
+            case "close2":
+                switch_two_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
+                break;
+            case "close3":
+                switch_three_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
+                break;
+            case "close4":
+                switch_four_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
+                break;
+            case "open1":
+                switch_one_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                break;
+            case "open2":
+                switch_two_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
+                break;
+            case "open3":
+                switch_three_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
+                break;
+            case "open4":
+                switch_four_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
+                break;
         }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setSwitchImageviewBackground();
+                mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
+            }
+        });
+
     }
 }

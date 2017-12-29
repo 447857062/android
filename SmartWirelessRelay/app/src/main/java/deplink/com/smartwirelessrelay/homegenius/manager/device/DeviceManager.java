@@ -191,6 +191,7 @@ public class DeviceManager implements LocalConnecteListener {
         SmartDev dev = new SmartDev();
         dev.setUid(smartDevice.getAd());
         dev.setOrg(smartDevice.getOrg());
+        Log.i(TAG,"bindSmartDevList type="+smartDevice.getTp());
         dev.setType(smartDevice.getTp());
         dev.setVer(smartDevice.getVer());
         //设备列表添加一个设备

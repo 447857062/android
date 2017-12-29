@@ -53,4 +53,5 @@ public class ReportAlertRecord implements Serializable {
     public void setInfo(List<deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info> info) {
         Info = info;
     }
+
 }

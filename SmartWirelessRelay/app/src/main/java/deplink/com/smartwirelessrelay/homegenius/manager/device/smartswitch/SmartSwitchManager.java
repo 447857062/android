@@ -100,7 +100,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
         }
     }
     /**
-     * 查询开锁记录
+     *
      */
     public void setSwitchCommand(String cmd) {
 
@@ -110,6 +110,23 @@ public class SmartSwitchManager implements LocalConnecteListener{
         queryCmd.setCommand(cmd);
         queryCmd.setSmartUid(currentSelectSmartDevice.getUid());
         Log.i(TAG, "设置开关smartUid=" + currentSelectSmartDevice.getUid());
+        queryCmd.setTimestamp();
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        packet.packSetCmdData(text.getBytes(), currentSelectSmartDevice.getUid());
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }
+    public void querySwitchStatus(String cmd) {
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("SET");
+        queryCmd.setMethod("SmartWallSwitch");
+        queryCmd.setCommand(cmd);
+        queryCmd.setSmartUid(currentSelectSmartDevice.getUid());
         queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
@@ -238,4 +255,5 @@ public class SmartSwitchManager implements LocalConnecteListener{
     public void onGetalarmRecord(List<Info> alarmList) {
 
     }
+
 }

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_title"
-        android:background="@color/white_background">
+        android:background="@drawable/button_delete_background">
 
         <RelativeLayout
             android:id="@+id/layout_user_header_image"
@@ -33,18 +33,16 @@
                 android:layout_centerVertical="true"
                 android:text="头像" />
 
-
-
                 <deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView
                     android:id="@+id/user_head_portrait"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/imageview_useriamge_arrorright"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/defaultavatar"
                     app:border_color="@color/white"
-                    app:border_width="0dp" />
+                    app:border_width="2dp" />
 
                 <ImageView
                     android:id="@+id/imageview_useriamge_arrorright"
@@ -63,7 +61,7 @@
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_user_header_image"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -75,28 +73,27 @@
                 android:layout_centerVertical="true"
                 android:text="昵称" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="150dp"
-                android:layout_toRightOf="@+id/textview_nickname_left">
+
 
                 <TextView
+                    android:layout_toLeftOf="@+id/imageview_nickname_arrorright"
                     android:id="@+id/textview_show_nicknamke"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="10dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:minWidth="100dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/huise"
+                    android:textSize="@dimen/text_size_small"
                     android:text="Clamdown" />
 
                 <ImageView
+                    android:id="@+id/imageview_nickname_arrorright"
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                    android:layout_alignParentRight="true"
                     android:src="@drawable/directionicon" />
-            </RelativeLayout>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -105,7 +102,7 @@
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_update_user_nickname"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -117,28 +114,28 @@
                 android:layout_centerVertical="true"
                 android:text="性别" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="150dp"
-                android:layout_toRightOf="@+id/textview_sex_left">
+
 
                 <TextView
+                    android:layout_toLeftOf="@+id/imageview_sex_arrorright"
                     android:id="@+id/textview_show_sex"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
                     android:layout_centerVertical="true"
-                    android:minWidth="100dp"
+                    android:textColor="@color/huise"
+                    android:textSize="@dimen/text_size_small"
                     android:text="女" />
 
                 <ImageView
+                    android:id="@+id/imageview_sex_arrorright"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/directionicon" />
-            </RelativeLayout>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -147,7 +144,7 @@
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_update_sex"
             android:layout_marginTop="@dimen/list_item_textview_margin_top"
-            android:background="@color/white"
+            android:background="@drawable/button_delete_background"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 
@@ -159,28 +156,28 @@
                 android:layout_centerVertical="true"
                 android:text="生日" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="150dp"
-                android:layout_toRightOf="@+id/textview_birthday_left">
+
 
                 <TextView
+                    android:layout_toLeftOf="@+id/imageview_birthday_arrorright"
                     android:id="@+id/textview_show_birthday"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="10dp"
                     android:layout_centerVertical="true"
-                    android:minWidth="100dp"
+                    android:textColor="@color/huise"
+                    android:textSize="@dimen/text_size_small"
                     android:text="未设置" />
 
                 <ImageView
+                    android:id="@+id/imageview_birthday_arrorright"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/directionicon" />
-            </RelativeLayout>
+
         </RelativeLayout>
     </RelativeLayout>
 

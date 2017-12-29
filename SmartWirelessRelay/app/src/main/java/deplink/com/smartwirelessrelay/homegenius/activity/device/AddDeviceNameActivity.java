@@ -40,7 +40,6 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
-import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.ConfigRemoteControlDialog;
@@ -254,7 +253,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             switch (msg.what) {
                 case MSG_ADD_DEVICE_RESULT:
                     boolean success = (boolean) msg.obj;
-                    //TODO 更新房间表
                     if (success) {
                         Toast.makeText(AddDeviceNameActivity.this, "添加设备" + deviceType + "成功", Toast.LENGTH_SHORT).show();
                     } else {
@@ -338,12 +336,14 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     }
 
     private boolean isSmartDeviceAddSuccess(DeviceList aDeviceList) {
+      boolean result=false;
         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-            if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                return true;
+            Log.i(TAG,"isSmartDeviceAddSuccess Uid()="+aDeviceList.getSmartDev().get(i).getUid()+"device.getAd()="+device.getAd());
+            if (aDeviceList.getSmartDev().get(i).getUid().equalsIgnoreCase(device.getAd())) {
+                result= true;
             }
         }
-        return false;
+        return result;
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -34,9 +35,10 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.deplink.sdk.android.sdk.rest.RestfulToolsPm25;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,12 +46,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Pm25Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
@@ -95,11 +104,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private ExperienceCenterListAdapter mExperienceCenterListAdapter;
     private List<ExperienceCenterDevice> mExperienceCenterDeviceList;
     private RelativeLayout layout_experience_center_top;
-    private TextView textview_change_show_type;
+    private FrameLayout textview_change_show_type;
     private TextView textview_home;
     private TextView textview_device;
     private TextView textview_room;
     private TextView textview_mine;
+    private TextView textview_pm25;
 
     private HomepageRoomShowTypeChangedViewAdapter mRoomSelectTypeChangedAdapter;
     private SDKManager manager;
@@ -109,6 +119,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
     private TextView textview_tempature;
+
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -116,28 +127,30 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             //以下只列举部分获取地址相关的结果信息
             //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
             // String addr = location.getAddrStr();    //获取详细地址信息
-           // String country = location.getCountry();    //获取国家
+            // String country = location.getCountry();    //获取国家
             String province = location.getProvince();    //获取省份
             String city = location.getCity();    //获取城市
             //String district = location.getDistrict();    //获取区县
             // String street = location.getStreet();    //获取街道信息
             Log.i(TAG, "city=" + city);
             Log.i(TAG, "province=" + province);
-            if(city!=null && province!=null){
-                Log.i(TAG,"city.substring(city.length()-1,city.length())="+city.substring(city.length()-1,city.length()));
-                if(city.substring(city.length()-1,city.length()).equals("市")){
-                    city=city.substring(0,city.length()-1);
+            if (city != null && province != null) {
+                Log.i(TAG, "city.substring(city.length()-1,city.length())=" + city.substring(city.length() - 1, city.length()));
+                if (city.substring(city.length() - 1, city.length()).equals("市")) {
+                    city = city.substring(0, city.length() - 1);
                 }
-                if(province.substring(province.length()-1,province.length()).equals("省")){
-                    province=province.substring(0,province.length()-1);
+                if (province.substring(province.length() - 1, province.length()).equals("省")) {
+                    province = province.substring(0, province.length() - 1);
                 }
                 Log.i(TAG, "city=" + city);
                 textview_city.setText(city);
+
                 try {
                     cityCode = getCityCodeFromCityName(province, city);
                     Log.i(TAG, "cityCode=" + cityCode);
                     initWaetherData();
-                    initPm25data(city);
+                    sendRequestWithHttpClient(city);
+
                 } catch (XmlPullParserException | IOException e) {
                     e.printStackTrace();
                 }
@@ -146,41 +159,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private void initPm25data(final String city) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RestfulToolsPm25.getSingleton().getPm25(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        Log.i(TAG,"response.code()="+response.code());
-                        if (response.code() == 200) {
-                            JsonObject jsonObjectGson = response.body();
-                            Log.i(TAG, "pm25=" + jsonObjectGson.toString());
-                            try {
-                                JSONObject jsonObject = new JSONObject(jsonObjectGson.toString());
-                                JSONObject pm25Object = jsonObject
-                                        .getJSONObject("pm2_5");
-                                Message message = new Message();
-                                message.obj = pm25Object;
-                                handler.sendMessage(message);
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                    }
-                }, city);
-
-            }
-        }).start();
-    }
 
     public String getCityCodeFromCityName(String provinceName, String cityName) throws XmlPullParserException, IOException {
         String cityCode = null;
@@ -218,25 +197,25 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         int i = 0;
                         String tempCityCode = null;
                         while (i < pullParser.getAttributeCount()) {
-                            if ( !ifProvinceCatched)
+                            if (!ifProvinceCatched)
                                 break;
                             String name = pullParser.getAttributeName(i);
                             String value = pullParser.getAttributeValue(i);
-                            Log.i(TAG,"name="+name+"value="+value);
+                            Log.i(TAG, "name=" + name + "value=" + value);
 
                             if (name.equalsIgnoreCase("ID")) {
                                 tempCityCode = pullParser.getAttributeValue(i);
-                                Log.i(TAG,"tempCityCode="+tempCityCode);
+                                Log.i(TAG, "tempCityCode=" + tempCityCode);
                             }
-                            if (name.equalsIgnoreCase("name")){
+                            if (name.equalsIgnoreCase("name")) {
                                 if (value.equalsIgnoreCase(cityName)) {
-                                    Log.i(TAG,"value.equalsIgnoreCase(cityName)="+cityName);
+                                    Log.i(TAG, "value.equalsIgnoreCase(cityName)=" + cityName);
                                     ifCityCatched = true;
                                 }
                             }
-                            if(ifCityCatched){
-                                cityCode=tempCityCode;
-                                ifExit=true;
+                            if (ifCityCatched) {
+                                cityCode = tempCityCode;
+                                ifExit = true;
                                 break;
                             }
                             i++;
@@ -276,6 +255,68 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
 //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
+
+    }
+
+    private void sendRequestWithHttpClient(final String city) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    URL url = new URL("http://www.pm25.in/api/querys/pm2_5.json?city=" +city+
+                            "&token=5j1znBVAsnSf5xQyNQyq&stations=no");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(5000);
+                    connection.setReadTimeout(5000);
+                    InputStream in = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    final StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    Log.i("TAG", response.toString());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            parseJSONObjectOrJSONArray(response.toString());
+                        }
+                    });
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    /**
+     * @param json
+     * @param clazz
+     * @return
+     */
+    public static <T> ArrayList<T> jsonToArrayList(String json, Class<T> clazz)
+    {
+        Type type = new TypeToken<ArrayList<JsonObject>>()
+        {}.getType();
+        ArrayList<JsonObject> jsonObjects = new Gson().fromJson(json, type);
+
+        ArrayList<T> arrayList = new ArrayList<>();
+        for (JsonObject jsonObject : jsonObjects)
+        {
+            arrayList.add(new Gson().fromJson(jsonObject, clazz));
+        }
+        return arrayList;
+    }
+    //解析JSON数据
+    private void parseJSONObjectOrJSONArray( String jsonData) {
+        if(!jsonData.contains("error")){
+            ArrayList<Pm25Info> pm25lists=jsonToArrayList(jsonData, Pm25Info.class);
+            textview_pm25.setText(""+pm25lists.get(0).getPm2_5());
+        }
 
     }
 
@@ -336,10 +377,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     };
 
-    private void queryStringForGet(String cityCode) {
-
-
-    }
 
     private RoomManager mRoomManager;
 
@@ -539,13 +576,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
         imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
         layout_experience_center_top = (RelativeLayout) findViewById(R.id.layout_experience_center_top);
-        textview_change_show_type = (TextView) findViewById(R.id.textview_change_show_type);
+        textview_change_show_type = (FrameLayout) findViewById(R.id.textview_change_show_type);
         textview_home = (TextView) findViewById(R.id.textview_home);
         textview_device = (TextView) findViewById(R.id.textview_device);
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
         textview_city = (TextView) findViewById(R.id.textview_city);
         textview_tempature = (TextView) findViewById(R.id.textview_tempature);
+        textview_pm25 = (TextView) findViewById(R.id.textview_pm25);
 
         layout_roomselect_normal = (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
         layout_roomselect_changed_ype = (NonScrollableListView) findViewById(R.id.layout_roomselect_changed_ype);

@@ -27,6 +27,7 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
     private boolean switch_one_open;
     private boolean switch_two_open;
     private SmartSwitchManager mSmartSwitchManager;
+    private Button button_all_switch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
         switch_one_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_one_open();
         switch_two_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_two_open();
         setSwitchImageviewBackground();
+        mSmartSwitchManager.querySwitchStatus("query");
     }
 
     @Override
@@ -64,6 +66,11 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
         } else {
             button_switch_right.setBackgroundResource(R.color.transparent);
         }
+        if(switch_one_open&&switch_two_open){
+            button_all_switch.setBackgroundResource(R.drawable.noallswitch);
+        }else{
+            button_all_switch.setBackgroundResource(R.drawable.allswitch);
+        }
     }
 
     private void initEvents() {
@@ -71,6 +78,7 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
         textview_edit.setOnClickListener(this);
         button_switch_right.setOnClickListener(this);
         button_switch_left.setOnClickListener(this);
+        button_all_switch.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -87,6 +95,7 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
         textview_edit = (TextView) findViewById(R.id.textview_edit);
         button_switch_left = (Button) findViewById(R.id.button_switch_left);
         button_switch_right = (Button) findViewById(R.id.button_switch_right);
+        button_all_switch = (Button) findViewById(R.id.button_all_switch);
     }
 
     @Override
@@ -94,6 +103,13 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.button_all_switch:
+                if (switch_one_open||switch_two_open) {
+                    mSmartSwitchManager.setSwitchCommand("close_all");
+                } else {
+                    mSmartSwitchManager.setSwitchCommand("open_all");
+                }
                 break;
             case R.id.textview_edit:
                 Intent intent = new Intent(this, EditActivity.class);
@@ -125,34 +141,48 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
     public void responseResult(String result) {
         Gson gson = new Gson();
         OpResult mOpResult = gson.fromJson(result, OpResult.class);
-        if (mOpResult != null) {
-            switch (mOpResult.getCommand()) {
-                case "close1":
-                    switch_one_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
-                    break;
-                case "close2":
-                    switch_two_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
-                    break;
-
-                case "open1":
-                    switch_one_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
-                    break;
-                case "open2":
-                    switch_two_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
-                    break;
-
-            }
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setSwitchImageviewBackground();
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
-                }
-            });
+        String  mSwitchStatus=mOpResult.getSwitchStatus();
+        String[] sourceStrArray = mSwitchStatus.split(" ",2);
+        Log.i(TAG,"sourceStrArray[0]"+sourceStrArray[0]);
+        Log.i(TAG,"sourceStrArray[1]"+sourceStrArray[1]);
+        if(sourceStrArray[0].equals("01")){
+            switch_one_open=true;
+        }else if(sourceStrArray[0].equals("02")){
+            switch_one_open=false;
         }
+        mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+        if(sourceStrArray[1].equals("01")){
+            switch_two_open=true;
+        }else if(sourceStrArray[1].equals("02")){
+            switch_two_open=false;
+        }
+        mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
+        switch (mOpResult.getCommand()) {
+            case "close1":
+                switch_one_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                break;
+            case "close2":
+                switch_two_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
+                break;
+
+            case "open1":
+                switch_one_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                break;
+            case "open2":
+                switch_two_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
+                break;
+
+        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setSwitchImageviewBackground();
+                mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
+            }
+        });
     }
 }

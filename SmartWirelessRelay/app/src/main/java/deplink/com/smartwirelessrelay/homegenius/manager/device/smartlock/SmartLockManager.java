@@ -333,6 +333,7 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     @Override
     public void onGetalarmRecord(List<Info> alarmList) {
+
         for (int i = 0; i < alarmList.size(); i++) {
             Info alarm;
             alarm = alarmList.get(i);
@@ -341,8 +342,8 @@ public class SmartLockManager implements LocalConnecteListener {
             currentSelectLock.setAlarmInfo(alarmList);
         }
         currentSelectLock.save();
-        //TODO
     }
+
 
     /**
      * 报警记录设备上报，没有查询接口，所以保存在数据库中，需要去数据库获取

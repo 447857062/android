@@ -109,6 +109,9 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         super.onResume();
         deviceName = mSmartSwitchManager.getCurrentSelectSmartDevice().getName();
         if (deviceName != null && deviceName.length() > 0) {
+            if(deviceName.length()>10){
+                deviceName=deviceName.substring(0,10);
+            }
             edittext_add_device_input_name.setText(deviceName);
             edittext_add_device_input_name.setSelection(deviceName.length());
         }

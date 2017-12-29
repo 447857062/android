@@ -21,7 +21,8 @@
     <string name="change">修改</string>
     <string name="title_activity_forget_password">Sign in</string>
     <string name="doorbell_add_tips_2">WIFI以"EIIE"或"SmartBell"开头</string>
-
+    <string name="register_verifycode_time">剩余%02d秒</string>
+    <string name="get_sms_verification">点击获取短信</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

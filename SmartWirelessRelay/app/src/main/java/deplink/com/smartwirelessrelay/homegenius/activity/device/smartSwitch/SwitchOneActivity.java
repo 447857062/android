@@ -38,6 +38,7 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
         super.onResume();
         switch_one_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_one_open();
         setSwitchImageviewBackground();
+        mSmartSwitchManager.querySwitchStatus("query");
     }
 
     @Override
@@ -103,24 +104,31 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
     public void responseResult(String result) {
         Gson gson = new Gson();
         OpResult mOpResult = gson.fromJson(result, OpResult.class);
-        if (mOpResult != null) {
-            switch (mOpResult.getCommand()) {
-                case "close1":
-                    switch_one_open = false;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
-                    break;
-                case "open1":
-                    switch_one_open = true;
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
-                    break;
-            }
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setSwitchImageviewBackground();
-                    mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
-                }
-            });
+        String  mSwitchStatus=mOpResult.getSwitchStatus();
+        String[] sourceStrArray = mSwitchStatus.split(" ",1);
+        Log.i(TAG,"sourceStrArray[0]"+sourceStrArray[0]);
+        if(sourceStrArray[0].equals("01")){
+            switch_one_open=true;
+        }else if(sourceStrArray[0].equals("02")){
+            switch_one_open=false;
         }
+        mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+        switch (mOpResult.getCommand()) {
+            case "close1":
+                switch_one_open = false;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                break;
+            case "open1":
+                switch_one_open = true;
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                break;
+        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setSwitchImageviewBackground();
+                mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
+            }
+        });
     }
 }

@@ -11,11 +11,20 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileCallback;
+import com.zxy.tiny.core.FileKit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,13 +33,18 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
+import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.util.bitmap.BitmapHandler;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.UserImagePickerDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.SexSelector;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
 
 public class UserinfoActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "UserinfoActivity";
     private TextView textview_title;
     private FrameLayout image_back;
     private RelativeLayout layout_user_header_image;
@@ -41,6 +55,9 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     private TextView textview_show_birthday;
     private TextView textview_show_sex;
     private TextView textview_show_nicknamke;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +69,75 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         textview_title.setText("个人信息");
-    }
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new MakeSureDialog(UserinfoActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(UserinfoActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
 
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, final Bitmap bm) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //保存到本地
+                        try {
+                            user_head_portrait.setImageBitmap(bm);
+                            saveToSDCard(bm);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+                switch (action) {
+                    case UPLOADIMAGE:
+                        // ToastSingleShow.showText(UserInfoActivity.this,"上传头像失败");
+                        break;
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+    }
+    private void saveToSDCard(Bitmap bitmap) {
+        String path = this.getFilesDir().getAbsolutePath();
+        path = path + File.separator + "userIcon" + "userIcon.png";
+        File dest = new File(path);
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void initViews() {
         textview_title= (TextView) findViewById(R.id.textview_title);
         textview_show_nicknamke= (TextView) findViewById(R.id.textview_show_nicknamke);
@@ -65,6 +149,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         user_head_portrait = (CircleImageView) findViewById(R.id.user_head_portrait);
         textview_show_birthday = (TextView) findViewById(R.id.textview_show_birthday);
         textview_show_sex = (TextView) findViewById(R.id.textview_show_sex);
+
     }
 
     private void initEvents() {
@@ -192,7 +277,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                             }
                             user_head_portrait.setImageBitmap(bm);
                         }
-                        //TODO 上传照片
+                        manager.uploadImage(path);
                     }
                     break;
                 case CAMERA_CODE:
@@ -222,7 +307,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                     }
                     Uri imageUri = data.getData();
                     // user_head_portrait.setImageURI(imageUri);
-                    Bitmap photoBmp;
+                    Bitmap photoBmp = null;
                     if (imageUri != null) {
                         try {
                             photoBmp = BitmapHandler.getBitmapFormUri(UserinfoActivity.this, imageUri);
@@ -231,8 +316,22 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
                         }
                     }
-                    String imagePath = getRealPathFromURI(imageUri);
-                    //TODO 上传照片
+                    final String imagePath = getRealPathFromURI(imageUri);
+                    saveToSDCard(photoBmp);
+                    //  String imagePathCompress = imagePath + "compressPic.jpg";
+                    //使用tiny框架压缩图片
+                    Tiny.getInstance().init(UserinfoActivity.this.getApplication());
+                    Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+                    options.outfile = FileKit.getDefaultFileCompressDirectory()+"/tiny-useriamge.jpg";
+                    Log.i(TAG, "options.outfile="  +options.outfile);
+                    Tiny.getInstance().source(imagePath).asFile().withOptions(options).compress(new FileCallback() {
+                        @Override
+                        public void callback(boolean isSuccess, String outfile, Throwable t) {
+                            //return the compressed file path
+                            Log.i(TAG, "imagePath=" + imagePath + "   outfile=" + outfile);
+                            manager.uploadImage(outfile);
+                        }
+                    });
                     break;
 
             }

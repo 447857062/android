@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/list_item_imageview_onlinestatu_margin_right"
+        android:textColor="@color/white"
         android:layout_toLeftOf="@+id/imageview_arror_right"
         />
 

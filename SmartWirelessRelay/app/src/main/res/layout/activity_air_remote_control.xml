@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity">
 
     <RelativeLayout
@@ -116,7 +117,6 @@
         android:layout_marginTop="@dimen/aircondition_control_layout_margin_top"
         android:background="@color/white_background"
         android:fitsSystemWindows="true">
-
         <RelativeLayout
             android:id="@+id/layout_temperature_control"
             android:layout_width="match_parent"

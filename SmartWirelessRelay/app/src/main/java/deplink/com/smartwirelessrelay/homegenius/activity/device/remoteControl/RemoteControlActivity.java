@@ -62,6 +62,8 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private ImageView imageview_getway_arror_right;
     private TextView button_delete_device;
     private DeviceManager mDeviceManager;
+    private boolean isOnActivityResult;
+    private boolean isStartFromExperience;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,23 +118,37 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (!isOnActivityResult) {
-            for (int i = 0; i < mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size(); i++) {
-                Log.i(TAG, mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
-            }
-            if (mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size() == 1) {
-                textview_select_room_name.setText(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
-            } else {
+        if(!isStartFromExperience) {
+            if (!isOnActivityResult) {
+
+                if(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms()==null){
+                    textview_select_room_name.setText("全部");
+                }else{
+                    for (int i = 0; i < mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size(); i++) {
+                        Log.i(TAG, mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
+                    }
+                    if (mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size() == 1) {
+                        textview_select_room_name.setText(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
+                    } else {
+                        textview_select_room_name.setText("全部");
+                    }
+                }
+
+                SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
+                Device temp = smartDev.getGetwayDevice();
+                if (temp == null) {
+                    textview_select_getway_name.setText("未设置网关");
+                } else {
+                    textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
+                }
+            }else{
                 textview_select_room_name.setText("全部");
-            }
-            SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
-            Device temp = smartDev.getGetwayDevice();
-            if (temp == null) {
                 textview_select_getway_name.setText("未设置网关");
-            } else {
-                textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
             }
         }
+
+
+
     }
 
     private void initViews() {
@@ -196,8 +212,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private boolean isOnActivityResult;
-    private boolean isStartFromExperience;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

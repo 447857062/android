@@ -373,4 +373,5 @@ public class RemoteControlManager implements LocalConnecteListener {
     public void onGetalarmRecord(List<Info> alarmList) {
 
     }
+
 }

@@ -186,7 +186,7 @@
     <!---->
     <dimen name="aircondition_inner_temp_margin_top">10dp</dimen>
     <dimen name="aircondition_control_layout_margin_left_right">30dp</dimen>
-    <dimen name="aircondition_control_layout_margin_top">30dp</dimen>
+    <dimen name="aircondition_control_layout_margin_top">20dp</dimen>
     <dimen name="aircondition_control_progress_margin_left_righ">15dp</dimen>
     <dimen name="aircondition_control_buttom_layout_icon_marginleft">25dp</dimen>
     <dimen name="search_band_icon_marginleft">5dp</dimen>

@@ -418,15 +418,16 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
         Gson gson = new Gson();
         ReportAlertRecord record = gson.fromJson(str, ReportAlertRecord.class);
         if (record != null) {
-            //  String recode = record.getALARM_INFO().get(0).getINFO();
-            //  Log.i(TAG, "recode=" + recode);
-            // ReportAlertRecordReal mAlertRecordReal = gson.fromJson(recode, ReportAlertRecordReal.class);
-            List<Info> alermList = record.getInfo();
-            Log.i(TAG, "报警记录=" + alermList.size());
-            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
+
+
+                List<Info> alermList = record.getInfo();
+                Log.i(TAG, "报警记录=" + alermList.size());
+                for (int i = 0; i < mLocalConnecteListener.size(); i++) {
+                    mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
+                }
             }
-        }
+
+
     }
 
 

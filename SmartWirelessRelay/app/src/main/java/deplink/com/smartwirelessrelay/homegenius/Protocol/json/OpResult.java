@@ -13,6 +13,15 @@ public class OpResult  implements Serializable{
     private String SmartUid;
     private String Command;
     private long timestamp_echo;
+    private String SwitchStatus;
+
+    public String getSwitchStatus() {
+        return SwitchStatus;
+    }
+
+    public void setSwitchStatus(String switchStatus) {
+        SwitchStatus = switchStatus;
+    }
 
     public String getSmartUid() {
         return SmartUid;

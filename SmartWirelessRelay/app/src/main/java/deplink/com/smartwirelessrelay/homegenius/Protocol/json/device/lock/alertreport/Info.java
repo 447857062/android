@@ -9,7 +9,7 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.Smart
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class Info  extends DataSupport implements Serializable {
+public class Info extends DataSupport implements Serializable {
 
     private String Control_ID;
     private String Time;

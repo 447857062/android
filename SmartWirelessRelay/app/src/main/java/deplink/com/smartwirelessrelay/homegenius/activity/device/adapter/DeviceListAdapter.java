@@ -214,7 +214,22 @@ public class DeviceListAdapter extends BaseAdapter {
             case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
-            //case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+           case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+               switch (deviceSubType){
+                   case "一路开关":
+                       viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
+                       break;
+                   case "二路开关":
+                       viewHolder.imageview_device_type.setImageResource(R.drawable.roadswitch);
+                       break;
+                   case "三路开关":
+                       viewHolder.imageview_device_type.setImageResource(R.drawable.threewayswitch);
+                       break;
+                   case "四路开关":
+                       viewHolder.imageview_device_type.setImageResource(R.drawable.fourwayswitch);
+                       break;
+               }
+               break;
             case "SmartWallSwitch4":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.fourwayswitch);
                 break;
