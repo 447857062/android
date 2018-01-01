@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:paddingLeft="20dp"
     android:weightSum="3"
+    android:background="@drawable/radius8_bg_white_layout_background"
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/text_picker_from_galary"

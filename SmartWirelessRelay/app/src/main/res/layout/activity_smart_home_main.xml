@@ -20,24 +20,27 @@
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
             <ImageView
                 android:id="@+id/iamgeview_position_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/positioningicon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:background="@drawable/positioningicon" />
+
             <TextView
-                android:layout_toRightOf="@+id/iamgeview_position_icon"
                 android:id="@+id/textview_city"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/iamgeview_position_icon"
                 android:gravity="center_horizontal|center_vertical"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_small" />
+
             <TextView
                 android:id="@+id/textview_title"
                 android:layout_width="wrap_content"
@@ -62,87 +65,98 @@
 
 
     <RelativeLayout
-        android:layout_below="@+id/layout_title"
         android:id="@+id/layout_weather"
-        android:alpha="0.9"
-       android:background="@color/title_blue_bg"
         android:layout_width="match_parent"
-        android:layout_height="75dp">
+        android:layout_height="75dp"
+        android:layout_below="@+id/layout_title"
+        android:alpha="0.9"
+        android:background="@color/title_blue_bg">
+
         <RelativeLayout
-            android:layout_toLeftOf="@+id/imageview_weather_dirver"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/imageview_weather_dirver">
+
             <RelativeLayout
                 android:id="@+id/layout_tempature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/textview_tempature"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:gravity="center_horizontal"
-                    android:textSize="@dimen/text_size_home_tempature"
-                    android:textColor="@color/white"
+                    android:gravity="center_horizontal|top"
                     android:text="22"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/textview_tempature"
-                    android:gravity="center_horizontal"
-                    android:textSize="@dimen/delete_textview_size"
-                    android:visibility="gone"
                     android:textColor="@color/white"
-                    android:text="℃"
+                    android:textSize="@dimen/text_size_home_tempature" />
+
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/textview_tempature"
+                    android:layout_marginLeft="5dp"
+                    android:paddingTop="8dp"
+                    android:layout_toRightOf="@+id/textview_tempature"
+                    android:gravity="left|top"
+                    android:text="℃"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/delete_textview_size" />
 
             </RelativeLayout>
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_tempature"
                 android:gravity="center_horizontal|center_vertical"
-                android:textSize="@dimen/delete_textview_size"
-                android:textColor="@color/white"
                 android:text="室外温度"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/delete_textview_size" />
         </RelativeLayout>
+
         <ImageView
             android:id="@+id/imageview_weather_dirver"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/weatherdividers"
-            android:layout_centerVertical="true"
-            android:scaleType="centerInside"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/weatherdividers"
+            android:scaleType="centerInside" />
+
         <RelativeLayout
-            android:layout_toRightOf="@+id/imageview_weather_dirver"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/imageview_weather_dirver">
+
             <TextView
                 android:id="@+id/textview_pm25"
-                android:gravity="center_horizontal|center_vertical"
-                android:textSize="@dimen/text_size_home_tempature"
-                android:textColor="@color/white"
-                android:text="23"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="23"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_home_tempature" />
+
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/textview_pm25"
                 android:gravity="center_horizontal|center_vertical"
-                android:textSize="@dimen/delete_textview_size"
-                android:textColor="@color/white"
                 android:text="PM2.5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/delete_textview_size" />
         </RelativeLayout>
     </RelativeLayout>
+
     <deplink.com.smartwirelessrelay.homegenius.view.MyScrollView
-        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttom_layout"
-        android:layout_below="@+id/layout_weather">
+        android:layout_below="@+id/layout_weather"
+        android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -179,18 +193,20 @@
                     android:text="房间"
                     android:textColor="@color/room_type_text"
                     android:textSize="@dimen/text_size_small" />
+
                 <FrameLayout
                     android:id="@+id/textview_change_show_type"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_width="48dp"
-                    android:layout_marginRight="@dimen/layout_content_margin_left_right"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="@dimen/layout_content_margin_left_right">
 
+                    <TextView
                         android:layout_width="wrap_content"
+
                         android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
                         android:background="@drawable/button_switchview"
                         android:gravity="center_vertical|right"
                         android:textColor="@color/room_type_text"
@@ -212,10 +228,10 @@
 
                 <deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView
                     android:id="@+id/layout_roomselect_changed_ype"
-                    android:listSelector="@color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@null"
+                    android:listSelector="@color/transparent"
                     android:visibility="gone">
 
                 </deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView>
@@ -223,16 +239,18 @@
                 <HorizontalScrollView
                     android:id="@+id/layout_roomselect_normal"
                     android:layout_width="match_parent"
-                    android:paddingRight="@dimen/layout_content_margin_left_right"
-                    android:paddingLeft="@dimen/layout_content_margin_left_right"
                     android:layout_height="@dimen/home_page_roomselect_normal_height"
+                    android:paddingLeft="@dimen/layout_content_margin_left_right"
+                    android:paddingRight="@dimen/layout_content_margin_left_right"
                     android:scrollbars="none">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
                         android:layout_marginTop="@dimen/homepage_room_type_margin_top"
                         android:gravity="center_vertical">
+
                         <GridView
                             android:id="@+id/grid"
                             android:layout_width="match_parent"
@@ -296,9 +314,9 @@
                     android:layout_height="match_parent"
                     android:layout_below="@+id/layout_experience_center_top"
                     android:alpha="0.9"
-                    android:listSelector="@color/transparent"
                     android:background="@drawable/homepage_halfrectangle_buttom_background"
                     android:divider="@null"
+                    android:listSelector="@color/transparent"
                     android:minHeight="@dimen/home_page_roomselect_top_height"
                     android:scrollbars="none" />
             </RelativeLayout>

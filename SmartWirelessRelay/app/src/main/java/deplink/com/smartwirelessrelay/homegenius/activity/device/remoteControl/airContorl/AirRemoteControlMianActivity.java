@@ -1464,6 +1464,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
 
                             temptureProgress -= 7;
                             progressBar.setProgress(temptureProgress);
+                        }else{
+                            temptureProgress -= 7;
+                            progressBar.setProgress(temptureProgress);
                         }
                     } else {
                         mKeynotlearnDialog.show();
@@ -1490,6 +1493,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             }
                             data = packData();
                             mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                            temptureProgress += 7;
+                            progressBar.setProgress(temptureProgress);
+                        }else{
                             temptureProgress += 7;
                             progressBar.setProgress(temptureProgress);
                         }
@@ -1540,35 +1546,45 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_power) {
-                        if (code == null) {
-                            return;
-                        }
-                        Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
-                        func[4] = (byte) 0x01;
-                        func[5] = (byte) (0x01);
-                        if (power == 0x00) {
-                            power = (byte) 0x01;
-                            mAirconditionInitKeyValue.setKeyPower(0x01);
-                            mAirconditionInitKeyValue.save();
-                            setAirconditionEnable();
-
-                        } else if (power == 0x01) {
-                            power = (byte) 0x0;
-                            mAirconditionInitKeyValue.setKeyPower(0x00);
-                            mAirconditionInitKeyValue.save();
-                            setAirconditionDisable();
-
-
-                        }
-                        if (!isStartFromExperience) {
-                            data = packData();
-                            if (data_key_power != null) {
-                                mRemoteControlManager.sendData(data_key_power);
-                            } else {
-                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                        if(isStartFromExperience){
+                            if (power == 0x00) {
+                                power = (byte) 0x01;
+                                setAirconditionEnable();
+                            } else if (power == 0x01) {
+                                power = (byte) 0x0;
+                                setAirconditionDisable();
                             }
-                            ;
+                        }else{
+                            if (code == null) {
+                                return;
+                            }
+                            Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
+                            func[4] = (byte) 0x01;
+                            func[5] = (byte) (0x01);
+                            if (power == 0x00) {
+                                power = (byte) 0x01;
+                                mAirconditionInitKeyValue.setKeyPower(0x01);
+                                mAirconditionInitKeyValue.save();
+                                setAirconditionEnable();
+
+                            } else if (power == 0x01) {
+                                power = (byte) 0x0;
+                                mAirconditionInitKeyValue.setKeyPower(0x00);
+                                mAirconditionInitKeyValue.save();
+                                setAirconditionDisable();
+
+
+                            }
+
+                                data = packData();
+                                if (data_key_power != null) {
+                                    mRemoteControlManager.sendData(data_key_power);
+                                } else {
+                                    mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                }
+
                         }
+
                     } else {
                         mKeynotlearnDialog.show();
                     }

@@ -123,6 +123,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_save_password"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height"
         android:layout_below="@+id/layout_keyboard"

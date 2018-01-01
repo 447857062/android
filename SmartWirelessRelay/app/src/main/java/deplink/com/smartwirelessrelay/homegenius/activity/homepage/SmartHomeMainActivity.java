@@ -368,8 +368,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             super.handleMessage(msg);
             JSONObject object = (JSONObject) msg.obj;
             try {
-                textview_tempature.setText(object.getString("temp2"));
-
+                String tempture=object.getString("temp2");
+                tempture=tempture.split("℃")[0];
+                 Log.i(TAG,"tempture="+tempture);
+                textview_tempature.setText(tempture);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

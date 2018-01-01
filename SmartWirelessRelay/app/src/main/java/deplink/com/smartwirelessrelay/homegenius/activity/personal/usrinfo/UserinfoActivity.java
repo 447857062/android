@@ -38,9 +38,9 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.util.bitmap.BitmapHandler;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.Sex_select_Dialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.UserImagePickerDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
-import deplink.com.smartwirelessrelay.homegenius.view.viewselector.SexSelector;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
 
 public class UserinfoActivity extends Activity implements View.OnClickListener {
@@ -58,6 +58,8 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private Sex_select_Dialog mSexDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         textview_title.setText("个人信息");
+        mSexDialog = new Sex_select_Dialog(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(UserinfoActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -92,18 +95,15 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void onGetImageSuccess(SDKAction action, final Bitmap bm) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //保存到本地
-                        try {
-                            user_head_portrait.setImageBitmap(bm);
-                            saveToSDCard(bm);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+
+                //保存到本地
+                try {
+                    user_head_portrait.setImageBitmap(bm);
+                    saveToSDCard(bm);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
 
             }
 
@@ -126,6 +126,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             }
         };
     }
+
     private void saveToSDCard(Bitmap bitmap) {
         String path = this.getFilesDir().getAbsolutePath();
         path = path + File.separator + "userIcon" + "userIcon.png";
@@ -138,10 +139,11 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
     }
+
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        textview_show_nicknamke= (TextView) findViewById(R.id.textview_show_nicknamke);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_title = (TextView) findViewById(R.id.textview_title);
+        textview_show_nicknamke = (TextView) findViewById(R.id.textview_show_nicknamke);
+        image_back = (FrameLayout) findViewById(R.id.image_back);
         layout_user_header_image = (RelativeLayout) findViewById(R.id.layout_user_header_image);
         layout_update_user_nickname = (RelativeLayout) findViewById(R.id.layout_update_user_nickname);
         layout_update_sex = (RelativeLayout) findViewById(R.id.layout_update_sex);
@@ -193,19 +195,19 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.layout_update_user_nickname:
-                Intent intent=new Intent(this, UpdateNicknameActivity.class);
-                intent.putExtra("nickname",textview_show_nicknamke.getText().toString());
+                Intent intent = new Intent(this, UpdateNicknameActivity.class);
+                intent.putExtra("nickname", textview_show_nicknamke.getText().toString());
                 startActivity(intent);
                 break;
             case R.id.layout_update_sex:
-                //TODO
-                SexSelector sexSelector=new SexSelector(this, new SexSelector.ResultHandler() {
+                mSexDialog.setmOnSexSelectClickListener(new Sex_select_Dialog.onSexSelectClickListener() {
                     @Override
-                    public void handle(String sex) {
-                        textview_show_sex.setText(sex);
+                    public void onSexSelect(String selectMode) {
+                        textview_show_sex.setText(selectMode);
                     }
                 });
-                sexSelector.show();
+                mSexDialog.show();
+
 
                 break;
             case R.id.layout_birthday:
@@ -213,7 +215,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void handle(String time, Calendar selectedCalendar) {
                         //TODO 如果需要上传到服务器需要添加下面这句
-                       // SelectedTime = selectedCalendar.getTimeInMillis() / 1000;
+                        // SelectedTime = selectedCalendar.getTimeInMillis() / 1000;
                         textview_show_birthday.setText(time);
                     }
                 }, "1990-11-22 17:34", "2100-12-1 15:20");
@@ -322,8 +324,8 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                     //使用tiny框架压缩图片
                     Tiny.getInstance().init(UserinfoActivity.this.getApplication());
                     Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                    options.outfile = FileKit.getDefaultFileCompressDirectory()+"/tiny-useriamge.jpg";
-                    Log.i(TAG, "options.outfile="  +options.outfile);
+                    options.outfile = FileKit.getDefaultFileCompressDirectory() + "/tiny-useriamge.jpg";
+                    Log.i(TAG, "options.outfile=" + options.outfile);
                     Tiny.getInstance().source(imagePath).asFile().withOptions(options).compress(new FileCallback() {
                         @Override
                         public void callback(boolean isSuccess, String outfile, Throwable t) {

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     private Handler mHandler;
     private ImageView switch_remond_managerpassword;
     private boolean isStartFromExperience;
-
+    private RelativeLayout layout_save_password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +51,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdSix_setLockPwd = (EditText) findViewById(R.id.etPwdSix_setLockPwd);
         etPwdText = (EditText) findViewById(R.id.etPwdText_setLockPwd);
         switch_remond_managerpassword = (ImageView) findViewById(R.id.switch_remond_managerpassword);
+        layout_save_password = (RelativeLayout) findViewById(R.id.layout_save_password);
     }
 
     void setListener() {
@@ -86,7 +88,8 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                 }
             }
         });
-        switch_remond_managerpassword.setOnClickListener(this);
+        //switch_remond_managerpassword.setOnClickListener(this);
+        layout_save_password.setOnClickListener(this);
     }
 
 
@@ -145,6 +148,13 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                                 Toast.makeText(SetLockPwdActivity.this, "开门成功", Toast.LENGTH_SHORT).show();
                                 SetLockPwdActivity.this.finish();
                             } else {
+                                //做延时处理,没有反应就隐藏界面
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        SetLockPwdActivity.this.finish();
+                                    }
+                                },3000);
                                 mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
                             }
                             etPwdOne.setText("");
@@ -181,7 +191,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         Log.i(TAG, "result=" + result);
         if ("成功".equals(result)) {
             if (currentImageLevel == 1) {
-
                 mSmartLockManager.getCurrentSelectLock().setLockPassword(currentPassword);
                 mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
                 mSmartLockManager.getCurrentSelectLock().save();
@@ -192,11 +201,8 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     @Override
     public void responseBind(String result) {
-
     }
-
     private int currentImageLevel;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -211,32 +217,32 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                 currentImageLevel = 0;
             }
         }
-
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.switch_remond_managerpassword:
+            case R.id.layout_save_password:
                 switch (currentImageLevel) {
                     case 0:
                         currentImageLevel = 1;
+                        if(!isStartFromExperience){
+                            mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
+                        }
+
                         break;
                     case 1:
                         currentImageLevel = 0;
+                        if(!isStartFromExperience){
+                            mSmartLockManager.getCurrentSelectLock().setRemerberPassword(false);
+                        }
                         break;
                 }
                 switch_remond_managerpassword.setImageLevel(currentImageLevel);
-                ;
-                switch (currentImageLevel) {
-                    case 0:
-                        mSmartLockManager.getCurrentSelectLock().setRemerberPassword(false);
-                        break;
-                    case 1:
-                        mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
-                        break;
+                if(!isStartFromExperience){
+
+                    mSmartLockManager.getCurrentSelectLock().save();
                 }
-                mSmartLockManager.getCurrentSelectLock().save();
+
                 break;
 
         }
