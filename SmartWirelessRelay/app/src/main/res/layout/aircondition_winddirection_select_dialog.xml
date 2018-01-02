@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height">
             <TextView
-                android:text="风向向中"
+                android:text="风向居中"
                 android:textSize="@dimen/delete_textview_size"
                 android:gravity="center_horizontal|center_vertical"
                 android:textColor="@color/aircondition_mode"

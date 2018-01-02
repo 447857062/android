@@ -120,7 +120,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         super.onResume();
         if(!isStartFromExperience) {
             if (!isOnActivityResult) {
-
                 if(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms()==null){
                     textview_select_room_name.setText("全部");
                 }else{

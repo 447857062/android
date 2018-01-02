@@ -28,6 +28,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivi
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
@@ -136,7 +137,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                 switch (op) {
                     case RouterDevice.OP_CHANGE_NAME:
                         currentAddRouter.setUid(routerSN);
-                        currentAddRouter.setType("路由器");
+                        currentAddRouter.setType(DeviceTypeConstant.TYPE.TYPE_ROUTER);
                         boolean saveResult = mRouterManager.saveRouter(currentAddRouter);
                         if (!saveResult) {
 

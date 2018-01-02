@@ -119,7 +119,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
     private TextView textview_tempature;
-
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -144,13 +143,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 }
                 Log.i(TAG, "city=" + city);
                 textview_city.setText(city);
-
                 try {
                     cityCode = getCityCodeFromCityName(province, city);
                     Log.i(TAG, "cityCode=" + cityCode);
                     initWaetherData();
                     sendRequestWithHttpClient(city);
-
                 } catch (XmlPullParserException | IOException e) {
                     e.printStackTrace();
                 }
@@ -158,8 +155,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
         }
     }
-
-
 
     public String getCityCodeFromCityName(String provinceName, String cityName) throws XmlPullParserException, IOException {
         String cityCode = null;
@@ -238,6 +233,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_home_main);
+
         initViews();
         initDatas();
         initEvents();
@@ -246,7 +242,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mLocationClient.registerLocationListener(myListener);
         //注册监听函数
         LocationClientOption option = new LocationClientOption();
-
         option.setIsNeedAddress(true);
 //可选，是否需要地址信息，默认为不需要，即参数为false
 //如果开发者需要获得当前点的地址信息，此处必须为true
@@ -561,7 +556,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         });
         listview_experience_center.setAdapter(mExperienceCenterListAdapter);
-
     }
 
 

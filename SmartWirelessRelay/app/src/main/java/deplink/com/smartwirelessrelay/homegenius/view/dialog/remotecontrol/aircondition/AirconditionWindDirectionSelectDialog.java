@@ -80,7 +80,7 @@ public class AirconditionWindDirectionSelectDialog extends Dialog implements Vie
                 this.dismiss();
                 break;
             case R.id.layout_winddirection_middle:
-                mOnModeSelectClickListener.onModeSelect("风向向中");
+                mOnModeSelectClickListener.onModeSelect("风向居中");
                 this.dismiss();
                 break;
             case R.id.layout_winddirection_down:

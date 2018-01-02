@@ -48,15 +48,17 @@
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true">
+
                 <TextView
-                    android:visibility="gone"
-                    android:gravity="center_vertical|right"
                     android:id="@+id/textview_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|right"
+                    android:text="取消"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small"
-                    android:text="取消"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/image_setting"
                     android:layout_width="wrap_content"
@@ -74,7 +76,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_title"
-        android:background="@color/white_background">
+        android:background="@color/white_background"
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:id="@+id/layout_select_show_current_list"
@@ -426,17 +429,18 @@
 
                 </RelativeLayout>
             </RelativeLayout>
+
             <TextView
-                android:background="@color/room_type_text"
-                android:visibility="gone"
                 android:id="@+id/textview_tips"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal|bottom"
+                android:background="@color/room_type_text"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="现在处于手动学习模式,学习完成后点击取消退出学习"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_smallest"
-                android:gravity="center_horizontal|center_vertical"
-                android:layout_gravity="center_horizontal|bottom"
-                android:text="现在处于手动学习模式,学习完成后点击取消退出学习"
-                android:layout_width="match_parent"
-                android:layout_height="30dp" />
+                android:visibility="gone" />
         </FrameLayout>
     </RelativeLayout>
 

@@ -27,7 +27,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.KeynotlearnDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.aircondition.AirconditionWindDirectionSelectDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.aircondition.AirconditionWindSpeedSelectDialog;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.aircondition.Aircondition_mode_select_Dialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.remotecontrol.aircondition.AirconditionModeSelectDialog;
 
 public class AirRemoteControlMianActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ARCMianActivity";
@@ -35,7 +35,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private TextView textview_title;
     private TextView textview_model;
     private TextView textview_wind_speed;
-    private TextView textview_wind_center;
+    private TextView textview_wind_direction;
     private ImageView image_setting;
     private ImageView imageview_model;
     private ImageView imageview_wind_speed;
@@ -43,7 +43,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private ImageView imageview_power;
     private ImageView imageview_temperature_reduce;
     private ImageView imageview_temperature_plus;
-    private Aircondition_mode_select_Dialog modeDialog;
+    private AirconditionModeSelectDialog modeDialog;
     private AirconditionWindSpeedSelectDialog windSpeedDialog;
     private AirconditionWindDirectionSelectDialog windDirectionDialog;
     private RemoteControlMenuDialog menu_dialog;
@@ -118,7 +118,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         directionAuto = mAirconditionInitKeyValue.getDirectionAuto();
         tempature = mAirconditionInitKeyValue.getTempature();
         power = mAirconditionInitKeyValue.getKeyPower();
-
         textview_temperature.setText("" + tempature + "℃");
         temptureProgress = (int) (((tempature - 16) / 15.0) * 100);
         progressBar.setProgress(temptureProgress);
@@ -129,7 +128,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             imageview_power.setBackgroundResource(R.drawable.button_power_notlearn);
         }
         //空调开关时设置其他按键的可不可以点击
-        if (power==1) {
+        if (power == 1) {
             setAirconditionEnable();
         } else {
             setAirconditionDisable();
@@ -141,6 +140,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 } else {
                     imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_notlearn);
                 }
+                textview_model.setText("制冷模式");
                 break;
             case 0x02:
                 if (key_mode_dehumit) {
@@ -148,6 +148,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 } else {
                     imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_notlearn);
                 }
+                textview_model.setText("除湿模式");
                 break;
             case 0x03:
                 if (key_mode_wind) {
@@ -155,6 +156,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 } else {
                     imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_notlearn);
                 }
+                textview_model.setText("送风模式");
                 break;
             case 0x04:
                 if (key_mode_hot) {
@@ -162,6 +164,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 } else {
                     imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_notlearn);
                 }
+                textview_model.setText("制热模式");
                 break;
             case 0x05:
                 if (key_mode_auto) {
@@ -169,71 +172,81 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 } else {
                     imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_notlearn);
                 }
+                textview_model.setText("自动模式");
                 break;
         }
+        Log.i(TAG, "wind=" + wind);
         switch (wind) {
-            case 0x01:
+            case 1:
                 if (key_windspeed_low) {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_low_learned);
                 } else {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_low_notlearn);
                 }
+                textview_wind_speed.setText("低风");
                 break;
-            case 0x02:
+            case 2:
                 if (key_windspeed_middle) {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_middle_learned);
                 } else {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_middle_notlearn);
                 }
+                textview_wind_speed.setText("中风");
                 break;
-            case 0x03:
+            case 3:
                 if (key_windspeed_hight) {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_hight_learned);
                 } else {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_hight_notlearn);
                 }
+                textview_wind_speed.setText("高风");
                 break;
-            case 0x04:
+            case 4:
                 if (key_windspeed_auto) {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_auto_learned);
                 } else {
                     imageview_wind_speed.setBackgroundResource(R.drawable.button_aircondition_windspeed_auto_notlearn);
                 }
+                textview_wind_speed.setText("自动风速");
                 break;
         }
+        Log.i(TAG, "directionAuto=" + directionAuto + "directionHand" + directionHand);
         switch (directionAuto) {
-            case 0x00:
+            case 0:
                 switch (directionHand) {
-                    case 0x01:
+                    case 1:
                         if (key_winddirection_up) {
                             imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_up_learned);
                         } else {
                             imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_up_notlearn);
                         }
+                        textview_wind_direction.setText("风向向上");
                         break;
-                    case 0x02:
+                    case 2:
                         if (key_winddirection_middle) {
                             imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_middle_learned);
                         } else {
                             imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_middle_notlearn);
                         }
+                        textview_wind_direction.setText("风向居中");
                         break;
-                    case 0x03:
+                    case 3:
                         if (key_winddirection_down) {
                             imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_down_learned);
                         } else {
                             imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_down_notlearn);
                         }
+                        textview_wind_direction.setText("风向向下");
                         break;
                 }
                 break;
-            case 0x01:
+            case 1:
                 if (key_winddirection_auto) {
                     imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_auto_learned);
                 } else {
                     imageview_wind_direction.setBackgroundResource(R.drawable.button_aircondition_winddirection_auto_notlearn);
                 }
-
+                textview_wind_direction.setText("自动风向");
                 break;
         }
         if (key_tempature_reduce) {
@@ -295,6 +308,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private String data_key_tempature_cold_28;
     private String data_key_tempature_cold_29;
     private String data_key_tempature_cold_30;
+
     private void initKeyCodeData() {
         if (!isStartFromExperience) {
             String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
@@ -320,36 +334,36 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 data_key_winddirection_down = mAirconditionKeyCode.getKey_winddirection_down();
                 data_key_winddirection_auto = mAirconditionKeyCode.getKey_winddirection_auto();
 
-                data_key_tempature_hot_16= mAirconditionKeyCode.getKey_tempature_hot_16();
-                data_key_tempature_hot_17= mAirconditionKeyCode.getKey_tempature_hot_17();
-                data_key_tempature_hot_18= mAirconditionKeyCode.getKey_tempature_hot_18();
-                data_key_tempature_hot_19= mAirconditionKeyCode.getKey_tempature_hot_19();
-                data_key_tempature_hot_20= mAirconditionKeyCode.getKey_tempature_hot_20();
-                data_key_tempature_hot_21= mAirconditionKeyCode.getKey_tempature_hot_21();
-                data_key_tempature_hot_22= mAirconditionKeyCode.getKey_tempature_hot_22();
-                data_key_tempature_hot_23= mAirconditionKeyCode.getKey_tempature_hot_23();
-                data_key_tempature_hot_24= mAirconditionKeyCode.getKey_tempature_hot_24();
-                data_key_tempature_hot_25= mAirconditionKeyCode.getKey_tempature_hot_25();
-                data_key_tempature_hot_26= mAirconditionKeyCode.getKey_tempature_hot_26();
-                data_key_tempature_hot_27= mAirconditionKeyCode.getKey_tempature_hot_27();
-                data_key_tempature_hot_28= mAirconditionKeyCode.getKey_tempature_hot_28();
-                data_key_tempature_hot_29= mAirconditionKeyCode.getKey_tempature_hot_29();
-                data_key_tempature_hot_30= mAirconditionKeyCode.getKey_tempature_hot_30();
-                data_key_tempature_cold_16= mAirconditionKeyCode.getKey_tempature_cold_16();
-                data_key_tempature_cold_17= mAirconditionKeyCode.getKey_tempature_cold_17();
-                data_key_tempature_cold_18= mAirconditionKeyCode.getKey_tempature_cold_18();
-                data_key_tempature_cold_19= mAirconditionKeyCode.getKey_tempature_cold_19();
-                data_key_tempature_cold_20= mAirconditionKeyCode.getKey_tempature_cold_20();
-                data_key_tempature_cold_21= mAirconditionKeyCode.getKey_tempature_cold_21();
-                data_key_tempature_cold_22= mAirconditionKeyCode.getKey_tempature_cold_22();
-                data_key_tempature_cold_23= mAirconditionKeyCode.getKey_tempature_cold_23();
-                data_key_tempature_cold_24= mAirconditionKeyCode.getKey_tempature_cold_24();
-                data_key_tempature_cold_25= mAirconditionKeyCode.getKey_tempature_cold_25();
-                data_key_tempature_cold_26= mAirconditionKeyCode.getKey_tempature_cold_26();
-                data_key_tempature_cold_27= mAirconditionKeyCode.getKey_tempature_cold_27();
-                data_key_tempature_cold_28= mAirconditionKeyCode.getKey_tempature_cold_28();
-                data_key_tempature_cold_29= mAirconditionKeyCode.getKey_tempature_cold_29();
-                data_key_tempature_cold_30= mAirconditionKeyCode.getKey_tempature_cold_30();
+                data_key_tempature_hot_16 = mAirconditionKeyCode.getKey_tempature_hot_16();
+                data_key_tempature_hot_17 = mAirconditionKeyCode.getKey_tempature_hot_17();
+                data_key_tempature_hot_18 = mAirconditionKeyCode.getKey_tempature_hot_18();
+                data_key_tempature_hot_19 = mAirconditionKeyCode.getKey_tempature_hot_19();
+                data_key_tempature_hot_20 = mAirconditionKeyCode.getKey_tempature_hot_20();
+                data_key_tempature_hot_21 = mAirconditionKeyCode.getKey_tempature_hot_21();
+                data_key_tempature_hot_22 = mAirconditionKeyCode.getKey_tempature_hot_22();
+                data_key_tempature_hot_23 = mAirconditionKeyCode.getKey_tempature_hot_23();
+                data_key_tempature_hot_24 = mAirconditionKeyCode.getKey_tempature_hot_24();
+                data_key_tempature_hot_25 = mAirconditionKeyCode.getKey_tempature_hot_25();
+                data_key_tempature_hot_26 = mAirconditionKeyCode.getKey_tempature_hot_26();
+                data_key_tempature_hot_27 = mAirconditionKeyCode.getKey_tempature_hot_27();
+                data_key_tempature_hot_28 = mAirconditionKeyCode.getKey_tempature_hot_28();
+                data_key_tempature_hot_29 = mAirconditionKeyCode.getKey_tempature_hot_29();
+                data_key_tempature_hot_30 = mAirconditionKeyCode.getKey_tempature_hot_30();
+                data_key_tempature_cold_16 = mAirconditionKeyCode.getKey_tempature_cold_16();
+                data_key_tempature_cold_17 = mAirconditionKeyCode.getKey_tempature_cold_17();
+                data_key_tempature_cold_18 = mAirconditionKeyCode.getKey_tempature_cold_18();
+                data_key_tempature_cold_19 = mAirconditionKeyCode.getKey_tempature_cold_19();
+                data_key_tempature_cold_20 = mAirconditionKeyCode.getKey_tempature_cold_20();
+                data_key_tempature_cold_21 = mAirconditionKeyCode.getKey_tempature_cold_21();
+                data_key_tempature_cold_22 = mAirconditionKeyCode.getKey_tempature_cold_22();
+                data_key_tempature_cold_23 = mAirconditionKeyCode.getKey_tempature_cold_23();
+                data_key_tempature_cold_24 = mAirconditionKeyCode.getKey_tempature_cold_24();
+                data_key_tempature_cold_25 = mAirconditionKeyCode.getKey_tempature_cold_25();
+                data_key_tempature_cold_26 = mAirconditionKeyCode.getKey_tempature_cold_26();
+                data_key_tempature_cold_27 = mAirconditionKeyCode.getKey_tempature_cold_27();
+                data_key_tempature_cold_28 = mAirconditionKeyCode.getKey_tempature_cold_28();
+                data_key_tempature_cold_29 = mAirconditionKeyCode.getKey_tempature_cold_29();
+                data_key_tempature_cold_30 = mAirconditionKeyCode.getKey_tempature_cold_30();
             }
         }
     }
@@ -379,8 +393,8 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this, null);
         mKeynotlearnDialog = new KeynotlearnDialog(this);
-        modeDialog = new Aircondition_mode_select_Dialog(this);
-        modeDialog.setmOnModeSelectClickListener(new Aircondition_mode_select_Dialog.onModeSelectClickListener() {
+        modeDialog = new AirconditionModeSelectDialog(this);
+        modeDialog.setmOnModeSelectClickListener(new AirconditionModeSelectDialog.onModeSelectClickListener() {
             @Override
             public void onModeSelect(String selectMode) {
                 textview_model.setText(selectMode);
@@ -391,8 +405,8 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_hot) {
+                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_learned);
                                 if (!isStartFromExperience) {
-                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_hot_learned);
                                     if (code == null) {
                                         return;
                                     }
@@ -401,7 +415,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     currentMode = 0x05;
                                     mAirconditionInitKeyValue.setMode(currentMode);
                                     mAirconditionInitKeyValue.save();
-
                                     data = packData();
                                     if (data_key_mode_hot != null) {
                                         mRemoteControlManager.sendData(data_key_mode_hot);
@@ -422,8 +435,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_cold) {
+                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_learned);
                                 if (!isStartFromExperience) {
-                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_learned);
+
                                     if (code == null) {
                                         return;
                                     }
@@ -456,8 +470,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_dehumit) {
+                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_learned);
                                 if (!isStartFromExperience) {
-                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_dehumid_learned);
+
                                     if (code == null) {
                                         return;
                                     }
@@ -490,8 +505,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_wind) {
+                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_learned);
                                 if (!isStartFromExperience) {
-                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_wind_learned);
+
                                     if (code == null) {
                                         return;
                                     }
@@ -524,8 +540,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             startActivity(new Intent(AirRemoteControlMianActivity.this, LearnByHandActivity.class));
                         } else {
                             if (key_mode_auto) {
+                                imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_learned);
                                 if (!isStartFromExperience) {
-                                    imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_auto_learned);
+
                                     if (code == null) {
                                         return;
                                     }
@@ -679,7 +696,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     func[5] = (byte) 0x02;
                                     func[1] = (byte) 0x01;
-                                    wind = 0x01;
                                     mAirconditionInitKeyValue.setWind(wind);
                                     mAirconditionInitKeyValue.save();
 
@@ -707,7 +723,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         windDirectionDialog.setmOnModeSelectClickListener(new AirconditionWindDirectionSelectDialog.onModeSelectClickListener() {
             @Override
             public void onModeSelect(String selectMode) {
-                textview_wind_center.setText(selectMode);
+                textview_wind_direction.setText(selectMode);
                 switch (selectMode) {
                     case "风向向上":
                         if (isLearnByHand) {
@@ -966,7 +982,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         textview_temperature = (TextView) findViewById(R.id.textview_temperature);
         textview_tips = (TextView) findViewById(R.id.textview_tips);
         textview_cancel = (TextView) findViewById(R.id.textview_cancel);
-        textview_wind_center = (TextView) findViewById(R.id.textview_wind_center);
+        textview_wind_direction = (TextView) findViewById(R.id.textview_wind_center);
         textview_wind_speed = (TextView) findViewById(R.id.textview_wind_speed);
         image_back = (FrameLayout) findViewById(R.id.image_back);
         image_setting = (ImageView) findViewById(R.id.image_setting);
@@ -997,9 +1013,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 break;
             case R.id.imageview_temperature_reduce:
                 if (isLearnByHand) {
-                    switch (currentMode){
+                    switch (currentMode) {
                         case 2://制冷
-                            switch (tempature){
+                            switch (tempature) {
                                 case 16:
                                     mRemoteControlManager.setCurrentLearnByHandKeyName
                                             (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_COLD_16);
@@ -1063,7 +1079,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             }
                             break;
                         case 5://制热
-                            switch (tempature){
+                            switch (tempature) {
                                 case 16:
                                     mRemoteControlManager.setCurrentLearnByHandKeyName
                                             (AirKeyNameConstant.KEYNAME.KEYNAME_TEMPTURE_HOT_16);
@@ -1144,43 +1160,43 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                 mAirconditionInitKeyValue.save();
                             }
                             data = packData();
-                            switch (tempature){
+                            switch (tempature) {
                                 case 16:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_16!=null){
+                                            if (data_key_tempature_cold_16 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_16);
-                                            }else{
-
-                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                                            }
-                                            break;
-                                        case 5:
-                                            default:
-                                                if(data_key_tempature_hot_16!=null){
-                                                    mRemoteControlManager.sendData(data_key_tempature_hot_16);
-                                                }else{
-
-                                                    mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                                                }
-                                                break;
-                                    }
-                                    break;
-                                case 17:
-                                    switch (currentMode){
-                                        case 2:
-                                            if(data_key_tempature_cold_17!=null){
-                                                mRemoteControlManager.sendData(data_key_tempature_cold_17);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_17!=null){
+                                            if (data_key_tempature_hot_16 != null) {
+                                                mRemoteControlManager.sendData(data_key_tempature_hot_16);
+                                            } else {
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 17:
+                                    switch (currentMode) {
+                                        case 2:
+                                            if (data_key_tempature_cold_17 != null) {
+                                                mRemoteControlManager.sendData(data_key_tempature_cold_17);
+                                            } else {
+
+                                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                                            }
+                                            break;
+                                        case 5:
+                                        default:
+                                            if (data_key_tempature_hot_17 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_17);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1188,20 +1204,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 18:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_18!=null){
+                                            if (data_key_tempature_cold_18 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_18);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_18!=null){
+                                            if (data_key_tempature_hot_18 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_18);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1209,20 +1225,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 19:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_19!=null){
+                                            if (data_key_tempature_cold_19 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_19);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_19!=null){
+                                            if (data_key_tempature_hot_19 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_19);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1230,20 +1246,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 20:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_20!=null){
+                                            if (data_key_tempature_cold_20 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_20);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_20!=null){
+                                            if (data_key_tempature_hot_20 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_20);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1251,20 +1267,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 21:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_21!=null){
+                                            if (data_key_tempature_cold_21 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_21);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_21!=null){
+                                            if (data_key_tempature_hot_21 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_21);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1272,20 +1288,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 22:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_22!=null){
+                                            if (data_key_tempature_cold_22 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_22);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_22!=null){
+                                            if (data_key_tempature_hot_22 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_22);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1293,20 +1309,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 23:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_23!=null){
+                                            if (data_key_tempature_cold_23 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_23);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_23!=null){
+                                            if (data_key_tempature_hot_23 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_23);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1314,20 +1330,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 24:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_24!=null){
+                                            if (data_key_tempature_cold_24 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_24);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_24!=null){
+                                            if (data_key_tempature_hot_24 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_24);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1335,20 +1351,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 25:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_25!=null){
+                                            if (data_key_tempature_cold_25 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_25);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_25!=null){
+                                            if (data_key_tempature_hot_25 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_25);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1356,20 +1372,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 26:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_26!=null){
+                                            if (data_key_tempature_cold_26 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_26);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_26!=null){
+                                            if (data_key_tempature_hot_26 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_26);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1377,20 +1393,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 27:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_27!=null){
+                                            if (data_key_tempature_cold_27 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_27);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_27!=null){
+                                            if (data_key_tempature_hot_27 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_27);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1398,20 +1414,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 28:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_28!=null){
+                                            if (data_key_tempature_cold_28 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_28);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_28!=null){
+                                            if (data_key_tempature_hot_28 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_28);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1419,20 +1435,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 29:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_29!=null){
+                                            if (data_key_tempature_cold_29 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_29);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_29!=null){
+                                            if (data_key_tempature_hot_29 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_29);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1440,20 +1456,20 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     }
                                     break;
                                 case 30:
-                                    switch (currentMode){
+                                    switch (currentMode) {
                                         case 2:
-                                            if(data_key_tempature_cold_30!=null){
+                                            if (data_key_tempature_cold_30 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_cold_30);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                         case 5:
                                         default:
-                                            if(data_key_tempature_hot_30!=null){
+                                            if (data_key_tempature_hot_30 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_30);
-                                            }else{
+                                            } else {
 
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
@@ -1464,7 +1480,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
 
                             temptureProgress -= 7;
                             progressBar.setProgress(temptureProgress);
-                        }else{
+                        } else {
                             temptureProgress -= 7;
                             progressBar.setProgress(temptureProgress);
                         }
@@ -1495,7 +1511,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                             temptureProgress += 7;
                             progressBar.setProgress(temptureProgress);
-                        }else{
+                        } else {
                             temptureProgress += 7;
                             progressBar.setProgress(temptureProgress);
                         }
@@ -1546,7 +1562,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                     startActivity(new Intent(this, LearnByHandActivity.class));
                 } else {
                     if (key_power) {
-                        if(isStartFromExperience){
+                        if (isStartFromExperience) {
                             if (power == 0x00) {
                                 power = (byte) 0x01;
                                 setAirconditionEnable();
@@ -1554,7 +1570,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                 power = (byte) 0x0;
                                 setAirconditionDisable();
                             }
-                        }else{
+                        } else {
                             if (code == null) {
                                 return;
                             }
@@ -1576,12 +1592,12 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
 
                             }
 
-                                data = packData();
-                                if (data_key_power != null) {
-                                    mRemoteControlManager.sendData(data_key_power);
-                                } else {
-                                    mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                                }
+                            data = packData();
+                            if (data_key_power != null) {
+                                mRemoteControlManager.sendData(data_key_power);
+                            } else {
+                                mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
+                            }
 
                         }
 

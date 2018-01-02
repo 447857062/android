@@ -163,7 +163,7 @@ public class SmartLockManager implements LocalConnecteListener {
         SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
         //找到要更行的设备,设置关联的房间
         List<Room> rooms = new ArrayList<>();
-        if (room == null) {
+        if (room != null) {
             rooms.add(room);
         } else {
             rooms.addAll(RoomManager.getInstance().getmRooms());

@@ -28,7 +28,7 @@ public class UdpThread {
     public DatagramSocket dataSocket;
     public Context mContext;
     private UdpPacket udp;
-
+    private TimerTask mTimerTimeoutTask;
     public UdpThread(Context context, UdpPacket udpPacket) {
         mContext = context;
         udp = udpPacket;
@@ -37,15 +37,13 @@ public class UdpThread {
         } catch (SocketException e) {
             e.printStackTrace();
         }
+        mTimerTimeoutTask=new TimerTask() {
+            @Override
+            public void run() {
+                timerTimeout();
+            }
+        };
     }
-
-    class timerTimeoutTask extends TimerTask {
-        @Override
-        public void run() {
-            timerTimeout();
-        }
-    }
-
     public void timerTimeout() {
         //"设备状体定时器运行正常";
         //先判断当前的网络状态，没有网络则不执行设备的检查
@@ -57,7 +55,6 @@ public class UdpThread {
             wifiCheckHandler();
         }
     }
-
     public void wifiCheckHandler() {
         try {
             //发送一个局域网查询包
@@ -71,17 +68,26 @@ public class UdpThread {
             e.printStackTrace();
         }
     }
-
     public void open() {
+        Log.i(TAG,"发送探测包open");
         timer = new Timer();
         try {
-            timer.schedule(new timerTimeoutTask(), 1000, 5000);
+            timer.schedule(mTimerTimeoutTask, 1000, 5000);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void cancel() {
-        timer.cancel();
+        Log.i(TAG,"取消发送探测包");
+        if(mTimerTimeoutTask!=null){
+            mTimerTimeoutTask.cancel();
+            mTimerTimeoutTask = null;
+        }
+        if(timer!=null){
+            timer.cancel();
+            timer=null;
+        }
+
     }
 }

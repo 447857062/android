@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.GetwayCheckActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
@@ -115,7 +114,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.layout_getway_check:
-                startActivity(new Intent(PersonalCenterActivity.this, GetwayCheckActivity.class));
+                startActivity(new Intent(PersonalCenterActivity.this, HomeNetWorkActivity.class));
                 break;
             case R.id.layout_experience_center:
                 startActivity(new Intent(this, ExperienceDevicesActivity.class));

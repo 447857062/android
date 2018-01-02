@@ -20,7 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
  * Created by Administrator on 2017/7/25.
  * 长度限制 SN 20  MAC,序列号 12
  */
-public class Sex_select_Dialog extends Dialog implements View.OnClickListener {
+public class SexSelectDialog extends Dialog implements View.OnClickListener {
     private Context mContext;
     private RelativeLayout layout_male;
     private RelativeLayout layout_fmale;
@@ -28,7 +28,7 @@ public class Sex_select_Dialog extends Dialog implements View.OnClickListener {
     private RelativeLayout layout_cancel;
 
 
-    public Sex_select_Dialog(Context context) {
+    public SexSelectDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
     }

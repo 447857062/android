@@ -20,7 +20,7 @@ import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
  * Created by Administrator on 2017/7/25.
  * 长度限制 SN 20  MAC,序列号 12
  */
-public class Aircondition_mode_select_Dialog extends Dialog implements View.OnClickListener {
+public class AirconditionModeSelectDialog extends Dialog implements View.OnClickListener {
     private Context mContext;
     private RelativeLayout layout_mode_hot;
     private RelativeLayout layout_mode_code;
@@ -30,7 +30,7 @@ public class Aircondition_mode_select_Dialog extends Dialog implements View.OnCl
     private RelativeLayout layout_cancel;
 
 
-    public Aircondition_mode_select_Dialog(Context context) {
+    public AirconditionModeSelectDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
     }

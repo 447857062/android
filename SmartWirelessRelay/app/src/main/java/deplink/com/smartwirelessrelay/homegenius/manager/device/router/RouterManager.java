@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -174,5 +175,8 @@ public class RouterManager {
         String currentDevcieKey = currentSelectedRouter.getRouterDeviceKey();
         Log.i(TAG, "获取绑定的路由器设备currentDevcieKey=" + currentDevcieKey);
         return currentDevcieKey;
+    }
+    public List<SmartDev> getAllRouterDevice() {
+        return DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_ROUTER).find(SmartDev.class);
     }
 }

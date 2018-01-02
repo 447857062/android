@@ -7,8 +7,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 
-import java.io.IOException;
-
 /**
  * Created by Administrator on 2017/11/2.
  */
@@ -80,17 +78,4 @@ public class NetStatusUtil {
         }
         return available ;
     }
-    public static boolean isNetworkOnline() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("ping -c 1 114.114.114.114");
-            int exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
 }

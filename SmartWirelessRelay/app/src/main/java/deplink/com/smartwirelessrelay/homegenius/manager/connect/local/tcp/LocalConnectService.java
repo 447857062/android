@@ -14,7 +14,6 @@ public class LocalConnectService extends Service {
     public LocalConnectService() {
 
     }
-
     @Override
     public IBinder onBind(Intent intent) {
         connectmanager.InitLocalConnectManager(getApplicationContext(), AppConstant.BIND_APP_MAC);

@@ -30,6 +30,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -63,6 +64,8 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         initEvents();
     }
 
+
+
     private void initEvents() {
         image_back.setOnClickListener(this);
 
@@ -72,6 +75,14 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        //使用数据库中的数据
+        datasTop.clear();
+        datasBottom.clear();
+        datasTop.addAll(currentRoom.getmGetwayDevices());
+        datasBottom .addAll(currentRoom.getmDevices());
+        mDeviceAdapter.setTopList(datasTop);
+        mDeviceAdapter.setBottomList(datasBottom);
+        listview_devies.setAdapter(mDeviceAdapter);
     }
 
     private RoomManager mRoomManager;
@@ -112,12 +123,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         }
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
-        //使用数据库中的数据
-        datasTop.addAll(currentRoom.getmGetwayDevices());
-        datasBottom .addAll(currentRoom.getmDevices());
-
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
-        listview_devies.setAdapter(mDeviceAdapter);
         listview_devies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -133,6 +139,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, RemoteControlActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:

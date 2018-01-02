@@ -92,6 +92,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private RouterManager mRouterManager;
     private RelativeLayout layout_devices_show;
     private ImageView imageview_empty_device;
+    private TextView textview_room_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +182,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case "路由器":
-                           RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
+                            RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
@@ -303,6 +304,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
         layout_devices_show = (RelativeLayout) findViewById(R.id.layout_devices_show);
+        textview_room_name = (TextView) findViewById(R.id.textview_room_name);
     }
 
     @Override
@@ -339,6 +341,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             listview_devies.setVisibility(View.VISIBLE);
                         }
                         mDeviceAdapter.notifyDataSetChanged();
+                        textview_room_name.setText(mRooms.get(position));
+                        roomTypeDialog.dismiss();
                     }
                 });
                 roomTypeDialog.show();
@@ -406,16 +410,16 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
                         tempDevice.addAll(aDeviceList.getDevice());
                     }
-                    for(int i=0;i<tempDevice.size();i++){
-                        for(int j=0;j<datasTop.size();j++){
-                            if(datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())){
+                    for (int i = 0; i < tempDevice.size(); i++) {
+                        for (int j = 0; j < datasTop.size(); j++) {
+                            if (datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())) {
                                 datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
                             }
                         }
                     }
-                    for(int i=0;i<tempSmartDevice.size();i++){
-                        for(int j=0;j<datasBottom.size();j++){
-                            if(datasBottom.get(j).getUid().equals(tempSmartDevice.get(i).getUid())){
+                    for (int i = 0; i < tempSmartDevice.size(); i++) {
+                        for (int j = 0; j < datasBottom.size(); j++) {
+                            if (datasBottom.get(j).getUid().equals(tempSmartDevice.get(i).getUid())) {
                                 datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
                             }
                         }

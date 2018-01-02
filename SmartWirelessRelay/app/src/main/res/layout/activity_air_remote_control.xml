@@ -266,16 +266,17 @@
             </RelativeLayout>
 
         </RelativeLayout>
+        <TextView
+            android:background="@color/room_type_text"
+            android:visibility="gone"
+            android:id="@+id/textview_tips"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_smallest"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_alignParentBottom="true"
+            android:text="现在处于手动学习模式,学习完成后点击取消退出学习"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
     </RelativeLayout>
-    <TextView
-        android:background="@color/room_type_text"
-        android:visibility="gone"
-        android:id="@+id/textview_tips"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_smallest"
-        android:gravity="center_horizontal|center_vertical"
-        android:layout_alignParentBottom="true"
-        android:text="现在处于手动学习模式,学习完成后点击取消退出学习"
-        android:layout_width="match_parent"
-        android:layout_height="30dp" />
+
 </RelativeLayout>

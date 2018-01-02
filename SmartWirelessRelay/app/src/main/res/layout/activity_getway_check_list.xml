@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.GetwayCheckActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.HomeNetWorkActivity">
 
     <include
         android:id="@+id/layout_title"
@@ -17,6 +17,7 @@
         android:background="@color/white_background">
 
         <ListView
+            android:listSelector="@color/transparent"
             android:id="@+id/listview_getway_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
             android:gravity="center_horizontal"
-            android:text="未检测到可用网关"
+            android:text="家庭网络中未添加设备"
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small"
             android:visibility="gone" />

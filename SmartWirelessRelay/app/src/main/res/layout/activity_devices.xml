@@ -30,6 +30,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/textview_room_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="全部"
@@ -61,7 +62,13 @@
                 android:src="@drawable/addicon" />
         </RelativeLayout>
     </RelativeLayout>
-
+    <ImageView
+        android:layout_below="@+id/layout_title"
+        android:id="@+id/imageview_empty_device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/equipmentemptystate"
+        />
     <RelativeLayout
         android:id="@+id/layout_devices_show"
         android:layout_above="@+id/layout_buttom_bar"
@@ -69,12 +76,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_title">
 
-        <ImageView
-            android:id="@+id/imageview_empty_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/equipmentemptystate"
-            android:visibility="gone" />
+
 
         <ListView
             android:id="@+id/listview_devies"
@@ -112,6 +114,5 @@
             android:layout_below="@+id/view_line"
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
-
 
 </RelativeLayout>

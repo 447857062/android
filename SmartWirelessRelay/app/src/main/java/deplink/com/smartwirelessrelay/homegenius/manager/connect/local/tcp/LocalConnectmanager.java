@@ -40,7 +40,6 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.ConnectionMonit
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.UdpManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.util.DataExchange;
-import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 
 /**
@@ -465,8 +464,10 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                 Log.i(TAG, "网络连接变化");
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeInfo = manager.getActiveNetworkInfo();
+                long currentTime;
+                currentTime=System.currentTimeMillis();
                 if (activeInfo != null && NetUtil.isWiFiActive(context)) {
-                    if (NetStatusUtil.isNetworkOnline()) {
+                    if (NetUtil.isWiFiActive(mContext)) {
                         currentNetStatu = NET_TYPE_WIFI_CONNECTED;
                     } else {
                         currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
@@ -482,9 +483,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                                 }
                             }
                         } else  {
-                            if (mContext != null) {
-                              //  Toast.makeText(mContext, "wifi连接不可用，本地连接已断开", Toast.LENGTH_SHORT).show();
-                            }
                             if (mUdpmanager != null) {
                                 mUdpmanager = null;
                             }

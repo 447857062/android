@@ -14,7 +14,6 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.udp.UdpPacket;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import deplink.com.smartwirelessrelay.homegenius.util.IPV4Util;
-import deplink.com.smartwirelessrelay.homegenius.util.NetStatusUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 
 /**
@@ -34,7 +33,6 @@ public class UdpManager implements OnGetIpListener {
     private UdpPacket udpPacket;
     private UdpThread udpThread;
     private UdpManagerGetIPLintener mUdpManagerGetIPLintener;
-
     private UdpManager() {
     }
 
@@ -44,15 +42,11 @@ public class UdpManager implements OnGetIpListener {
         }
         return instance;
     }
-
-    private Context mContext;
-
     /**
      * 初始化本地连接管理器
      */
     public int InitUdpConnect(final Context context, UdpManagerGetIPLintener listener) {
         this.mUdpManagerGetIPLintener = listener;
-        this.mContext = context;
         if (listener == null) {
             Log.e(TAG, "InitUdpConnect 没有设置回调 SDK 会出现异常,这里必须设置数据结果回调");
         }
@@ -71,8 +65,6 @@ public class UdpManager implements OnGetIpListener {
         udpThread.open();
         return 0;
     }
-
-
     /**
      * 检查到网关后还要继续检查把收到的网关列一个表
      *
@@ -81,7 +73,6 @@ public class UdpManager implements OnGetIpListener {
     @Override
     public void onRecvLocalConnectIp(byte[] packet, String uid) {
         Log.i(TAG, "onRecvLocalConnectIp ip=" + IPV4Util.trans2IpV4Str(packet));
-
         //不用发送，可以接收udp
         if (udpThread != null) {
             udpThread.cancel();
@@ -133,7 +124,6 @@ public class UdpManager implements OnGetIpListener {
 
     class NetBroadCast extends BroadcastReceiver {
         public final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
-
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION.equals(intent.getAction())) {
@@ -141,13 +131,12 @@ public class UdpManager implements OnGetIpListener {
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeInfo = manager.getActiveNetworkInfo();
                 if (activeInfo != null && NetUtil.isWiFiActive(context)) {
-                    if (NetStatusUtil.isNetworkOnline()) {
+                    if (NetUtil.isWiFiActive(context)) {
                         currentNetStatu = NET_TYPE_WIFI_CONNECTED;
                     } else {
                         currentNetStatu = NET_TYPE_WIFI_DISCONNECTED;
                     }
                     Log.i(TAG, "网络连接变化 currentNetStatu=" + currentNetStatu + "udpPacket!=null" + (udpPacket != null));
-
                     if (currentNetStatu == NET_TYPE_WIFI_CONNECTED) {
                         //重新连接
                         if (udpPacket != null) {
@@ -156,6 +145,7 @@ public class UdpManager implements OnGetIpListener {
                             Message msg = Message.obtain();
                             msg.what = MSG_STOP_CHECK_GETWAY;
                             mHandler.sendMessageDelayed(msg, MSG_STOP_CHECK_GETWAY_DELAY);
+
                         }
                     } else if (currentNetStatu == NET_TYPE_WIFI_DISCONNECTED) {
                         //wifi连接不可用
@@ -164,7 +154,6 @@ public class UdpManager implements OnGetIpListener {
                             udpThread.cancel();
                         }
                     }
-
                 }
             }
         }

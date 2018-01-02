@@ -38,7 +38,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.util.bitmap.BitmapHandler;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.Sex_select_Dialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.SexSelectDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.UserImagePickerDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
@@ -58,7 +58,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
-    private Sex_select_Dialog mSexDialog;
+    private SexSelectDialog mSexDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         textview_title.setText("个人信息");
-        mSexDialog = new Sex_select_Dialog(this);
+        mSexDialog = new SexSelectDialog(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(UserinfoActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -200,7 +200,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.layout_update_sex:
-                mSexDialog.setmOnSexSelectClickListener(new Sex_select_Dialog.onSexSelectClickListener() {
+                mSexDialog.setmOnSexSelectClickListener(new SexSelectDialog.onSexSelectClickListener() {
                     @Override
                     public void onSexSelect(String selectMode) {
                         textview_show_sex.setText(selectMode);
