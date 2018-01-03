@@ -10,11 +10,14 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -56,8 +59,8 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterMan
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.view.ListViewLinearLayout;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -90,9 +93,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_mine;
     private DeviceAtRoomDialog roomTypeDialog;
     private RouterManager mRouterManager;
-    private RelativeLayout layout_devices_show;
+    private ListViewLinearLayout layout_devices_show;
     private ImageView imageview_empty_device;
     private TextView textview_room_name;
+    private ImageView imageview_refresh;
+    private ImageView imageview_refresh_complement;
+    private FrameLayout frame_refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,7 +245,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
     // 用GestureDetectorCompat替换GestureDetector,GestureDetectorCompat兼容的版本较广
     private GestureDetectorCompat mDetector;
-
     public class MytGestureListener extends GestureDetector.SimpleOnGestureListener {
         // 滑动时触发
         @Override
@@ -253,14 +258,23 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
     private void RefreshDevicesBackground() {
-        DialogThreeBounce.showLoading(this);
+        frame_refresh.setVisibility(View.VISIBLE);
+        imageview_refresh.setVisibility(View.VISIBLE);
+        imageview_refresh_complement.setVisibility(View.GONE);
+        startRefreshAnim();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                DialogThreeBounce.hideLoading();
+               mHandler.sendEmptyMessageDelayed(MSG_HIDE_REFRESH,500);
             }
-        }, 3000);
+        }, 1500);
         mDeviceManager.queryDeviceList();
+    }
+    private void startRefreshAnim() {
+        Animation circle_anim = AnimationUtils.loadAnimation(this, R.anim.anim_round_refresh);
+        LinearInterpolator interpolator = new LinearInterpolator();  //设置匀速旋转，在xml文件中设置会出现卡顿
+        circle_anim.setInterpolator(interpolator);
+        imageview_refresh.startAnimation(circle_anim);  //开始动画
     }
 
     private void initEvents() {
@@ -280,12 +294,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 return true;
             }
         });
+        layout_devices_show.setmOnRefreshListener(new ListViewLinearLayout.onRefreshListener() {
+            @Override
+            public void onRefresh() {
+                RefreshDevicesBackground();
+            }
+        });
         layout_devices_show.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Log.i(TAG, "layout_devices_show ontouch");
                 mDetector.onTouchEvent(event);
-                return    true;
+                return true;
             }
         });
     }
@@ -308,8 +328,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_device = (TextView) findViewById(R.id.textview_device);
         textview_room = (TextView) findViewById(R.id.textview_room);
         textview_mine = (TextView) findViewById(R.id.textview_mine);
-        layout_devices_show = (RelativeLayout) findViewById(R.id.layout_devices_show);
+        layout_devices_show = (ListViewLinearLayout) findViewById(R.id.layout_devices_show);
         textview_room_name = (TextView) findViewById(R.id.textview_room_name);
+        imageview_refresh = (ImageView) findViewById(R.id.imageview_refresh);
+        imageview_refresh_complement = (ImageView) findViewById(R.id.imageview_refresh_complement);
+        frame_refresh = (FrameLayout) findViewById(R.id.frame_refresh);
     }
 
     @Override
@@ -365,7 +388,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         }
     }
 
-    private static final int MSG_GET_DEVS = 0x01;
+
 
     @Override
     public void responseQueryResult(String result) {
@@ -391,13 +414,27 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     public void responseSetWifirelayResult(int result) {
 
     }
-
+    private static final int MSG_GET_DEVS = 0x01;
+    private static final int MSG_SHOW_REFRESH_COMPLEMENT = 0x02;
+    private static final int MSG_HIDE_REFRESH_COMPLEMENT = 0x03;
+    private static final int MSG_HIDE_REFRESH = 0x04;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             String str = (String) msg.obj;
             switch (msg.what) {
+                case MSG_SHOW_REFRESH_COMPLEMENT:
+                    imageview_refresh_complement.setVisibility(View.VISIBLE);
+                    mHandler.sendEmptyMessageDelayed(MSG_HIDE_REFRESH_COMPLEMENT,500);
+                    break;
+                case MSG_HIDE_REFRESH:
+                    imageview_refresh.setVisibility(View.GONE);
+                    mHandler.sendEmptyMessageDelayed(MSG_SHOW_REFRESH_COMPLEMENT,1000);
+                    break;
+                case MSG_HIDE_REFRESH_COMPLEMENT:
+                    frame_refresh.setVisibility(View.GONE);
+                    break;
                 case MSG_GET_DEVS:
                     datasTop.clear();
                     datasBottom.clear();
@@ -434,6 +471,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     mDeviceAdapter.notifyDataSetChanged();
                     Log.i(TAG, "设备列表=" + str);
                     break;
+
             }
         }
     };
