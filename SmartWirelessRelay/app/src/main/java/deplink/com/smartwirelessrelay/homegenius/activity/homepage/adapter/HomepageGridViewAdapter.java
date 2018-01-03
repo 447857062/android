@@ -54,7 +54,6 @@ public class HomepageGridViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        //System.out.println("getItemId = " + position);
         return position;
     }
 /*

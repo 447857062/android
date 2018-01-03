@@ -311,12 +311,12 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
      */
     private void changeInputCipher() {
         if (edittext_input_password.getTransformationMethod() instanceof PasswordTransformationMethod) {
-            imageview_eye.setImageResource(R.drawable.hideicon);
+            imageview_eye.setImageResource(R.drawable.displayicon);
             edittext_input_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
 
         } else if (edittext_input_password.getTransformationMethod() instanceof HideReturnsTransformationMethod) {
 
-            imageview_eye.setImageResource(R.drawable.displayicon);
+            imageview_eye.setImageResource(R.drawable.hideicon);
             edittext_input_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         }

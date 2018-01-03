@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/home_room_image_width_height"
     android:layout_height="@dimen/home_room_image_width_height"
-    android:background="@android:color/transparent"
+    android:background="@color/transparent"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
@@ -10,6 +10,7 @@
         android:id="@+id/imageview_room_type"
         android:layout_width="@dimen/home_room_image_width_height"
         android:layout_height="@dimen/home_room_image_width_height"
+        android:clickable="false"
         android:layout_gravity="center_vertical|center_horizontal"
         android:src="@drawable/homebedroom" />
 

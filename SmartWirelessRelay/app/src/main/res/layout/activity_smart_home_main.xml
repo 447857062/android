@@ -242,17 +242,27 @@
                     android:layout_height="@dimen/home_page_roomselect_normal_height"
                     android:paddingLeft="@dimen/layout_content_margin_left_right"
                     android:paddingRight="@dimen/layout_content_margin_left_right"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:background="@color/transparent"
+                    android:fadingEdge="none"
+                    android:overScrollMode="never"
                     android:scrollbars="none">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="110dp"
+                        android:fadingEdge="none"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:background="@color/transparent"
                         android:layout_marginBottom="@dimen/homepage_room_type_margin_button"
                         android:layout_marginTop="@dimen/homepage_room_type_margin_top"
                         android:gravity="center_vertical">
-
                         <GridView
                             android:id="@+id/grid"
+                            android:fadingEdge="none"
+                            android:listSelector="@color/transparent"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical|left"

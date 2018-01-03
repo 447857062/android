@@ -24,6 +24,7 @@
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:background="@drawable/radius2_white_background"
             android:id="@+id/listview_room_types"
+            android:listSelector="@color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"/>

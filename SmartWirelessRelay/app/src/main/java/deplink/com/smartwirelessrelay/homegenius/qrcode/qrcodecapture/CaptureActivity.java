@@ -48,6 +48,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate = true;
     private int type = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,7 +184,8 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_cancel:
-                CaptureActivity.this.finish();
+                finish();
+                onDestroy();
                 break;
 
         }
@@ -208,7 +210,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
      * @param barcode
      */
     public void handleDecode(Result obj, Bitmap barcode) {
-     inactivityTimer.onActivity();
+        inactivityTimer.onActivity();
         viewfinderView.drawResultBitmap(barcode);
         playBeepSoundAndVibrate();
         String deviceSn = obj.getText();
@@ -221,7 +223,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
                 finish();
                 break;
             case CAPTURE_TYPE_SWITCH:
-                intent =new Intent(this, AddDeviceNameActivity.class);
+                intent = new Intent(this, AddDeviceNameActivity.class);
                 intent.putExtra("switchqrcode", deviceSn);
                 intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SWITCH);
                 startActivity(intent);

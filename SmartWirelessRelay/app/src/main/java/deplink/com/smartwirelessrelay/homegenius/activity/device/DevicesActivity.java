@@ -121,7 +121,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
         mDeviceAdapter.setTopList(datasTop);
         mDeviceAdapter.setBottomList(datasBottom);
-        //  mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
         if (datasTop.size() == 0 && datasBottom.size() == 0) {
             imageview_empty_device.setVisibility(View.VISIBLE);
             listview_devies.setVisibility(View.GONE);
@@ -129,7 +128,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             imageview_empty_device.setVisibility(View.GONE);
             listview_devies.setVisibility(View.VISIBLE);
         }
-        //  listview_devies.setAdapter(mDeviceAdapter);
         mDeviceAdapter.notifyDataSetChanged();
     }
 
@@ -251,6 +249,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             RefreshDevicesBackground();
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
+
     }
 
     private void RefreshDevicesBackground() {
@@ -272,15 +271,21 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
         layout_select_room_type.setOnClickListener(this);
-
         mDetector = new GestureDetectorCompat(DevicesActivity.this,
                 new MytGestureListener());
+        listview_devies.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mDetector.onTouchEvent(event);
+                return true;
+            }
+        });
         layout_devices_show.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Log.i(TAG, "layout_devices_show ontouch");
                 mDetector.onTouchEvent(event);
-                return false;
+                return    true;
             }
         });
     }
@@ -314,7 +319,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 startActivity(new Intent(this, SmartHomeMainActivity.class));
                 break;
             case R.id.layout_select_room_type:
-
                 roomTypeDialog.setRoomTypeItemClickListener(new DeviceAtRoomDialog.onItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
