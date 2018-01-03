@@ -325,7 +325,7 @@
                     android:gravity="center_horizontal" />
 
             </RelativeLayout>
-            <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
+            <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.SwipeMenuListView
                 android:id="@+id/listview_device_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -361,7 +361,7 @@
             </RelativeLayout>
 
 
-            <deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.SwipeMenuListView
+            <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.SwipeMenuListView
                 android:id="@+id/listview_black_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview;
+package deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview;
 
 import android.text.TextUtils;
 import android.view.Gravity;

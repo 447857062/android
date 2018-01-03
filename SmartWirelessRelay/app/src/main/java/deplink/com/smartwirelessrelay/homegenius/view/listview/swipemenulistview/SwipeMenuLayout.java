@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview;
+package deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview;
 
 import android.content.Context;
 import android.support.v4.view.GestureDetectorCompat;

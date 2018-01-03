@@ -21,7 +21,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
-package deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview;
+package deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview;
 
 import android.widget.BaseAdapter;
 

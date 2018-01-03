@@ -11,7 +11,7 @@ import com.deplink.sdk.android.sdk.json.BLACKLIST;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.view.swipemenulistview.BaseSwipListAdapter;
+import deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.BaseSwipListAdapter;
 
 /**
  * Created by Administrator on 2017/8/28.
