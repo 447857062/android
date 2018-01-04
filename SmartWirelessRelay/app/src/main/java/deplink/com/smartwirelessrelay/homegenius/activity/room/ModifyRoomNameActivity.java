@@ -13,7 +13,6 @@ import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 
 public class ModifyRoomNameActivity extends Activity implements View.OnClickListener {
     private ClearEditText clearEditText;
-    private String roomName;
     private TextView textview_title;
     private TextView textview_edit;
     private FrameLayout image_back;
@@ -49,10 +48,10 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        clearEditText = (ClearEditText) findViewById(R.id.clear);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        image_back = findViewById(R.id.image_back);
+        clearEditText = findViewById(R.id.clear);
     }
 
     @Override
@@ -64,9 +63,9 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
                 break;
 
             case R.id.textview_edit:
-                roomName = clearEditText.getText().toString();
+                String roomName = clearEditText.getText().toString();
                 if (!roomName.equalsIgnoreCase("")&& !roomName.equals(orgRoomName)) {
-                    int result=RoomManager.getInstance().updateRoomName(orgRoomName,roomName);
+                    int result=RoomManager.getInstance().updateRoomName(orgRoomName, roomName);
                     if(result!=1){
                         Toast.makeText(this,"修改房间名称失败",Toast.LENGTH_SHORT).show();
                     }else{

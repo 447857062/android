@@ -20,11 +20,9 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
 
     public ListViewLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         setClickable(true);
         setLongClickable(true);
         mScroller = new Scroller(context);
-
     }
 
     protected void smoothScrollBy(int dx, int dy) {
@@ -95,13 +93,14 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
         }
         return false;
     }
+
     public onRefreshListener mOnRefreshListener;
 
     public void setmOnRefreshListener(onRefreshListener mOnRefreshListener) {
         this.mOnRefreshListener = mOnRefreshListener;
     }
 
-    public interface  onRefreshListener{
+    public interface onRefreshListener {
         void onRefresh();
     }
 }

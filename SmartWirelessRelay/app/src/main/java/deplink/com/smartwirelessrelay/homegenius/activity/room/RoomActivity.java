@@ -123,20 +123,20 @@ public class RoomActivity extends Activity implements View.OnClickListener {
 
 
     private void initViews() {
-        textview_home = (TextView) findViewById(R.id.textview_home);
-        textview_device = (TextView) findViewById(R.id.textview_device);
-        textview_room = (TextView) findViewById(R.id.textview_room);
-        textview_mine = (TextView) findViewById(R.id.textview_mine);
-        layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);
-        layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
-        layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
-        layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
-        mDragGridView = (DragGridView) findViewById(R.id.dragGridView);
-        imageview_addroom = (ImageView) findViewById(R.id.imageview_addroom);
-        imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
-        imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
-        imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
-        imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
+        textview_home = findViewById(R.id.textview_home);
+        textview_device = findViewById(R.id.textview_device);
+        textview_room = findViewById(R.id.textview_room);
+        textview_mine = findViewById(R.id.textview_mine);
+        layout_home_page = findViewById(R.id.layout_home_page);
+        layout_devices = findViewById(R.id.layout_devices);
+        layout_rooms = findViewById(R.id.layout_rooms);
+        layout_personal_center = findViewById(R.id.layout_personal_center);
+        mDragGridView = findViewById(R.id.dragGridView);
+        imageview_addroom = findViewById(R.id.imageview_addroom);
+        imageview_devices = findViewById(R.id.imageview_devices);
+        imageview_home_page = findViewById(R.id.imageview_home_page);
+        imageview_rooms = findViewById(R.id.imageview_rooms);
+        imageview_personal_center = findViewById(R.id.imageview_personal_center);
     }
 
     @Override

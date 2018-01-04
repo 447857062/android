@@ -37,12 +37,7 @@ public class UdpThread {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        mTimerTimeoutTask=new TimerTask() {
-            @Override
-            public void run() {
-                timerTimeout();
-            }
-        };
+
     }
     public void timerTimeout() {
         //"设备状体定时器运行正常";
@@ -72,6 +67,15 @@ public class UdpThread {
         Log.i(TAG,"发送探测包open");
         timer = new Timer();
         try {
+            if(mTimerTimeoutTask!=null){
+                mTimerTimeoutTask.cancel();
+            }
+            mTimerTimeoutTask=new TimerTask() {
+                @Override
+                public void run() {
+                    timerTimeout();
+                }
+            };
             timer.schedule(mTimerTimeoutTask, 1000, 5000);
         } catch (Exception e) {
             e.printStackTrace();

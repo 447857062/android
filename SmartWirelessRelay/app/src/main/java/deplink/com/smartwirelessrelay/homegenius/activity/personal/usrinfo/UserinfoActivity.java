@@ -141,16 +141,16 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_show_nicknamke = (TextView) findViewById(R.id.textview_show_nicknamke);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        layout_user_header_image = (RelativeLayout) findViewById(R.id.layout_user_header_image);
-        layout_update_user_nickname = (RelativeLayout) findViewById(R.id.layout_update_user_nickname);
-        layout_update_sex = (RelativeLayout) findViewById(R.id.layout_update_sex);
-        layout_birthday = (RelativeLayout) findViewById(R.id.layout_birthday);
-        user_head_portrait = (CircleImageView) findViewById(R.id.user_head_portrait);
-        textview_show_birthday = (TextView) findViewById(R.id.textview_show_birthday);
-        textview_show_sex = (TextView) findViewById(R.id.textview_show_sex);
+        textview_title = findViewById(R.id.textview_title);
+        textview_show_nicknamke = findViewById(R.id.textview_show_nicknamke);
+        image_back = findViewById(R.id.image_back);
+        layout_user_header_image = findViewById(R.id.layout_user_header_image);
+        layout_update_user_nickname = findViewById(R.id.layout_update_user_nickname);
+        layout_update_sex = findViewById(R.id.layout_update_sex);
+        layout_birthday = findViewById(R.id.layout_birthday);
+        user_head_portrait = findViewById(R.id.user_head_portrait);
+        textview_show_birthday = findViewById(R.id.textview_show_birthday);
+        textview_show_sex = findViewById(R.id.textview_show_sex);
 
     }
 
@@ -218,7 +218,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                         // SelectedTime = selectedCalendar.getTimeInMillis() / 1000;
                         textview_show_birthday.setText(time);
                     }
-                }, "1990-11-22 17:34", "2100-12-1 15:20");
+                }, "1990-11-22", "2100-12-1");
                 timeSelector.show();
 
                 break;

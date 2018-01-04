@@ -52,7 +52,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +118,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
     private TextView textview_tempature;
+
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -129,7 +129,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             // String country = location.getCountry();    //获取国家
             String province = location.getProvince();    //获取省份
             String city = location.getCity();    //获取城市
-            //String district = location.getDistrict();    //获取区县
+            String district = location.getDistrict();    //获取区县
             // String street = location.getStreet();    //获取街道信息
             Log.i(TAG, "city=" + city);
             Log.i(TAG, "province=" + province);
@@ -142,12 +142,18 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     province = province.substring(0, province.length() - 1);
                 }
                 Log.i(TAG, "city=" + city);
-                textview_city.setText(city);
+                textview_city.setText(city+"/"+district);
                 try {
                     cityCode = getCityCodeFromCityName(province, city);
                     Log.i(TAG, "cityCode=" + cityCode);
-                    initWaetherData();
-                    sendRequestWithHttpClient(city);
+                    final String finalCity = city;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            initWaetherData();
+                            sendRequestWithHttpClient(finalCity);
+                        }
+                    });
                 } catch (XmlPullParserException | IOException e) {
                     e.printStackTrace();
                 }
@@ -228,12 +234,17 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         return cityCode;
     }
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_home_main);
-
         initViews();
         initDatas();
         initEvents();
@@ -259,7 +270,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             public void run() {
                 HttpURLConnection connection = null;
                 try {
-                    URL url = new URL("http://www.pm25.in/api/querys/pm2_5.json?city=" +city+
+                    URL url = new URL("http://www.pm25.in/api/querys/pm2_5.json?city=" + city +
                             "&token=5j1znBVAsnSf5xQyNQyq&stations=no");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -279,38 +290,35 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             parseJSONObjectOrJSONArray(response.toString());
                         }
                     });
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
+
     /**
      * @param json
      * @param clazz
      * @return
      */
-    public static <T> ArrayList<T> jsonToArrayList(String json, Class<T> clazz)
-    {
-        Type type = new TypeToken<ArrayList<JsonObject>>()
-        {}.getType();
+    public static <T> ArrayList<T> jsonToArrayList(String json, Class<T> clazz) {
+        Type type = new TypeToken<ArrayList<JsonObject>>() {
+        }.getType();
         ArrayList<JsonObject> jsonObjects = new Gson().fromJson(json, type);
 
         ArrayList<T> arrayList = new ArrayList<>();
-        for (JsonObject jsonObject : jsonObjects)
-        {
+        for (JsonObject jsonObject : jsonObjects) {
             arrayList.add(new Gson().fromJson(jsonObject, clazz));
         }
         return arrayList;
     }
+
     //解析JSON数据
-    private void parseJSONObjectOrJSONArray( String jsonData) {
-        if(!jsonData.contains("error")){
-            ArrayList<Pm25Info> pm25lists=jsonToArrayList(jsonData, Pm25Info.class);
-            textview_pm25.setText(""+pm25lists.get(0).getPm2_5());
+    private void parseJSONObjectOrJSONArray(String jsonData) {
+        if (!jsonData.contains("error")) {
+            ArrayList<Pm25Info> pm25lists = jsonToArrayList(jsonData, Pm25Info.class);
+            textview_pm25.setText("" + pm25lists.get(0).getPm2_5());
         }
 
     }
@@ -359,16 +367,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
             super.handleMessage(msg);
             JSONObject object = (JSONObject) msg.obj;
             try {
-                String tempture=object.getString("temp2");
-                tempture=tempture.split("℃")[0];
-                 Log.i(TAG,"tempture="+tempture);
+                String tempture = object.getString("temp2");
+                tempture = tempture.split("℃")[0];
+                Log.i(TAG, "tempture=" + tempture);
                 textview_tempature.setText(tempture);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -560,29 +566,29 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
 
     private void initViews() {
-        layout_home_page = (LinearLayout) findViewById(R.id.layout_home_page);
-        layout_devices = (LinearLayout) findViewById(R.id.layout_devices);
-        layout_rooms = (LinearLayout) findViewById(R.id.layout_rooms);
-        layout_personal_center = (LinearLayout) findViewById(R.id.layout_personal_center);
-        imageview_setting = (ImageView) findViewById(R.id.imageview_setting);
-        roomGridView = (GridView) findViewById(R.id.grid);
-        listview_experience_center = (ListView) findViewById(R.id.listview_experience_center);
-        imageview_devices = (ImageView) findViewById(R.id.imageview_devices);
-        imageview_home_page = (ImageView) findViewById(R.id.imageview_home_page);
-        imageview_rooms = (ImageView) findViewById(R.id.imageview_rooms);
-        imageview_personal_center = (ImageView) findViewById(R.id.imageview_personal_center);
-        layout_experience_center_top = (RelativeLayout) findViewById(R.id.layout_experience_center_top);
-        textview_change_show_type = (FrameLayout) findViewById(R.id.textview_change_show_type);
-        textview_home = (TextView) findViewById(R.id.textview_home);
-        textview_device = (TextView) findViewById(R.id.textview_device);
-        textview_room = (TextView) findViewById(R.id.textview_room);
-        textview_mine = (TextView) findViewById(R.id.textview_mine);
-        textview_city = (TextView) findViewById(R.id.textview_city);
-        textview_tempature = (TextView) findViewById(R.id.textview_tempature);
-        textview_pm25 = (TextView) findViewById(R.id.textview_pm25);
+        layout_home_page = findViewById(R.id.layout_home_page);
+        layout_devices = findViewById(R.id.layout_devices);
+        layout_rooms = findViewById(R.id.layout_rooms);
+        layout_personal_center = findViewById(R.id.layout_personal_center);
+        imageview_setting = findViewById(R.id.imageview_setting);
+        roomGridView = findViewById(R.id.grid);
+        listview_experience_center = findViewById(R.id.listview_experience_center);
+        imageview_devices = findViewById(R.id.imageview_devices);
+        imageview_home_page = findViewById(R.id.imageview_home_page);
+        imageview_rooms = findViewById(R.id.imageview_rooms);
+        imageview_personal_center = findViewById(R.id.imageview_personal_center);
+        layout_experience_center_top = findViewById(R.id.layout_experience_center_top);
+        textview_change_show_type = findViewById(R.id.textview_change_show_type);
+        textview_home = findViewById(R.id.textview_home);
+        textview_device = findViewById(R.id.textview_device);
+        textview_room = findViewById(R.id.textview_room);
+        textview_mine = findViewById(R.id.textview_mine);
+        textview_city = findViewById(R.id.textview_city);
+        textview_tempature = findViewById(R.id.textview_tempature);
+        textview_pm25 = findViewById(R.id.textview_pm25);
 
-        layout_roomselect_normal = (HorizontalScrollView) findViewById(R.id.layout_roomselect_normal);
-        layout_roomselect_changed_ype = (NonScrollableListView) findViewById(R.id.layout_roomselect_changed_ype);
+        layout_roomselect_normal = findViewById(R.id.layout_roomselect_normal);
+        layout_roomselect_changed_ype = findViewById(R.id.layout_roomselect_changed_ype);
     }
 
     @Override
