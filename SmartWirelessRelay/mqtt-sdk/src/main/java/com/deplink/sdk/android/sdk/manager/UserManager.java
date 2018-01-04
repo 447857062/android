@@ -297,10 +297,9 @@ public class UserManager implements MqttListener {
             public void onResponse(Call<UserSession> call, Response<UserSession> response) {
                 int code = 0;
                 code = response.code();
-                String error = "", errorJson = "";
+                String error = "";
                 Log.i(TAG, "code=" + code);
-                if (code == 200) { //登录成功
-
+                if (code == 200) {
                     mSDKCoordinator.notifySuccess(SDKAction.UPLOADIMAGE);
                     return;
                 } else if (code == 403) {//登录失败，用户密码错误
