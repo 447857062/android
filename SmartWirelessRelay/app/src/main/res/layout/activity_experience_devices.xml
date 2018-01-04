@@ -5,16 +5,19 @@
     android:layout_height="match_parent"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity">
     <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
-
-    <ListView
-        android:id="@+id/listview_experience_center"
-        android:layout_width="match_parent"
-        android:scrollbars="none"
-        android:background="@null"
-        android:divider="@null"
-        android:layout_height="wrap_content"
+    <deplink.com.smartwirelessrelay.homegenius.view.ListViewLinearLayout
         android:layout_below="@+id/layout_title"
-       >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ListView
+            android:id="@+id/listview_experience_center"
+            android:layout_width="match_parent"
+            android:scrollbars="none"
+            android:background="@null"
+            android:divider="@null"
+            android:layout_height="wrap_content"
+            >
+        </ListView>
+    </deplink.com.smartwirelessrelay.homegenius.view.ListViewLinearLayout>
 
-    </ListView>
 </RelativeLayout>

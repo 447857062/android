@@ -13,7 +13,6 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 
 /**
- * @author frankLi
  */
 public class GetwaySelectListAdapter extends BaseAdapter {
     private static final String TAG = "GetwaySelectListAdapter";
@@ -52,7 +51,7 @@ public class GetwaySelectListAdapter extends BaseAdapter {
 
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.getway_select_list_item, null);
-            viewHolder.textview_device_name = (TextView) convertView
+            viewHolder.textview_device_name = convertView
                     .findViewById(R.id.textview_device_name);
             convertView.setTag(viewHolder);
         } else {

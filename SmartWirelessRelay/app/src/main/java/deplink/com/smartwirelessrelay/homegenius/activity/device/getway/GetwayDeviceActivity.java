@@ -88,14 +88,14 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        button_delete_device = (TextView) findViewById(R.id.button_delete_device);
-        layout_config_wifi_getway = (RelativeLayout) findViewById(R.id.layout_config_wifi_getway);
-        layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
-        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        edittext_input_devie_name = (ClearEditText) findViewById(R.id.edittext_input_devie_name);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        button_delete_device = findViewById(R.id.button_delete_device);
+        layout_config_wifi_getway = findViewById(R.id.layout_config_wifi_getway);
+        layout_select_room = findViewById(R.id.layout_select_room);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        image_back = findViewById(R.id.image_back);
+        edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
     }
 
 

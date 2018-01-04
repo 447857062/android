@@ -213,6 +213,9 @@ public class DeviceListAdapter extends BaseAdapter {
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+               if(deviceSubType==null){
+                   return;
+               }
                switch (deviceSubType){
                    case "一路开关":
                        viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
@@ -254,6 +257,9 @@ public class DeviceListAdapter extends BaseAdapter {
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
             case "智能机顶盒遥控":
                 viewHolder.imageview_device_type.setImageResource(R.drawable.settopboxesicon);
+                break;
+            case  DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                viewHolder.imageview_device_type.setImageResource(R.drawable.equipmentlight);
                 break;
 
         }

@@ -39,6 +39,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.doorbeel.DoorbeelManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.light.SmartLightManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
@@ -83,7 +84,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private RelativeLayout layout_remotecontrol_select;
     private RelativeLayout layout_remotecontrol_list;
     private ConfigRemoteControlDialog configRemoteControlDialog;
-
+    private SmartLightManager mSmartLightManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,28 +103,30 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     }
 
     private void initViews() {
-        button_add_device_sure = (Button) findViewById(R.id.button_add_device_sure);
-        edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_select_remotecontrol_name = (TextView) findViewById(R.id.textview_select_remotecontrol_name);
-        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        textview_select_getway_name = (TextView) findViewById(R.id.textview_select_getway_name);
-        layout_getway_select = (RelativeLayout) findViewById(R.id.layout_getway_select);
-        layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
-        layout_room_select = (RelativeLayout) findViewById(R.id.layout_room_select);
-        layout_remotecontrol_list = (RelativeLayout) findViewById(R.id.layout_remotecontrol_list);
-        layout_remotecontrol_select = (RelativeLayout) findViewById(R.id.layout_remotecontrol_select);
-        listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
-        listview_select_remotecontrol = (ListView) findViewById(R.id.listview_select_remotecontrol);
-        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
-        imageview_remotecontrol_arror_right = (ImageView) findViewById(R.id.imageview_remotecontrol_arror_right);
+        button_add_device_sure = findViewById(R.id.button_add_device_sure);
+        edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
+        image_back = findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        textview_select_remotecontrol_name = findViewById(R.id.textview_select_remotecontrol_name);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
+        layout_getway_select = findViewById(R.id.layout_getway_select);
+        layout_getway_list = findViewById(R.id.layout_getway_list);
+        layout_room_select = findViewById(R.id.layout_room_select);
+        layout_remotecontrol_list = findViewById(R.id.layout_remotecontrol_list);
+        layout_remotecontrol_select = findViewById(R.id.layout_remotecontrol_select);
+        listview_select_getway = findViewById(R.id.listview_select_getway);
+        listview_select_remotecontrol = findViewById(R.id.listview_select_remotecontrol);
+        imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
+        imageview_remotecontrol_arror_right = findViewById(R.id.imageview_remotecontrol_arror_right);
     }
 
     private void initDatas() {
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDoorbeelManager.InitDoorbeelManager(this);
+        mSmartLightManager = SmartLightManager.getInstance();
+        mSmartLightManager.InitSmartLightManager(this);
         mSmartSwitchManager = SmartSwitchManager.getInstance();
         mSmartSwitchManager.InitSmartSwitchManager(this);
         mDeviceManager = DeviceManager.getInstance();
@@ -141,7 +144,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             textview_select_room_name.setText("全部");
         }
         switch (deviceType) {
-            case "SMART_LOCK":
+            case DeviceTypeConstant.TYPE.TYPE_LOCK:
                 edittext_add_device_input_name.setHint("例如:我家的门锁（最多10个字）");
                 textview_title.setText("智能门锁");
                 break;
@@ -168,6 +171,10 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 edittext_add_device_input_name.setHint("例如:智能门铃（最多10个字）");
                 textview_title.setText("智能门铃");
+                break;
+            case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                edittext_add_device_input_name.setHint("例如:智能灯泡（最多10个字）");
+                textview_title.setText("智能灯泡");
                 break;
         }
         mRemoteControls = new ArrayList<>();
@@ -291,7 +298,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         Log.i(TAG, "绑定结果 type=" + deviceType);
         success = isSmartDeviceAddSuccess(aDeviceList);
         switch (deviceType) {
-            case "SMART_LOCK":
+            case DeviceTypeConstant.TYPE.TYPE_LOCK:
                 mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
@@ -317,6 +324,14 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     }
                 }
 
+                break;
+            case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                mSmartLightManager.addDBSwitchDevice(device);
+                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
+                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
+                        mSmartLightManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
+                    }
+                }
                 break;
         }
         Message msg = Message.obtain();
@@ -353,7 +368,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 deviceName = edittext_add_device_input_name.getText().toString();
                 Gson gson = new Gson();
                 switch (deviceType) {
-                    case "SMART_LOCK":
+                    case DeviceTypeConstant.TYPE.TYPE_LOCK:
                         if (deviceName.equals("")) {
                             deviceName = "我家的门锁";
                         }
@@ -363,6 +378,20 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         device.setName(deviceName);
                         DialogThreeBounce.showLoading(this);
                         Message msg = Message.obtain();
+                        msg.what = MSG_HIDE_DIALOG;
+                        mHandler.sendMessageDelayed(msg, 3000);
+                        mDeviceManager.bindSmartDevList(device);
+                        break;
+                    case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                        if (deviceName.equals("")) {
+                            deviceName = "我家的灯泡";
+                        }
+                        device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
+                        Log.i(TAG, "deviceType=" + deviceType + "device=" + (device != null));
+                        Log.i(TAG, "绑定智能设备");
+                        device.setName(deviceName);
+                        DialogThreeBounce.showLoading(this);
+                         msg = Message.obtain();
                         msg.what = MSG_HIDE_DIALOG;
                         mHandler.sendMessageDelayed(msg, 3000);
                         mDeviceManager.bindSmartDevList(device);
@@ -557,7 +586,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private boolean isOnActivityResult;
     private boolean isStartFromExperience;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

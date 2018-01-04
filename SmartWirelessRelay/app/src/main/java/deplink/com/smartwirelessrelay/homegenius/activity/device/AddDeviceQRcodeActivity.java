@@ -54,9 +54,9 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     }
 
     private void initViews() {
-        mGridView = (GridView) findViewById(R.id.gridview_add_device_type);
-        imageview_scan_device = (ImageView) findViewById(R.id.imageview_scan_device);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
+        mGridView = findViewById(R.id.gridview_add_device_type);
+        imageview_scan_device = findViewById(R.id.imageview_scan_device);
+        image_back = findViewById(R.id.image_back);
     }
 
     private List<String> mDeviceTypes;
@@ -74,6 +74,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
         mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
         mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_MENLING);
+        mDeviceTypes.add(DeviceTypeConstant.TYPE.TYPE_LIGHT);
         mAdapter = new AddDeviceTypeSelectAdapter(this, mDeviceTypes);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
@@ -185,13 +186,21 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                 case REQUEST_CODE_DEVICE_SN:
                     if (qrCodeResult.contains("SMART_LOCK")) {
                         intent.putExtra("currentAddDevice", qrCodeResult);
-                        intent.putExtra("DeviceType", "SMART_LOCK");
+                        intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LOCK);
                         startActivity(intent);
-                    } else if (qrCodeResult.contains("LKSWG")) {
+                    }
+                    else if (qrCodeResult.contains("LKSWG")) {
                         intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
                         GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
                         startActivity(intent);
-                    } else {
+                    }
+                    else if (qrCodeResult.contains("YWLIGHTCONTROL")) {
+                        intent.putExtra("currentAddDevice", qrCodeResult);
+                        intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LIGHT);
+                        startActivity(intent);
+                    }
+
+                    else {
                         if (qrCodeResult.length() == 12) {
                             intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
                             intent.putExtra("routerSN", qrCodeResult);

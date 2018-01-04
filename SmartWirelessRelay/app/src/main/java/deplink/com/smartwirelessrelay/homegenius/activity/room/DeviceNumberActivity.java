@@ -18,8 +18,10 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
@@ -30,6 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.light.SmartLightManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
@@ -154,6 +157,10 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                             startActivity(new Intent(DeviceNumberActivity.this, TvBoxMainActivity.class));
+                            break;
+                        case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                            SmartLightManager.getInstance().setCurrentSelectLight(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DeviceNumberActivity.this, LightActivity.class));
                             break;
                         case "智能开关":
                             // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));

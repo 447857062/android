@@ -6,19 +6,20 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Scroller;
+
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /**
  * Created by Administrator on 2018/1/3.
  */
-public class ListViewLinearLayout extends LinearLayout implements View.OnTouchListener {
-    private ListView sv;
+public class PullToRefreshListViewLinearLayout extends LinearLayout implements View.OnTouchListener {
+    private PullToRefreshListView sv;
     private boolean isfrist = true;
     private float y1, y2;
     private Scroller mScroller;
 
-    public ListViewLinearLayout(Context context, AttributeSet attrs) {
+    public PullToRefreshListViewLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setClickable(true);
         setLongClickable(true);
@@ -43,7 +44,7 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if (changed && isfrist) {//只需实例化一次
-            sv = (ListView) getChildAt(0);//该自定义布局写入xml文件时，其子布局的第一个必须是ScrollView时，这里才能getChildAt(0），实例化ScrollView
+            sv = (PullToRefreshListView) getChildAt(0);//该自定义布局写入xml文件时，其子布局的第一个必须是ScrollView时，这里才能getChildAt(0），实例化ScrollView
             sv.setOverScrollMode(View.OVER_SCROLL_NEVER);//去掉ScrollView 滑动到底部或顶部 继续滑动时会出现渐变的蓝色颜色快
             sv.setOnTouchListener(this);
             isfrist = false;
@@ -86,9 +87,7 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
                 break;
             case MotionEvent.ACTION_UP:
                 smoothScrollTo(0, 0);//松开手指，自动回滚
-                if(mOnRefreshListener!=null){
-                    mOnRefreshListener.onRefresh();
-                }
+
                 break;
             default:
                 break;
@@ -96,13 +95,7 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
         return false;
     }
 
-    public onRefreshListener mOnRefreshListener;
 
-    public void setmOnRefreshListener(onRefreshListener mOnRefreshListener) {
-        this.mOnRefreshListener = mOnRefreshListener;
-    }
 
-    public interface onRefreshListener {
-        void onRefresh();
-    }
+
 }

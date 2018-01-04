@@ -52,7 +52,7 @@ public class RemoteControlSelectListAdapter extends BaseAdapter {
 
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.remotecontrol_select_list_item, null);
-            viewHolder.textview_device_name = (TextView) convertView
+            viewHolder.textview_device_name = convertView
                     .findViewById(R.id.textview_device_name);
             convertView.setTag(viewHolder);
         } else {

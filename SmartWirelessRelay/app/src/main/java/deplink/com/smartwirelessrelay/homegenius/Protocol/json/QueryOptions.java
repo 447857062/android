@@ -23,6 +23,33 @@ public class QueryOptions implements Serializable {
     private long timestamp;
     private String  AuthId;
     private String  Data;
+    private int  yellow;
+    private int  white;
+    private int  open;
+
+    public int getOpen() {
+        return open;
+    }
+
+    public void setOpen(int open) {
+        this.open = open;
+    }
+
+    public int getYellow() {
+        return yellow;
+    }
+
+    public void setYellow(int yellow) {
+        this.yellow = yellow;
+    }
+
+    public int getWhite() {
+        return white;
+    }
+
+    public void setWhite(int white) {
+        this.white = white;
+    }
 
     public String getData() {
         return Data;

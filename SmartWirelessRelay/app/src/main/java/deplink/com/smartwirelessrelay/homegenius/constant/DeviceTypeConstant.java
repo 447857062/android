@@ -14,5 +14,6 @@ public class DeviceTypeConstant {
         String TYPE_TV_REMOTECONTROL = "电视遥控";
         String TYPE_AIR_REMOTECONTROL = "空调遥控";
         String TYPE_TVBOX_REMOTECONTROL = "机顶盒遥控";
+        String TYPE_LIGHT = "智能灯泡";
     }
 }
