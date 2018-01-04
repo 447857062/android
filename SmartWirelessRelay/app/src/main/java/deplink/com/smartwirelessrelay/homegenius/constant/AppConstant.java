@@ -10,7 +10,15 @@ public class AppConstant {
         String CURRENT_DEVICE_KEY = "CURRENT_DEVICE_KEY";
         String CURRENT_DEVICE_SN = "CURRENT_DEVICE_SN";
     }
-
+    public interface USER{
+        /**
+         *用户上传头像就标记一下，进入设置界面，需要从服务器获取一次用户头像，
+         * 判断用户标记如果用户设置了头像，设置界面就要重新获取头像
+         设置界面，获取用户头像，只要获取一次就可以了，下次判断一下用户有没有设置用户头像，
+         用户设置了，就重置SETTING_PAGE_USER_GETIMAGE_FROM_SERVICE
+         */
+          String USER_GETIMAGE_FROM_SERVICE = "SETTING_PAGE_USER_GETIMAGE_FROM_SERVICE";
+    }
     /**
      * wfii设置
      */

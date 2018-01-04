@@ -41,6 +41,7 @@ import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.SexSelectDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.UserImagePickerDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
+import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
 
 public class UserinfoActivity extends Activity implements View.OnClickListener {
@@ -95,25 +96,20 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void onGetImageSuccess(SDKAction action, final Bitmap bm) {
-
                 //保存到本地
                 try {
+                    Log.i(TAG,"onGetImageSuccess");
                     user_head_portrait.setImageBitmap(bm);
                     saveToSDCard(bm);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-
             }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
-                switch (action) {
-                    case UPLOADIMAGE:
-                        // ToastSingleShow.showText(UserInfoActivity.this,"上传头像失败");
-                        break;
-                }
+
             }
 
             @Override
@@ -139,7 +135,48 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
     }
+    private boolean isUserLogin;
+    private boolean hasGetUserImage;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager.addEventCallback(ec);
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        if (isUserLogin) {
+             hasGetUserImage = Perfence.getBooleanPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE);
+            if (!hasGetUserImage) {
+                Perfence.setPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE, true);
+                manager.getImage(Perfence.getPerfence(Perfence.PERFENCE_PHONE));
+            } else {
+                setLocalImage(user_head_portrait);
+            }
+        }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
+    }
+
+    private void setLocalImage(CircleImageView user_head_portrait) {
+        boolean isSdCardExist = Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED);// 判断sdcard是否存在
+        if (isSdCardExist) {
+            String path = this.getFilesDir().getAbsolutePath();
+            path = path + File.separator + "userIcon" + "userIcon.png";
+            File file = new File(path);
+            if (file.exists()) {
+                Bitmap bm = BitmapFactory.decodeFile(file.getPath());
+                // 将图片显示到ImageView中
+                user_head_portrait.setImageBitmap(bm);
+            } else {
+                user_head_portrait.setImageDrawable(getResources().getDrawable(R.drawable.defaultavatar));
+            }
+        } else {
+            ToastSingleShow.showText(this, "sd卡不存在！");
+        }
+    }
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
         textview_show_nicknamke = findViewById(R.id.textview_show_nicknamke);

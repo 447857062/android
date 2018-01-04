@@ -27,21 +27,6 @@ public class TimeSelector {
     public interface ResultHandler {
         void handle(String time, Calendar mSelectedCalendar);
     }
-
-    public enum SCROLLTYPE {
-
-        HOUR(1),
-        MINUTE(2);
-
-        SCROLLTYPE(int value) {
-            this.value = value;
-        }
-
-        public int value;
-
-    }
-
-    private int scrollUnits = SCROLLTYPE.HOUR.value + SCROLLTYPE.MINUTE.value;
     private ResultHandler handler;
     private Context context;
     private final String FORMAT_STR = "yyyy-MM-dd";
