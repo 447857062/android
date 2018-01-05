@@ -12,7 +12,7 @@
         android:paddingTop="@dimen/header_footer_top_bottom_padding" >
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical" >
 
@@ -44,6 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:visibility="gone"
                 android:textAppearance="?android:attr/textAppearance"
                 android:textStyle="bold" />
 

@@ -230,7 +230,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 
 	public final void refreshing() {
 		if (null != mHeaderText) {
-			mHeaderText.setText(mRefreshingLabel);
+			//mHeaderText.setText(mRefreshingLabel);
 		}
 
 		if (mUseIntrinsicAnimation) {
