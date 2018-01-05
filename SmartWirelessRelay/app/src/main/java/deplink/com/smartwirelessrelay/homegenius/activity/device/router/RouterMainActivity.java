@@ -173,9 +173,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             Log.i(TAG, "routerDevice=" + (routerDevice != null));
             startTimer();
         }
-
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -213,7 +211,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         }
         if (refreshTimer != null) {
             //3秒钟发一次查询的命令
-
             refreshTimer.schedule(refreshTask, 0, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
         }
     }

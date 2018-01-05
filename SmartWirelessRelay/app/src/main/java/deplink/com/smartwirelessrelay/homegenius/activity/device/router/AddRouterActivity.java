@@ -24,6 +24,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.router.Router;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
@@ -111,7 +112,10 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                                 if (manager.getDeviceList().get(i).getDeviceSN().equals(routerSN)) {
                                     Log.i(TAG, "manager.getDeviceList().get(i).getDeviceSN()=" + manager.getDeviceList().get(i).getDeviceSN() + "bindDeviceSn=" + routerSN + "changename");
                                     currentAddRouter = new SmartDev();
-                                    currentAddRouter.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
+                                    Router router=new Router();
+                                    router.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
+                                    router.save();
+                                    currentAddRouter.setRouter(router);
                                     ((RouterDevice) manager.getDeviceList().get(i)).changeName(routerName);
                                 }
                             }

@@ -64,15 +64,22 @@
                 android:src="@drawable/addicon" />
         </RelativeLayout>
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/imageview_empty_device"
+    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/layout_empty_view_scroll"
         android:layout_below="@+id/layout_title"
-        android:background="@drawable/equipmentemptystate" />
-
-
+        android:layout_above="@+id/layout_buttom_bar"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/imageview_empty_device"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/equipmentemptystate" />
+        </ScrollView>
+    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout>
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/listview_devies"
         android:layout_width="match_parent"

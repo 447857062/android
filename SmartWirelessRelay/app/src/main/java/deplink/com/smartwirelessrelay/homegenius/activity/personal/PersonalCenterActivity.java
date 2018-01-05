@@ -58,6 +58,8 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private boolean isUserLogin;
+    private boolean hasGetUserImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +69,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         initEvents();
 
     }
-    private boolean isUserLogin;
-    private boolean hasGetUserImage;
     @Override
     protected void onResume() {
         super.onResume();

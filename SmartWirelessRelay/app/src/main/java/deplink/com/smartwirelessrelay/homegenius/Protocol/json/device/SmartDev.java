@@ -10,6 +10,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.router.Router;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -31,13 +32,18 @@ public class SmartDev extends DataSupport implements Serializable {
     private boolean switch_two_open;
     private boolean switch_three_open;
     private boolean switch_four_open;
+    private Router router;
+    public Router getRouter() {
+        return router;
+    }
+    public void setRouter(Router router) {
+        this.router = router;
+    }
     /**
      * 数据库中的关联关系必须要初始化好列表
      */
     @Column(nullable = false)
     private List<Room> rooms = new ArrayList<>();
-    private String routerDeviceKey;
-
     /**
      * 各种类型的遥控器需要指定物理遥控器
      */
@@ -45,11 +51,9 @@ public class SmartDev extends DataSupport implements Serializable {
     private String lockPassword = "";
     private boolean remerberPassword = true;
     private List<Info> alarmInfo = new ArrayList<>();
-
     public boolean isSwitch_one_open() {
         return switch_one_open;
     }
-
     public void setSwitch_one_open(boolean switch_one_open) {
         this.switch_one_open = switch_one_open;
     }
@@ -119,13 +123,7 @@ public class SmartDev extends DataSupport implements Serializable {
         this.lockPassword = lockPassword;
     }
 
-    public String getRouterDeviceKey() {
-        return routerDeviceKey;
-    }
 
-    public void setRouterDeviceKey(String routerDeviceKey) {
-        this.routerDeviceKey = routerDeviceKey;
-    }
 
     public String getSubType() {
         return subType;

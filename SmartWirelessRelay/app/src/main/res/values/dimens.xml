@@ -111,6 +111,7 @@
     <dimen name="device_item_background_ridus">8dp</dimen>
     <dimen name="adddevice_device_item_background_ridus">4dp</dimen>
     <dimen name="ridus30">30dp</dimen>
+    <dimen name="ridus15">15dp</dimen>
     <dimen name="ridus22">22dp</dimen>
     <dimen name="ridus2">2dp</dimen>
     <dimen name="ridus_8">8dp</dimen>

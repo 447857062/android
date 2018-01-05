@@ -171,8 +171,8 @@ public class DeviceListAdapter extends BaseAdapter {
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
-            String deviceSubType = "";
-            deviceSubType = listBottom.get(position - TopCount).getSubType();
+
+
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
             Log.i(TAG,"deviceStatu="+deviceStatu);
             if (deviceStatu != null) {
@@ -196,11 +196,11 @@ public class DeviceListAdapter extends BaseAdapter {
             }
             viewHolder.textview_device_name.setText(deviceName);
             viewHolder.textview_device_status.setText(deviceStatu);
-            getDeviceTypeImage(viewHolder, deviceType, deviceSubType);
+            getDeviceTypeImage(viewHolder, deviceType, position);
         }
         return convertView;
     }
-    private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType, String deviceSubType) {
+    private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType, int position) {
         switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.routericon);
@@ -213,36 +213,27 @@ public class DeviceListAdapter extends BaseAdapter {
                 viewHolder.imageview_device_type.setImageResource(R.drawable.doorbellicon);
                 break;
            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+               String deviceSubType;
+               deviceSubType = listBottom.get(position - TopCount).getSubType();
+               Log.i(TAG,"deviceSubType="+deviceSubType);
                if(deviceSubType==null){
                    return;
                }
                switch (deviceSubType){
-                   case "一路开关":
+                   case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
                        viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
                        break;
-                   case "二路开关":
+                   case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
                        viewHolder.imageview_device_type.setImageResource(R.drawable.roadswitch);
                        break;
-                   case "三路开关":
+                   case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
                        viewHolder.imageview_device_type.setImageResource(R.drawable.threewayswitch);
                        break;
-                   case "四路开关":
+                   case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
                        viewHolder.imageview_device_type.setImageResource(R.drawable.fourwayswitch);
                        break;
                }
                break;
-            case "SmartWallSwitch4":
-                viewHolder.imageview_device_type.setImageResource(R.drawable.fourwayswitch);
-                break;
-            case "SmartWallSwitch3":
-                viewHolder.imageview_device_type.setImageResource(R.drawable.threewayswitch);
-                break;
-            case "SmartWallSwitch2":
-                viewHolder.imageview_device_type.setImageResource(R.drawable.roadswitch);
-                break;
-            case "SmartWallSwitch1":
-                viewHolder.imageview_device_type.setImageResource(R.drawable.switchalltheway);
-                break;
             case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                 viewHolder.imageview_device_type.setImageResource(R.drawable.infraredremotecontrolicon);
                 break;

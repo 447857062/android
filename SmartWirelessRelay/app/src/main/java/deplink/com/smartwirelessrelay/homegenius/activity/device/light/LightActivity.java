@@ -126,12 +126,13 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
         super.onDestroy();
         mSmartLightManager.releaswSmartManager();
     }
-
+    private boolean isOnResume;
     @Override
     protected void onResume() {
         super.onResume();
         mSmartLightManager.queryLightStatus();
         mSmartLightManager.addSmartLightListener(this);
+        isOnResume=true;
     }
 
     @Override
@@ -206,7 +207,6 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
                     }else if(resultObj.getOpen()==2){
                         iamgeview_switch.setBackgroundResource(R.drawable.ovel_110_bg);
                         imageview_switch_bg.setBackgroundResource(R.color.room_type_text);
-
                         textview_switch_tips.setText("点击开启");
                     }
                     button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
@@ -215,12 +215,21 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
                         float alpha= (float) (resultObj.getYellow()/200.0);
                         Log.i(TAG,"alpha="+alpha);
                         button_switch_light.setAlpha(alpha);
+                        if(isOnResume){
+                            progressBarLightYellow.setProgress(resultObj.getYellow()/2);
+                        }
+
                     }
                     if(resultObj.getWhite()!=0){
                         float alpha= (float) (resultObj.getWhite()/200.0);
                         Log.i(TAG,"alpha="+alpha);
                         imageview_switch_bg.setAlpha(alpha);
+                        if(isOnResume){
+                            progressBarLightWhite.setProgress(resultObj.getWhite()/2);
+                        }
+
                     }
+                    isOnResume=false;
                     break;
             }
         }

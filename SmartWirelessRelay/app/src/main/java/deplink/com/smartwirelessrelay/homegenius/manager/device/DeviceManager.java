@@ -451,21 +451,47 @@ public class DeviceManager implements LocalConnecteListener {
             public void run() {
                 SmartDev dev = new SmartDev();
                 String deviceType = aDeviceList.getSmartDev().get(i).getType();
-                if (deviceType.equals("SMART_LOCK")) {
+                dev.setType(aDeviceList.getSmartDev().get(i).getType());
+                if (deviceType.equalsIgnoreCase("SMART_LOCK")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
-                } else if (deviceType.equals("IRMOTE_V2")) {
+                    dev.setType(deviceType);
+                }
+                else if (deviceType.equalsIgnoreCase("IRMOTE_V2")) {
+                    dev.setType(deviceType);
                     deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
+                }
+                else if (deviceType.equalsIgnoreCase("SmartWallSwitch1")) {
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+                    dev.setType(deviceType);
+                    dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY);
+                }
+                else if (deviceType.equalsIgnoreCase("SmartWallSwitch2")) {
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+                    dev.setType(deviceType);
+                    dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY);
+                }
+                else if (deviceType.equalsIgnoreCase("SmartWallSwitch3")) {
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+                    dev.setType(deviceType);
+                    dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY);
+                }
+                else if (deviceType.equalsIgnoreCase("SmartWallSwitch4")) {
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+                    dev.setType(deviceType);
+                    dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
+                }
+                else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
+                    deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
+                    dev.setType(deviceType);
                 }
                 dev.setUid(aDeviceList.getSmartDev().get(i).getUid());
                 dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
                 Log.i(TAG, "保存智能锁设备状态=" + aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
-                dev.setType(aDeviceList.getSmartDev().get(i).getType());
                 List<Room> rooms = new ArrayList<>();
                 rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
                 dev.setRooms(rooms);
-
                 String deviceName = deviceType;
                 allSmartDevices = DataSupport.findAll(SmartDev.class, true);
                 for (int i = 0; i < allSmartDevices.size(); i++) {

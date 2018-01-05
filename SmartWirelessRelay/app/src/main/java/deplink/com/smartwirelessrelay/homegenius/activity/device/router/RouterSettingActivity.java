@@ -31,6 +31,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.router.Router;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity;
@@ -173,6 +174,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 switch (action){
                     case UNBIND:
                         int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid());
+                            DataSupport.deleteAll(Router.class, "routerDeviceKey = ?", mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
                         Log.i(TAG, "删除路由器设备=" + affectColumn);
                         ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定成功");
                         RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
@@ -394,7 +396,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                         if (NetUtil.isNetAvailable(RouterSettingActivity.this)) {
                             if(isUserLogin){
                                 DialogThreeBounce.showLoading(RouterSettingActivity.this);
-                                BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouterDeviceKey());
+                                BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
                                 manager.unbindDevice(unbindDevice);
                             }else{
                                 ToastSingleShow.showText(RouterSettingActivity.this, "用户已离线，登录后使用");

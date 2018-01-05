@@ -10,7 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/room_type_text">
-
+        <ImageView
+            android:id="@+id/imageview_switch_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical">
+        </ImageView>
         <include
             android:id="@+id/title"
             layout="@layout/layout_title_with_right_have_text_no_textbackground" />
@@ -21,20 +26,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
             android:layout_marginTop="96dp"
-            android:background="@color/room_type_text">
-            <ImageView
-                android:id="@+id/imageview_switch_bg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical">
-            </ImageView>
-
+            >
             <ImageView
                 android:id="@+id/iamgeview_switch"
                 android:layout_width="221dp"
                 android:layout_height="221dp"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center_horizontal"
                 android:background="@drawable/radius110_bg_white_background"
                 android:scaleType="centerInside" />
 
@@ -42,10 +40,9 @@
                 android:id="@+id/button_switch_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/include"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:background="@drawable/lightyellowlight"
+                android:background="@drawable/lightwhitelight"
                 android:scaleType="centerInside" />
         </FrameLayout>
 
@@ -87,8 +84,8 @@
                 android:layout_toLeftOf="@+id/imageview_lightyellow_plus"
                 android:layout_toRightOf="@+id/imageview_lightyellow_reduce"
                 android:max="100"
-                android:maxHeight="16dp"
-                android:minHeight="16dp"
+                android:maxHeight="9dp"
+                android:minHeight="9dp"
                 android:progressDrawable="@drawable/progressbar_horizontal"
                 android:thumb="@drawable/seekbar_horiz_thumb_background"
                 android:thumbOffset="0dp" />
@@ -130,8 +127,8 @@
                 android:layout_toLeftOf="@+id/imageview_lightwhite_plus"
                 android:layout_toRightOf="@+id/imageview_lightwhite_reduce"
                 android:max="100"
-                android:maxHeight="16dp"
-                android:minHeight="16dp"
+                android:maxHeight="9dp"
+                android:minHeight="9dp"
                 android:progressDrawable="@drawable/progressbar_horizontal"
                 android:thumb="@drawable/seekbar_horiz_thumb_background"
                 android:thumbOffset="0dp" />

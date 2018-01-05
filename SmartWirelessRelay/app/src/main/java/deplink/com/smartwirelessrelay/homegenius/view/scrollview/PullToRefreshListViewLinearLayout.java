@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view;
+package deplink.com.smartwirelessrelay.homegenius.view.scrollview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

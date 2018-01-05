@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -58,16 +59,16 @@ public class SwitchTypeAdapter extends BaseAdapter {
         }
         viewHolder.textview_band_name.setText(mTypeNames.get(position));
         switch (mTypeNames.get(position)){
-            case "一路开关":
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
                 viewHolder.imageview_type.setImageResource(R.drawable.switchalltheway);
                 break;
-            case "二路开关":
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
                 viewHolder.imageview_type.setImageResource(R.drawable.roadswitch);
                 break;
-            case "三路开关":
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
                 viewHolder.imageview_type.setImageResource(R.drawable.threewayswitch);
                 break;
-            case "四路开关":
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
                 viewHolder.imageview_type.setImageResource(R.drawable.fourwayswitch);
                 break;
         }

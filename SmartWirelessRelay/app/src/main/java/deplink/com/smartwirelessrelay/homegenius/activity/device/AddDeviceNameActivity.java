@@ -316,7 +316,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 }
 
                 break;
-            case "智能开关":
+            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 mSmartSwitchManager.addDBSwitchDevice(device);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {

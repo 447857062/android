@@ -16,4 +16,10 @@ public class DeviceTypeConstant {
         String TYPE_TVBOX_REMOTECONTROL = "机顶盒遥控";
         String TYPE_LIGHT = "智能灯泡";
     }
+    public interface TYPE_SWITCH_SUBTYPE{
+        String SUB_TYPE_SWITCH_ONEWAY="一路开关";
+        String SUB_TYPE_SWITCH_TWOWAY="二路开关";
+        String SUB_TYPE_SWITCH_THREEWAY="三路开关";
+        String SUB_TYPE_SWITCH_FOURWAY="四路开关";
+    }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.adapter.SwitchTypeAdapter;
+import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
 
@@ -32,10 +33,10 @@ public class SelectSwitchTypeActivity extends Activity implements View.OnClickLi
 
     private void initDatas() {
         typeNames=new ArrayList<>();
-        typeNames.add("一路开关");
-        typeNames.add("二路开关");
-        typeNames.add("三路开关");
-        typeNames.add("四路开关");
+        typeNames.add(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY);
+        typeNames.add(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY);
+        typeNames.add(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY);
+        typeNames.add(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
         mTypeAdapter=new SwitchTypeAdapter(this,typeNames);
     }
 
@@ -46,8 +47,8 @@ public class SelectSwitchTypeActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
-        image_back= (ImageView) findViewById(R.id.image_back);
-        listview_switch_type= (ListView) findViewById(R.id.listview_switch_type);
+        image_back= findViewById(R.id.image_back);
+        listview_switch_type= findViewById(R.id.listview_switch_type);
     }
 
     @Override
@@ -63,13 +64,10 @@ public class SelectSwitchTypeActivity extends Activity implements View.OnClickLi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SmartSwitchManager.getInstance().setCurrentAddSwitchSubType(typeNames.get(position));
         switch (typeNames.get(position)){
-            case "一路开关":
-//                break;
-            case "二路开关":
-//                break;
-            case "三路开关":
-//                break;
-            case "四路开关":
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
+            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
                 Intent intentQrcodeSn = new Intent();
                 intentQrcodeSn.setClass(SelectSwitchTypeActivity.this, CaptureActivity.class);
                 intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

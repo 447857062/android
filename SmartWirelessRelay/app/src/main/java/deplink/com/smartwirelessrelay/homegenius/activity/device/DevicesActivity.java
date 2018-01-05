@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -60,6 +57,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -94,7 +92,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private RouterManager mRouterManager;
     private ImageView imageview_empty_device;
     private TextView textview_room_name;
-
+    private ScrollViewLinearLayout layout_empty_view_scroll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,35 +194,19 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                             SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                             switch (deviceSubType) {
-                                case "一路开关":
+                                case  DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
                                     startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
                                     break;
-                                case "二路开关":
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
                                     startActivity(new Intent(DevicesActivity.this, SwitchTwoActivity.class));
                                     break;
-                                case "三路开关":
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
                                     startActivity(new Intent(DevicesActivity.this, SwitchThreeActivity.class));
                                     break;
-                                case "四路开关":
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
                                     startActivity(new Intent(DevicesActivity.this, SwitchFourActivity.class));
                                     break;
                             }
-                            break;
-                        case "SmartWallSwitch4":
-                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DevicesActivity.this, SwitchFourActivity.class));
-                            break;
-                        case "SmartWallSwitch3":
-                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DevicesActivity.this, SwitchThreeActivity.class));
-                            break;
-                        case "SmartWallSwitch2":
-                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DevicesActivity.this, SwitchTwoActivity.class));
-                            break;
-                        case "SmartWallSwitch1":
-                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
                             break;
                         case "智能门铃":
                             startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
@@ -242,22 +224,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
     }
-
-    // 用GestureDetectorCompat替换GestureDetector,GestureDetectorCompat兼容的版本较广
-    private GestureDetectorCompat mDetector;
-    public class MytGestureListener extends GestureDetector.SimpleOnGestureListener {
-        // 滑动时触发
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                float distanceX, float distanceY) {
-            RefreshDevicesBackground();
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-    }
-
     private void RefreshDevicesBackground() {
-
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -276,8 +243,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
         layout_select_room_type.setOnClickListener(this);
-        mDetector = new GestureDetectorCompat(DevicesActivity.this,
-                new MytGestureListener());
+
         listview_devies.getRefreshableView().setSelector(android.R.color.transparent);
         listview_devies.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         // 设置上下刷新 使用 OnRefreshListener2
@@ -304,6 +270,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
             }
         });
+        layout_empty_view_scroll.setmOnRefreshListener(new ScrollViewLinearLayout.onRefreshListener() {
+            @Override
+            public void onRefresh() {
+                RefreshDevicesBackground();
+            }
+        });
     }
 
 
@@ -325,6 +297,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_room = findViewById(R.id.textview_room);
         textview_mine = findViewById(R.id.textview_mine);
         textview_room_name = findViewById(R.id.textview_room_name);
+        layout_empty_view_scroll = findViewById(R.id.layout_empty_view_scroll);
     }
 
     @Override
@@ -415,7 +388,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_SHOW_REFRESH_COMPLEMENT:
-
                     mHandler.sendEmptyMessageDelayed(MSG_HIDE_REFRESH_COMPLEMENT,500);
                     break;
                 case MSG_HIDE_REFRESH:

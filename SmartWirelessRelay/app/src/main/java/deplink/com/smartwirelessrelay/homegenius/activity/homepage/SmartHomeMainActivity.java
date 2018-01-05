@@ -76,7 +76,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.Local
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
-import deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView;
+import deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

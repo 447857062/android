@@ -51,7 +51,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
     private EventHandler eh;
     private ArrayList<HashMap<String, Object>> alhmCountries;
     private String simCountryCode = "86";
-    private Button button_SMS_verification_code;
+    private TextView button_SMS_verification_code;
     private int time = Perfence.VERIFYCODE_TIME;
     private SDKManager manager;
     private EventCallback ec;
@@ -179,6 +179,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
             }
 
         };
+        SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
         SMSSDK.registerEventHandler(eh);
         if (Perfence.alhmCountries == null || Perfence.alhmCountries.size() == 0)
             SMSSDK.getSupportedCountries();
@@ -234,6 +235,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
         edittext_input_password.setOnFocusChangeListener(this);
         layout_eye.setOnClickListener(this);
         button_regist.setOnClickListener(this);
+        button_SMS_verification_code.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -248,6 +250,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
         layout_eye = findViewById(R.id.layout_eye);
         imageview_eye = findViewById(R.id.imageview_eye);
         button_regist = findViewById(R.id.button_regist);
+        button_SMS_verification_code = findViewById(R.id.buton_get_verification_code);
     }
 
     @Override

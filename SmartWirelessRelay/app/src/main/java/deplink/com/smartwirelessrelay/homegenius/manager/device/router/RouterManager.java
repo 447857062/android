@@ -172,7 +172,7 @@ public class RouterManager {
 
 
     public String getRouterDeviceKey() {
-        String currentDevcieKey = currentSelectedRouter.getRouterDeviceKey();
+        String currentDevcieKey = currentSelectedRouter.getRouter().getRouterDeviceKey();
         Log.i(TAG, "获取绑定的路由器设备currentDevcieKey=" + currentDevcieKey);
         return currentDevcieKey;
     }

@@ -151,7 +151,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <deplink.com.smartwirelessrelay.homegenius.view.MyScrollView
+    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.MyScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttom_layout"
@@ -226,7 +226,7 @@
                 android:alpha="0.9"
                 android:background="@drawable/homepage_halfrectangle_buttom_background">
 
-                <deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView
+                <deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView
                     android:id="@+id/layout_roomselect_changed_ype"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                     android:listSelector="@color/transparent"
                     android:visibility="gone">
 
-                </deplink.com.smartwirelessrelay.homegenius.view.NonScrollableListView>
+                </deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView>
 
                 <HorizontalScrollView
                     android:id="@+id/layout_roomselect_normal"
@@ -333,7 +333,7 @@
         </RelativeLayout>
 
 
-    </deplink.com.smartwirelessrelay.homegenius.view.MyScrollView>
+    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.MyScrollView>
 
 
     <RelativeLayout
