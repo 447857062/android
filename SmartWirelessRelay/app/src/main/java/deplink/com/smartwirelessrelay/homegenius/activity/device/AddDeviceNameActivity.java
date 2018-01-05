@@ -329,7 +329,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 mSmartLightManager.addDBSwitchDevice(device);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                        mSmartLightManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
+                        mSmartLightManager.updateSmartDeviceRoomAndName(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
                     }
                 }
                 break;

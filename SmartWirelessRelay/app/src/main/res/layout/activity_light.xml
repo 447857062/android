@@ -22,22 +22,19 @@
             android:layout_below="@+id/title"
             android:layout_marginTop="96dp"
             android:background="@color/room_type_text">
-
             <ImageView
                 android:id="@+id/imageview_switch_bg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical">
-
             </ImageView>
 
             <ImageView
                 android:id="@+id/iamgeview_switch"
                 android:layout_width="221dp"
                 android:layout_height="221dp"
-                android:layout_below="@+id/include"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_horizontal|center_vertical"
                 android:background="@drawable/radius110_bg_white_background"
                 android:scaleType="centerInside" />
 

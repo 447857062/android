@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
+import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.lock.alertreport.Info;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.packet.GeneralPacket;
@@ -164,10 +165,17 @@ public class SmartLightManager implements LocalConnecteListener {
         Log.i(TAG, "数据库中已存在相同设备，不必要添加");
         return false;
     }
+    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+        Log.i(TAG, "更新智能设备所在的网关=start");
+        currentSelectLight.setGetwayDevice(getwayDevice);
+        boolean saveResult = currentSelectLight.save();
+        Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
+        return saveResult;
+    }
     /**
      * 更新设备所在房间
      */
-    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid, String deviceName) {
+    public void updateSmartDeviceRoomAndName(Room room, String deviceUid, String deviceName) {
         Log.i(TAG, "更新智能设备所在的房间=start" + "room=" + (room != null));
         //保存所在的房间
         //查询设备
@@ -182,6 +190,26 @@ public class SmartLightManager implements LocalConnecteListener {
         }
         smartDev.setRooms(rooms);
         smartDev.setName(deviceName);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+    }
+    /**
+     * 更新设备所在房间
+     */
+    public void updateSmartDeviceRoom(Room room, String deviceUid) {
+        Log.i(TAG, "更新智能设备所在的房间=start" + "room=" + (room != null));
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<>();
+        if (room != null) {
+            rooms.add(room);
+        } else {
+            rooms.addAll(RoomManager.getInstance().getmRooms());
+            Log.i(TAG, "房间列表大小" + rooms.size());
+        }
+        smartDev.setRooms(rooms);
         boolean saveResult = smartDev.save();
         Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
     }
