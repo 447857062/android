@@ -237,20 +237,20 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         deleteDialog = new DeleteDeviceDialog(this);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        buttton_delete_router = (TextView) findViewById(R.id.buttton_delete_router);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        layout_router_name_out = (RelativeLayout) findViewById(R.id.layout_router_name_out);
-        layout_room_select_out = (RelativeLayout) findViewById(R.id.layout_room_select_out);
-        layout_connect_type_select_out = (RelativeLayout) findViewById(R.id.layout_connect_type_select_out);
-        layout_wifi_setting_out = (RelativeLayout) findViewById(R.id.layout_wifi_setting_out);
-        layout_lan_setting_out = (RelativeLayout) findViewById(R.id.layout_lan_setting_out);
-        layout_QOS_setting_out = (RelativeLayout) findViewById(R.id.layout_QOS_setting_out);
-        layout_update_out = (RelativeLayout) findViewById(R.id.layout_update_out);
-        layout_reboot_out = (RelativeLayout) findViewById(R.id.layout_reboot_out);
-        buttton_delete_router = (TextView) findViewById(R.id.buttton_delete_router);
-        textview_room_select_2 = (TextView) findViewById(R.id.textview_room_select_2);
-        textview_route_name_2 = (TextView) findViewById(R.id.textview_route_name_2);
+        textview_title = findViewById(R.id.textview_title);
+        buttton_delete_router = findViewById(R.id.buttton_delete_router);
+        image_back = findViewById(R.id.image_back);
+        layout_router_name_out = findViewById(R.id.layout_router_name_out);
+        layout_room_select_out = findViewById(R.id.layout_room_select_out);
+        layout_connect_type_select_out = findViewById(R.id.layout_connect_type_select_out);
+        layout_wifi_setting_out = findViewById(R.id.layout_wifi_setting_out);
+        layout_lan_setting_out = findViewById(R.id.layout_lan_setting_out);
+        layout_QOS_setting_out = findViewById(R.id.layout_QOS_setting_out);
+        layout_update_out = findViewById(R.id.layout_update_out);
+        layout_reboot_out = findViewById(R.id.layout_reboot_out);
+        buttton_delete_router = findViewById(R.id.buttton_delete_router);
+        textview_room_select_2 = findViewById(R.id.textview_room_select_2);
+        textview_route_name_2 = findViewById(R.id.textview_route_name_2);
     }
 
     @Override
@@ -279,7 +279,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                             msg.what = MSG_UPDATE_ROOM_FAIL;
                             mHandler.sendMessage(msg);
                         }
-                        ;
                     }
 
                     @Override

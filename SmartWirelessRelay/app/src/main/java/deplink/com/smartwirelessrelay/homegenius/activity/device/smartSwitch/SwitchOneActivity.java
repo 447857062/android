@@ -71,10 +71,10 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        button_switch = (Button) findViewById(R.id.button_switch);
+        image_back = findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        button_switch = findViewById(R.id.button_switch);
     }
 
     @Override

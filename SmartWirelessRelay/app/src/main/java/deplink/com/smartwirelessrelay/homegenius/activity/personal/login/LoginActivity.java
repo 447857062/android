@@ -125,12 +125,12 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
     }
 
     private void initViews() {
-        imageview_delete= (ImageView) findViewById(R.id.imageview_delete);
-        textview_forget_password= (TextView) findViewById(R.id.textview_forget_password);
-        textview_regist_now= (TextView) findViewById(R.id.textview_regist_now);
-        button_login= (Button) findViewById(R.id.button_login);
-        edittext_input_password= (EditText) findViewById(R.id.edittext_input_password);
-        edittext_input_phone_number= (EditText) findViewById(R.id.edittext_input_phone_number);
+        imageview_delete= findViewById(R.id.imageview_delete);
+        textview_forget_password= findViewById(R.id.textview_forget_password);
+        textview_regist_now= findViewById(R.id.textview_regist_now);
+        button_login= findViewById(R.id.button_login);
+        edittext_input_password= findViewById(R.id.edittext_input_password);
+        edittext_input_phone_number= findViewById(R.id.edittext_input_phone_number);
         view_phonenumber_dirverline=  findViewById(R.id.view_phonenumber_dirverline);
         view_password_dirverline=  findViewById(R.id.view_password_dirverline);
     }

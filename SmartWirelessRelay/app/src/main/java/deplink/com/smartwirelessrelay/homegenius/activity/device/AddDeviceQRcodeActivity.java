@@ -38,6 +38,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_scan_device;
     private FrameLayout image_back;
+    private List<String> mDeviceTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         image_back = findViewById(R.id.image_back);
     }
 
-    private List<String> mDeviceTypes;
 
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
@@ -188,19 +188,15 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LOCK);
                         startActivity(intent);
-                    }
-                    else if (qrCodeResult.contains("LKSWG")) {
+                    } else if (qrCodeResult.contains("LKSWG")) {
                         intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
                         GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
                         startActivity(intent);
-                    }
-                    else if (qrCodeResult.contains("YWLIGHTCONTROL")) {
+                    } else if (qrCodeResult.contains("YWLIGHTCONTROL")) {
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LIGHT);
                         startActivity(intent);
-                    }
-
-                    else {
+                    } else {
                         if (qrCodeResult.length() == 12) {
                             intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
                             intent.putExtra("routerSN", qrCodeResult);
@@ -231,8 +227,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     startActivity(intent);
                     break;
             }
-
-
         }
     }
 }

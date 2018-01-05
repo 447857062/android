@@ -76,12 +76,12 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     }
 
     private void initViews() {
-        dev_list = (ListView) findViewById(R.id.list_lock_histroy);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_empty_record = (TextView) findViewById(R.id.textview_empty_record);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        imageview_no_lockhostory = (ImageView) findViewById(R.id.imageview_no_lockhostory);
+        dev_list = findViewById(R.id.list_lock_histroy);
+        textview_edit = findViewById(R.id.textview_edit);
+        textview_title = findViewById(R.id.textview_title);
+        textview_empty_record = findViewById(R.id.textview_empty_record);
+        image_back = findViewById(R.id.image_back);
+        imageview_no_lockhostory = findViewById(R.id.imageview_no_lockhostory);
 
     }
 

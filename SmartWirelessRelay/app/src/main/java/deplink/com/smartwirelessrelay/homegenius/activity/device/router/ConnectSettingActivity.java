@@ -347,42 +347,42 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        layout_connect_type_setting = (RelativeLayout) findViewById(R.id.layout_connect_type_setting);
-        textview_current_connect_type = (TextView) findViewById(R.id.textview_current_connect_type);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        layout_connect_type_setting = findViewById(R.id.layout_connect_type_setting);
+        textview_current_connect_type = findViewById(R.id.textview_current_connect_type);
 
-        textview_pppoe_account = (TextView) findViewById(R.id.textview_pppoe_account);
-        textview_pppoe_password = (TextView) findViewById(R.id.textview_pppoe_password);
-        textview_wanip_value = (TextView) findViewById(R.id.textview_wanip_value);
-        textview_submask_value = (TextView) findViewById(R.id.textview_submask_value);
-        textview_gateway_value = (TextView) findViewById(R.id.textview_gateway_value);
-        textview_dns_value = (TextView) findViewById(R.id.textview_dns_value);
-        textview_mtu = (TextView) findViewById(R.id.textview_mtu);
-        textview_mac = (TextView) findViewById(R.id.textview_mac);
-        textview_wifi_ssid = (TextView) findViewById(R.id.textview_wifi_ssid);
-        textview_wifipassword = (TextView) findViewById(R.id.textview_wifipassword);
-        textview_encryption = (TextView) findViewById(R.id.textview_encryption);
-        textview_encryption_algorithm = (TextView) findViewById(R.id.textview_encryption_algorithm);
-        textview_channel = (TextView) findViewById(R.id.textview_channel);
+        textview_pppoe_account = findViewById(R.id.textview_pppoe_account);
+        textview_pppoe_password = findViewById(R.id.textview_pppoe_password);
+        textview_wanip_value = findViewById(R.id.textview_wanip_value);
+        textview_submask_value = findViewById(R.id.textview_submask_value);
+        textview_gateway_value = findViewById(R.id.textview_gateway_value);
+        textview_dns_value = findViewById(R.id.textview_dns_value);
+        textview_mtu = findViewById(R.id.textview_mtu);
+        textview_mac = findViewById(R.id.textview_mac);
+        textview_wifi_ssid = findViewById(R.id.textview_wifi_ssid);
+        textview_wifipassword = findViewById(R.id.textview_wifipassword);
+        textview_encryption = findViewById(R.id.textview_encryption);
+        textview_encryption_algorithm = findViewById(R.id.textview_encryption_algorithm);
+        textview_channel = findViewById(R.id.textview_channel);
 
-        layout_pppoe_account = (RelativeLayout) findViewById(R.id.layout_pppoe_account);
-        layout_pppoe_password = (RelativeLayout) findViewById(R.id.layout_pppoe_password);
-        layout_wan_ip_setting = (RelativeLayout) findViewById(R.id.layout_wan_ip_setting);
-        layout_submask_setting = (RelativeLayout) findViewById(R.id.layout_submask_setting);
-        layout_gateway_setting = (RelativeLayout) findViewById(R.id.layout_gateway_setting);
-        layout_dns_setting = (RelativeLayout) findViewById(R.id.layout_dns_setting);
-        layout_mtu = (RelativeLayout) findViewById(R.id.layout_mtu);
-        layout_mac = (RelativeLayout) findViewById(R.id.layout_mac);
-        layout_wifissid = (RelativeLayout) findViewById(R.id.layout_wifissid);
-        layout_wifipassword = (RelativeLayout) findViewById(R.id.layout_wifipassword);
-        layout_encryption = (RelativeLayout) findViewById(R.id.layout_encryption);
-        layout_encryption_algorithm = (RelativeLayout) findViewById(R.id.layout_encryption_algorithm);
-        layout_channel = (RelativeLayout) findViewById(R.id.layout_channel);
+        layout_pppoe_account = findViewById(R.id.layout_pppoe_account);
+        layout_pppoe_password = findViewById(R.id.layout_pppoe_password);
+        layout_wan_ip_setting = findViewById(R.id.layout_wan_ip_setting);
+        layout_submask_setting = findViewById(R.id.layout_submask_setting);
+        layout_gateway_setting = findViewById(R.id.layout_gateway_setting);
+        layout_dns_setting = findViewById(R.id.layout_dns_setting);
+        layout_mtu = findViewById(R.id.layout_mtu);
+        layout_mac = findViewById(R.id.layout_mac);
+        layout_wifissid = findViewById(R.id.layout_wifissid);
+        layout_wifipassword = findViewById(R.id.layout_wifipassword);
+        layout_encryption = findViewById(R.id.layout_encryption);
+        layout_encryption_algorithm = findViewById(R.id.layout_encryption_algorithm);
+        layout_channel = findViewById(R.id.layout_channel);
 
-        textview_lan_ip = (TextView) findViewById(R.id.textview_lan_ip);
-        textview_netmask = (TextView) findViewById(R.id.textview_netmask);
-        textview_dhcp_status = (TextView) findViewById(R.id.textview_dhcp_status);
+        textview_lan_ip = findViewById(R.id.textview_lan_ip);
+        textview_netmask = findViewById(R.id.textview_netmask);
+        textview_dhcp_status = findViewById(R.id.textview_dhcp_status);
     }
 
     @Override

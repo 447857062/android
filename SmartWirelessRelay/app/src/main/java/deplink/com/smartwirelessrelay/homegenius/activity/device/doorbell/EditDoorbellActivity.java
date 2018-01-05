@@ -29,7 +29,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        button_delete_device= (Button) findViewById(R.id.button_delete_device);
+        button_delete_device= findViewById(R.id.button_delete_device);
     }
 
     @Override

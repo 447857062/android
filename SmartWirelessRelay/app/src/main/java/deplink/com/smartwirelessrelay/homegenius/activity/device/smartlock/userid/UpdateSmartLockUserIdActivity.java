@@ -58,10 +58,10 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        listview_update_ids = (ListView) findViewById(R.id.listview_update_ids);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        image_back = findViewById(R.id.image_back);
+        listview_update_ids = findViewById(R.id.listview_update_ids);
     }
 
     @Override

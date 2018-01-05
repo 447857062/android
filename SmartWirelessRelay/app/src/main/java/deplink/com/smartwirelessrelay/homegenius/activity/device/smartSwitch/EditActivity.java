@@ -127,18 +127,18 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        button_delete_device = (TextView) findViewById(R.id.button_delete_device);
-        layout_select_room = (RelativeLayout) findViewById(R.id.layout_room_select);
-        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        edittext_add_device_input_name = (ClearEditText) findViewById(R.id.edittext_add_device_input_name);
-        layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
-        layout_getway_select = (RelativeLayout) findViewById(R.id.layout_getway_select);
-        listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
-        textview_select_getway_name = (TextView) findViewById(R.id.textview_select_getway_name);
-        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        image_back = findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        button_delete_device = findViewById(R.id.button_delete_device);
+        layout_select_room = findViewById(R.id.layout_room_select);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
+        layout_getway_list = findViewById(R.id.layout_getway_list);
+        layout_getway_select = findViewById(R.id.layout_getway_select);
+        listview_select_getway = findViewById(R.id.listview_select_getway);
+        textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
+        imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
+        textview_edit = findViewById(R.id.textview_edit);
     }
 
     private boolean isStartFromExperience;

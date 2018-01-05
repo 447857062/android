@@ -47,19 +47,13 @@ public class DoorbeelManager {
     }
 
 
-    public void getDoorbeelAtRooms(final Observer observer) {
+    public void getDoorbeelAtRooms( Observer observer) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 SmartDev dev = DataSupport.where("Uid = ?", currentSelectedDoorbeel.getUid()).findFirst(SmartDev.class, true);
                 final List<Room> rooms = dev.getRooms();
-                mObservable = Observable.create(new ObservableOnSubscribe() {
-                    @Override
-                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                        e.onNext(rooms);
-                    }
-                });
-                mObservable.subscribe(observer);
+
                 Log.i(TAG, "所在房间=" + rooms.size());
             }
         });
@@ -116,21 +110,12 @@ public class DoorbeelManager {
 
     private Observable mObservable;
 
-    public void deleteDoorbeel(final SmartDev dev, final Observer observer) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                final int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", dev.getUid());
-                mObservable = Observable.create(new ObservableOnSubscribe() {
-                    @Override
-                    public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                        e.onNext(affectColumn);
-                    }
-                });
-                mObservable.subscribe(observer);
+    public void deleteDoorbeel( SmartDev dev) {
+
+                 int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", dev.getUid());
+
                 Log.i(TAG, "删除智能门铃设备=" + affectColumn);
-            }
-        });
+
     }
 
     /**

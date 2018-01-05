@@ -122,18 +122,18 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_select_remotecontrol_name = (TextView) findViewById(R.id.textview_select_remotecontrol_name);
-        button_delete_device = (TextView) findViewById(R.id.button_delete_device);
-        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        layout_remotecontrol_select = (RelativeLayout) findViewById(R.id.layout_remotecontrol_select);
-        layout_remotecontrol_list = (RelativeLayout) findViewById(R.id.layout_remotecontrol_list);
-        layout_room_select = (RelativeLayout) findViewById(R.id.layout_room_select);
-        imageview_remotecontrol_arror_right = (ImageView) findViewById(R.id.imageview_remotecontrol_arror_right);
-        listview_select_remotecontrol = (ListView) findViewById(R.id.listview_select_remotecontrol);
-        edittext_add_device_input_name = (ClearEditText) findViewById(R.id.edittext_add_device_input_name);
+        image_back = findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        textview_select_remotecontrol_name = findViewById(R.id.textview_select_remotecontrol_name);
+        button_delete_device = findViewById(R.id.button_delete_device);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        textview_edit = findViewById(R.id.textview_edit);
+        layout_remotecontrol_select = findViewById(R.id.layout_remotecontrol_select);
+        layout_remotecontrol_list = findViewById(R.id.layout_remotecontrol_list);
+        layout_room_select = findViewById(R.id.layout_room_select);
+        imageview_remotecontrol_arror_right = findViewById(R.id.imageview_remotecontrol_arror_right);
+        listview_select_remotecontrol = findViewById(R.id.listview_select_remotecontrol);
+        edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
     }
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;

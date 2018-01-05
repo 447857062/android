@@ -54,10 +54,10 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
-        edittext_router_name = (ClearEditText) findViewById(R.id.edittext_router_name);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
+        edittext_router_name = findViewById(R.id.edittext_router_name);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        image_back = findViewById(R.id.image_back);
     }
 
     @Override

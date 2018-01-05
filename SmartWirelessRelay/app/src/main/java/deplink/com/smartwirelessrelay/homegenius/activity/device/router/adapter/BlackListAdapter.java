@@ -47,8 +47,8 @@ public class BlackListAdapter extends BaseSwipListAdapter {
         if(convertView==null){
             vh=new ViewHolder();
             convertView= LayoutInflater.from(mContext).inflate(R.layout.blacklist_item,null);
-            vh.device_name= (TextView) convertView.findViewById(R.id.textview_device_name);
-            vh.device_time= (TextView) convertView.findViewById(R.id.textview_device_time);
+            vh.device_name= convertView.findViewById(R.id.textview_device_name);
+            vh.device_time= convertView.findViewById(R.id.textview_device_time);
             convertView.setTag(vh);
         }else{
             vh = (ViewHolder) convertView.getTag();

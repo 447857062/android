@@ -332,18 +332,18 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     }
 
     private void initViews() {
-        layout_device_response = (RelativeLayout) findViewById(R.id.layout_device_response);
-        button_test = (Button) findViewById(R.id.button_test);
-        button_ng = (Button) findViewById(R.id.button_ng);
-        button_ok = (Button) findViewById(R.id.button_ok);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_test_press_4 = (TextView) findViewById(R.id.textview_test_press_4);
-        textview_test_press_2 = (TextView) findViewById(R.id.textview_test_press_2);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        button_test_consecutively = (Button) findViewById(R.id.button_test_consecutively);
-        imageview_right = (ImageView) findViewById(R.id.imageview_right);
-        imageview_left = (ImageView) findViewById(R.id.imageview_left);
-        textview_key_name = (TextView) findViewById(R.id.textview_key_name);
+        layout_device_response = findViewById(R.id.layout_device_response);
+        button_test = findViewById(R.id.button_test);
+        button_ng = findViewById(R.id.button_ng);
+        button_ok = findViewById(R.id.button_ok);
+        textview_title = findViewById(R.id.textview_title);
+        textview_test_press_4 = findViewById(R.id.textview_test_press_4);
+        textview_test_press_2 = findViewById(R.id.textview_test_press_2);
+        image_back = findViewById(R.id.image_back);
+        button_test_consecutively = findViewById(R.id.button_test_consecutively);
+        imageview_right = findViewById(R.id.imageview_right);
+        imageview_left = findViewById(R.id.imageview_left);
+        textview_key_name = findViewById(R.id.textview_key_name);
     }
 
     private String bandName;

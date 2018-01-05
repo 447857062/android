@@ -18,7 +18,6 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity;
@@ -176,11 +175,11 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
+        image_back = findViewById(R.id.image_back);
 
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        listview_devies=(ListView) findViewById(R.id.listview_devies);
-        layout_device_number_root=(RelativeLayout) findViewById(R.id.layout_device_number_root);
+        textview_edit = findViewById(R.id.textview_edit);
+        listview_devies= findViewById(R.id.listview_devies);
+        layout_device_number_root= findViewById(R.id.layout_device_number_root);
     }
 
     @Override

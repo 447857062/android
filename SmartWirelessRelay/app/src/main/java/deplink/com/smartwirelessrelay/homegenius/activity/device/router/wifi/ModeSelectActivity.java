@@ -156,19 +156,19 @@ public class ModeSelectActivity extends Activity implements View.OnClickListener
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        layout_model_AC= (RelativeLayout) findViewById(R.id.layout_model_AC);
-        layout_model_N= (RelativeLayout) findViewById(R.id.layout_model_N);
-        layout_model_4= (RelativeLayout) findViewById(R.id.layout_model_4);
-        layout_model_7= (RelativeLayout) findViewById(R.id.layout_model_7);
-        layout_model_9= (RelativeLayout) findViewById(R.id.layout_model_9);
-        imageview_model_ac=(ImageView) findViewById(R.id.imageview_model_ac);
-        imageview_model_n=(ImageView) findViewById(R.id.imageview_model_n);
-        imageview_model_4=(ImageView) findViewById(R.id.imageview_model_4);
-        imageview_model_7=(ImageView) findViewById(R.id.imageview_model_7);
-        imageview_model_9=(ImageView) findViewById(R.id.imageview_model_9);
-        textview_edit= (TextView) findViewById(R.id.textview_edit);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        layout_model_AC= findViewById(R.id.layout_model_AC);
+        layout_model_N= findViewById(R.id.layout_model_N);
+        layout_model_4= findViewById(R.id.layout_model_4);
+        layout_model_7= findViewById(R.id.layout_model_7);
+        layout_model_9= findViewById(R.id.layout_model_9);
+        imageview_model_ac= findViewById(R.id.imageview_model_ac);
+        imageview_model_n= findViewById(R.id.imageview_model_n);
+        imageview_model_4= findViewById(R.id.imageview_model_4);
+        imageview_model_7= findViewById(R.id.imageview_model_7);
+        imageview_model_9= findViewById(R.id.imageview_model_9);
+        textview_edit= findViewById(R.id.textview_edit);
     }
 
     @Override

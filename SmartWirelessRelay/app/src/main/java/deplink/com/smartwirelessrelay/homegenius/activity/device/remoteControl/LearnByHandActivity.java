@@ -65,7 +65,7 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
-        button_cancel = (Button) findViewById(R.id.button_cancel);
+        button_cancel = findViewById(R.id.button_cancel);
     }
 
     @Override

@@ -116,12 +116,12 @@ public class AddTopBoxActivity extends Activity implements View.OnClickListener,
     }
 
     private void initViews() {
-        edittext_band_name = (ClearEditText) findViewById(R.id.edittext_band_name);
-        listview_band= (ListView) findViewById(R.id.listview_band);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        sideBar = (SideBar) findViewById(R.id.sidrbar);
-        dialog = (TextView) findViewById(R.id.dialog);
+        edittext_band_name = findViewById(R.id.edittext_band_name);
+        listview_band= findViewById(R.id.listview_band);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        sideBar = findViewById(R.id.sidrbar);
+        dialog = findViewById(R.id.dialog);
     }
 
     @Override

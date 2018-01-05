@@ -80,10 +80,10 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        list_alart_histroy = (ListView) findViewById(R.id.list_alart_histroy);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        layout_no_alarm_recoed = (RelativeLayout) findViewById(R.id.layout_no_alarm_recoed);
+        list_alart_histroy = findViewById(R.id.list_alart_histroy);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        layout_no_alarm_recoed = findViewById(R.id.layout_no_alarm_recoed);
     }
 
     private void initDatas() {

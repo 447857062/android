@@ -148,13 +148,13 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
     }
 
     private void initViews() {
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_update = (Button) findViewById(R.id.button_update);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        textview_version_code = (TextView) findViewById(R.id.textview_version_code);
-        textview_file_size = (TextView) findViewById(R.id.textview_file_size);
-        textview_update_what = (TextView) findViewById(R.id.textview_update_what);
+        button_cancel = findViewById(R.id.button_cancel);
+        button_update = findViewById(R.id.button_update);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        textview_version_code = findViewById(R.id.textview_version_code);
+        textview_file_size = findViewById(R.id.textview_file_size);
+        textview_update_what = findViewById(R.id.textview_update_what);
     }
 
     @Override

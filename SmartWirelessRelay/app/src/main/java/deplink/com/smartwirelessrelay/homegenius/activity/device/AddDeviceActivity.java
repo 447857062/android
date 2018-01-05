@@ -99,10 +99,10 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        mDragGridView = (GridView) findViewById(R.id.dragGridView);
-        textview_show_select_room = (TextView) findViewById(R.id.textview_show_select_room);
-        textview_skip_this_option = (TextView) findViewById(R.id.textview_skip_this_option);
+        image_back = findViewById(R.id.image_back);
+        mDragGridView = findViewById(R.id.dragGridView);
+        textview_show_select_room = findViewById(R.id.textview_show_select_room);
+        textview_skip_this_option = findViewById(R.id.textview_skip_this_option);
     }
 
     @Override

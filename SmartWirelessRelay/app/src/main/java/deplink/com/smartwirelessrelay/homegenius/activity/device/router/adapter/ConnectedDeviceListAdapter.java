@@ -46,10 +46,10 @@ public class ConnectedDeviceListAdapter extends BaseSwipListAdapter {
         if(convertView==null){
             vh=new ViewHolder();
             convertView= LayoutInflater.from(mContext).inflate(R.layout.connected_devicelist_item,null);
-            vh.device_name= (TextView) convertView.findViewById(R.id.textview_device_name);
-            vh.device_mac = (TextView) convertView.findViewById(R.id.textview_device_time);
-            vh.tx= (TextView) convertView.findViewById(R.id.textview_uploadspeed);
-            vh.rx= (TextView) convertView.findViewById(R.id.textview_downloadspeed);
+            vh.device_name= convertView.findViewById(R.id.textview_device_name);
+            vh.device_mac = convertView.findViewById(R.id.textview_device_time);
+            vh.tx= convertView.findViewById(R.id.textview_uploadspeed);
+            vh.rx= convertView.findViewById(R.id.textview_downloadspeed);
             convertView.setTag(vh);
         }else{
             vh = (ViewHolder) convertView.getTag();

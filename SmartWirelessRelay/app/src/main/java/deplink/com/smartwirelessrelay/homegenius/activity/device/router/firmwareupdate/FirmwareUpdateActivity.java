@@ -168,12 +168,12 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        layout_update_immediately = (RelativeLayout) findViewById(R.id.layout_update_immediately);
-        checkbox_auto_update = (CheckBox) findViewById(R.id.checkbox_auto_update);
-        textview_version_code = (TextView) findViewById(R.id.textview_version_code);
-        textview_show_can_update = (TextView) findViewById(R.id.textview_show_can_update);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        layout_update_immediately = findViewById(R.id.layout_update_immediately);
+        checkbox_auto_update = findViewById(R.id.checkbox_auto_update);
+        textview_version_code = findViewById(R.id.textview_version_code);
+        textview_show_can_update = findViewById(R.id.textview_show_can_update);
     }
     @Override
     public void onClick(View v) {

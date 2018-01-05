@@ -140,10 +140,10 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
 
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        button_sure = (Button) findViewById(R.id.button_sure);
-        textview_updateing = (TextView) findViewById(R.id.textview_updateing);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
+        textview_title= findViewById(R.id.textview_title);
+        button_sure = findViewById(R.id.button_sure);
+        textview_updateing = findViewById(R.id.textview_updateing);
+        image_back = findViewById(R.id.image_back);
     }
 
 

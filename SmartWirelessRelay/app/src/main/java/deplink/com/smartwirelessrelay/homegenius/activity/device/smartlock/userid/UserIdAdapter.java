@@ -65,8 +65,8 @@ public class UserIdAdapter extends BaseAdapter {
         TextView textview_userid;
         ClearEditText edittext_input_userid;
         public ViewHolder(View view,int pisition){
-            textview_userid = (TextView) view.findViewById(R.id.textview_userid);
-            edittext_input_userid= (ClearEditText) view.findViewById(R.id.edittext_input_userid);
+            textview_userid = view.findViewById(R.id.textview_userid);
+            edittext_input_userid= view.findViewById(R.id.edittext_input_userid);
             edittext_input_userid.setTag(pisition);//存tag值
             edittext_input_userid.addTextChangedListener(new TextSwitcher(this));
         }

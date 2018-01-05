@@ -145,15 +145,15 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        layout_type_strong = (RelativeLayout) findViewById(R.id.layout_type_strong);
-        layout_type_mix = (RelativeLayout) findViewById(R.id.layout_type_mix);
-        layout_type_none = (RelativeLayout) findViewById(R.id.layout_type_none);
-        imageview_strong = (ImageView) findViewById(R.id.imageview_strong);
-        imageview_mix = (ImageView) findViewById(R.id.imageview_mix);
-        imageview_none = (ImageView) findViewById(R.id.imageview_none);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        textview_edit = findViewById(R.id.textview_edit);
+        layout_type_strong = findViewById(R.id.layout_type_strong);
+        layout_type_mix = findViewById(R.id.layout_type_mix);
+        layout_type_none = findViewById(R.id.layout_type_none);
+        imageview_strong = findViewById(R.id.imageview_strong);
+        imageview_mix = findViewById(R.id.imageview_mix);
+        imageview_none = findViewById(R.id.imageview_none);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
 
     }
 

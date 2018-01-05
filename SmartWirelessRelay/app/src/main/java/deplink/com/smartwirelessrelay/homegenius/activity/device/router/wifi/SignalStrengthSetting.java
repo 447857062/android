@@ -204,15 +204,15 @@ public class SignalStrengthSetting extends Activity implements View.OnClickListe
     }
     private boolean  isSetSignalStreng;
     private void initViews() {
-        layout_model_pregnant = (RelativeLayout) findViewById(R.id.layout_model_pregnant);
-        layout_model_walls = (RelativeLayout) findViewById(R.id.layout_model_walls);
-        layout_model_balance = (RelativeLayout) findViewById(R.id.layout_model_balance);
-        imageview_model_pregnant = (ImageView) findViewById(R.id.imageview_model_pregnant);
-        imageview_model_walls = (ImageView) findViewById(R.id.imageview_model_walls);
-        imageview_model_balance = (ImageView) findViewById(R.id.imageview_model_balance);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
+        layout_model_pregnant = findViewById(R.id.layout_model_pregnant);
+        layout_model_walls = findViewById(R.id.layout_model_walls);
+        layout_model_balance = findViewById(R.id.layout_model_balance);
+        imageview_model_pregnant = findViewById(R.id.imageview_model_pregnant);
+        imageview_model_walls = findViewById(R.id.imageview_model_walls);
+        imageview_model_balance = findViewById(R.id.imageview_model_balance);
+        textview_edit = findViewById(R.id.textview_edit);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
     }
 
     @Override

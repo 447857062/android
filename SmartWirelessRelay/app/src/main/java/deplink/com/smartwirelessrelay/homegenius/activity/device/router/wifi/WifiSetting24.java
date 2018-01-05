@@ -311,24 +311,24 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
 
 
     private void initViews() {
-        layout_wifiname_setting = (RelativeLayout) findViewById(R.id.layout_wifiname_setting);
-        layout_encryption = (RelativeLayout) findViewById(R.id.layout_encryption);
-        textview_encryption = (TextView) findViewById(R.id.textview_encryption);
-        layout_password = (RelativeLayout) findViewById(R.id.layout_password);
-        layout_mode = (RelativeLayout) findViewById(R.id.layout_mode);
-        textview_mode = (TextView) findViewById(R.id.textview_mode);
-        layout_channel = (RelativeLayout) findViewById(R.id.layout_channel);
-        textview_channel = (TextView) findViewById(R.id.textview_channel);
-        layout_bandwidth = (RelativeLayout) findViewById(R.id.layout_bandwidth);
-        textview_bandwidth = (TextView) findViewById(R.id.textview_bandwidth);
-        textview_wifi_name = (TextView) findViewById(R.id.textview_wifi_name);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        checkbox_wireless_wifi = (CheckBox) findViewById(R.id.checkbox_wireless_wifi);
-        checkbox_hide_net = (CheckBox) findViewById(R.id.checkbox_hide_net);
-        layout_wireless_wifi = (RelativeLayout) findViewById(R.id.layout_wireless_wifi);
-        layout_hide_net = (RelativeLayout) findViewById(R.id.layout_hide_net);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        layout_wifiname_setting = findViewById(R.id.layout_wifiname_setting);
+        layout_encryption = findViewById(R.id.layout_encryption);
+        textview_encryption = findViewById(R.id.textview_encryption);
+        layout_password = findViewById(R.id.layout_password);
+        layout_mode = findViewById(R.id.layout_mode);
+        textview_mode = findViewById(R.id.textview_mode);
+        layout_channel = findViewById(R.id.layout_channel);
+        textview_channel = findViewById(R.id.textview_channel);
+        layout_bandwidth = findViewById(R.id.layout_bandwidth);
+        textview_bandwidth = findViewById(R.id.textview_bandwidth);
+        textview_wifi_name = findViewById(R.id.textview_wifi_name);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        checkbox_wireless_wifi = findViewById(R.id.checkbox_wireless_wifi);
+        checkbox_hide_net = findViewById(R.id.checkbox_hide_net);
+        layout_wireless_wifi = findViewById(R.id.layout_wireless_wifi);
+        layout_hide_net = findViewById(R.id.layout_hide_net);
+        textview_edit = findViewById(R.id.textview_edit);
     }
 
 

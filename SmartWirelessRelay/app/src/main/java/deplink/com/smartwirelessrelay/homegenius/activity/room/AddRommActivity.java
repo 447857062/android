@@ -109,15 +109,15 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        textview_add_room_complement = (TextView) findViewById(R.id.textview_add_room_complement);
-        image_back = (ImageView) findViewById(R.id.image_back);
-        layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
-        edittext_room_name = (ClearEditText) findViewById(R.id.edittext_room_name);
-        gridview_room_type = (GridView) findViewById(R.id.gridview_room_type);
-        layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
-        listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
-        textview_getway_name = (TextView) findViewById(R.id.textview_getway_name);
-        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
+        textview_add_room_complement = findViewById(R.id.textview_add_room_complement);
+        image_back = findViewById(R.id.image_back);
+        layout_getway = findViewById(R.id.layout_getway);
+        edittext_room_name = findViewById(R.id.edittext_room_name);
+        gridview_room_type = findViewById(R.id.gridview_room_type);
+        layout_getway_list = findViewById(R.id.layout_getway_list);
+        listview_select_getway = findViewById(R.id.listview_select_getway);
+        textview_getway_name = findViewById(R.id.textview_getway_name);
+        imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
 
     private String roomType;

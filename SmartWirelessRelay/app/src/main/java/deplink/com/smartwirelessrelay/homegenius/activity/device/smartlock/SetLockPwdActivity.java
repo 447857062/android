@@ -43,15 +43,15 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     }
 
     void findView() {
-        etPwdOne = (EditText) findViewById(R.id.etPwdOne_setLockPwd);
-        etPwdTwo = (EditText) findViewById(R.id.etPwdTwo_setLockPwd);
-        etPwdThree = (EditText) findViewById(R.id.etPwdThree_setLockPwd);
-        etPwdFour = (EditText) findViewById(R.id.etPwdFour_setLockPwd);
-        etPwdFive_setLockPwd = (EditText) findViewById(R.id.etPwdFive_setLockPwd);
-        etPwdSix_setLockPwd = (EditText) findViewById(R.id.etPwdSix_setLockPwd);
-        etPwdText = (EditText) findViewById(R.id.etPwdText_setLockPwd);
-        switch_remond_managerpassword = (ImageView) findViewById(R.id.switch_remond_managerpassword);
-        layout_save_password = (RelativeLayout) findViewById(R.id.layout_save_password);
+        etPwdOne = findViewById(R.id.etPwdOne_setLockPwd);
+        etPwdTwo = findViewById(R.id.etPwdTwo_setLockPwd);
+        etPwdThree = findViewById(R.id.etPwdThree_setLockPwd);
+        etPwdFour = findViewById(R.id.etPwdFour_setLockPwd);
+        etPwdFive_setLockPwd = findViewById(R.id.etPwdFive_setLockPwd);
+        etPwdSix_setLockPwd = findViewById(R.id.etPwdSix_setLockPwd);
+        etPwdText = findViewById(R.id.etPwdText_setLockPwd);
+        switch_remond_managerpassword = findViewById(R.id.switch_remond_managerpassword);
+        layout_save_password = findViewById(R.id.layout_save_password);
     }
 
     void setListener() {

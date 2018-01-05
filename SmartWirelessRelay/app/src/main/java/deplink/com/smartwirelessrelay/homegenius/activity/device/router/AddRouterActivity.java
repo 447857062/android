@@ -186,12 +186,12 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
     }
 
     private void initViews() {
-        button_add_device_sure = (Button) findViewById(R.id.button_add_device_sure);
-        edittext_add_device_input_name = (EditText) findViewById(R.id.edittext_add_device_input_name);
-        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
+        button_add_device_sure = findViewById(R.id.button_add_device_sure);
+        edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        layout_select_room = findViewById(R.id.layout_select_room);
     }
 
     public static final int MSG_ADD_ROUTER_FAIL = 100;

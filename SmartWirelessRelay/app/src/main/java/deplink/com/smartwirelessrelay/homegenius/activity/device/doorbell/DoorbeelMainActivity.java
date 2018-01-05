@@ -36,10 +36,10 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        image_setting = (ImageView) findViewById(R.id.image_setting);
-        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        image_setting = findViewById(R.id.image_setting);
+        frame_setting = findViewById(R.id.frame_setting);
     }
     private Doorbeel_menu_Dialog doorbeelMenuDialog;
     @Override

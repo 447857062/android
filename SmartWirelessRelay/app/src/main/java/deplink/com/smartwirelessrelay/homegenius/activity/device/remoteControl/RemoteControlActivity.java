@@ -151,17 +151,17 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        button_delete_device = (TextView) findViewById(R.id.button_delete_device);
-        textview_select_room_name = (TextView) findViewById(R.id.textview_select_room_name);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        layout_getway_list = (RelativeLayout) findViewById(R.id.layout_getway_list);
-        textview_select_getway_name = (TextView) findViewById(R.id.textview_select_getway_name);
-        layout_getway = (RelativeLayout) findViewById(R.id.layout_getway);
-        layout_select_room = (RelativeLayout) findViewById(R.id.layout_select_room);
-        listview_select_getway = (ListView) findViewById(R.id.listview_select_getway);
-        imageview_getway_arror_right = (ImageView) findViewById(R.id.imageview_getway_arror_right);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        button_delete_device = findViewById(R.id.button_delete_device);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        image_back = findViewById(R.id.image_back);
+        layout_getway_list = findViewById(R.id.layout_getway_list);
+        textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
+        layout_getway = findViewById(R.id.layout_getway);
+        layout_select_room = findViewById(R.id.layout_select_room);
+        listview_select_getway = findViewById(R.id.listview_select_getway);
+        imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
     private DeleteDeviceDialog deleteDialog;
     @Override

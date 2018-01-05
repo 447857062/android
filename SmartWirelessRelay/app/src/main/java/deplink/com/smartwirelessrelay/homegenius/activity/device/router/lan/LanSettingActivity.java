@@ -193,16 +193,16 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
     };
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        edittext_ip_address = (EditText) findViewById(R.id.edittext_ip_address);
-        edittext_submask = (EditText) findViewById(R.id.edittext_submask);
-        edittext_ip_addrss_start = (EditText) findViewById(R.id.edittext_ip_addrss_start);
-        edittext_ip_address_end = (EditText) findViewById(R.id.edittext_ip_address_end);
-        checkbox_dhcp_switch = (CheckBox) findViewById(R.id.checkbox_dhcp_switch);
-        layout_ip_addrss_start = (RelativeLayout) findViewById(R.id.layout_ip_addrss_start);
-        layout_ip_address_end = (RelativeLayout) findViewById(R.id.layout_ip_address_end);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        edittext_ip_address = findViewById(R.id.edittext_ip_address);
+        edittext_submask = findViewById(R.id.edittext_submask);
+        edittext_ip_addrss_start = findViewById(R.id.edittext_ip_addrss_start);
+        edittext_ip_address_end = findViewById(R.id.edittext_ip_address_end);
+        checkbox_dhcp_switch = findViewById(R.id.checkbox_dhcp_switch);
+        layout_ip_addrss_start = findViewById(R.id.layout_ip_addrss_start);
+        layout_ip_address_end = findViewById(R.id.layout_ip_address_end);
+        textview_edit = findViewById(R.id.textview_edit);
     }
 
     @Override

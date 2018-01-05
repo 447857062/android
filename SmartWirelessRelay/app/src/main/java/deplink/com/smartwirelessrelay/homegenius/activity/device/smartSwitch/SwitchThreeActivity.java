@@ -95,13 +95,13 @@ public class SwitchThreeActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        button_switch_left = (Button) findViewById(R.id.button_switch_left);
-        button_switch_middle = (Button) findViewById(R.id.button_switch_middle);
-        button_switch_right = (Button) findViewById(R.id.button_switch_right);
-        button_all_switch = (Button) findViewById(R.id.button_all_switch);
+        image_back = findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        button_switch_left = findViewById(R.id.button_switch_left);
+        button_switch_middle = findViewById(R.id.button_switch_middle);
+        button_switch_right = findViewById(R.id.button_switch_right);
+        button_all_switch = findViewById(R.id.button_all_switch);
     }
 
     @Override

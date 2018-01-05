@@ -636,7 +636,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -671,7 +670,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -705,7 +703,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -749,7 +746,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -783,7 +779,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -817,7 +812,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -851,7 +845,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-                                    ;
                                 }
 
                             } else {
@@ -977,24 +970,24 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_model = (TextView) findViewById(R.id.textview_model);
-        textview_temperature = (TextView) findViewById(R.id.textview_temperature);
-        textview_tips = (TextView) findViewById(R.id.textview_tips);
-        textview_cancel = (TextView) findViewById(R.id.textview_cancel);
-        textview_wind_direction = (TextView) findViewById(R.id.textview_wind_center);
-        textview_wind_speed = (TextView) findViewById(R.id.textview_wind_speed);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        image_setting = (ImageView) findViewById(R.id.image_setting);
-        imageview_model = (ImageView) findViewById(R.id.imageview_auto_model);
-        imageview_wind_speed = (ImageView) findViewById(R.id.imageview_auto_wind_speed);
-        imageview_wind_direction = (ImageView) findViewById(R.id.imageview_wind_center);
-        imageview_power = (ImageView) findViewById(R.id.imageview_power);
-        imageview_temperature_reduce = (ImageView) findViewById(R.id.imageview_temperature_reduce);
-        imageview_temperature_plus = (ImageView) findViewById(R.id.imageview_temperature_plus);
-        frame_setting = (FrameLayout) findViewById(R.id.frame_setting);
-        layout_top_content = (RelativeLayout) findViewById(R.id.layout_top_content);
-        progressBar = (SeekBar) findViewById(R.id.progressBar);
+        textview_title = findViewById(R.id.textview_title);
+        textview_model = findViewById(R.id.textview_model);
+        textview_temperature = findViewById(R.id.textview_temperature);
+        textview_tips = findViewById(R.id.textview_tips);
+        textview_cancel = findViewById(R.id.textview_cancel);
+        textview_wind_direction = findViewById(R.id.textview_wind_center);
+        textview_wind_speed = findViewById(R.id.textview_wind_speed);
+        image_back = findViewById(R.id.image_back);
+        image_setting = findViewById(R.id.image_setting);
+        imageview_model = findViewById(R.id.imageview_auto_model);
+        imageview_wind_speed = findViewById(R.id.imageview_auto_wind_speed);
+        imageview_wind_direction = findViewById(R.id.imageview_wind_center);
+        imageview_power = findViewById(R.id.imageview_power);
+        imageview_temperature_reduce = findViewById(R.id.imageview_temperature_reduce);
+        imageview_temperature_plus = findViewById(R.id.imageview_temperature_plus);
+        frame_setting = findViewById(R.id.frame_setting);
+        layout_top_content = findViewById(R.id.layout_top_content);
+        progressBar = findViewById(R.id.progressBar);
     }
 
     private byte[] data;

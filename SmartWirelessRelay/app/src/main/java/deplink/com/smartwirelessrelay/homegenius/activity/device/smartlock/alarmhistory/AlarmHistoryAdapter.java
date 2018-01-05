@@ -49,9 +49,9 @@ public class AlarmHistoryAdapter extends BaseAdapter{
         if(convertView==null){
             vh=new ViewHolder();
             convertView= LayoutInflater.from(mContext).inflate(R.layout.alarmhistorylistitem,null);
-            vh.textview_userid= (TextView) convertView.findViewById(R.id.textview_userid);
-            vh.textview_data_year_mouth_day= (TextView) convertView.findViewById(R.id.textview_data_year_mouth_day);
-            vh.textview_data_hour_minute_second= (TextView) convertView.findViewById(R.id.textview_data_hour_minute_second);
+            vh.textview_userid= convertView.findViewById(R.id.textview_userid);
+            vh.textview_data_year_mouth_day= convertView.findViewById(R.id.textview_data_year_mouth_day);
+            vh.textview_data_hour_minute_second= convertView.findViewById(R.id.textview_data_hour_minute_second);
             convertView.setTag(vh);
         }else{
             vh = (ViewHolder) convertView.getTag();

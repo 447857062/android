@@ -105,14 +105,14 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     }
 
     private void initViews() {
-        layout_alert_record = (RelativeLayout) findViewById(R.id.layout_alert_record);
-        layout_lock_record = (RelativeLayout) findViewById(R.id.layout_lock_record);
-        layout_password_not_save = (RelativeLayout) findViewById(R.id.layout_password_not_save);
-        layout_auth = (RelativeLayout) findViewById(R.id.layout_auth);
-        layout_option_clear_record = (RelativeLayout) findViewById(R.id.layout_open);
-        textview_update = (TextView) findViewById(R.id.textview_update);
-        imageview_unlock = (ImageView) findViewById(R.id.imageview_unlock);
-        image_back = (ImageView) findViewById(R.id.image_back);
+        layout_alert_record = findViewById(R.id.layout_alert_record);
+        layout_lock_record = findViewById(R.id.layout_lock_record);
+        layout_password_not_save = findViewById(R.id.layout_password_not_save);
+        layout_auth = findViewById(R.id.layout_auth);
+        layout_option_clear_record = findViewById(R.id.layout_open);
+        textview_update = findViewById(R.id.textview_update);
+        imageview_unlock = findViewById(R.id.imageview_unlock);
+        image_back = findViewById(R.id.image_back);
     }
 
     private long currentTime;

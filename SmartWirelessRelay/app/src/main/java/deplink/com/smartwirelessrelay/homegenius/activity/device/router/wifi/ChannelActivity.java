@@ -200,37 +200,37 @@ public class ChannelActivity extends Activity implements View.OnClickListener{
     }
 
     private void initViews() {
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        textview_edit= (TextView) findViewById(R.id.textview_edit);
-        layout_channel_auto= (RelativeLayout) findViewById(R.id.layout_channel_auto);
-        layout_channel_1= (RelativeLayout) findViewById(R.id.layout_channel_1);
-        layout_channel_2= (RelativeLayout) findViewById(R.id.layout_channel_2);
-        layout_channel_3= (RelativeLayout) findViewById(R.id.layout_channel_3);
-        layout_channel_4= (RelativeLayout) findViewById(R.id.layout_channel_4);
-        layout_channel_5= (RelativeLayout) findViewById(R.id.layout_channel_5);
-        layout_channel_6= (RelativeLayout) findViewById(R.id.layout_channel_6);
-        layout_channel_7= (RelativeLayout) findViewById(R.id.layout_channel_7);
-        layout_channel_8= (RelativeLayout) findViewById(R.id.layout_channel_8);
-        layout_channel_9= (RelativeLayout) findViewById(R.id.layout_channel_9);
-        layout_channel_10= (RelativeLayout) findViewById(R.id.layout_channel_10);
-        layout_channel_11= (RelativeLayout) findViewById(R.id.layout_channel_11);
-        layout_channel_12= (RelativeLayout) findViewById(R.id.layout_channel_12);
-        layout_channel_13= (RelativeLayout) findViewById(R.id.layout_channel_13);
-        imageview_channel_auto= (ImageView) findViewById(R.id.imageview_channel_auto);
-        imageview_channel_1= (ImageView) findViewById(R.id.imageview_channel_1);
-        imageview_channel_2= (ImageView) findViewById(R.id.imageview_channel_2);
-        imageview_channel_3= (ImageView) findViewById(R.id.imageview_channel_3);
-        imageview_channel_4= (ImageView) findViewById(R.id.imageview_channel_4);
-        imageview_channel_5= (ImageView) findViewById(R.id.imageview_channel_5);
-        imageview_channel_6= (ImageView) findViewById(R.id.imageview_channel_6);
-        imageview_channel_7= (ImageView) findViewById(R.id.imageview_channel_7);
-        imageview_channel_8= (ImageView) findViewById(R.id.imageview_channel_8);
-        imageview_channel_9= (ImageView) findViewById(R.id.imageview_channel_9);
-        imageview_channel_10= (ImageView) findViewById(R.id.imageview_channel_10);
-        imageview_channel_11= (ImageView) findViewById(R.id.imageview_channel_11);
-        imageview_channel_12= (ImageView) findViewById(R.id.imageview_channel_12);
-        imageview_channel_13= (ImageView) findViewById(R.id.imageview_channel_13);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        textview_edit= findViewById(R.id.textview_edit);
+        layout_channel_auto= findViewById(R.id.layout_channel_auto);
+        layout_channel_1= findViewById(R.id.layout_channel_1);
+        layout_channel_2= findViewById(R.id.layout_channel_2);
+        layout_channel_3= findViewById(R.id.layout_channel_3);
+        layout_channel_4= findViewById(R.id.layout_channel_4);
+        layout_channel_5= findViewById(R.id.layout_channel_5);
+        layout_channel_6= findViewById(R.id.layout_channel_6);
+        layout_channel_7= findViewById(R.id.layout_channel_7);
+        layout_channel_8= findViewById(R.id.layout_channel_8);
+        layout_channel_9= findViewById(R.id.layout_channel_9);
+        layout_channel_10= findViewById(R.id.layout_channel_10);
+        layout_channel_11= findViewById(R.id.layout_channel_11);
+        layout_channel_12= findViewById(R.id.layout_channel_12);
+        layout_channel_13= findViewById(R.id.layout_channel_13);
+        imageview_channel_auto= findViewById(R.id.imageview_channel_auto);
+        imageview_channel_1= findViewById(R.id.imageview_channel_1);
+        imageview_channel_2= findViewById(R.id.imageview_channel_2);
+        imageview_channel_3= findViewById(R.id.imageview_channel_3);
+        imageview_channel_4= findViewById(R.id.imageview_channel_4);
+        imageview_channel_5= findViewById(R.id.imageview_channel_5);
+        imageview_channel_6= findViewById(R.id.imageview_channel_6);
+        imageview_channel_7= findViewById(R.id.imageview_channel_7);
+        imageview_channel_8= findViewById(R.id.imageview_channel_8);
+        imageview_channel_9= findViewById(R.id.imageview_channel_9);
+        imageview_channel_10= findViewById(R.id.imageview_channel_10);
+        imageview_channel_11= findViewById(R.id.imageview_channel_11);
+        imageview_channel_12= findViewById(R.id.imageview_channel_12);
+        imageview_channel_13= findViewById(R.id.imageview_channel_13);
     }
 
     @Override
