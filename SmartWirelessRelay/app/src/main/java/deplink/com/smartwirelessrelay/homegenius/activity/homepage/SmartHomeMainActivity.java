@@ -95,7 +95,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private ImageView imageview_rooms;
     private ImageView imageview_personal_center;
     private ImageView imageview_setting;
-
     private List<Room> mRoomList = new ArrayList<>();
     private HomepageGridViewAdapter mAdapter;
     private GridView roomGridView;
@@ -109,15 +108,16 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private TextView textview_room;
     private TextView textview_mine;
     private TextView textview_pm25;
-
     private HomepageRoomShowTypeChangedViewAdapter mRoomSelectTypeChangedAdapter;
     private SDKManager manager;
     private EventCallback ec;
-
     private TextView textview_city;
     public LocationClient mLocationClient = null;
     private MyLocationListener myListener = new MyLocationListener();
     private TextView textview_tempature;
+    private RoomManager mRoomManager;
+    private HorizontalScrollView layout_roomselect_normal;
+    private NonScrollableListView layout_roomselect_changed_ype;
 
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
@@ -142,7 +142,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     province = province.substring(0, province.length() - 1);
                 }
                 Log.i(TAG, "city=" + city);
-                textview_city.setText(city+"/"+district);
+                textview_city.setText(city + "/" + district);
                 try {
                     cityCode = getCityCodeFromCityName(province, city);
                     Log.i(TAG, "cityCode=" + cityCode);
@@ -206,11 +206,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
                             if (name.equalsIgnoreCase("ID")) {
                                 tempCityCode = pullParser.getAttributeValue(i);
-                                Log.i(TAG, "tempCityCode=" + tempCityCode);
                             }
                             if (name.equalsIgnoreCase("name")) {
                                 if (value.equalsIgnoreCase(cityName)) {
-                                    Log.i(TAG, "value.equalsIgnoreCase(cityName)=" + cityName);
                                     ifCityCatched = true;
                                 }
                             }
@@ -234,13 +232,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         return cityCode;
     }
-    private Handler mHandler=new Handler(){
+
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -254,21 +253,20 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         //注册监听函数
         LocationClientOption option = new LocationClientOption();
         option.setIsNeedAddress(true);
-//可选，是否需要地址信息，默认为不需要，即参数为false
-//如果开发者需要获得当前点的地址信息，此处必须为true
+        //可选，是否需要地址信息，默认为不需要，即参数为false
+        //如果开发者需要获得当前点的地址信息，此处必须为true
         mLocationClient.setLocOption(option);
-//mLocationClient为第二步初始化过的LocationClient对象
-//需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
-//更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
+        //mLocationClient为第二步初始化过的LocationClient对象
+        //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
+        //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
         mLocationClient.start();
-
     }
 
     private void sendRequestWithHttpClient(final String city) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
+                HttpURLConnection connection;
                 try {
                     URL url = new URL("http://www.pm25.in/api/querys/pm2_5.json?city=" + city +
                             "&token=5j1znBVAsnSf5xQyNQyq&stations=no");
@@ -296,7 +294,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         }).start();
     }
-
     /**
      * @param json
      * @param clazz
@@ -306,7 +303,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         Type type = new TypeToken<ArrayList<JsonObject>>() {
         }.getType();
         ArrayList<JsonObject> jsonObjects = new Gson().fromJson(json, type);
-
         ArrayList<T> arrayList = new ArrayList<>();
         for (JsonObject jsonObject : jsonObjects) {
             arrayList.add(new Gson().fromJson(jsonObject, clazz));
@@ -320,7 +316,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             ArrayList<Pm25Info> pm25lists = jsonToArrayList(jsonData, Pm25Info.class);
             textview_pm25.setText("" + pm25lists.get(0).getPm2_5());
         }
-
     }
 
     String cityCode = null;
@@ -333,26 +328,21 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 RestfulToolsWeather.getSingleton().getWeatherInfo(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
                         if (response.code() == 200) {
                             JsonObject jsonObjectGson = response.body();
                             Log.i(TAG, "cityCode=" + jsonObjectGson.toString());
                             try {
                                 JSONObject jsonObject = new JSONObject(jsonObjectGson.toString());
-
                                 JSONObject weatherObject = jsonObject
                                         .getJSONObject("weatherinfo");
                                 Message message = new Message();
                                 message.obj = weatherObject;
                                 handler.sendMessage(message);
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }
                     }
-
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
@@ -381,8 +371,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     };
 
 
-    private RoomManager mRoomManager;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -391,7 +379,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_mine.setTextColor(getResources().getColor(android.R.color.darker_gray));
-
         imageview_home_page.setImageResource(R.drawable.checkthehome);
         imageview_devices.setImageResource(R.drawable.nocheckthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
@@ -435,7 +422,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     private ServiceConnection connection = new ServiceConnection() {
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
         }
@@ -484,24 +470,19 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
                         break;
                 }
-
             }
 
             @Override
             public void onBindSuccess(SDKAction action, String devicekey) {
-
-
             }
 
             @Override
             public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-
             }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-
             }
 
             @Override
@@ -532,7 +513,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             switch (mExperienceCenterDeviceList.get(position).getDeviceName()) {
                 case "智能门锁":
                     Intent intent = new Intent(SmartHomeMainActivity.this, SmartLockActivity.class);
-
                     startActivity(intent);
                     break;
                 case "智能网关":
@@ -555,7 +535,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         roomGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 mRoomManager.setCurrentSelectedRoom(mRoomManager.getmRooms().get(position));
                 Intent intent = new Intent(SmartHomeMainActivity.this, DeviceNumberActivity.class);
                 startActivity(intent);
@@ -563,7 +542,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         });
         listview_experience_center.setAdapter(mExperienceCenterListAdapter);
     }
-
 
     private void initViews() {
         layout_home_page = findViewById(R.id.layout_home_page);
@@ -586,7 +564,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         textview_city = findViewById(R.id.textview_city);
         textview_tempature = findViewById(R.id.textview_tempature);
         textview_pm25 = findViewById(R.id.textview_pm25);
-
         layout_roomselect_normal = findViewById(R.id.layout_roomselect_normal);
         layout_roomselect_changed_ype = findViewById(R.id.layout_roomselect_changed_ype);
     }
@@ -594,8 +571,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-
-
     }
 
     /**
@@ -617,8 +592,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
 
-    private HorizontalScrollView layout_roomselect_normal;
-    private NonScrollableListView layout_roomselect_changed_ype;
 
     @Override
     public void onClick(View v) {

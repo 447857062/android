@@ -111,7 +111,6 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
             if (simCountryCode.equalsIgnoreCase(hashMap.get("zone").toString()) && username.matches(hashMap.get("rule").toString()))
                 support = true;
         }
-
         if (support) {
             isGetCaptche = true;
             SMSSDK.getVerificationCode(simCountryCode, username);
@@ -194,7 +193,6 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
                 switch (action) {
                     case REGISTER:
                         ToastSingleShow.showText(RegistActivity.this, "注册成功");
-                        //    startActivity(new Intent(RegistActivity.this, RegisterComplementActivity.class));
                         break;
                     default:
                         break;

@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,10 +25,10 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.CameraManager;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.CaptureActivityHandler;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.InactivityTimer;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.ViewfinderView;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.CameraManager;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.CaptureActivityHandler;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.InactivityTimer;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.ViewfinderView;
 
 public class CaptureActivity extends Activity implements SurfaceHolder.Callback, View.OnClickListener {
     private static final String TAG = "CaptureActivity";

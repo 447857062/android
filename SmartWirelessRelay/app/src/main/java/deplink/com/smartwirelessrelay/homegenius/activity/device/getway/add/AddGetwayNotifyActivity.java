@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 
 public class AddGetwayNotifyActivity extends Activity implements View.OnClickListener{
     private Button button_next_step;

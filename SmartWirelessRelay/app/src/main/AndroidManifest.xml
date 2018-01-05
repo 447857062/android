@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="deplink.com.smartwirelessrelay.homegenius.EllESDK">
-
     <!-- 这个权限用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 这个权限用于访问GPS定位 -->
@@ -108,9 +107,7 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.SmartGetwayActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity"
             android:launchMode="singleTop"
@@ -128,7 +125,7 @@
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture.CaptureActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity"
@@ -225,7 +222,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ForgetPasswordActivity"
-            android:label="@string/title_activity_forget_password"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.RegistActivity"
@@ -302,17 +298,34 @@
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchTwoActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchThreeActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchFourActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.EditActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.EditDoorbellActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.VistorHistoryActivity" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchTwoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchThreeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchFourActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.EditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.EditDoorbellActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.VistorHistoryActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Transparent" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.EditRemoteDevicesActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="deplink.com.smartwirelessrelay.homegenius.manager.connect.local.tcp.LocalConnectService"
@@ -323,8 +336,14 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity" />
-        <activity android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightEditActivity"></activity>
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightEditActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

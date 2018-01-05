@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package deplink.com.smartwirelessrelay.homegenius.qrcode;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;

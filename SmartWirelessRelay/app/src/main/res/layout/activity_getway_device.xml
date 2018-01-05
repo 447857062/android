@@ -14,134 +14,142 @@
         <include
             layout="@layout/layout_title_with_right_have_text_no_textbackground" />
     </RelativeLayout>
-
-
-    <RelativeLayout
+    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_below="@+id/layout_topbar"
-        android:background="@color/white_background">
-        <!--网关名称-->
-        <RelativeLayout
-            android:id="@+id/layout_getway_name"
+        android:layout_height="match_parent">
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_item_content_height"
-            android:layout_marginTop="@dimen/layout_room_content_margin_top"
-            android:background="@drawable/button_delete_background"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/layout_content_margin_left_right"
-            android:paddingRight="@dimen/layout_content_margin_left_right">
-
-            <TextView
-                android:id="@+id/textview_device_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="名称:"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small" />
-
-            <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
-                android:id="@+id/edittext_input_devie_name"
+            android:layout_height="match_parent">
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/textview_device_name"
-                android:background="@null"
-                android:gravity="center_vertical"
-                android:hint="我家的网关(最大10个字)"
-                android:maxLength="10"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small" />
+                android:layout_height="match_parent"
+                android:background="@color/white_background">
+                <!--网关名称-->
+                <RelativeLayout
+                    android:id="@+id/layout_getway_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_item_content_height"
+                    android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                    android:background="@drawable/button_delete_background"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/layout_content_margin_left_right"
+                    android:paddingRight="@dimen/layout_content_margin_left_right">
 
-        </RelativeLayout>
+                    <TextView
+                        android:id="@+id/textview_device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="名称:"
+                        android:textColor="@color/room_type_text"
+                        android:textSize="@dimen/text_size_small" />
 
-        <!--房间分类-->
-        <RelativeLayout
-            android:id="@+id/layout_select_room"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_item_content_height"
-            android:layout_below="@+id/layout_getway_name"
-            android:layout_marginTop="@dimen/room_list_item_margin_top"
-            android:background="@drawable/button_delete_background"
-            android:paddingLeft="@dimen/layout_content_margin_left_right"
-            android:paddingRight="@dimen/layout_content_margin_left_right">
+                    <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+                        android:id="@+id/edittext_input_devie_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/textview_device_name"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="我家的网关(最大10个字)"
+                        android:maxLength="10"
+                        android:textColor="@color/room_type_text"
+                        android:textSize="@dimen/text_size_small" />
 
-            <TextView
-                android:id="@+id/textview_room_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="房间分类"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small" />
+                </RelativeLayout>
 
-            <TextView
-                android:id="@+id/textview_select_room_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
-                android:layout_toLeftOf="@+id/imageview_roomname_arror_right"
-                android:background="@null"
-                android:gravity="center_vertical"
-                android:hint=""
-                android:textColor="@color/huise"
-                android:textSize="@dimen/text_size_small" />
+                <!--房间分类-->
+                <RelativeLayout
+                    android:id="@+id/layout_select_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_item_content_height"
+                    android:layout_below="@+id/layout_getway_name"
+                    android:layout_marginTop="@dimen/room_list_item_margin_top"
+                    android:background="@drawable/button_delete_background"
+                    android:paddingLeft="@dimen/layout_content_margin_left_right"
+                    android:paddingRight="@dimen/layout_content_margin_left_right">
 
-            <ImageView
-                android:id="@+id/imageview_roomname_arror_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/directionicon" />
-        </RelativeLayout>
+                    <TextView
+                        android:id="@+id/textview_room_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="房间分类"
+                        android:textColor="@color/room_type_text"
+                        android:textSize="@dimen/text_size_small" />
 
-        <!--配置wif网关-->
-        <RelativeLayout
-            android:id="@+id/layout_config_wifi_getway"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_item_content_height"
-            android:layout_below="@+id/layout_select_room"
-            android:layout_marginTop="@dimen/room_list_item_margin_top"
-            android:background="@drawable/button_delete_background"
-            android:paddingLeft="@dimen/layout_content_margin_left_right"
-            android:paddingRight="@dimen/layout_content_margin_left_right">
+                    <TextView
+                        android:id="@+id/textview_select_room_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
+                        android:layout_toLeftOf="@+id/imageview_roomname_arror_right"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint=""
+                        android:textColor="@color/huise"
+                        android:textSize="@dimen/text_size_small" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="配置wif网关"
-                android:textColor="@color/room_type_text"
-                android:textSize="@dimen/text_size_small" />
+                    <ImageView
+                        android:id="@+id/imageview_roomname_arror_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/directionicon" />
+                </RelativeLayout>
+
+                <!--配置wif网关-->
+                <RelativeLayout
+                    android:id="@+id/layout_config_wifi_getway"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_item_content_height"
+                    android:layout_below="@+id/layout_select_room"
+                    android:layout_marginTop="@dimen/room_list_item_margin_top"
+                    android:background="@drawable/button_delete_background"
+                    android:paddingLeft="@dimen/layout_content_margin_left_right"
+                    android:paddingRight="@dimen/layout_content_margin_left_right">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="配置wif网关"
+                        android:textColor="@color/room_type_text"
+                        android:textSize="@dimen/text_size_small" />
 
 
-            <ImageView
-                android:id="@+id/imageview_arror_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/directionicon" />
-        </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/imageview_arror_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/directionicon" />
+                </RelativeLayout>
 
-        <TextView
-            android:id="@+id/button_delete_device"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_item_content_height"
-            android:layout_below="@+id/layout_config_wifi_getway"
-            android:layout_marginTop="@dimen/button_delete_button_margin_top"
-            android:background="@drawable/button_delete_background"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="删除设备"
-            android:textColor="@color/delete_button"
-            android:textSize="@dimen/text_size_small" />
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/button_delete_device"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_item_content_height"
+                    android:layout_below="@+id/layout_config_wifi_getway"
+                    android:layout_marginTop="@dimen/button_delete_button_margin_top"
+                    android:background="@drawable/button_delete_background"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="删除设备"
+                    android:textColor="@color/delete_button"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+        </ScrollView>
+    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout>
+
+
 
 
 </RelativeLayout>

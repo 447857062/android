@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package deplink.com.smartwirelessrelay.homegenius.qrcode;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -27,7 +27,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
-import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 
 final class DecodeThread extends Thread {
 

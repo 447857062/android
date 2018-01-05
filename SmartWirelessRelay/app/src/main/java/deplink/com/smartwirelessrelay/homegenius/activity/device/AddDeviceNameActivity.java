@@ -299,6 +299,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         success = isSmartDeviceAddSuccess(aDeviceList);
         switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_LOCK:
+                device.setTp(DeviceTypeConstant.TYPE.TYPE_LOCK);
                 mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {

@@ -25,7 +25,7 @@ import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 /**

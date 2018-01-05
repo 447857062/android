@@ -1,5 +1,5 @@
 
-package deplink.com.smartwirelessrelay.homegenius.qrcode;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -15,7 +15,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.adapter.SwitchTypeAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 
 public class SelectSwitchTypeActivity extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener{
     private ImageView image_back;

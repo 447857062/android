@@ -147,7 +147,9 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
 
                         } else {
                             Room room = RoomManager.getInstance().getCurrentSelectedRoom();
-                            Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
+                            if(room!=null){
+                                Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
+                            }
                             boolean result = mRouterManager.updateDeviceInWhatRoom(room, routerSN, routerName);
                             if (result) {
                                 Message msg = Message.obtain();

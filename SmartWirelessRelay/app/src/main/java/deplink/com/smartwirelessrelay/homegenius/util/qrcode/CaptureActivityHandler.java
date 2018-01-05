@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.qrcode;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode;
 /*
  * Copyright (C) 2008 ZXing authors
  *
@@ -31,7 +31,7 @@ import com.google.zxing.Result;
 import java.util.Vector;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import deplink.com.smartwirelessrelay.homegenius.qrcode.qrcodecapture.CaptureActivity;
+import deplink.com.smartwirelessrelay.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 
 public final class CaptureActivityHandler extends Handler {
 

@@ -5,6 +5,8 @@
     android:minHeight="@dimen/experience_center_listitem_height"
     android:alpha="0.9"
     android:background="@drawable/button_device_background"
+    android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+    android:layout_marginRight="@dimen/layout_content_margin_left_right"
     android:paddingLeft="@dimen/layout_content_margin_left_right"
     android:paddingRight="@dimen/layout_content_margin_left_right">
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package deplink.com.smartwirelessrelay.homegenius.qrcode;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode;
 
 /**
  * This class provides the constants to use when sending an Intent to Barcode Scanner.

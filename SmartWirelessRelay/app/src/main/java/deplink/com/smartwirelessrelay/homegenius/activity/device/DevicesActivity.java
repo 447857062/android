@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -57,7 +58,6 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartL
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.devices.DeviceAtRoomDialog;
-import deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -90,9 +90,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_mine;
     private DeviceAtRoomDialog roomTypeDialog;
     private RouterManager mRouterManager;
-    private ImageView imageview_empty_device;
     private TextView textview_room_name;
-    private ScrollViewLinearLayout layout_empty_view_scroll;
+    private List<String> mRooms = new ArrayList<>();
+    private ScrollView layout_empty_view_scroll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +101,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         initDatas();
         initEvents();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -121,13 +120,14 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceAdapter.setTopList(datasTop);
         mDeviceAdapter.setBottomList(datasBottom);
         if (datasTop.size() == 0 && datasBottom.size() == 0) {
-            imageview_empty_device.setVisibility(View.VISIBLE);
-            listview_devies.setVisibility(View.GONE);
+            //imageview_empty_device.setVisibility(View.VISIBLE);
+          //  listview_devies.setVisibility(View.GONE);
         } else {
-            imageview_empty_device.setVisibility(View.GONE);
-            listview_devies.setVisibility(View.VISIBLE);
+          //  imageview_empty_device.setVisibility(View.GONE);
+           // listview_devies.setVisibility(View.VISIBLE);
         }
         mDeviceAdapter.notifyDataSetChanged();
+        listview_devies.setEmptyView(layout_empty_view_scroll);
     }
 
     @Override
@@ -135,8 +135,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
     }
-
-    private List<String> mRooms = new ArrayList<>();
 
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
@@ -166,7 +164,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                     mDeviceManager.setStartFromExperience(false);
                     switch (deviceType) {
-                        case "SMART_LOCK":
+                        case DeviceTypeConstant.TYPE.TYPE_LOCK:
                             //设置当前选中的门锁设备
                             mSmartLockManager.setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
@@ -270,12 +268,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
             }
         });
-        layout_empty_view_scroll.setmOnRefreshListener(new ScrollViewLinearLayout.onRefreshListener() {
+      /*  layout_empty_view_scroll.setmOnRefreshListener(new ScrollViewLinearLayout.onRefreshListener() {
             @Override
             public void onRefresh() {
                 RefreshDevicesBackground();
             }
-        });
+        });*/
     }
 
 
@@ -288,7 +286,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_add_device = findViewById(R.id.imageview_add_device);
         layout_select_room_type = findViewById(R.id.layout_select_room_type);
         imageview_devices = findViewById(R.id.imageview_devices);
-        imageview_empty_device = findViewById(R.id.imageview_empty_device);
+      //  imageview_empty_device = findViewById(R.id.imageview_empty_device);
+        layout_empty_view_scroll = findViewById(R.id.layout_empty_view_scroll);
         imageview_home_page = findViewById(R.id.imageview_home_page);
         imageview_rooms = findViewById(R.id.imageview_rooms);
         imageview_personal_center = findViewById(R.id.imageview_personal_center);
@@ -297,7 +296,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         textview_room = findViewById(R.id.textview_room);
         textview_mine = findViewById(R.id.textview_mine);
         textview_room_name = findViewById(R.id.textview_room_name);
-        layout_empty_view_scroll = findViewById(R.id.layout_empty_view_scroll);
+
     }
 
     @Override
@@ -325,13 +324,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             mDeviceAdapter.setTopList(datasTop);
                             mDeviceAdapter.setBottomList(datasBottom);
                         }
-                        if (datasTop.size() == 0 && datasBottom.size() == 0) {
+                        /*if (datasTop.size() == 0 && datasBottom.size() == 0) {
                             imageview_empty_device.setVisibility(View.VISIBLE);
                             listview_devies.setVisibility(View.GONE);
                         } else {
                             imageview_empty_device.setVisibility(View.GONE);
                             listview_devies.setVisibility(View.VISIBLE);
-                        }
+                        }*/
                         mDeviceAdapter.notifyDataSetChanged();
                         textview_room_name.setText(mRooms.get(position));
                         roomTypeDialog.dismiss();

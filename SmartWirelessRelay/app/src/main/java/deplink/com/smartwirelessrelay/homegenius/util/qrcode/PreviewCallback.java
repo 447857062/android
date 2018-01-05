@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package deplink.com.smartwirelessrelay.homegenius.qrcode;
+package deplink.com.smartwirelessrelay.homegenius.util.qrcode;
 
 import android.graphics.Point;
 import android.hardware.Camera;

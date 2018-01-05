@@ -126,32 +126,7 @@ public class RouterManager {
     private Observable mObservable;
 
 
-    /**
-     * 更新设备所在房间
-     *
-     * @param room
-     * @param sn
-     * @param deviceName
-     */
-    public void updateDeviceInWhatRoom(Room room, String sn, String deviceName, Observer observer) {
 
-        Log.i(TAG, "更新路由器设备所在的房间=start");
-        SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
-        List<Room> rooms = new ArrayList<Room>();
-        rooms.clear();
-        rooms.add(room);
-        smartDev.setRooms(rooms);
-        smartDev.setName(deviceName);
-        final boolean saveResult = smartDev.save();
-        mObservable = Observable.create(new ObservableOnSubscribe() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                e.onNext(saveResult);
-            }
-        });
-        mObservable.subscribe(observer);
-        Log.i(TAG, "更新路由器设备所在的房间=" + saveResult);
-    }
 
     public boolean updateDeviceInWhatRoom(Room room, String sn, String deviceName) {
         Log.i(TAG, "更新路由器设备所在的房间=start");

@@ -34,7 +34,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
     private Button button_login;
     private EditText edittext_input_phone_number;
     private EditText edittext_input_password;
-    private boolean isConnectedMqtt=false;
     private SDKManager manager;
     private EventCallback ec;
     private View view_phonenumber_dirverline;
@@ -71,7 +70,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                         Log.i(TAG, "onSuccess login");
                         break;
                     case CONNECTED:
-                        isConnectedMqtt=true;
                         User user = manager.getUserInfo();
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());

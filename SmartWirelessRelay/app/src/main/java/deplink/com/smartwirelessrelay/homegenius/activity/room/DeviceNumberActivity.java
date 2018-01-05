@@ -136,7 +136,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                     Log.i(TAG, "智能设备类型=" + deviceType);
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                     switch (deviceType) {
-                        case "SMART_LOCK":
+                        case DeviceTypeConstant.TYPE.TYPE_LOCK:
                             SmartLockManager.getInstance().setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
                             break;

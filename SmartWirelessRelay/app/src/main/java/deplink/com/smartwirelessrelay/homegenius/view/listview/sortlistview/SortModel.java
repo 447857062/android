@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.view.sortlistview;
+package deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview;
 
 public class SortModel {
 	private String name;

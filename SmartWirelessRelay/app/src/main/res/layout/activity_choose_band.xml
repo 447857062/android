@@ -64,7 +64,7 @@
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.sortlistview.SideBar
+        <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.SideBar
             android:id="@+id/sidrbar"
             android:layout_width="30dp"
             android:layout_height="fill_parent"

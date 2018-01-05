@@ -375,7 +375,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                             mRouterManager.getCurrentSelectedRouter().setStatus("在线");
                             ContentValues values = new ContentValues();
                             values.put("Status", "在线");
-                            final int affectColumn = DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
+                            DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
                             updatePerformance();
 
                             break;

@@ -266,36 +266,15 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 Room room = RoomManager.getInstance().findRoom(roomName, true);
                 String deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
                 String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
-                mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName, new Observer() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(@NonNull Object o) {
-                        if ((boolean) o) {
-                            textview_room_select_2.setText(roomName);
-                        } else {
-                            Message msg = Message.obtain();
-                            msg.what = MSG_UPDATE_ROOM_FAIL;
-                            mHandler.sendMessage(msg);
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                boolean result=mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName) ;
+                if (result) {
+                    textview_room_select_2.setText(roomName);
+                } else {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_UPDATE_ROOM_FAIL;
+                    mHandler.sendMessage(msg);
+                }
             }
-
-
         }
     }
 

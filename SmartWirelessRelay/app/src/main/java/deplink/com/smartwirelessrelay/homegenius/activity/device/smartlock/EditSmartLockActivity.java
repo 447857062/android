@@ -54,7 +54,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private ClearEditText edittext_input_devie_name;
     private DeleteDeviceDialog deleteDialog;
     private SmartLockManager mSmartLockManager;
-    private GetwaySelectListAdapter selectGetwayAdapter;
     private List<Device> mGetways;
     private ListView listview_select_getway;
     private RelativeLayout layout_getway_list;
@@ -70,15 +69,12 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
-
         layout_getway.setOnClickListener(this);
-
     }
 
     private boolean isStartFromExperience;
@@ -100,7 +96,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
 
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
-        selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
+        GetwaySelectListAdapter selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -198,15 +194,13 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private String lockName;
-
     @Override
     protected void onResume() {
         super.onResume();
         if (isStartFromExperience) {
 
         } else {
-            lockName = mSmartLockManager.getCurrentSelectLock().getName();
+            String lockName = mSmartLockManager.getCurrentSelectLock().getName();
             if (lockName != null) {
                 edittext_input_devie_name.setText(lockName);
                 Log.i(TAG, "lockName=" + lockName + "lockName.length()=" + lockName.length());

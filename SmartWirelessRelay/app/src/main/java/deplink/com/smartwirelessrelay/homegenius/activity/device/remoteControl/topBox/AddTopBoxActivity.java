@@ -21,11 +21,11 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.http.QueryBandRes
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.AddRemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.connect.remote.https.RestfulTools;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
-import deplink.com.smartwirelessrelay.homegenius.view.sortlistview.CharacterParser;
-import deplink.com.smartwirelessrelay.homegenius.view.sortlistview.PinyinComparator;
-import deplink.com.smartwirelessrelay.homegenius.view.sortlistview.SideBar;
-import deplink.com.smartwirelessrelay.homegenius.view.sortlistview.SortAdapter;
-import deplink.com.smartwirelessrelay.homegenius.view.sortlistview.SortModel;
+import deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.CharacterParser;
+import deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.PinyinComparator;
+import deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.SideBar;
+import deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.SortAdapter;
+import deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.SortModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
