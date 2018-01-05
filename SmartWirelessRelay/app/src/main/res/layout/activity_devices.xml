@@ -5,9 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/equipmentbackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
