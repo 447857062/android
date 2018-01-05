@@ -3,6 +3,7 @@
 
     <FrameLayout
         android:id="@+id/fl_inner"
+        android:background="#ffffff"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/header_footer_top_bottom_padding"

@@ -42,9 +42,7 @@ import com.handmark.pulltorefresh.library.R;
 
 @SuppressLint("ViewConstructor")
 public abstract class LoadingLayout extends FrameLayout implements ILoadingLayout {
-
-	static final String LOG_TAG = "PullToRefresh-LoadingLayout";
-
+	static final String TAG = "PullToRefresh-LoadingLayout";
 	static final Interpolator ANIMATION_INTERPOLATOR = new LinearInterpolator();
 
 	private FrameLayout mInnerLayout;
@@ -90,8 +88,6 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		switch (mode) {
 			case PULL_FROM_END:
 				lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.TOP : Gravity.LEFT;
-
-				// Load in labels
 				mPullLabel = context.getString(R.string.pull_to_refresh_from_bottom_pull_label);
 				mRefreshingLabel = context.getString(R.string.pull_to_refresh_from_bottom_refreshing_label);
 				mReleaseLabel = context.getString(R.string.pull_to_refresh_from_bottom_release_label);
@@ -181,13 +177,13 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	}
 
 	public final void setHeight(int height) {
-		ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) getLayoutParams();
+		ViewGroup.LayoutParams lp = getLayoutParams();
 		lp.height = height;
 		requestLayout();
 	}
 
 	public final void setWidth(int width) {
-		ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) getLayoutParams();
+		ViewGroup.LayoutParams lp = getLayoutParams();
 		lp.width = width;
 		requestLayout();
 	}

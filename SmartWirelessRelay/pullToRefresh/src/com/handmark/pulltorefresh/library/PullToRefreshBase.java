@@ -128,10 +128,6 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 	@Override
 	public void addView(View child, int index, ViewGroup.LayoutParams params) {
-		if (DEBUG) {
-			Log.d(LOG_TAG, "addView: " + child.getClass().getSimpleName());
-		}
-
 		final T refreshableView = getRefreshableView();
 
 		if (refreshableView instanceof ViewGroup) {
