@@ -22,6 +22,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
+            <ImageView
+                android:id="@+id/mHeaderImagerefreshComplement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/reflash"
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                android:layout_gravity="center" />
+
             <ProgressBar
                 android:id="@+id/pull_to_refresh_progress"
                 style="?android:attr/progressBarStyleSmall"

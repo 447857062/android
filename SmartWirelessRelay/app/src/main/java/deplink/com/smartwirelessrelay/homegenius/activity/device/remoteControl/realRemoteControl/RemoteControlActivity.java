@@ -1,4 +1,4 @@
-package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl;
+package deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -41,6 +41,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.Re
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 
 public class RemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener,DeviceListener {
@@ -49,7 +50,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
     private FrameLayout image_back;
-
     private GetwaySelectListAdapter selectGetwayAdapter;
     private List<Device> mGetways;
     private ListView listview_select_getway;
@@ -64,6 +64,8 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private DeviceManager mDeviceManager;
     private boolean isOnActivityResult;
     private boolean isStartFromExperience;
+    private ClearEditText edittext_input_devie_name;
+    private String deviceName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +120,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        deviceName=edittext_input_devie_name.getText().toString();
         if(!isStartFromExperience) {
             if (!isOnActivityResult) {
                 if(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms()==null){
@@ -144,6 +147,13 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 textview_select_room_name.setText("全部");
                 textview_select_getway_name.setText("未设置网关");
             }
+        }else{
+            if (!isOnActivityResult) {
+                textview_select_room_name.setText("全部");
+            }
+            textview_select_getway_name.setText("未设置网关");
+            edittext_input_devie_name.setText("我家的遥控器");
+            edittext_input_devie_name.setSelection(6);
         }
 
 
@@ -162,13 +172,16 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         layout_select_room = findViewById(R.id.layout_select_room);
         listview_select_getway = findViewById(R.id.listview_select_getway);
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
+        edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
     }
     private DeleteDeviceDialog deleteDialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-                onBackPressed();
+                if(!edittext_input_devie_name.getText().toString().equals(deviceName)){
+                    mRemoteControlManager.saveCurrentSelectDeviceName(edittext_input_devie_name.getText().toString());
+                }
                 break;
             case R.id.image_back:
                 onBackPressed();

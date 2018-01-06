@@ -48,6 +48,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	private FrameLayout mInnerLayout;
 
 	protected final ImageView mHeaderImage;
+	protected final ImageView mHeaderImagerefreshComplement;
 	protected final ProgressBar mHeaderProgress;
 
 	private boolean mUseIntrinsicAnimation;
@@ -76,15 +77,13 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 				LayoutInflater.from(context).inflate(R.layout.pull_to_refresh_header_vertical, this);
 				break;
 		}
-
 		mInnerLayout = (FrameLayout) findViewById(R.id.fl_inner);
 		mHeaderText = (TextView) mInnerLayout.findViewById(R.id.pull_to_refresh_text);
 		mHeaderProgress = (ProgressBar) mInnerLayout.findViewById(R.id.pull_to_refresh_progress);
 		mSubHeaderText = (TextView) mInnerLayout.findViewById(R.id.pull_to_refresh_sub_text);
 		mHeaderImage = (ImageView) mInnerLayout.findViewById(R.id.pull_to_refresh_image);
-
+		mHeaderImagerefreshComplement = (ImageView) mInnerLayout.findViewById(R.id.mHeaderImagerefreshComplement);
 		FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mInnerLayout.getLayoutParams();
-
 		switch (mode) {
 			case PULL_FROM_END:
 				lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.TOP : Gravity.LEFT;
@@ -96,7 +95,6 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 			case PULL_FROM_START:
 			default:
 				lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.BOTTOM : Gravity.RIGHT;
-
 				// Load in labels
 				mPullLabel = context.getString(R.string.pull_to_refresh_pull_label);
 				mRefreshingLabel = context.getString(R.string.pull_to_refresh_refreshing_label);
@@ -223,34 +221,33 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		if (null != mHeaderText) {
 			mHeaderText.setText(mPullLabel);
 		}
-
+		mHeaderImage.setVisibility(View.VISIBLE);
+		mHeaderImagerefreshComplement.setVisibility(View.GONE);
 		// Now call the callback
 		pullToRefreshImpl();
 	}
 
 	public final void refreshing() {
+		mHeaderImage.setVisibility(View.VISIBLE);
+		mHeaderImagerefreshComplement.setVisibility(View.GONE);
 		if (null != mHeaderText) {
 			//mHeaderText.setText(mRefreshingLabel);
 		}
-
 		if (mUseIntrinsicAnimation) {
 			((AnimationDrawable) mHeaderImage.getDrawable()).start();
 		} else {
 			// Now call the callback
 			refreshingImpl();
 		}
-
 		if (null != mSubHeaderText) {
 			mSubHeaderText.setVisibility(View.GONE);
 		}
 	}
-
 	public final void releaseToRefresh() {
 		if (null != mHeaderText) {
 			mHeaderText.setText(mReleaseLabel);
 		}
-
-		// Now call the callback
+		// Now call the
 		releaseToRefreshImpl();
 	}
 
@@ -258,15 +255,14 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		if (null != mHeaderText) {
 			mHeaderText.setText(mPullLabel);
 		}
-		mHeaderImage.setVisibility(View.VISIBLE);
-
+		mHeaderImage.setVisibility(View.GONE);
 		if (mUseIntrinsicAnimation) {
 			((AnimationDrawable) mHeaderImage.getDrawable()).stop();
 		} else {
 			// Now call the callback
 			resetImpl();
 		}
-
+		mHeaderImagerefreshComplement.setVisibility(View.VISIBLE);
 		if (null != mSubHeaderText) {
 			if (TextUtils.isEmpty(mSubHeaderText.getText())) {
 				mSubHeaderText.setVisibility(View.GONE);
@@ -274,6 +270,10 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 				mSubHeaderText.setVisibility(View.VISIBLE);
 			}
 		}
+	}
+	public final void resetTwo() {
+		mHeaderImage.setVisibility(View.VISIBLE);
+		mHeaderImagerefreshComplement.setVisibility(View.GONE);
 	}
 
 	@Override

@@ -537,7 +537,6 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 		if (DEBUG) {
 			Log.d(LOG_TAG, "State: " + mState.name());
 		}
-
 		switch (mState) {
 			case RESET:
 				onReset();
@@ -787,8 +786,14 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 		// Always reset both layouts, just in case...
 		mHeaderLayout.reset();
 		mFooterLayout.reset();
+		this.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				smoothScrollTo(0);
+				mHeaderLayout.resetTwo();
+			}
+		},500);
 
-		smoothScrollTo(0);
 	}
 
 	@Override
