@@ -19,7 +19,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Device;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
 import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
@@ -70,7 +70,6 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         edittext_room_name.setText(roomType);
         edittext_room_name.setSelection(roomType.length());
         fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);
-
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         if(mGetways.size()>0){
@@ -135,10 +134,9 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(AddRommActivity.this, "添加房间成功", Toast.LENGTH_LONG).show();
                     if (fromAddDevice) {
                         RoomManager.getInstance().setCurrentSelectedRoom(null);
-                        Intent intent = new Intent(AddRommActivity.this, AddDeviceQRcodeActivity.class);
+                        Intent intent = new Intent(AddRommActivity.this, AddDeviceActivity.class);
                         startActivity(intent);
                     }
-
                     break;
             }
 

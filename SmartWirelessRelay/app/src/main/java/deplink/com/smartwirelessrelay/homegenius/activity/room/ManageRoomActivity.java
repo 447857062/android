@@ -30,11 +30,8 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private TextView textview_room_name;
     private String mRoomName;
     private RelativeLayout layout_room_name;
-
     private RoomManager mRoomManager;
-
     private TextView textview_title;
-
     private TextView textview_edit;
     private RelativeLayout layout_getway;
     private ListView listview_select_getway;
@@ -48,7 +45,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_room);
-
         initViews();
         initDatas();
         initEvents();
@@ -117,8 +113,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-
-
             case R.id.textview_edit:
                 onBackPressed();
                 break;
@@ -136,7 +130,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                         Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 break;
             case R.id.layout_room_name:
                 intent = new Intent(this, ModifyRoomNameActivity.class);
@@ -150,7 +143,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                     layout_getway_list.setVisibility(View.VISIBLE);
                     imageview_getway_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
-
                 break;
         }
     }

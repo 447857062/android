@@ -149,7 +149,7 @@
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity"
+            android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity"

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -28,19 +29,18 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
     private ImageView imageview_switch_bg;
     private SmartLightManager mSmartLightManager;
     private boolean switchStatus;
-
     private SeekBar progressBarLightYellow;
     private int lightColorProgress;
-
     private SeekBar progressBarLightWhite;
     private int lightBrightnessProgress;
-
     private ImageView imageview_lightyellow_reduce;
     private ImageView imageview_lightyellow_plus;
     private ImageView imageview_lightwhite_reduce;
     private ImageView imageview_lightwhite_plus;
     private ImageView iamgeview_switch;
     private TextView textview_switch_tips;
+    private RelativeLayout layout_lightcolor_control;
+    private RelativeLayout layout_brightness_control;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +118,8 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
         iamgeview_switch = findViewById(R.id.iamgeview_switch);
         textview_switch_tips = findViewById(R.id.textview_switch_tips);
         imageview_switch_bg = findViewById(R.id.imageview_switch_bg);
+        layout_brightness_control = findViewById(R.id.layout_brightness_control);
+        layout_lightcolor_control = findViewById(R.id.layout_lightcolor_control);
     }
 
 
@@ -203,11 +205,14 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
                         iamgeview_switch.setBackgroundResource(R.drawable.radius110_bg_white_background);
                         imageview_switch_bg.setBackgroundResource(R.drawable.lightglowoutside);
                         textview_switch_tips.setText("点击关闭");
-
+                        layout_lightcolor_control.setVisibility(View.VISIBLE);
+                        layout_brightness_control.setVisibility(View.VISIBLE);
                     }else if(resultObj.getOpen()==2){
                         iamgeview_switch.setBackgroundResource(R.drawable.ovel_110_bg);
                         imageview_switch_bg.setBackgroundResource(R.color.room_type_text);
                         textview_switch_tips.setText("点击开启");
+                        layout_lightcolor_control.setVisibility(View.GONE);
+                        layout_brightness_control.setVisibility(View.GONE);
                     }
                     button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
                     if(resultObj.getYellow()!=0){

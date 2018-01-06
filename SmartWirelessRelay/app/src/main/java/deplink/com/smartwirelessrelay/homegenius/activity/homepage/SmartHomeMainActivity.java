@@ -146,14 +146,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 try {
                     cityCode = getCityCodeFromCityName(province, city);
                     Log.i(TAG, "cityCode=" + cityCode);
-                    final String finalCity = city;
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            initWaetherData();
-                            sendRequestWithHttpClient(finalCity);
-                        }
-                    });
+                    initWaetherData();
+                    sendRequestWithHttpClient(city);
                 } catch (XmlPullParserException | IOException e) {
                     e.printStackTrace();
                 }
@@ -202,8 +196,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                                 break;
                             String name = pullParser.getAttributeName(i);
                             String value = pullParser.getAttributeValue(i);
-                            Log.i(TAG, "name=" + name + "value=" + value);
-
                             if (name.equalsIgnoreCase("ID")) {
                                 tempCityCode = pullParser.getAttributeValue(i);
                             }
@@ -247,19 +239,25 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initViews();
         initDatas();
         initEvents();
-        mLocationClient = new LocationClient(getApplicationContext());
-        //声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);
-        //注册监听函数
-        LocationClientOption option = new LocationClientOption();
-        option.setIsNeedAddress(true);
-        //可选，是否需要地址信息，默认为不需要，即参数为false
-        //如果开发者需要获得当前点的地址信息，此处必须为true
-        mLocationClient.setLocOption(option);
-        //mLocationClient为第二步初始化过的LocationClient对象
-        //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
-        //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
-        mLocationClient.start();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mLocationClient = new LocationClient(getApplicationContext());
+                //声明LocationClient类
+                mLocationClient.registerLocationListener(myListener);
+                //注册监听函数
+                LocationClientOption option = new LocationClientOption();
+                option.setIsNeedAddress(true);
+                //可选，是否需要地址信息，默认为不需要，即参数为false
+                //如果开发者需要获得当前点的地址信息，此处必须为true
+                mLocationClient.setLocOption(option);
+                //mLocationClient为第二步初始化过的LocationClient对象
+                //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
+                //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
+                mLocationClient.start();
+            }
+        });
+
     }
 
     private void sendRequestWithHttpClient(final String city) {

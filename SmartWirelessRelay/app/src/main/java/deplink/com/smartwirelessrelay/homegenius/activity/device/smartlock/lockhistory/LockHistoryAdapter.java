@@ -61,7 +61,6 @@ public class LockHistoryAdapter extends BaseAdapter{
         Date date= DateUtil.transStringTodata(time);
         String yearMouthDay=DateUtil.getYearMothDayStringFromData(date);
         String hourMinuteSecond=DateUtil.getHourMinuteSecondStringFromData(date);
-        Log.i(TAG,"yearMouthDay="+yearMouthDay+"hourMinuteSecond="+hourMinuteSecond);
         if(!Perfence.getPerfence(mDatas.get(position).getUserID()).equals("")){
             vh.textview_userid.setText(Perfence.getPerfence(mDatas.get(position).getUserID()));
         }else{

@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.OpResult;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 
@@ -33,12 +34,19 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
         initDatas();
         initEvents();
     }
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
-        switch_one_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_one_open();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
+        if(isStartFromExperience){
+            switch_one_open=true;
+        }else{
+            switch_one_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_one_open();
+            mSmartSwitchManager.querySwitchStatus("query");
+        }
         setSwitchImageviewBackground();
-        mSmartSwitchManager.querySwitchStatus("query");
+
     }
 
     @Override
@@ -85,11 +93,22 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
                 break;
             case R.id.button_switch:
                 Log.i(TAG, "switch_one_open=" + switch_one_open);
-                if (switch_one_open) {
-                    mSmartSwitchManager.setSwitchCommand("close1");
-                } else {
-                    mSmartSwitchManager.setSwitchCommand("open1");
+                if(isStartFromExperience){
+
+                    if (switch_one_open) {
+                        switch_one_open=false;
+                    } else {
+                        switch_one_open=true;
+                    }
+                    setSwitchImageviewBackground();
+                }else{
+                    if (switch_one_open) {
+                        mSmartSwitchManager.setSwitchCommand("close1");
+                    } else {
+                        mSmartSwitchManager.setSwitchCommand("open1");
+                    }
                 }
+
                 break;
             case R.id.textview_edit:
                 Intent intent = new Intent(this, EditActivity.class);

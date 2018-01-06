@@ -70,7 +70,6 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
             ToastSingleShow.showText(RegistActivity.this, (String) msg.obj);
         }
     };
@@ -136,7 +135,6 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
             Toast.makeText(RegistActivity.this, "手机号码不支持", Toast.LENGTH_SHORT).show();
         }
     }
-
     private void initDatas() {
         textview_title.setText("注册");
         eh = new EventHandler() {
@@ -256,6 +254,9 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.buton_get_verification_code:
+                getPhoneCaptcha();
                 break;
             case R.id.button_regist:
                 phoneNumber = edittext_input_phone_number.getText().toString().trim();

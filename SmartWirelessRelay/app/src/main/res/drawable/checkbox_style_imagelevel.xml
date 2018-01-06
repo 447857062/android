@@ -4,7 +4,7 @@
         android:drawable="@drawable/notselected"
         android:maxLevel="0" />
     <item
-        android:drawable="@drawable/checked"
+        android:drawable="@drawable/savethepassword"
         android:maxLevel="1" />
 
 </level-list>

@@ -6,122 +6,135 @@
     android:background="@color/white_background"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.ManageRoomActivity">
     <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
+   <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout
+       android:layout_width="match_parent"
+       android:layout_below="@+id/layout_title"
+       android:layout_height="match_parent">
+       <ScrollView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+           <RelativeLayout
 
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+               <RelativeLayout
+                   android:id="@+id/layout_room_name"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/layout_item_content_height"
 
-    <RelativeLayout
-        android:id="@+id/layout_room_name"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_item_content_height"
-        android:layout_below="@+id/layout_title"
-        android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:background="@drawable/button_delete_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:gravity="center_vertical">
+                   android:layout_marginTop="@dimen/layout_room_content_margin_top"
+                   android:background="@drawable/button_delete_background"
+                   android:paddingLeft="@dimen/layout_content_margin_left_right"
+                   android:paddingRight="@dimen/layout_content_margin_left_right"
+                   android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/room_type_text"
-            android:gravity="center_vertical"
-            android:text="房间名称" />
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentLeft="true"
+                       android:layout_centerVertical="true"
+                       android:textSize="@dimen/text_size_small"
+                       android:textColor="@color/room_type_text"
+                       android:gravity="center_vertical"
+                       android:text="房间名称" />
 
-        <TextView
-            android:layout_toLeftOf="@+id/imageview_arror_right"
-            android:text="名称"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/huise"
-            android:layout_centerVertical="true"
-            android:id="@+id/textview_room_name"
-            android:gravity="center_vertical|right"
-            android:layout_marginRight="@dimen/room_name_margin_right_arror"
-            android:minWidth="100dp"
-            android:singleLine="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            />
+                   <TextView
+                       android:layout_toLeftOf="@+id/imageview_arror_right"
+                       android:text="名称"
+                       android:textSize="@dimen/text_size_small"
+                       android:textColor="@color/huise"
+                       android:layout_centerVertical="true"
+                       android:id="@+id/textview_room_name"
+                       android:gravity="center_vertical|right"
+                       android:layout_marginRight="@dimen/room_name_margin_right_arror"
+                       android:minWidth="100dp"
+                       android:singleLine="true"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentRight="true"
+                       />
 
-        <ImageView
-            android:layout_centerVertical="true"
-            android:id="@+id/imageview_arror_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/directionicon" />
-    </RelativeLayout>
+                   <ImageView
+                       android:layout_centerVertical="true"
+                       android:id="@+id/imageview_arror_right"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentRight="true"
+                       android:src="@drawable/directionicon" />
+               </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_getway"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_item_content_height"
-        android:layout_below="@+id/layout_room_name"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:background="@drawable/button_delete_background"
-        android:paddingLeft="@dimen/layout_content_margin_left_right"
-        android:paddingRight="@dimen/layout_content_margin_left_right"
-        android:gravity="center_vertical">
+               <RelativeLayout
+                   android:id="@+id/layout_getway"
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/layout_item_content_height"
+                   android:layout_below="@+id/layout_room_name"
+                   android:layout_marginTop="@dimen/list_item_textview_margin_top"
+                   android:background="@drawable/button_delete_background"
+                   android:paddingLeft="@dimen/layout_content_margin_left_right"
+                   android:paddingRight="@dimen/layout_content_margin_left_right"
+                   android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textview_title_getway"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/room_type_text"
-            android:text="网关：" />
-        <TextView
-            android:id="@+id/textview_select_getway_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:layout_toRightOf="@+id/textview_title_getway"
-            android:textSize="@dimen/text_size_small"
-            android:textColor="@color/room_type_text"
-            android:text="家里的网关" />
+                   <TextView
+                       android:id="@+id/textview_title_getway"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentLeft="true"
+                       android:layout_centerVertical="true"
+                       android:gravity="center_vertical"
+                       android:textSize="@dimen/text_size_small"
+                       android:textColor="@color/room_type_text"
+                       android:text="网关：" />
+                   <TextView
+                       android:id="@+id/textview_select_getway_name"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_centerVertical="true"
+                       android:gravity="center_vertical"
+                       android:layout_toRightOf="@+id/textview_title_getway"
+                       android:textSize="@dimen/text_size_small"
+                       android:textColor="@color/room_type_text"
+                       android:text="家里的网关" />
 
-        <ImageView
-            android:layout_centerVertical="true"
-            android:id="@+id/imageview_getway_arror_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/directionicon" />
+                   <ImageView
+                       android:layout_centerVertical="true"
+                       android:id="@+id/imageview_getway_arror_right"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentRight="true"
+                       android:src="@drawable/directionicon" />
 
-    </RelativeLayout>
+               </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_getway_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_getway"
-        android:layout_marginTop="@dimen/list_item_textview_margin_top"
-        android:background="@color/transparent"
-        android:visibility="gone">
+               <RelativeLayout
+                   android:id="@+id/layout_getway_list"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/layout_getway"
+                   android:layout_marginTop="@dimen/list_item_textview_margin_top"
+                   android:background="@color/transparent"
+                   android:visibility="gone">
 
-        <ListView
-            android:id="@+id/listview_select_getway"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/transparent"
-            android:dividerHeight="@dimen/list_item_textview_margin_top"
-            android:scrollbars="none">
+                   <ListView
+                       android:id="@+id/listview_select_getway"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:divider="@color/transparent"
+                       android:dividerHeight="@dimen/list_item_textview_margin_top"
+                       android:scrollbars="none">
 
-        </ListView>
-    </RelativeLayout>
-    <Button
-        android:layout_marginTop="100dp"
-        android:textColor="@android:color/holo_red_light"
-        android:text="删除房间"
-        android:layout_below="@+id/layout_getway_list"
-        android:id="@+id/button_delete_room"
-        android:background="@drawable/button_delete_background"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
+                   </ListView>
+               </RelativeLayout>
+               <Button
+                   android:layout_marginTop="100dp"
+                   android:textColor="@android:color/holo_red_light"
+                   android:text="删除房间"
+                   android:layout_below="@+id/layout_getway_list"
+                   android:id="@+id/button_delete_room"
+                   android:background="@drawable/button_delete_background"
+                   android:layout_width="match_parent"
+                   android:layout_height="40dp" />
+           </RelativeLayout>
+       </ScrollView>
+   </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout>
+
 </RelativeLayout>

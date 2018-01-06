@@ -337,7 +337,9 @@ public class DragGridView extends GridView{
 			//当我们的手指到达GridView向上或者向下滚动的偏移量的时候，可能我们手指没有移动，但是DragGridView在自动的滚动
 			//所以我们在这里调用下onSwapItem()方法来交换item
 			onSwapItem(moveX, moveY);
-			
+			if(mDragPosition==-1){
+				mDragPosition=0;
+			}
 			View view = getChildAt(mDragPosition - getFirstVisiblePosition());
 			//实现GridView的自动滚动
 			smoothScrollToPositionFromTop(mDragPosition, view.getTop() + scrollY);

@@ -56,6 +56,15 @@ public class SmartLockManager implements LocalConnecteListener {
     private SmartLockManager() {
 
     }
+    public boolean isEditSmartLock;
+
+    public boolean isEditSmartLock() {
+        return isEditSmartLock;
+    }
+
+    public void setEditSmartLock(boolean editSmartLock) {
+        isEditSmartLock = editSmartLock;
+    }
 
     public SmartDev getCurrentSelectLock() {
         Log.i(TAG, "当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size());

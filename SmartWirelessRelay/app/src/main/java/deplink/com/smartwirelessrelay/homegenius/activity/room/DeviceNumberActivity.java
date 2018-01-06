@@ -21,11 +21,15 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Dev
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchFourActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchOneActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchThreeActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.SmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.DeviceTypeConstant;
 import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
@@ -35,6 +39,7 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.light.SmartLight
 import deplink.com.smartwirelessrelay.homegenius.manager.device.remoteControl.RemoteControlManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 /**
@@ -57,6 +62,10 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
 
     private ListView listview_devies;
     private RelativeLayout layout_device_number_root;
+    private RoomManager mRoomManager;
+    private Room currentRoom;
+    private DeviceManager mDeviceManager;
+    private GetwayManager mGetwayManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +74,8 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         initDatas();
         initEvents();
     }
-
-
-
     private void initEvents() {
         image_back.setOnClickListener(this);
-
         textview_edit.setOnClickListener(this);
     }
 
@@ -86,12 +91,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mDeviceAdapter.setBottomList(datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
     }
-
-    private RoomManager mRoomManager;
-
-    private Room currentRoom;
-    private DeviceManager mDeviceManager;
-    private GetwayManager mGetwayManager;
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mDeviceManager=DeviceManager.getInstance();
@@ -147,7 +146,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                         case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                             startActivity(new Intent(DeviceNumberActivity.this, AirRemoteControlMianActivity.class));
                             break;
-                        case "路由器":
+                        case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position-datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
                             break;
@@ -161,8 +160,23 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             SmartLightManager.getInstance().setCurrentSelectLight(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, LightActivity.class));
                             break;
-                        case "智能开关":
-                            // startActivity(new Intent(DevicesActivity.this, SelectSwitchTypeActivity.class));
+                        case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+                            SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
+                            String deviceSubType = datasBottom.get(position - datasTop.size()).getSubType();
+                            switch (deviceSubType) {
+                                case  DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
+                                    startActivity(new Intent(DeviceNumberActivity.this, SwitchOneActivity.class));
+                                    break;
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
+                                    startActivity(new Intent(DeviceNumberActivity.this, SwitchTwoActivity.class));
+                                    break;
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
+                                    startActivity(new Intent(DeviceNumberActivity.this, SwitchThreeActivity.class));
+                                    break;
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
+                                    startActivity(new Intent(DeviceNumberActivity.this, SwitchFourActivity.class));
+                                    break;
+                            }
                             break;
                     }
                 } else {

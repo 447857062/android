@@ -62,12 +62,15 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
             edittext_input_devie_name.setSelection(5);
+            edittext_input_devie_name.clearFocus();
+            textview_select_room_name.setText("全部");
         } else {
             mGetwayManager = GetwayManager.getInstance();
             mGetwayManager.InitGetwayManager(this, this);
             currentSelectDeviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
             edittext_input_devie_name.setText(currentSelectDeviceName);
             edittext_input_devie_name.setSelection(currentSelectDeviceName.length());
+            edittext_input_devie_name.clearFocus();
             List<Room> rooms = mGetwayManager.getCurrentSelectGetwayDevice().getRoomList();
             if (rooms.size() == 1) {
                 textview_select_room_name.setText(rooms.get(0).getRoomName());

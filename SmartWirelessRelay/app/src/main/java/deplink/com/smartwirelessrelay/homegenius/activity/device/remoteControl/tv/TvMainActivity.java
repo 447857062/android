@@ -65,6 +65,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private boolean key_number_7;
     private boolean key_number_8;
     private boolean key_number_9;
+    private boolean key_number_left;
+    private boolean key_number_avtv;
     /**
      * 未学习按键的提示
      */
@@ -93,6 +95,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private ImageView imageview_number_8;
     private ImageView imageview_number_9;
     private ImageView imageview_number_0;
+    private ImageView imageview_number_;
+    private ImageView imageview_number_av_tv;
     private TextView textview_cancel;
     private TextView textview_tips;
     private FrameLayout framelayout_center_control;
@@ -256,6 +260,16 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         } else {
             imageview_number_9.setBackgroundResource(R.drawable.button_9_notlearn);
         }
+        if (key_number_left) {
+            imageview_number_.setBackgroundResource(R.drawable.button_enter_learned);
+        } else {
+            imageview_number_.setBackgroundResource(R.drawable.button_enter_notlearn);
+        }
+        if (key_number_avtv) {
+            imageview_number_av_tv.setBackgroundResource(R.drawable.button_avtv_learn);
+        } else {
+            imageview_number_av_tv.setBackgroundResource(R.drawable.button_avtv_notlearn);
+        }
     }
 
     private void initKeylearnStatus() {
@@ -283,6 +297,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
             key_number_7 = true;
             key_number_8 = true;
             key_number_9 = true;
+            key_number_avtv=true;
+            key_number_left=true;
         }else{
             String currentDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
             TvKeyLearnStatu mTvKeyLearnStatu = DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyLearnStatu.class);
@@ -310,6 +326,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 key_number_7 = mTvKeyLearnStatu.isKey_number_7();
                 key_number_8 = mTvKeyLearnStatu.isKey_number_8();
                 key_number_9 = mTvKeyLearnStatu.isKey_number_9();
+                key_number_avtv=mTvKeyLearnStatu.isKey_number_avtv();
+                key_number_left=mTvKeyLearnStatu.isKey_left();
             } else {
                 key_up = false;
                 key_down = false;
@@ -334,6 +352,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 key_number_7 = false;
                 key_number_8 = false;
                 key_number_9 = false;
+                key_number_avtv=false;
+                key_number_left=false;
             }
         }
 
@@ -389,6 +409,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         imageview_number_8.setOnClickListener(this);
         imageview_number_9.setOnClickListener(this);
         imageview_number_0.setOnClickListener(this);
+        imageview_number_.setOnClickListener(this);
+        imageview_number_av_tv.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -430,6 +452,8 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
         imageview_number_8 = findViewById(R.id.imageview_number_8);
         imageview_number_9 = findViewById(R.id.imageview_number_9);
         imageview_number_0 = findViewById(R.id.imageview_number_0);
+        imageview_number_ = findViewById(R.id.imageview_number_);
+        imageview_number_av_tv = findViewById(R.id.imageview_number_av_tv);
         framelayout_center_control = findViewById(R.id.framelayout_center_control);
     }
 

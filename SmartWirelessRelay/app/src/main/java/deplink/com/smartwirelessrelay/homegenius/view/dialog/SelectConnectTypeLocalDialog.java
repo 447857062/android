@@ -61,11 +61,11 @@ public class SelectConnectTypeLocalDialog extends Dialog implements View.OnClick
 
 
     private void initView() {
-        layout_ppop= (RelativeLayout) findViewById(R.id.layout_ppop);
-        layout_dynamics_ip= (RelativeLayout) findViewById(R.id.layout_dynamics_ip);
-        layout_static_ip= (RelativeLayout) findViewById(R.id.layout_static_ip);
-        layout_wireless_relay= (RelativeLayout) findViewById(R.id.layout_wireless_relay );
-        layout_cancel= (RelativeLayout) findViewById(R.id.layout_cancel);
+        layout_ppop= findViewById(R.id.layout_ppop);
+        layout_dynamics_ip= findViewById(R.id.layout_dynamics_ip);
+        layout_static_ip= findViewById(R.id.layout_static_ip);
+        layout_wireless_relay= findViewById(R.id.layout_wireless_relay );
+        layout_cancel= findViewById(R.id.layout_cancel);
 
     }
 

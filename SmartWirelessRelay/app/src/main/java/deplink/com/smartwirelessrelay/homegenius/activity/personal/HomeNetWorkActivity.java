@@ -33,7 +33,6 @@ public class HomeNetWorkActivity extends Activity implements View.OnClickListene
     private HomeNetWorkAdapter mAdapter;
     private GetwayManager getwayManager;
     private List<SmartDev> mRouterDevice;
-    private TextView textview_no_getway;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +81,9 @@ public class HomeNetWorkActivity extends Activity implements View.OnClickListene
     }
 
     private void initViews() {
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        listviewNetworkDevices = (ListView) findViewById(R.id.listview_getway_devices);
-        textview_no_getway = (TextView) findViewById(R.id.textview_no_getway);
+        image_back = findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        listviewNetworkDevices = findViewById(R.id.listview_getway_devices);
     }
 
 

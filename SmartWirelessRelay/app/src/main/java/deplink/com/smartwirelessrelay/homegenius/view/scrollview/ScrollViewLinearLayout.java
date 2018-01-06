@@ -34,7 +34,6 @@ public class ScrollViewLinearLayout extends LinearLayout implements View.OnTouch
     }
 
     protected void smoothScrollTo(int fx, int fy) {
-        int dx = fx - mScroller.getFinalX();
         int dy = fy - mScroller.getFinalY();
         smoothScrollBy(0, dy);
     }
@@ -76,7 +75,6 @@ public class ScrollViewLinearLayout extends LinearLayout implements View.OnTouch
                 int scrollViewMeasuredHeight = sv.getChildAt(0).getMeasuredHeight();
                 if (y2 - y1 > 0 && v.getScrollY() <= 0) {//头部回弹效果
                     smoothScrollTo(0, -(int) ((y2 - y1) / 2));
-                    System.out.println("topMargin=" + ((int) ((y2 - y1) / 2)));
                     return false;
                 }
 
@@ -84,7 +82,6 @@ public class ScrollViewLinearLayout extends LinearLayout implements View.OnTouch
                     smoothScrollTo(0, -(int) ((y2 - y1) / 2));
                     return false;
                 }
-
                 break;
             case MotionEvent.ACTION_UP:
                 smoothScrollTo(0, 0);//松开手指，自动回滚

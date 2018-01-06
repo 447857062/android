@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+
 
 public class PickerView extends View {
 
@@ -35,17 +37,13 @@ public class PickerView extends View {
      * 选中的位置，这个位置是mDataList的中心位置，一直不变
      */
     private int mCurrentSelected;
-    private Paint mPaint, nPaint,mLinePaint;
+    private Paint mPaint, nPaint, mLinePaint;
 
-    private float mMaxTextSize = 80;
+    private float mMaxTextSize = 40;
     private float mMinTextSize = 40;
 
     private float mMaxTextAlpha = 255;
     private float mMinTextAlpha = 120;
-
-    private int mColorText = 0x333333;
-    private int nColorText = 0x666666;
-
     private int mViewHeight;
     private int mViewWidth;
 
@@ -98,8 +96,26 @@ public class PickerView extends View {
             mSelectListener.onSelect(mDataList.get(mCurrentSelected));
     }
 
-    public void setData(List<String> datas) {
-        mDataList = datas;
+    public void setData(List<String> datas, String dataType) {
+        List<String> tempData = new ArrayList<>();
+        switch (dataType) {
+            case "day":
+                for (int i = 0; i < datas.size(); i++) {
+                    tempData.add(datas.get(i) + "日");
+                }
+                break;
+            case "mouth":
+                for (int i = 0; i < datas.size(); i++) {
+                    tempData.add(datas.get(i) + "月");
+                }
+                break;
+            case "year":
+                for (int i = 0; i < datas.size(); i++) {
+                    tempData.add(datas.get(i) + "年");
+                }
+                break;
+        }
+        mDataList = tempData;
         mCurrentSelected = datas.size() / 4;
         invalidate();
     }
@@ -170,7 +186,7 @@ public class PickerView extends View {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Style.FILL);
         mPaint.setTextAlign(Align.CENTER);
-        mPaint.setColor(getResources().getColor(android.R.color.holo_blue_light));
+        mPaint.setColor(getResources().getColor(R.color.room_type_text));
         //第二个paint
         nPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         nPaint.setStyle(Style.FILL);
@@ -180,8 +196,8 @@ public class PickerView extends View {
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setStyle(Style.FILL);
         mLinePaint.setTextAlign(Align.CENTER);
-        mLinePaint.setColor(getResources().getColor(android.R.color.holo_blue_light));
-        mLinePaint.setStrokeWidth(3);
+        mLinePaint.setColor(getResources().getColor(R.color.room_type_text));
+        mLinePaint.setStrokeWidth(1);
     }
 
     @Override
@@ -195,9 +211,7 @@ public class PickerView extends View {
     private void drawData(Canvas canvas) {
         // 先绘制选中的text再往上往下绘制其余的text
         float scale = parabola(mViewHeight / 4.0f, mMoveLen);
-        float size = (mMaxTextSize - mMinTextSize) * scale + mMinTextSize;
-      //  mPaint.setTextSize(size);
-        mPaint.setTextSize(40);
+        mPaint.setTextSize(35);
         mPaint.setAlpha((int) ((mMaxTextAlpha - mMinTextAlpha) * scale + mMinTextAlpha));
         // text居中绘制，注意baseline的计算才能达到居中，y值是text中心坐标
         float x = (float) (mViewWidth / 2.0);
@@ -208,24 +222,19 @@ public class PickerView extends View {
         canvas.drawText(mDataList.get(mCurrentSelected), x, baseline, mPaint);
 
 
-
         //画2条蓝色线
-        canvas.drawLine(x-mViewWidth/2,mViewHeight/2-80,x-mViewWidth/2+mViewWidth,mViewHeight/2-80,mLinePaint);
-        canvas.drawLine(x-mViewWidth/2,mViewHeight/2+80,x-mViewWidth/2+mViewWidth,mViewHeight/2+80,mLinePaint);
+        canvas.drawLine(x - mViewWidth / 2, mViewHeight / 2 - 50, x - mViewWidth / 2 + mViewWidth, mViewHeight / 2 - 50, mLinePaint);
+        canvas.drawLine(x - mViewWidth / 2, mViewHeight / 2 + 50, x - mViewWidth / 2 + mViewWidth, mViewHeight / 2 + 50, mLinePaint);
         // 绘制上方data
-      /*  for (int i = 1; (mCurrentSelected - i) >= 0; i++) {
+        for (int i = 1; (mCurrentSelected - i) >= 0; i++) {
             drawOtherText(canvas, i, -1);
-        }*/
+        }
 
-            if((mCurrentSelected - 1) >= 0){
-                drawOtherText(canvas, 1, -1);
-            }
+        if ((mCurrentSelected - 1) >= 0) {
+            drawOtherText(canvas, 1, -1);
+        }
 
-        // 绘制下方data
-       /* for (int i = 1; (mCurrentSelected + i) < mDataList.size(); i++) {
-            drawOtherText(canvas, i, 1);
-        }*/
-        if( (mCurrentSelected + 1) < mDataList.size()){
+        if ((mCurrentSelected + 1) < mDataList.size()) {
             drawOtherText(canvas, 1, 1);
         }
     }
@@ -236,20 +245,18 @@ public class PickerView extends View {
      * @param type     1表示向下绘制，-1表示向上绘制
      */
     private void drawOtherText(Canvas canvas, int position, int type) {
-        float d = (float) (MARGIN_ALPHA * mMinTextSize * position + type
-                * mMoveLen);
-        //float scale = parabola(mViewHeight / 4.0f, d);
+        float d = MARGIN_ALPHA * mMinTextSize * position + type
+                * mMoveLen;
         float scale = 1;
-      //  float size = (mMaxTextSize - mMinTextSize) * scale + mMinTextSize;
-        float size = 40;
+        float size = 35;
         nPaint.setTextSize(size);
         nPaint.setAlpha((int) ((mMaxTextAlpha - mMinTextAlpha) * scale + mMinTextAlpha));
         float y = (float) (mViewHeight / 2.0 + type * d);
         FontMetricsInt fmi = nPaint.getFontMetricsInt();
         float baseline = (float) (y - (fmi.bottom / 2.0 + fmi.top / 2.0));
-        /*canvas.drawText(mDataList.get(mCurrentSelected + type * position),
-                (float) (mViewWidth / 2.0), baseline, nPaint);*/
-        canvas.drawText(mDataList.get(mCurrentSelected + type * position),
+        String text = mDataList.get(mCurrentSelected + type * position);
+        text = text.replaceFirst("^0*", "");
+        canvas.drawText(text,
                 (float) (mViewWidth / 2.0), baseline, nPaint);
     }
 

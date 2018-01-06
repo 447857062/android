@@ -69,6 +69,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
+
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
@@ -82,7 +83,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mDeviceManager = DeviceManager.getInstance();
-        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_title.setText("编辑");
         textview_edit.setText("完成");
         if (isStartFromExperience) {
@@ -110,6 +111,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 }
             }
         });
+
     }
 
     private String selectGetwayName;
@@ -162,6 +164,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 intent.putExtra("addDeviceSelectRoom", true);
                 intent.putExtra("isStartFromExperience", isStartFromExperience);
                 startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
+                mSmartLockManager.setEditSmartLock(true);
                 break;
             case R.id.button_delete_device:
                 //删除设备
@@ -206,9 +209,12 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 Log.i(TAG, "lockName=" + lockName + "lockName.length()=" + lockName.length());
                 edittext_input_devie_name.setSelection(lockName.length());
             }
-
-            if (!isOnActivityResult) {
-                isOnActivityResult=false;
+           String roomname= getIntent().getStringExtra("roomName");
+            if(roomname!=null){
+                textview_select_room_name.setText(roomname);
+            }
+            else if (!isOnActivityResult) {
+                isOnActivityResult = false;
                 if (mSmartLockManager.getCurrentSelectLock().getRooms().size() == 1) {
                     textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
                 } else {

@@ -97,6 +97,7 @@
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:cacheColorHint="@android:color/transparent"
         android:gravity="center"
+        android:scrollbars="none"
         android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
         android:listSelector="@android:color/transparent"
         android:numColumns="3"

@@ -74,7 +74,6 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
                 int scrollViewMeasuredHeight = sv.getChildAt(0).getMeasuredHeight();
                 if (y2 - y1 > 0 && v.getScrollY() <= 0) {//头部回弹效果
                     smoothScrollTo(0, -(int) ((y2 - y1) / 2));
-                    System.out.println("topMargin=" + ((int) ((y2 - y1) / 2)));
                     return false;
                 }
 

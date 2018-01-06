@@ -114,6 +114,7 @@ public class AddRouterActivity extends Activity implements View.OnClickListener 
                                     currentAddRouter = new SmartDev();
                                     Router router=new Router();
                                     router.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
+                                    router.setSmartDev(currentAddRouter);
                                     router.save();
                                     currentAddRouter.setRouter(router);
                                     ((RouterDevice) manager.getDeviceList().get(i)).changeName(routerName);

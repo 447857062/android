@@ -17,12 +17,13 @@
         android:background="@color/white_background">
 
         <ListView
+            android:paddingTop="15dp"
             android:listSelector="@color/transparent"
             android:id="@+id/listview_getway_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:dividerHeight="5dp"
             android:divider="@null">
-
         </ListView>
 
         <TextView

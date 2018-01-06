@@ -162,13 +162,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        frame_blacklist_content.setVisibility(View.GONE);
         if (isStartFromExperience) {
 
         } else {
-            textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
             manager.addEventCallback(ec);
-            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-            frame_blacklist_content.setVisibility(View.GONE);
             routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
             Log.i(TAG, "routerDevice=" + (routerDevice != null));
             startTimer();
@@ -280,6 +280,21 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         @Override
         public void run() {
             DialogThreeBounce.hideLoading();
+            if(isStartFromExperience){
+                if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
+
+                    layout_no_connected_device.setVisibility(View.VISIBLE);
+                    textview_show_query_device_result.setVisibility(View.VISIBLE);
+                    textview_show_query_device_result.setText("没有设备连接当前的路由器");
+
+                }
+                if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
+                    layout_no_blacklist.setVisibility(View.VISIBLE);
+                    textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
+                    textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
+                }
+            }
+
         }
     };
 
@@ -294,7 +309,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);
         mBlackListAdapter = new BlackListAdapter(this, mBlackListDatas);
         mRouterManager = RouterManager.getInstance();
-        // mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();

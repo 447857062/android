@@ -38,8 +38,8 @@ import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.util.bitmap.BitmapHandler;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.PictureSelectDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.SexSelectDialog;
-import deplink.com.smartwirelessrelay.homegenius.view.dialog.UserImagePickerDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
 import deplink.com.smartwirelessrelay.homegenius.view.viewselector.TimeSelector;
@@ -130,7 +130,6 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         try {
             FileOutputStream out = new FileOutputStream(dest);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -260,30 +259,29 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
                 break;
             case R.id.layout_user_header_image:
-                UserImagePickerDialog dialog = new UserImagePickerDialog(this);
-                dialog.setOnFromCameraClickListener(new UserImagePickerDialog.onFromCameraClickListener() {
+                PictureSelectDialog dialog=new PictureSelectDialog(this);
+                dialog.setmOnModeSelectClickListener(new PictureSelectDialog.onModeSelectClickListener() {
                     @Override
-                    public void onFromCameraClicked() {
-                        //拍照选择
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                chooseFromCamera();
-                            }
-                        });
-
-                    }
-                });
-                dialog.setOnFromGalaryClickListener(new UserImagePickerDialog.onFromGalaryClickListener() {
-                    @Override
-                    public void onFromGalaryClicked() {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                showImagePopup();
-                            }
-                        });
-
+                    public void onModeSelect(String action) {
+                        switch (action){
+                            case "picture":
+                                //拍照选择
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        chooseFromCamera();
+                                    }
+                                });
+                                break;
+                            case "from_album":
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showImagePopup();
+                                    }
+                                });
+                                break;
+                        }
                     }
                 });
                 dialog.show();

@@ -33,7 +33,7 @@ import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.DeviceL
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;
@@ -119,17 +119,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
         mDeviceAdapter.setTopList(datasTop);
         mDeviceAdapter.setBottomList(datasBottom);
-        if (datasTop.size() == 0 && datasBottom.size() == 0) {
-            //imageview_empty_device.setVisibility(View.VISIBLE);
-          //  listview_devies.setVisibility(View.GONE);
-        } else {
-          //  imageview_empty_device.setVisibility(View.GONE);
-           // listview_devies.setVisibility(View.VISIBLE);
-        }
         mDeviceAdapter.notifyDataSetChanged();
         listview_devies.setEmptyView(layout_empty_view_scroll);
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -145,7 +137,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mRoomManager.initRoomManager();
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(DevicesActivity.this);
-
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
@@ -177,7 +168,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, AirRemoteControlMianActivity.class));
                             break;
-                        case "路由器":
+                        case DeviceTypeConstant.TYPE.TYPE_ROUTER:
                             RouterManager.getInstance().setCurrentSelectedRouter(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RouterMainActivity.class));
                             break;
@@ -222,16 +213,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
     }
-    private void RefreshDevicesBackground() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               mHandler.sendEmptyMessageDelayed(MSG_HIDE_REFRESH,500);
-            }
-        }, 1500);
-        mDeviceManager.queryDeviceList();
-    }
-
 
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
@@ -262,18 +243,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     }
                 }, 500);
             }
-
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 
             }
         });
-      /*  layout_empty_view_scroll.setmOnRefreshListener(new ScrollViewLinearLayout.onRefreshListener() {
-            @Override
-            public void onRefresh() {
-                RefreshDevicesBackground();
-            }
-        });*/
     }
 
 
@@ -286,7 +260,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_add_device = findViewById(R.id.imageview_add_device);
         layout_select_room_type = findViewById(R.id.layout_select_room_type);
         imageview_devices = findViewById(R.id.imageview_devices);
-      //  imageview_empty_device = findViewById(R.id.imageview_empty_device);
         layout_empty_view_scroll = findViewById(R.id.layout_empty_view_scroll);
         imageview_home_page = findViewById(R.id.imageview_home_page);
         imageview_rooms = findViewById(R.id.imageview_rooms);
@@ -324,13 +297,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             mDeviceAdapter.setTopList(datasTop);
                             mDeviceAdapter.setBottomList(datasBottom);
                         }
-                        /*if (datasTop.size() == 0 && datasBottom.size() == 0) {
-                            imageview_empty_device.setVisibility(View.VISIBLE);
-                            listview_devies.setVisibility(View.GONE);
-                        } else {
-                            imageview_empty_device.setVisibility(View.GONE);
-                            listview_devies.setVisibility(View.VISIBLE);
-                        }*/
                         mDeviceAdapter.notifyDataSetChanged();
                         textview_room_name.setText(mRooms.get(position));
                         roomTypeDialog.dismiss();

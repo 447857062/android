@@ -35,10 +35,7 @@ public class TimeSelector {
     private PickerView year_pv;
     private PickerView month_pv;
     private PickerView day_pv;
-
-
     private final int MAXMONTH = 12;
-
     private ArrayList<String> year, month, day;
     private int startYear, startMonth, startDay, startHour, startMininute, endYear, endMonth, endDay, endHour, endMininute, minute_workStart, minute_workEnd, hour_workStart, hour_workEnd;
     private boolean spanYear, spanMon, spanDay, spanHour, spanMin;
@@ -51,8 +48,6 @@ public class TimeSelector {
     private Calendar endCalendar;
     private TextView tv_cancle;
     private TextView tv_select;
-
-
     public TimeSelector(Context context, ResultHandler resultHandler, String startDate, String endDate) {
         this.context = context;
         this.handler = resultHandler;
@@ -183,19 +178,11 @@ public class TimeSelector {
             year.add(String.valueOf(startYear));
             month.add(fomatTimeUnit(startMonth));
             day.add(fomatTimeUnit(startDay));
-
-
-
-
-
         } else if (spanMin) {
             year.add(String.valueOf(startYear));
             month.add(fomatTimeUnit(startMonth));
             day.add(fomatTimeUnit(startDay));
-
-
         }
-
         loadComponent();
 
     }
@@ -267,6 +254,9 @@ public class TimeSelector {
         year_pv.setOnSelectListener(new PickerView.onSelectListener() {
             @Override
             public void onSelect(String text) {
+                if(text.contains("年")){
+                    text=text.replace("年","");
+                }
                 selectedCalender.set(Calendar.YEAR, Integer.parseInt(text));
                 monthChange();
 
@@ -276,16 +266,21 @@ public class TimeSelector {
         month_pv.setOnSelectListener(new PickerView.onSelectListener() {
             @Override
             public void onSelect(String text) {
+                if(text.contains("月")){
+                    text=text.replace("月","");
+                }
                 selectedCalender.set(Calendar.DAY_OF_MONTH, 1);
                 selectedCalender.set(Calendar.MONTH, Integer.parseInt(text) - 1);
                 dayChange();
-
-
             }
         });
         day_pv.setOnSelectListener(new PickerView.onSelectListener() {
             @Override
             public void onSelect(String text) {
+                if(text.contains("日")){
+                    text=text.replace("日","");
+                }
+
                 selectedCalender.set(Calendar.DAY_OF_MONTH, Integer.parseInt(text));
             }
         });
@@ -294,9 +289,9 @@ public class TimeSelector {
     }
 
     private void loadComponent() {
-        year_pv.setData(year);
-        month_pv.setData(month);
-        day_pv.setData(day);
+        year_pv.setData(year,"year");
+        month_pv.setData(month,"mouth");
+        day_pv.setData(day,"day");
 
         year_pv.setSelected(0);
         month_pv.setSelected(0);
@@ -309,11 +304,8 @@ public class TimeSelector {
         year_pv.setCanScroll(year.size() > 1);
         month_pv.setCanScroll(month.size() > 1);
         day_pv.setCanScroll(day.size() > 1);
-
     }
-
     private void monthChange() {
-
         month.clear();
         int selectedYear = selectedCalender.get(Calendar.YEAR);
         if (selectedYear == startYear) {
@@ -330,17 +322,15 @@ public class TimeSelector {
             }
         }
         selectedCalender.set(Calendar.MONTH, Integer.parseInt(month.get(0)) - 1);
-        month_pv.setData(month);
+        month_pv.setData(month,"mouth");
         month_pv.setSelected(0);
         excuteAnimator(ANIMATORDELAY, month_pv);
-
         month_pv.postDelayed(new Runnable() {
             @Override
             public void run() {
                 dayChange();
             }
         }, CHANGEDELAY);
-
     }
 
     private void dayChange() {
@@ -361,7 +351,7 @@ public class TimeSelector {
             }
         }
         selectedCalender.set(Calendar.DAY_OF_MONTH, Integer.parseInt(day.get(0)));
-        day_pv.setData(day);
+        day_pv.setData(day,"day");
         day_pv.setSelected(0);
         excuteAnimator(ANIMATORDELAY, day_pv);
     }

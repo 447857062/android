@@ -16,7 +16,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
-import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.tv.TvMainActivity;

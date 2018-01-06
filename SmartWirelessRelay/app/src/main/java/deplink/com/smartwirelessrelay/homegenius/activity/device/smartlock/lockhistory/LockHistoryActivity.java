@@ -220,8 +220,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                         ToastSingleShow.showText(this, "未获取到开锁记录");
                     }
                 }
-
-
                 break;
         }
     }

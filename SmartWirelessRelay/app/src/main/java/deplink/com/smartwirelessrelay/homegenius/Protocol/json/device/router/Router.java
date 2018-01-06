@@ -15,16 +15,21 @@ public class Router extends DataSupport implements Serializable {
     public SmartDev getSmartDev() {
         return smartDev;
     }
-
     public void setSmartDev(SmartDev smartDev) {
         this.smartDev = smartDev;
     }
-
     public String getRouterDeviceKey() {
         return routerDeviceKey;
     }
-
     public void setRouterDeviceKey(String routerDeviceKey) {
         this.routerDeviceKey = routerDeviceKey;
+    }
+
+    @Override
+    public String toString() {
+        return "Router{" +
+                "routerDeviceKey='" + routerDeviceKey + '\'' +
+                ", smartDev=" + smartDev +
+                '}';
     }
 }

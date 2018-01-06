@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.RemoteControlActivity">
+    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity">
     <RelativeLayout
         android:id="@+id/layout_topbar"
         android:layout_width="match_parent"
@@ -26,6 +26,8 @@
             android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@drawable/button_delete_background"
             android:gravity="center_vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:paddingLeft="@dimen/layout_content_margin_left_right"
             android:paddingRight="@dimen/layout_content_margin_left_right">
 

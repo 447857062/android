@@ -46,14 +46,12 @@ import deplink.com.smartwirelessrelay.homegenius.manager.device.router.RouterMan
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
 import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
+import deplink.com.smartwirelessrelay.homegenius.view.dialog.ConnectTypeLocalDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.DeleteDeviceDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.MakeSureDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.SelectConnectTypeLocalDialog;
 import deplink.com.smartwirelessrelay.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -101,35 +99,12 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                layout_update_out.setVisibility(View.GONE);
                layout_QOS_setting_out.setVisibility(View.GONE);
            }
-           mRouterManager.getRouterAtRooms(new Observer() {
-               @Override
-               public void onSubscribe(@NonNull Disposable d) {
-
-               }
-
-               @Override
-               public void onNext(@NonNull Object o) {
-                   //所在房间
-                  List<Room>  rooms = (List<Room>) o;
-                  if(rooms.size()==1){
-                      textview_room_select_2.setText(rooms.get(0).getRoomName());
-                  }else{
-                      textview_room_select_2.setText("全部");
-                  }
-
-
-               }
-
-               @Override
-               public void onError(@NonNull Throwable e) {
-
-               }
-
-               @Override
-               public void onComplete() {
-
-               }
-           });
+           List<Room> rooms = mRouterManager.getRouterAtRooms();;
+           if(rooms.size()==1){
+               textview_room_select_2.setText(rooms.get(0).getRoomName());
+           }else{
+               textview_room_select_2.setText("全部");
+           }
            manager.addEventCallback(ec);
            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
            getCurrentSelectedDevice();
@@ -164,7 +139,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 startActivity(new Intent(RouterSettingActivity.this, LoginActivity.class));
             }
         });
-        selectConnectTypeDialog = new SelectConnectTypeLocalDialog(RouterSettingActivity.this);
+        selectConnectTypeDialog = new ConnectTypeLocalDialog(RouterSettingActivity.this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
@@ -279,7 +254,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     }
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
-    private SelectConnectTypeLocalDialog selectConnectTypeDialog;
+    private ConnectTypeLocalDialog selectConnectTypeDialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -297,7 +272,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 break;
             case R.id.layout_connect_type_select_out:
                 if( DeviceManager.getInstance().isStartFromExperience()){
-                    selectConnectTypeDialog.setmOnConnectTypeSlected(new SelectConnectTypeLocalDialog.onConnectTypeSlected() {
+                    selectConnectTypeDialog.setmOnConnectTypeSlected(new ConnectTypeLocalDialog.onConnectTypeSlected() {
                         @Override
                         public void onConnectTypeSelect(int type) {
                             switch (type) {
@@ -306,15 +281,13 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                                     break;
                             }
                         }
-
-
                     });
                     selectConnectTypeDialog.show();
                 }else{
                     if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
                         startActivity(new Intent(this, ConnectSettingActivity.class));
                     } else {
-                        selectConnectTypeDialog.setmOnConnectTypeSlected(new SelectConnectTypeLocalDialog.onConnectTypeSlected() {
+                        selectConnectTypeDialog.setmOnConnectTypeSlected(new ConnectTypeLocalDialog.onConnectTypeSlected() {
                             @Override
                             public void onConnectTypeSelect(int type) {
                                 switch (type) {
@@ -323,8 +296,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                                         break;
                                 }
                             }
-
-
                         });
                         selectConnectTypeDialog.show();
                     }

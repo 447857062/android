@@ -15,8 +15,10 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.Room;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.AddDeviceGridViewAdapter;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.smartlock.EditSmartLockActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.room.AddRommActivity;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.smartlock.SmartLockManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
 
 public class AddDeviceActivity extends Activity implements View.OnClickListener {
@@ -42,16 +44,14 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
      * startactivityforresult中结束后应该返回的界面
      */
     private boolean addDeviceSelectRoom;
-
     private boolean isStartFromExperience;
-
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager();
         addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
-        if ( addDeviceSelectRoom) {
+        if (addDeviceSelectRoom) {
             textview_show_select_room.setText("请选择设备所在的房间");
             textview_skip_this_option.setVisibility(View.GONE);
         } else {
@@ -82,16 +82,25 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                         setResult(RESULT_OK, mIntent);
                         finish();
                     } else {
-                        if ( addDeviceSelectRoom) {
+                        if (SmartLockManager.getInstance().isEditSmartLock()) {
+                            SmartLockManager.getInstance().setEditSmartLock(false);
                             Intent intentSeleteedRoom = new Intent();
+                            intentSeleteedRoom.setClass(AddDeviceActivity.this, EditSmartLockActivity.class);
                             intentSeleteedRoom.putExtra("roomName", currentAddRomm);
-                            AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
+                            startActivity(intentSeleteedRoom);
                             finish();
+                        } else {
+                            if (addDeviceSelectRoom) {
+                                Intent intentSeleteedRoom = new Intent();
+                                intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                                AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
+                                startActivity(intent);
+                            }
                         }
-                        else {
-                            Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
-                            startActivity(intent);
-                        }
+
                     }
                 }
             }
