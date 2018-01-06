@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/homebackground"
     tools:context="deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity">
-
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
@@ -61,8 +60,6 @@
                 android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
-
-
     <RelativeLayout
         android:id="@+id/layout_weather"
         android:layout_width="match_parent"
@@ -149,15 +146,12 @@
                 android:textSize="@dimen/delete_textview_size" />
         </RelativeLayout>
     </RelativeLayout>
-
-    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/buttom_layout"
-        android:layout_below="@+id/layout_weather"
-        android:scrollbars="none">
         <ScrollView
+            android:id="@+id/scrollview_root"
+            android:layout_above="@+id/buttom_layout"
+            android:layout_below="@+id/layout_weather"
             android:scrollbars="none"
+            android:layout_marginTop="25dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RelativeLayout
@@ -170,7 +164,6 @@
                     android:layout_height="@dimen/home_page_roomselect_top_height"
                     android:layout_marginLeft="@dimen/layout_content_margin_left_right"
                     android:layout_marginRight="@dimen/layout_content_margin_left_right"
-                    android:layout_marginTop="25dp"
                     android:alpha="1"
                     android:background="@drawable/homepage_halfrectangle_top_background"
                     android:gravity="center_vertical">
@@ -203,10 +196,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/layout_content_margin_left_right">
-
                         <TextView
                             android:layout_width="wrap_content"
-
                             android:layout_height="wrap_content"
                             android:layout_gravity="right|center_vertical"
                             android:background="@drawable/button_switchview"
@@ -214,10 +205,7 @@
                             android:textColor="@color/room_type_text"
                             android:textSize="@dimen/text_size_small" />
                     </FrameLayout>
-
-
                 </RelativeLayout>
-
                 <RelativeLayout
                     android:id="@+id/frame_room"
                     android:layout_width="match_parent"
@@ -227,7 +215,6 @@
                     android:layout_marginRight="@dimen/layout_content_margin_left_right"
                     android:alpha="0.9"
                     android:background="@drawable/homepage_halfrectangle_buttom_background">
-
                     <deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView
                         android:id="@+id/layout_roomselect_changed_ype"
                         android:layout_width="match_parent"
@@ -235,9 +222,7 @@
                         android:divider="@null"
                         android:listSelector="@color/transparent"
                         android:visibility="gone">
-
                     </deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView>
-
                     <HorizontalScrollView
                         android:id="@+id/layout_roomselect_normal"
                         android:layout_width="match_parent"
@@ -250,7 +235,6 @@
                         android:fadingEdge="none"
                         android:overScrollMode="never"
                         android:scrollbars="none">
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="110dp"
@@ -271,8 +255,6 @@
                                 android:numColumns="auto_fit" />
                         </LinearLayout>
                     </HorizontalScrollView>
-
-
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -334,7 +316,7 @@
                 </RelativeLayout>
             </RelativeLayout>
         </ScrollView>
-    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout>
+
 
 
     <RelativeLayout

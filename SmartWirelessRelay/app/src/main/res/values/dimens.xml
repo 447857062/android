@@ -40,6 +40,7 @@
     <!--字体大小-->
     <dimen name="text_size_aircontrol_temp">48dp</dimen>
     <dimen name="text_size_home_tempature">34dp</dimen>
+    <dimen name="text_size_tempature_c">25dp</dimen>
     <dimen name="layout_top_bar_item_text_size">18dp</dimen>
     <dimen name="delete_textview_size">16dp</dimen>
     <dimen name="text_size_small">14dp</dimen>

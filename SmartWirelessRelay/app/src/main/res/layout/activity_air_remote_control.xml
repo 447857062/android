@@ -11,13 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/aircondition_open_background_height"
         android:background="@drawable/airconditioningoff">
-
         <RelativeLayout
             android:id="@+id/layout_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/title_bar_height"
             >
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_item_content_height"
@@ -30,15 +28,12 @@
                     android:layout_width="48dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true">
-
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:scaleType="centerInside"
                         android:src="@drawable/returnicon" />
                 </FrameLayout>
-
-
                 <TextView
                     android:id="@+id/textview_title"
                     android:layout_width="wrap_content"
@@ -49,7 +44,6 @@
                     android:text=""
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_top_bar_item_text_size" />
-
                 <FrameLayout
                     android:id="@+id/frame_setting"
                     android:layout_width="48dp"
@@ -90,21 +84,30 @@
                 android:src="@drawable/threeround" />
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal">
+                android:layout_gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/textview_temperature"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="25℃"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_aircontrol_temp" />
+                    <TextView
+                        android:id="@+id/textview_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70dp"
+                        android:text="25"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_aircontrol_temp" />
+                    <TextView
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_toRightOf="@+id/textview_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="℃"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_tempature_c" />
+                </RelativeLayout>
 
 
-            </RelativeLayout>
         </FrameLayout>
 
 
@@ -138,8 +141,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/aircondition_control_progress_margin_left_righ"
-                android:layout_marginRight="@dimen/aircondition_control_progress_margin_left_righ"
+                android:paddingLeft="@dimen/aircondition_control_progress_margin_left_righ"
+                android:paddingRight="@dimen/aircondition_control_progress_margin_left_righ"
                 android:layout_toLeftOf="@+id/imageview_temperature_plus"
                 android:layout_toRightOf="@+id/imageview_temperature_reduce"
                 android:max="100"
@@ -147,7 +150,7 @@
                 android:minHeight="16dp"
                 android:progressDrawable="@drawable/progressbar_horizontal"
                 android:thumb="@drawable/seekbar_horiz_thumb_background"
-                android:thumbOffset="0dp" />
+                android:thumbOffset="5dp" />
 
             <ImageView
                 android:id="@+id/imageview_temperature_plus"

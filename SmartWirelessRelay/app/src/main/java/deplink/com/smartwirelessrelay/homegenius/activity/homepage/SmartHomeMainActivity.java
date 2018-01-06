@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,7 +119,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private RoomManager mRoomManager;
     private HorizontalScrollView layout_roomselect_normal;
     private NonScrollableListView layout_roomselect_changed_ype;
-
+    private ScrollView scrollview_root;
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -257,9 +258,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 mLocationClient.start();
             }
         });
-
     }
-
     private void sendRequestWithHttpClient(final String city) {
         new Thread(new Runnable() {
             @Override
@@ -358,7 +357,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             super.handleMessage(msg);
             JSONObject object = (JSONObject) msg.obj;
             try {
-                String tempture = object.getString("temp2");
+                String tempture = object.getString("temp");
                 tempture = tempture.split("℃")[0];
                 Log.i(TAG, "tempture=" + tempture);
                 textview_tempature.setText(tempture);
@@ -410,7 +409,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 startActivity(intent);
             }
         });
+
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
+        layout_roomselect_normal.smoothScrollTo(0,0);
     }
 
     @Override
@@ -564,6 +565,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         textview_pm25 = findViewById(R.id.textview_pm25);
         layout_roomselect_normal = findViewById(R.id.layout_roomselect_normal);
         layout_roomselect_changed_ype = findViewById(R.id.layout_roomselect_changed_ype);
+        scrollview_root = findViewById(R.id.scrollview_root);
     }
 
     @Override
@@ -617,8 +619,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 if (layout_roomselect_normal.getVisibility() == View.VISIBLE) {
                     layout_roomselect_normal.setVisibility(View.GONE);
                     layout_roomselect_changed_ype.setVisibility(View.VISIBLE);
+                    scrollview_root.smoothScrollTo(0,0);
                 } else {
                     layout_roomselect_normal.setVisibility(View.VISIBLE);
+                    layout_roomselect_normal.smoothScrollTo(0,0);
                     layout_roomselect_changed_ype.setVisibility(View.GONE);
                 }
                 break;

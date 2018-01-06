@@ -118,7 +118,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         directionAuto = mAirconditionInitKeyValue.getDirectionAuto();
         tempature = mAirconditionInitKeyValue.getTempature();
         power = mAirconditionInitKeyValue.getKeyPower();
-        textview_temperature.setText("" + tempature + "℃");
+        textview_temperature.setText("" + tempature);
         temptureProgress = (int) (((tempature - 16) / 15.0) * 100);
         progressBar.setProgress(temptureProgress);
 
@@ -952,7 +952,10 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                 Log.i(TAG, "temptureTemp=" + temptureTemp);
                 temptureProgress = progress;
                 tempature = (int) temptureTemp;
-                textview_temperature.setText("" + tempature + "℃");
+                if(tempature>30){
+                    tempature=30;
+                }
+                textview_temperature.setText("" + tempature);
                 mAirconditionInitKeyValue.setTempature(tempature);
                 mAirconditionInitKeyValue.save();
             }
@@ -1148,7 +1151,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             if (tempature > 16) {
                                 func[0] = (byte) (tempature--);
                                 func[5] = (byte) (0x07);
-                                textview_temperature.setText("" + tempature + "℃");
+                                textview_temperature.setText("" + tempature );
                                 mAirconditionInitKeyValue.setTempature(tempature);
                                 mAirconditionInitKeyValue.save();
                             }
@@ -1463,14 +1466,12 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                             if (data_key_tempature_hot_30 != null) {
                                                 mRemoteControlManager.sendData(data_key_tempature_hot_30);
                                             } else {
-
                                                 mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                             }
                                             break;
                                     }
                                     break;
                             }
-
                             temptureProgress -= 7;
                             progressBar.setProgress(temptureProgress);
                         } else {
@@ -1492,18 +1493,19 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             if (code == null) {
                                 return;
                             }
-                            Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null));
+                            Log.i(TAG, "mAirconditionInitKeyValue!=null" + (mAirconditionInitKeyValue != null)+"tempature"+tempature);
                             if (tempature < 30) {
                                 func[0] = (byte) (tempature++);
                                 func[5] = (byte) (0x06);
-                                textview_temperature.setText("" + tempature + "℃");
+                                textview_temperature.setText("" + tempature );
+                                temptureProgress += 7;
+                                progressBar.setProgress(temptureProgress);
                                 mAirconditionInitKeyValue.setTempature(tempature);
                                 mAirconditionInitKeyValue.save();
                             }
                             data = packData();
                             mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
-                            temptureProgress += 7;
-                            progressBar.setProgress(temptureProgress);
+
                         } else {
                             temptureProgress += 7;
                             progressBar.setProgress(temptureProgress);
@@ -1575,16 +1577,12 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                 mAirconditionInitKeyValue.setKeyPower(0x01);
                                 mAirconditionInitKeyValue.save();
                                 setAirconditionEnable();
-
                             } else if (power == 0x01) {
                                 power = (byte) 0x0;
                                 mAirconditionInitKeyValue.setKeyPower(0x00);
                                 mAirconditionInitKeyValue.save();
                                 setAirconditionDisable();
-
-
                             }
-
                             data = packData();
                             if (data_key_power != null) {
                                 mRemoteControlManager.sendData(data_key_power);
@@ -1609,6 +1607,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         imageview_wind_direction.setEnabled(false);
         imageview_temperature_reduce.setEnabled(false);
         imageview_temperature_plus.setEnabled(false);
+        textview_model.setTextColor(getResources().getColor(R.color.router_line_dirver));
+        textview_wind_speed.setTextColor(getResources().getColor(R.color.router_line_dirver));
+        textview_wind_direction.setTextColor(getResources().getColor(R.color.router_line_dirver));
     }
 
     private void setAirconditionEnable() {
@@ -1618,6 +1619,9 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         imageview_wind_direction.setEnabled(true);
         imageview_temperature_reduce.setEnabled(true);
         imageview_temperature_plus.setEnabled(true);
+        textview_model.setTextColor(getResources().getColor(R.color.room_type_text));
+        textview_wind_speed.setTextColor(getResources().getColor(R.color.room_type_text));
+        textview_wind_direction.setTextColor(getResources().getColor(R.color.room_type_text));
     }
 
     byte[] func = new byte[7];

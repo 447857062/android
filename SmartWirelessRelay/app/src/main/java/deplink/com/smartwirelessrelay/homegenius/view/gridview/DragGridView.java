@@ -379,8 +379,10 @@ public class DragGridView extends GridView{
 	 * 停止拖拽我们将之前隐藏的item显示出来，并将镜像移除
 	 */
 	private void onStopDrag(){
-		getChildAt(mDragPosition - getFirstVisiblePosition()).setVisibility(View.VISIBLE);
-		removeDragImage();
+		if(getChildAt(mDragPosition - getFirstVisiblePosition())!=null){
+			getChildAt(mDragPosition - getFirstVisiblePosition()).setVisibility(View.VISIBLE);
+			removeDragImage();
+		}
 	}
 
 	/**
