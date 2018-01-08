@@ -15,8 +15,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
+import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.usrinfo.UserinfoActivity;
+import com.deplink.homegenius.activity.room.RoomActivity;
+import com.deplink.homegenius.application.AppManager;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.ConfirmDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.imageview.CircleImageView;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -27,15 +37,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
-import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.activity.room.RoomActivity;
-import com.deplink.homegenius.application.AppManager;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.imageview.CircleImageView;
 
 public class PersonalCenterActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "PersonalCenterActivity";
@@ -60,6 +61,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private MakeSureDialog connectLostDialog;
     private boolean isUserLogin;
     private boolean hasGetUserImage;
+    private ConfirmDialog mLogoutDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +92,9 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             } else {
                 setLocalImage(user_head_portrait);
             }
+            button_logout.setText("退出登录");
+        }else{
+            button_logout.setText("登录");
         }
     }
     private void setLocalImage(CircleImageView user_head_portrait) {
@@ -119,11 +124,17 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
             }
         });
+        mLogoutDialog=new ConfirmDialog(this);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
 
             @Override
             public void onSuccess(SDKAction action) {
+                switch (action){
+                    case LOGOUT:
+                        startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
+                        break;
+                }
             }
 
             @Override
@@ -147,6 +158,13 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
+                switch (action){
+                    case LOGOUT:
+                        Log.i(TAG, "退出登录失败");
+                        Perfence.setPerfence(AppConstant.USER_LOGIN,false);
+                        ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败，请检查网络连接");
+                        break;
+                }
 
             }
 
@@ -247,8 +265,21 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 startActivity(new Intent(this, RoomActivity.class));
                 break;
             case R.id.button_logout:
-                //TODO 退出登录
-                startActivity(new Intent(this, LoginActivity.class));
+                if(isUserLogin){
+                    mLogoutDialog.setSureBtnClickListener(new ConfirmDialog.onSureBtnClickListener() {
+                        @Override
+                        public void onSureBtnClicked() {
+                            manager.logout();
+
+                        }
+                    });
+                    mLogoutDialog.show();
+                    mLogoutDialog.setDialogTitleText("退出登录");
+                    mLogoutDialog.setDialogMsgText("确定退出登录?");
+                }else{
+                    startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
+                }
+
                 break;
             case R.id.user_head_portrait:
                 startActivity(new Intent(this, UserinfoActivity.class));

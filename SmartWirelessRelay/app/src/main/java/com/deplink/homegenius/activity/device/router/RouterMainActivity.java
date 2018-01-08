@@ -121,7 +121,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
      */
     private boolean isConnectLocalRouter = false;
     private MakeSureWithInputDialog connetWifiDialog;
-
+    private ImageView iamgeview_no_connected_device;
+    private ImageView iamgeview_no_blacklist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,8 +171,20 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         } else {
             manager.addEventCallback(ec);
             routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-            Log.i(TAG, "routerDevice=" + (routerDevice != null));
+            Log.i(TAG, "routerDevice=" + (routerDevice != null)+"isUserLogin="+isUserLogin);
+            if(!isUserLogin){
+                textview_cpu_use.setText("--");
+                textview_memory_use.setText("--");
+                textview_upload_speed.setText("--");
+                textview_download_speend.setText("--");
+                iamgeview_no_connected_device.setBackgroundResource(R.drawable.router);
+                iamgeview_no_blacklist.setBackgroundResource(R.drawable.router);
+            }else{
+                iamgeview_no_connected_device.setBackgroundResource(R.drawable.connectthedevice);
+                iamgeview_no_blacklist.setBackgroundResource(R.drawable.blacklist);
+            }
             startTimer();
+
         }
     }
     @Override
@@ -655,6 +668,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         textview_download_speend = findViewById(R.id.textview_download_speend);
         layout_no_blacklist = findViewById(R.id.layout_no_blacklist);
         layout_no_connected_device = findViewById(R.id.layout_no_connected_device);
+        iamgeview_no_connected_device = findViewById(R.id.iamgeview_no_connected_device);
+        iamgeview_no_blacklist = findViewById(R.id.iamgeview_no_blacklist);
     }
 
     @Override

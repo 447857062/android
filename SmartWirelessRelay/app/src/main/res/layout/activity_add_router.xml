@@ -31,7 +31,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:id="@+id/edittext_add_device_input_name"
-            android:hint="例如：家里的路由器（最多10个字）"
+            android:hint="名称最多10个字"
             android:maxLength="10"
             android:textColor="@color/huise"
             android:background="@null"

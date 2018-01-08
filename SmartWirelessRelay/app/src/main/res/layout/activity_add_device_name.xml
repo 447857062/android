@@ -40,7 +40,7 @@
             android:singleLine="true"
             android:layout_toRightOf="@+id/textview_device_name_left"
             android:background="@null"
-            android:hint="我家的门锁（最多10个字）"
+            android:hint="名称最多10个字"
             android:maxLength="10"
             android:textColor="@color/room_type_text"
             android:textColorHint="@color/huise"

@@ -31,22 +31,33 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.deplink.homegenius.Protocol.json.Pm25Info;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.ExperienceCenterDevice;
+import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
+import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import com.deplink.homegenius.activity.homepage.adapter.HomepageGridViewAdapter;
+import com.deplink.homegenius.activity.homepage.adapter.HomepageRoomShowTypeChangedViewAdapter;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.room.DeviceNumberActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
+import com.deplink.homegenius.application.AppManager;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectService;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.CharSetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.scrollview.NonScrollableListView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
-import com.deplink.sdk.android.sdk.homegenius.RoomResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -69,17 +80,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.Pm25Info;
-import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
-import com.deplink.homegenius.activity.homepage.adapter.HomepageRoomShowTypeChangedViewAdapter;
-import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
-import com.deplink.homegenius.activity.room.DeviceNumberActivity;
-import com.deplink.homegenius.application.AppManager;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectService;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.view.scrollview.NonScrollableListView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -474,15 +474,22 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
                         //TODO DEBUG
-                        RestfulToolsHomeGenius.getSingleton(SmartHomeMainActivity.this).getRoomInfo("13691876442", new Callback<RoomResponse>() {
+                        RestfulToolsHomeGeniusString.getSingleton(SmartHomeMainActivity.this).getRoomInfo("13691876442", new Callback<String>() {
                             @Override
-                            public void onResponse(Call<RoomResponse> call, Response<RoomResponse> response) {
+                            public void onResponse(Call<String> call, Response<String> response) {
                                 Log.i(TAG, "" + response.code());
                                 Log.i(TAG, "" + response.message());
+                                Log.i(TAG, "" + response.body());
+                               ArrayList<com.deplink.sdk.android.sdk.homegenius.Room>list= jsonToArrayList( response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
+                                for(int i=0;i<list.size();i++){
+                                    Log.i(TAG, "roomname=" +list.get(i).toString());
+                                    Log.i(TAG, "roomname=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
+                                    Log.i(TAG, "roomtype=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
+                                }
                             }
 
                             @Override
-                            public void onFailure(Call<RoomResponse> call, Throwable t) {
+                            public void onFailure(Call<String> call, Throwable t) {
                                 Log.i(TAG, "" + t.getMessage() + t.toString());
                             }
                         });

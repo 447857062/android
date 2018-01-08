@@ -37,7 +37,6 @@ public class AddDeviceGridViewAdapter extends BaseAdapter {
             if(position==listTop.size()){
                 convertView = LayoutInflater.from(mContext).inflate(
                         R.layout.room_item_add, null);
-
             }else{
                 convertView = LayoutInflater.from(mContext).inflate(
                         R.layout.room_item, null);

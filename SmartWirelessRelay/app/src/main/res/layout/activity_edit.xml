@@ -43,7 +43,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/textview_device_name_left"
                 android:background="@null"
-                android:hint="我家的灯（最多10个字）"
+                android:hint="名称最多10个字"
                 android:maxLength="10"
                 android:singleLine="true"
                 android:textColor="@color/room_type_text"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -15,9 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.activity.device.AddDeviceActivity;
+import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
 import com.deplink.homegenius.constant.RoomConstant;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Room;
@@ -27,14 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.device.AddDeviceActivity;
-import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
-import com.deplink.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
-import com.deplink.homegenius.manager.room.RoomManager;
-import com.deplink.homegenius.util.NetUtil;
-import com.deplink.homegenius.view.edittext.ClearEditText;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -183,6 +182,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 RestfulToolsHomeGenius.getSingleton(this).addRomm(userName, room, new Callback<DeviceOperationResponse>() {
                     @Override
                     public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                        Log.i(TAG,"response.code()="+response.code());
                         if(response.code()==200){
                             if (!roomName.equals("")) {
                                 boolean result = roomManager.addRoom(roomType, roomName,currentSelectGetway);
@@ -200,7 +200,8 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
 
                     @Override
                     public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
-
+                        Log.i(TAG,"addroom onFailure="+t.toString());
+                        ToastSingleShow.showText(AddRommActivity.this,"添加房间失败");
                     }
                 });
 
