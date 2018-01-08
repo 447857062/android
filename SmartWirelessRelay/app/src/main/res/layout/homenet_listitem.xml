@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/experience_center_listitem_height"
+    android:paddingLeft="@dimen/layout_content_margin_left_right"
+    android:id="@+id/layout_root"
+    android:background="@drawable/button_delete_background"
+    android:minHeight="@dimen/experience_center_listitem_height"
+   >
+
+    <ImageView
+        android:id="@+id/image_device_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:id="@+id/textview_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/arror_right_left_textview_margin_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_toRightOf="@+id/image_device_type"
+        android:textColor="@color/room_type_text"
+        android:textSize="@dimen/text_size_small" />
+    <TextView
+        android:id="@+id/textview_device_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/blue"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
+        android:layout_toLeftOf="@+id/iamgeview_setting"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_small" />
+
+    <ImageView
+        android:id="@+id/iamgeview_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:src="@drawable/directionicon" />
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/line_clolor" />
+</RelativeLayout>
