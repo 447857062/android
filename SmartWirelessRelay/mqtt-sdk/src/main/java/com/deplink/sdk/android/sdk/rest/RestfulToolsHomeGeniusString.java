@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.DeviceResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
-import com.deplink.sdk.android.sdk.homegenius.Room;
+import com.deplink.sdk.android.sdk.rest.ConverterFactory.StringConvertFactory;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 
 import java.util.ArrayList;
@@ -22,11 +19,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RestfulToolsHomeGenius {
+public class RestfulToolsHomeGeniusString {
     private static final String TAG = "RestfulToolsHomeGenius";
-    private volatile static RestfulToolsHomeGenius singleton;
+    private volatile static RestfulToolsHomeGeniusString singleton;
     private volatile static RestfulHomeGeniusServer apiService;
     private static Context mContext;
     private static final String baseUrl = "https://api.deplink.net";
@@ -35,7 +31,7 @@ public class RestfulToolsHomeGenius {
     /**
      * 假设: Retrofit是线程安全的
      */
-    private RestfulToolsHomeGenius() {
+    private RestfulToolsHomeGeniusString() {
         //service.deplink.net
         //admin.deplink.net
         Retrofit.Builder builder;
@@ -54,7 +50,7 @@ public class RestfulToolsHomeGenius {
                 "NkX8gffeUmw2VqA/7adjNLdZg3Zs8rJncgz9ooXcpdXL/+tbuQ==\n" +
                 "-----END CERTIFICATE-----";
         builder = new Retrofit.Builder().baseUrl(baseUrl).
-                addConverterFactory(GsonConverterFactory.create());
+                addConverterFactory(StringConvertFactory.create());
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().cookieJar(new CookieJar() {
             @Override
             public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
@@ -86,101 +82,27 @@ public class RestfulToolsHomeGenius {
         apiService = retrofit.create(RestfulHomeGeniusServer.class);
     }
 
-    public static RestfulToolsHomeGenius getSingleton(Context context) {
+    public static RestfulToolsHomeGeniusString getSingleton(Context context) {
         mContext = context;
         if (singleton == null) {
-            synchronized (RestfulToolsHomeGenius.class) {
+            synchronized (RestfulToolsHomeGeniusString.class) {
                 if (singleton == null) {
-                    singleton = new RestfulToolsHomeGenius();
+                    singleton = new RestfulToolsHomeGeniusString();
                 }
             }
         }
         return singleton;
     }
-    public Call<DeviceResponse> getDeviceInfo(String username, Callback<DeviceResponse> cll) {
-        if (null == username) {
-            if (cll != null) {
-                cll.onFailure(null, new Throwable(errMsg));
-            }
-            return null;
-        }
-        Log.i(TAG, "getDeviceInfo:" + username);
-        Call<DeviceResponse> call = apiService.getDeviceInfo(username, RestfulTools.getSingleton().getToken());
-        if (cll != null) {
-            call.enqueue(cll);
-        }
-        return call;
-    }
 
-    public Call<DeviceOperationResponse> addDevice(String username, Deviceprops deviceprops, Callback<DeviceOperationResponse> cll) {
+    public Call<String> getRoomInfo(String username, Callback<String> cll) {
         if (null == username) {
             if (cll != null) {
                 cll.onFailure(null, new Throwable(errMsg));
             }
             return null;
         }
-        Log.i(TAG, "addDevice:" + username);
-        Call<DeviceOperationResponse> call = apiService.addDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
-        if (cll != null) {
-            call.enqueue(cll);
-        }
-        return call;
-    }
-
-    public Call<DeviceOperationResponse> deleteDevice(String username, Deviceprops deviceprops, Callback<DeviceOperationResponse> cll) {
-        if (null == username) {
-            if (cll != null) {
-                cll.onFailure(null, new Throwable(errMsg));
-            }
-            return null;
-        }
-        Log.i(TAG, "addDevice:" + username);
-        Call<DeviceOperationResponse> call = apiService.deleteDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
-        if (cll != null) {
-            call.enqueue(cll);
-        }
-        return call;
-    }
-
-    public Call<DeviceOperationResponse> alertDevice(String username, Deviceprops deviceprops, Callback<DeviceOperationResponse> cll) {
-        if (null == username) {
-            if (cll != null) {
-                cll.onFailure(null, new Throwable(errMsg));
-            }
-            return null;
-        }
-        Log.i(TAG, "alertDevice:" + username);
-        Call<DeviceOperationResponse> call = apiService.alertDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
-        if (cll != null) {
-            call.enqueue(cll);
-        }
-        return call;
-    }
-
-    public Call<DeviceOperationResponse> addRomm(String username, Room room, Callback<DeviceOperationResponse> cll) {
-        if (null == username) {
-            if (cll != null) {
-                cll.onFailure(null, new Throwable(errMsg));
-            }
-            return null;
-        }
-        Log.i(TAG, "addRoom:" + username);
-        Call<DeviceOperationResponse> call = apiService.addRoom(username, room, RestfulTools.getSingleton().getToken());
-        if (cll != null) {
-            call.enqueue(cll);
-        }
-        return call;
-    }
-
-    public Call<DeviceOperationResponse> deleteRomm(String username, Room room, Callback<DeviceOperationResponse> cll) {
-        if (null == username) {
-            if (cll != null) {
-                cll.onFailure(null, new Throwable(errMsg));
-            }
-            return null;
-        }
-        Log.i(TAG, "deleteRoom:" + username);
-        Call<DeviceOperationResponse> call = apiService.deleteRoom(username, room, RestfulTools.getSingleton().getToken());
+        Log.i(TAG, "getRoomInfo:" + username);
+        Call<String> call = apiService.getRoomInfo(username, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }

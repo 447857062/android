@@ -75,7 +75,6 @@ public class RestfulTools {
             clientBuilder.addInterceptor(interceptor);
         }
         OkHttpClient okClient = clientBuilder.build();
-
         builder.client(okClient);
         Retrofit retrofit = builder.build();
         apiService = retrofit.create(RestfulServer.class);

@@ -5,7 +5,6 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.DeviceResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
-import com.deplink.sdk.android.sdk.homegenius.RoomResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -22,7 +21,7 @@ import retrofit2.http.Path;
 public interface RestfulHomeGeniusServer {
     //获取房间信息
     @GET("/user/{user_name}/rooms")
-    Call<RoomResponse> getRoomInfo(@Path("user_name") String user_name, @Header("token") String token);
+    Call<String> getRoomInfo(@Path("user_name") String user_name, @Header("token") String token);
     //读绑定设备信息
     @GET("/user/{user_name}/devices")
     Call<DeviceResponse> getDeviceInfo(@Path("user_name") String user_name, @Header("token") String token);
