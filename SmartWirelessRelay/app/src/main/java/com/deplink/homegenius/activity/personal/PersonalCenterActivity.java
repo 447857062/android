@@ -132,6 +132,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void onSuccess(SDKAction action) {
                 switch (action){
                     case LOGOUT:
+                        Perfence.setPerfence(AppConstant.USER_LOGIN,false);
                         startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
                         break;
                 }
@@ -161,7 +162,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 switch (action){
                     case LOGOUT:
                         Log.i(TAG, "退出登录失败");
-                        Perfence.setPerfence(AppConstant.USER_LOGIN,false);
+
                         ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败，请检查网络连接");
                         break;
                 }

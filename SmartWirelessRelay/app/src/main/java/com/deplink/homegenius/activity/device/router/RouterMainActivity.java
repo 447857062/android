@@ -177,6 +177,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 textview_memory_use.setText("--");
                 textview_upload_speed.setText("--");
                 textview_download_speend.setText("--");
+                layout_no_connected_device.setVisibility(View.VISIBLE);
                 iamgeview_no_connected_device.setBackgroundResource(R.drawable.router);
                 iamgeview_no_blacklist.setBackgroundResource(R.drawable.router);
             }else{
