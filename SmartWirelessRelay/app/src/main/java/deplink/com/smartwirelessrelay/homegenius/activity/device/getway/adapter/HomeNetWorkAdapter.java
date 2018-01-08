@@ -31,7 +31,7 @@ public class HomeNetWorkAdapter extends BaseAdapter {
     private int TopCount = 0;
 
     public HomeNetWorkAdapter(Context mContext, List<Device> list,
-                             List<SmartDev> datasOther) {
+                              List<SmartDev> datasOther) {
         this.mContext = mContext;
         this.listTop = list;
         this.listBottom = datasOther;
@@ -125,26 +125,14 @@ public class HomeNetWorkAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            if (getItemViewType(position) == TOP_ITEM) {
-                convertView = LayoutInflater.from(mContext).inflate(
-                        R.layout.devicelist_device_item, null);
-                viewHolder.textview_device_status = (TextView) convertView
-                        .findViewById(R.id.textview_device_status);
-                viewHolder.imageview_device_type = (ImageView) convertView
-                        .findViewById(R.id.imageview_device_type);
-                viewHolder.textview_device_name = (TextView) convertView
-                        .findViewById(R.id.textview_device_name);
-            } else {
-                convertView = LayoutInflater.from(mContext).inflate(
-                        R.layout.devicelist_smartdevice_item, null);
-                viewHolder.textview_device_status = (TextView) convertView
-                        .findViewById(R.id.textview_device_status);
-                viewHolder.textview_device_name = (TextView) convertView
-                        .findViewById(R.id.textview_device_name);
-                viewHolder.imageview_device_type = (ImageView) convertView
-                        .findViewById(R.id.imageview_device_type);
-            }
-
+            convertView = LayoutInflater.from(mContext).inflate(
+                    R.layout.homenet_listitem, null);
+            viewHolder.textview_device_status = convertView
+                    .findViewById(R.id.textview_device_status);
+            viewHolder.imageview_device_type = convertView
+                    .findViewById(R.id.image_device_type);
+            viewHolder.textview_device_name = convertView
+                    .findViewById(R.id.textview_device_name);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -152,7 +140,7 @@ public class HomeNetWorkAdapter extends BaseAdapter {
         if (position < TopCount) {
             String statu = listTop.get(position).getStatus();
             if (statu != null) {
-                switch (statu){
+                switch (statu) {
                     case "on":
                         statu = "在线";
                         break;
@@ -171,9 +159,9 @@ public class HomeNetWorkAdapter extends BaseAdapter {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
-            Log.i(TAG,"deviceStatu="+deviceStatu);
+            Log.i(TAG, "deviceStatu=" + deviceStatu);
             if (deviceStatu != null) {
-                switch (deviceStatu){
+                switch (deviceStatu) {
                     case "on":
                         deviceStatu = "在线";
                         break;
@@ -181,7 +169,7 @@ public class HomeNetWorkAdapter extends BaseAdapter {
                         deviceStatu = "离线";
                         break;
                 }
-            }else{
+            } else {
                 deviceStatu = "离线";
             }
             viewHolder.textview_device_name.setText(deviceName);
@@ -190,6 +178,7 @@ public class HomeNetWorkAdapter extends BaseAdapter {
         }
         return convertView;
     }
+
     private void getDeviceTypeImage(ViewHolder viewHolder, String deviceType) {
         switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_ROUTER:
@@ -197,6 +186,7 @@ public class HomeNetWorkAdapter extends BaseAdapter {
                 break;
         }
     }
+
     final static class ViewHolder {
         TextView textview_device_status;
         TextView textview_device_name;

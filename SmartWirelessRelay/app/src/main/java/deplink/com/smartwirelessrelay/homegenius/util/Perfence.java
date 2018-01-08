@@ -20,7 +20,7 @@ public class Perfence extends Application {
     public static int VERIFYCODE_TIME = 60;
     public static int DELAY_VERIFYCODE = 1000;
     public static ArrayList<HashMap<String,Object>> alhmCountries = new ArrayList<HashMap<String,Object>>();
-    public static String SDK_APP_KEY = "6bbe96ccf8a013eeac65beb76c8b6949";
+    public static String SDK_APP_KEY = "c58a079f58be73b12f59cb4e74605044";
     public static String SMSSDK_APPKEY = "162420aac5f2c";
     public static String SMSSDK_APPSECRET = "17a65cea59d991725328bac31f1f81c9";
     public static String PERFENCE_NAME = "PERFENCE_NAME";

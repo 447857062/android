@@ -234,8 +234,7 @@ public class RoomManager {
      * 使用RXjava框架
      */
     public int deleteRoom(String roomName) {
-
-        final int affectColumn = DataSupport.deleteAll(Room.class, "roomName = ? ", roomName);
+        int affectColumn = DataSupport.deleteAll(Room.class, "roomName = ? ", roomName);
         getDatabaseRooms();
         Log.i(TAG, "根据房间名称删除房间=" + affectColumn);
         return affectColumn;
@@ -270,7 +269,6 @@ public class RoomManager {
      * @return
      */
     public boolean addRoom(String roomType, String roomName, Device gewayDevice) {
-
         tempAddRoom = new Room();
         tempAddRoom.setRoomName(roomName);
         tempAddRoom.setRoomType(roomType);

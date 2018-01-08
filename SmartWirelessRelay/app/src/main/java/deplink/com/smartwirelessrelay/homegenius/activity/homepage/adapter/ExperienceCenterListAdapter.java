@@ -53,13 +53,13 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.experience_center_listitem, null);
-            viewHolder.image_device_type = (ImageView) convertView
+            viewHolder.image_device_type = convertView
                     .findViewById(R.id.image_device_type);
-            viewHolder.textview_device_name = (TextView) convertView
+            viewHolder.textview_device_name = convertView
                     .findViewById(R.id.textview_device_name);
-            viewHolder.iamgeview_setting = (ImageView) convertView
+            viewHolder.iamgeview_setting = convertView
                     .findViewById(R.id.iamgeview_setting);
-            viewHolder.layout_root = (RelativeLayout) convertView
+            viewHolder.layout_root = convertView
                     .findViewById(R.id.layout_root);
             viewHolder.view_line =  convertView
                     .findViewById(R.id.view_line);
@@ -105,6 +105,9 @@ public class ExperienceCenterListAdapter extends BaseAdapter {
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 viewHolder.image_device_type.setImageResource(R.drawable.settopboxesicon);
+                break;
+            case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                viewHolder.image_device_type.setImageResource(R.drawable.equipmentlight);
                 break;
 
         }

@@ -14,6 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Room;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +29,13 @@ import deplink.com.smartwirelessrelay.homegenius.activity.room.adapter.GridViewR
 import deplink.com.smartwirelessrelay.homegenius.constant.RoomConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
 import deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText;
+import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddRommActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "AddRommActivity";
@@ -143,24 +153,54 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         }
     };
     private Device currentSelectGetway;
+    private String userName;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             //完成
             case R.id.textview_add_room_complement:
-                String roomName = edittext_room_name.getText().toString();
-                if (!roomName.equals("")) {
-                    boolean result = roomManager.addRoom(roomType, roomName,currentSelectGetway);
-                    if (result) {
-                        mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
-                        finish();
-                    } else {
-                        mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
-                    }
-                } else {
-                    Toast.makeText(this, "请输入房间名称", Toast.LENGTH_SHORT).show();
+                final String roomName = edittext_room_name.getText().toString();
+                if(!NetUtil.isNetAvailable(this)){
+                    ToastSingleShow.showText(this,"无可用网络连接,请检查网络");
+                    return;
                 }
+                if(userName.equals("")){
+                    ToastSingleShow.showText(this,"用户未登录");
+                    return;
+                }
+                Room room=new Room();
+                room.setRoom_name(roomName);
+                room.setRoom_type(roomType);
+                RestfulToolsHomeGenius.getSingleton(this).addRomm(userName, room, new Callback<DeviceOperationResponse>() {
+                    @Override
+                    public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                        if(response.code()==200){
+                            if (!roomName.equals("")) {
+                                boolean result = roomManager.addRoom(roomType, roomName,currentSelectGetway);
+                                if (result) {
+                                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
+                                    finish();
+                                } else {
+                                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
+                                }
+                            } else {
+                                Toast.makeText(AddRommActivity.this, "请输入房间名称", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+
+                    }
+                });
 
                 break;
             case R.id.image_back:

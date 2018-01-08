@@ -69,7 +69,8 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
         super.onResume();
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
-
+            textview_select_room_name.setText("全部");
+            textview_select_getway_name.setText("未设置网关");
         } else {
             lightName = mSmartLightManager.getCurrentSelectLight().getName();
             if (lightName != null) {

@@ -35,7 +35,9 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
+import com.deplink.sdk.android.sdk.homegenius.RoomResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -120,6 +122,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private HorizontalScrollView layout_roomselect_normal;
     private NonScrollableListView layout_roomselect_changed_ype;
     private ScrollView scrollview_root;
+
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -259,6 +262,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         });
     }
+
     private void sendRequestWithHttpClient(final String city) {
         new Thread(new Runnable() {
             @Override
@@ -291,6 +295,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         }).start();
     }
+
     /**
      * @param json
      * @param clazz
@@ -340,6 +345,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             }
                         }
                     }
+
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
@@ -411,7 +417,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         });
 
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
-        layout_roomselect_normal.smoothScrollTo(0,0);
+        layout_roomselect_normal.smoothScrollTo(0, 0);
     }
 
     @Override
@@ -467,6 +473,19 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
+                        //TODO DEBUG
+                        RestfulToolsHomeGenius.getSingleton(SmartHomeMainActivity.this).getRoomInfo("13691876442", new Callback<RoomResponse>() {
+                            @Override
+                            public void onResponse(Call<RoomResponse> call, Response<RoomResponse> response) {
+                                Log.i(TAG, "" + response.code());
+                                Log.i(TAG, "" + response.message());
+                            }
+
+                            @Override
+                            public void onFailure(Call<RoomResponse> call, Throwable t) {
+                                Log.i(TAG, "" + t.getMessage() + t.toString());
+                            }
+                        });
                         break;
                 }
             }
@@ -619,10 +638,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 if (layout_roomselect_normal.getVisibility() == View.VISIBLE) {
                     layout_roomselect_normal.setVisibility(View.GONE);
                     layout_roomselect_changed_ype.setVisibility(View.VISIBLE);
-                    scrollview_root.smoothScrollTo(0,0);
+                    scrollview_root.smoothScrollTo(0, 0);
                 } else {
                     layout_roomselect_normal.setVisibility(View.VISIBLE);
-                    layout_roomselect_normal.smoothScrollTo(0,0);
+                    layout_roomselect_normal.smoothScrollTo(0, 0);
                     layout_roomselect_changed_ype.setVisibility(View.GONE);
                 }
                 break;

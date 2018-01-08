@@ -34,11 +34,13 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.SmartDev;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.router.Router;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.DevicesActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightEditActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.lan.LanSettingActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.qos.QosSettingActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WiFiSettingActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.WifiSetting24;
+import deplink.com.smartwirelessrelay.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.personal.login.LoginActivity;
 import deplink.com.smartwirelessrelay.homegenius.constant.AppConstant;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
@@ -209,7 +211,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_update_out.setOnClickListener(this);
         layout_reboot_out.setOnClickListener(this);
         buttton_delete_router.setOnClickListener(this);
-        buttton_delete_router.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -225,7 +226,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_QOS_setting_out = findViewById(R.id.layout_QOS_setting_out);
         layout_update_out = findViewById(R.id.layout_update_out);
         layout_reboot_out = findViewById(R.id.layout_reboot_out);
-        buttton_delete_router = findViewById(R.id.buttton_delete_router);
         textview_room_select_2 = findViewById(R.id.textview_room_select_2);
         textview_route_name_2 = findViewById(R.id.textview_route_name_2);
     }
@@ -343,18 +343,23 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                        if (NetUtil.isNetAvailable(RouterSettingActivity.this)) {
-                            if(isUserLogin){
-                                DialogThreeBounce.showLoading(RouterSettingActivity.this);
-                                BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
-                                manager.unbindDevice(unbindDevice);
-                            }else{
-                                ToastSingleShow.showText(RouterSettingActivity.this, "用户已离线，登录后使用");
-                            }
+                        if( DeviceManager.getInstance().isStartFromExperience()){
+                            startActivity(new Intent(RouterSettingActivity.this, ExperienceDevicesActivity.class));
+                        }else{
+                            if (NetUtil.isNetAvailable(RouterSettingActivity.this)) {
+                                if(isUserLogin){
+                                    DialogThreeBounce.showLoading(RouterSettingActivity.this);
+                                    BaseDevice unbindDevice = manager.getDevice(mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
+                                    manager.unbindDevice(unbindDevice);
+                                }else{
+                                    ToastSingleShow.showText(RouterSettingActivity.this, "用户已离线，登录后使用");
+                                }
 
-                        } else {
-                            ToastSingleShow.showText(RouterSettingActivity.this, "网络连接不可用");
+                            } else {
+                                ToastSingleShow.showText(RouterSettingActivity.this, "网络连接不可用");
+                            }
                         }
+
 
                     }
                 });

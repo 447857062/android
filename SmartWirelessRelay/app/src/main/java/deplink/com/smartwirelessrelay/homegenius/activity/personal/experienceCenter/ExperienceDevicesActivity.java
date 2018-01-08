@@ -16,6 +16,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.ExperienceCenterDevice;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.getway.GetwayDeviceActivity;
+import deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
@@ -89,6 +90,10 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
         device.setDeviceName(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
         device.setOnline(true);
         mExperienceCenterDevices.add(device);
+        device = new ExperienceCenterDevice();
+        device.setDeviceName(DeviceTypeConstant.TYPE.TYPE_LIGHT);
+        device.setOnline(true);
+        mExperienceCenterDevices.add(device);
         mAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDevices);
     }
 
@@ -103,7 +108,6 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
         Intent intent;
         DeviceManager.getInstance().setStartFromExperience(true);
         switch (mExperienceCenterDevices.get(position).getDeviceName()) {
-
             case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                 Intent intentGetwayDevice = new Intent(ExperienceDevicesActivity.this, GetwayDeviceActivity.class);
                 startActivity(intentGetwayDevice);
@@ -130,7 +134,6 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                 intent = new Intent(this, TvMainActivity.class);
-
                 startActivity(intent);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
@@ -139,6 +142,10 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 intent = new Intent(this, TvBoxMainActivity.class);
+                startActivity(intent);
+                break;
+            case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                intent = new Intent(this, LightActivity.class);
                 startActivity(intent);
                 break;
         }

@@ -17,10 +17,11 @@ import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import deplink.com.smartwirelessrelay.homegenius.Protocol.json.QueryOptions;
+import deplink.com.smartwirelessrelay.homegenius.manager.device.DeviceManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.light.SmartLightListener;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.light.SmartLightManager;
 
-public class LightActivity extends Activity implements View.OnClickListener,SmartLightListener {
+public class LightActivity extends Activity implements View.OnClickListener, SmartLightListener {
     private static final String TAG = "LightActivity";
     private TextView textview_title;
     private TextView textview_edit;
@@ -41,6 +42,7 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
     private TextView textview_switch_tips;
     private RelativeLayout layout_lightcolor_control;
     private RelativeLayout layout_brightness_control;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +65,15 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 lightColorProgress = progress * 2;
                 Log.i(TAG, "lightColorProgress=" + lightColorProgress + "lightBrightnessProgress=" + lightBrightnessProgress);
+                if (isStartFromExperience) {
+                    button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
+                    float alpha = (float) (lightColorProgress / 200.0);
+                    Log.i(TAG, "alpha=" + alpha);
+                    button_switch_light.setAlpha(alpha);
+                } else {
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
 
-                mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
             }
 
             @Override
@@ -82,7 +91,14 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 lightBrightnessProgress = progress * 2;
                 Log.i(TAG, "lightColorProgress=" + lightColorProgress + "lightBrightnessProgress=" + lightBrightnessProgress);
-                mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                if (isStartFromExperience) {
+                    float alpha = (float) (lightBrightnessProgress / 200.0);
+                    Log.i(TAG, "alpha=" + alpha);
+                    imageview_switch_bg.setAlpha(alpha);
+                } else {
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
+
             }
 
             @Override
@@ -128,19 +144,33 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
         super.onDestroy();
         mSmartLightManager.releaswSmartManager();
     }
+
     private boolean isOnResume;
+    private boolean isStartFromExperience;
+
     @Override
     protected void onResume() {
         super.onResume();
-        mSmartLightManager.queryLightStatus();
-        mSmartLightManager.addSmartLightListener(this);
-        isOnResume=true;
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        if (isStartFromExperience) {
+            layout_lightcolor_control.setVisibility(View.GONE);
+            layout_brightness_control.setVisibility(View.GONE);
+        } else {
+            mSmartLightManager.queryLightStatus();
+            mSmartLightManager.addSmartLightListener(this);
+        }
+        isOnResume = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSmartLightManager.removeSmartLightListener(this);
+        if (isStartFromExperience) {
+
+        } else {
+            mSmartLightManager.removeSmartLightListener(this);
+        }
+
     }
 
     @Override
@@ -150,41 +180,80 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
                 onBackPressed();
                 break;
             case R.id.imageview_lightyellow_reduce:
-                lightColorProgress-=20;
-                if(lightColorProgress<0){
-                    lightColorProgress=200;
+                lightColorProgress -= 20;
+                if (lightColorProgress < 0) {
+                    lightColorProgress = 200;
                 }
-                mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                if (isStartFromExperience) {
+                    progressBarLightYellow.setProgress(lightColorProgress);
+                } else {
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
+
                 break;
             case R.id.imageview_lightyellow_plus:
-                lightColorProgress+=20;
-                if(lightColorProgress>200){
-                    lightColorProgress=0;
+                lightColorProgress += 20;
+                if (lightColorProgress > 200) {
+                    lightColorProgress = 0;
                 }
-                mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                if (isStartFromExperience) {
+                    progressBarLightYellow.setProgress(lightColorProgress);
+                } else {
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
+
                 break;
             case R.id.imageview_lightwhite_reduce:
-                lightBrightnessProgress-=20;
-                if(lightBrightnessProgress<0){
-                    lightBrightnessProgress=200;
+                lightBrightnessProgress -= 20;
+                if (lightBrightnessProgress < 0) {
+                    lightBrightnessProgress = 200;
                 }
-                mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                if (isStartFromExperience) {
+                    progressBarLightWhite.setProgress(lightBrightnessProgress);
+                } else {
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
+
                 break;
             case R.id.imageview_lightwhite_plus:
-                lightBrightnessProgress+=20;
-                if(lightBrightnessProgress>200){
-                    lightBrightnessProgress=0;
+                lightBrightnessProgress += 20;
+                if (lightBrightnessProgress > 200) {
+                    lightBrightnessProgress = 0;
                 }
-                mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                if (isStartFromExperience) {
+                    progressBarLightWhite.setProgress(lightBrightnessProgress);
+                } else {
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
+
                 break;
             case R.id.button_switch_light:
-                if (switchStatus) {
-                    switchStatus = false;
-                    mSmartLightManager.setSmartLightSwitch("close");
+                if (isStartFromExperience) {
+                    if (switchStatus) {
+                        switchStatus = false;
+                        iamgeview_switch.setBackgroundResource(R.drawable.ovel_110_bg);
+                        imageview_switch_bg.setBackgroundResource(R.color.room_type_text);
+                        textview_switch_tips.setText("点击开启");
+                        layout_lightcolor_control.setVisibility(View.GONE);
+                        layout_brightness_control.setVisibility(View.GONE);
+                    } else {
+                        switchStatus = true;
+                        iamgeview_switch.setBackgroundResource(R.drawable.radius110_bg_white_background);
+                        imageview_switch_bg.setBackgroundResource(R.drawable.lightglowoutside);
+                        textview_switch_tips.setText("点击关闭");
+                        layout_lightcolor_control.setVisibility(View.VISIBLE);
+                        layout_brightness_control.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    switchStatus = true;
-                    mSmartLightManager.setSmartLightSwitch("open");
+                    if (switchStatus) {
+                        switchStatus = false;
+                        mSmartLightManager.setSmartLightSwitch("close");
+                    } else {
+                        switchStatus = true;
+                        mSmartLightManager.setSmartLightSwitch("open");
+                    }
                 }
+
 
                 break;
             case R.id.textview_edit:
@@ -192,22 +261,22 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
                 break;
         }
     }
-    private static final int MSG_GET_LIGHT_RESULT=100;
-    private Handler mHandler=new Handler(){
+
+    private static final int MSG_GET_LIGHT_RESULT = 100;
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what)
-            {
+            switch (msg.what) {
                 case MSG_GET_LIGHT_RESULT:
-                    QueryOptions resultObj= (QueryOptions) msg.obj;
-                    if(resultObj.getOpen()==1){
+                    QueryOptions resultObj = (QueryOptions) msg.obj;
+                    if (resultObj.getOpen() == 1) {
                         iamgeview_switch.setBackgroundResource(R.drawable.radius110_bg_white_background);
                         imageview_switch_bg.setBackgroundResource(R.drawable.lightglowoutside);
                         textview_switch_tips.setText("点击关闭");
                         layout_lightcolor_control.setVisibility(View.VISIBLE);
                         layout_brightness_control.setVisibility(View.VISIBLE);
-                    }else if(resultObj.getOpen()==2){
+                    } else if (resultObj.getOpen() == 2) {
                         iamgeview_switch.setBackgroundResource(R.drawable.ovel_110_bg);
                         imageview_switch_bg.setBackgroundResource(R.color.room_type_text);
                         textview_switch_tips.setText("点击开启");
@@ -215,38 +284,39 @@ public class LightActivity extends Activity implements View.OnClickListener,Smar
                         layout_brightness_control.setVisibility(View.GONE);
                     }
                     button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
-                    if(resultObj.getYellow()!=0){
+                    if (resultObj.getYellow() != 0) {
                         button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
-                        float alpha= (float) (resultObj.getYellow()/200.0);
-                        Log.i(TAG,"alpha="+alpha);
+                        float alpha = (float) (resultObj.getYellow() / 200.0);
+                        Log.i(TAG, "alpha=" + alpha);
                         button_switch_light.setAlpha(alpha);
-                        if(isOnResume){
-                            progressBarLightYellow.setProgress(resultObj.getYellow()/2);
+                        if (isOnResume) {
+                            progressBarLightYellow.setProgress(resultObj.getYellow() / 2);
                         }
 
                     }
-                    if(resultObj.getWhite()!=0){
-                        float alpha= (float) (resultObj.getWhite()/200.0);
-                        Log.i(TAG,"alpha="+alpha);
+                    if (resultObj.getWhite() != 0) {
+                        float alpha = (float) (resultObj.getWhite() / 200.0);
+                        Log.i(TAG, "alpha=" + alpha);
                         imageview_switch_bg.setAlpha(alpha);
-                        if(isOnResume){
-                            progressBarLightWhite.setProgress(resultObj.getWhite()/2);
+                        if (isOnResume) {
+                            progressBarLightWhite.setProgress(resultObj.getWhite() / 2);
                         }
 
                     }
-                    isOnResume=false;
+                    isOnResume = false;
                     break;
             }
         }
     };
+
     @Override
     public void responseSetResult(String result) {
-        Log.i(TAG,"responseSetResult="+result);
-        Gson gson=new Gson();
-        QueryOptions resultObj= gson.fromJson(result,QueryOptions.class);
-        Message msg=Message.obtain();
-        msg.obj=resultObj;
-        msg.what=MSG_GET_LIGHT_RESULT;
+        Log.i(TAG, "responseSetResult=" + result);
+        Gson gson = new Gson();
+        QueryOptions resultObj = gson.fromJson(result, QueryOptions.class);
+        Message msg = Message.obtain();
+        msg.obj = resultObj;
+        msg.what = MSG_GET_LIGHT_RESULT;
         mHandler.sendMessage(msg);
     }
 }

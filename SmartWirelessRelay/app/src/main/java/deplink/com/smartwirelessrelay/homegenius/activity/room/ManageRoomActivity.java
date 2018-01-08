@@ -14,6 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Room;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +26,12 @@ import deplink.com.smartwirelessrelay.homegenius.Protocol.json.device.getway.Dev
 import deplink.com.smartwirelessrelay.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import deplink.com.smartwirelessrelay.homegenius.manager.device.getway.GetwayManager;
 import deplink.com.smartwirelessrelay.homegenius.manager.room.RoomManager;
+import deplink.com.smartwirelessrelay.homegenius.util.NetUtil;
+import deplink.com.smartwirelessrelay.homegenius.util.Perfence;
+import deplink.com.smartwirelessrelay.homegenius.view.toast.ToastSingleShow;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ManageRoomActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ManageRoomActivity";
@@ -41,6 +51,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private List<Device> mGetways;
     private String selectGetwayName;
     private ImageView imageview_getway_arror_right;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,13 +112,16 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
+        userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         List<Device> mGetways = mRoomManager.getCurrentSelectedRoom().getmGetwayDevices();
-        if (mGetways == null || mGetways.size()==0) {
+        if (mGetways == null || mGetways.size() == 0) {
             textview_select_getway_name.setText("未设置网关");
         } else {
             textview_select_getway_name.setText(mGetways.get(0).getName());
         }
     }
+
+    private String userName;
 
     @Override
     public void onClick(View v) {
@@ -120,15 +134,39 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                 onBackPressed();
                 break;
             case R.id.button_delete_room:
+                if (!NetUtil.isNetAvailable(this)) {
+                    ToastSingleShow.showText(this, "无可用网络连接,请检查网络");
+                    return;
+                }
+                if (userName.equals("")) {
+                    ToastSingleShow.showText(this, "用户未登录");
+                    return;
+                }
                 if (mRoomName != null) {
-                    int result = mRoomManager.deleteRoom(mRoomName);
-                    Log.i(TAG, "删除房间，影响的行数=" + result);
-                    if (result > 0) {
-                        startActivity(new Intent(ManageRoomActivity.this, RoomActivity.class));
-                        Toast.makeText(ManageRoomActivity.this, "删除房间成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
-                    }
+                    String uid = mRoomManager.findRoom(mRoomName, true).getUid();
+                    Room room = new Room();
+                    room.setUid(uid);
+                    RestfulToolsHomeGenius.getSingleton(this).deleteRomm(userName, room, new Callback<DeviceOperationResponse>() {
+                        @Override
+                        public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                            if (response.code() == 200) {
+                                int result = mRoomManager.deleteRoom(mRoomName);
+                                Log.i(TAG, "删除房间，影响的行数=" + result);
+                                if (result > 0) {
+                                    startActivity(new Intent(ManageRoomActivity.this, RoomActivity.class));
+                                    Toast.makeText(ManageRoomActivity.this, "删除房间成功", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ManageRoomActivity.this, "删除房间失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+
+                        }
+                    });
+
                 }
                 break;
             case R.id.layout_room_name:

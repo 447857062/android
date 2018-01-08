@@ -22,6 +22,15 @@ public class Room extends DataSupport implements Serializable{
      * 房间名称
      */
     private String roomName;
+    private String uid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     @Column(nullable = false)
     /**
