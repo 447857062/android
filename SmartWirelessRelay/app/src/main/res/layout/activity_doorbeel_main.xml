@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.DoorbeelMainActivity">
+    tools:context="com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity">
     <include
         android:id="@+id/layout_title"
         layout="@layout/layout_title_with_right_have_image_have_textbackground" />

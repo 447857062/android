@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceActivity">
+    tools:context="com.deplink.homegenius.activity.device.AddDeviceActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"

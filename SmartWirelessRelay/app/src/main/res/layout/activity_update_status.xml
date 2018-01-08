@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.firmwareupdate.UpdateStatusActivity">
+    tools:context="com.deplink.homegenius.activity.device.router.firmwareupdate.UpdateStatusActivity">
     <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_set_new_router_title"/>
 
     <ImageView

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.usrinfo.UserinfoActivity">
+    tools:context="com.deplink.homegenius.activity.personal.usrinfo.UserinfoActivity">
 
     <include
         android:id="@+id/layout_title"
@@ -33,7 +33,7 @@
                 android:layout_centerVertical="true"
                 android:text="头像" />
 
-            <deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView
+            <com.deplink.homegenius.view.imageview.CircleImageView
                 android:id="@+id/user_head_portrait"
                 android:layout_width="60dp"
                 android:layout_height="60dp"

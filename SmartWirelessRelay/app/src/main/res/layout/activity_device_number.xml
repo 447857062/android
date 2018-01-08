@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/roomequipmentbackground"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.DeviceNumberActivity">
+    tools:context="com.deplink.homegenius.activity.room.DeviceNumberActivity">
 
     <include
         android:id="@+id/layout_title"
         layout="@layout/layout_title_with_right_have_text_have_textbackground" />
 
-    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ListViewLinearLayout
+    <com.deplink.homegenius.view.scrollview.ListViewLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_title">
@@ -24,6 +24,6 @@
             android:dividerHeight="@dimen/device_item_divider_height"
             android:listSelector="@color/transparent"
             android:scrollbars="none" />
-    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ListViewLinearLayout>
+    </com.deplink.homegenius.view.scrollview.ListViewLinearLayout>
 
 </RelativeLayout>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity">
+    tools:context="com.deplink.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity">
     <include
         android:id="@+id/layout_title"
         layout="@layout/layout_title_with_back_center_titletext" />
@@ -25,7 +25,7 @@
             android:layout_marginLeft="@dimen/search_band_icon_marginleft"
             android:src="@drawable/searchbrand" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        <com.deplink.homegenius.view.edittext.ClearEditText
             android:id="@+id/edittext_band_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.SideBar
+        <com.deplink.homegenius.view.listview.sortlistview.SideBar
             android:id="@+id/sidrbar"
             android:layout_width="30dp"
             android:layout_height="fill_parent"

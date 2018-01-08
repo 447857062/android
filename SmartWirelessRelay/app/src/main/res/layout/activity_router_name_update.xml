@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterNameUpdateActivity">
+    tools:context="com.deplink.homegenius.activity.device.router.RouterNameUpdateActivity">
     <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
 
-    <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+    <com.deplink.homegenius.view.edittext.ClearEditText
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:paddingLeft="@dimen/layout_content_margin_left_right"
         android:paddingRight="@dimen/layout_content_margin_left_right"
         android:layout_below="@+id/layout_title"
         android:id="@+id/edittext_router_name"
         android:hint="路由器"
+        android:singleLine="true"
         android:textColor="@color/room_type_text"
         android:textSize="@dimen/text_size_small"
         android:textColorHint="@color/huise"

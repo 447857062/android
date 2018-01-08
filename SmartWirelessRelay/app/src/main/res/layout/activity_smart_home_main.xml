@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/homebackground"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.homepage.SmartHomeMainActivity">
+    tools:context="com.deplink.homegenius.activity.homepage.SmartHomeMainActivity">
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
@@ -81,7 +81,6 @@
                 <TextView
                     android:id="@+id/textview_tempature"
                     android:layout_width="wrap_content"
-
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_horizontal|top"
@@ -93,7 +92,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/textview_tempature"
-                    android:layout_marginLeft="5dp"
                     android:paddingTop="8dp"
                     android:layout_toRightOf="@+id/textview_tempature"
                     android:gravity="left|top"
@@ -215,14 +213,14 @@
                     android:layout_marginRight="@dimen/layout_content_margin_left_right"
                     android:alpha="0.9"
                     android:background="@drawable/homepage_halfrectangle_buttom_background">
-                    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView
+                    <com.deplink.homegenius.view.scrollview.NonScrollableListView
                         android:id="@+id/layout_roomselect_changed_ype"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:divider="@null"
                         android:listSelector="@color/transparent"
                         android:visibility="gone">
-                    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.NonScrollableListView>
+                    </com.deplink.homegenius.view.scrollview.NonScrollableListView>
                     <HorizontalScrollView
                         android:id="@+id/layout_roomselect_normal"
                         android:layout_width="match_parent"

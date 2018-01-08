@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/room_type_text"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.light.LightActivity">
+    tools:context="com.deplink.homegenius.activity.device.light.LightActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

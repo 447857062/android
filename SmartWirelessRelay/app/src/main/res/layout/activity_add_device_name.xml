@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceNameActivity">
+    tools:context="com.deplink.homegenius.activity.device.AddDeviceNameActivity">
 
     <include
         android:id="@+id/layout_title"
@@ -32,11 +32,12 @@
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        <com.deplink.homegenius.view.edittext.ClearEditText
             android:id="@+id/edittext_add_device_input_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:singleLine="true"
             android:layout_toRightOf="@+id/textview_device_name_left"
             android:background="@null"
             android:hint="我家的门锁（最多10个字）"

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.doorbell.EditDoorbellActivity">
+    tools:context="com.deplink.homegenius.activity.device.doorbell.EditDoorbellActivity">
     <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
     <RelativeLayout
         android:background="@color/white_background"
@@ -29,15 +29,16 @@
                 android:id="@+id/textview_device_name_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
-                android:maxLength="5"
+            <com.deplink.homegenius.view.edittext.ClearEditText
+                android:maxLength="10"
                 android:background="@null"
                 android:layout_centerVertical="true"
                 android:id="@+id/edittext_add_device_input_name"
-                android:hint="我家的门锁（最多5个字）"
+                android:hint="我家的门锁（最多10个字）"
                 android:textColorHint="@color/huise"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small"
+                android:singleLine="true"
                 android:layout_toRightOf="@+id/textview_device_name_left"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.RouterMainActivity">
+    tools:context="com.deplink.homegenius.activity.device.router.RouterMainActivity">
 
     <RelativeLayout
         android:id="@+id/layout_top_content"
@@ -294,7 +294,7 @@
         </RelativeLayout>
     </RelativeLayout>
     <!--滑动删除的组件（已连接设备列表）-->
-    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout
+    <com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout
         android:layout_width="match_parent"
         android:layout_below="@+id/layout_select_show_current_list"
         android:layout_height="match_parent">
@@ -332,7 +332,7 @@
                             android:gravity="center_horizontal" />
 
                     </RelativeLayout>
-                    <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.SwipeMenuListView
+                    <com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuListView
                         android:id="@+id/listview_device_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -368,7 +368,7 @@
                     </RelativeLayout>
 
 
-                    <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.SwipeMenuListView
+                    <com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuListView
                         android:id="@+id/listview_black_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -377,7 +377,7 @@
 
             </FrameLayout>
         </ScrollView>
-    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout>
+    </com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout>
 
 
 

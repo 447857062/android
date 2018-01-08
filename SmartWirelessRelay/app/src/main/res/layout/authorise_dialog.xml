@@ -107,7 +107,7 @@
             </RelativeLayout>
 
 
-            <deplink.com.smartwirelessrelay.homegenius.view.edittext.SecurityPasswordEditText
+            <com.deplink.homegenius.view.edittext.SecurityPasswordEditText
                 android:id="@+id/edt_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

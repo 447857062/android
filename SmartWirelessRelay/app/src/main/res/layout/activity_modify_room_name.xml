@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.ModifyRoomNameActivity">
+    tools:context="com.deplink.homegenius.activity.room.ModifyRoomNameActivity">
     <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
 
     <RelativeLayout
@@ -15,12 +15,13 @@
         android:paddingRight="@dimen/layout_content_margin_left_right"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:layout_height="@dimen/layout_item_content_height">
-        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        <com.deplink.homegenius.view.edittext.ClearEditText
            android:layout_centerVertical="true"
             android:id="@+id/clear"
             android:maxLength="5"
             android:hint="客厅"
             android:textSize="@dimen/text_size_small"
+            android:singleLine="true"
             android:background="@null"
             android:textColor="@color/room_type_text"
             android:textColorHint="@color/huise"

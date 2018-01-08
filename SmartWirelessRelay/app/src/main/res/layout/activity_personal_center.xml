@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.PersonalCenterActivity">
+    tools:context="com.deplink.homegenius.activity.personal.PersonalCenterActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"
@@ -37,7 +37,7 @@
 
         </RelativeLayout>
 
-        <deplink.com.smartwirelessrelay.homegenius.view.imageview.CircleImageView
+        <com.deplink.homegenius.view.imageview.CircleImageView
             android:id="@+id/user_head_portrait"
             android:layout_width="@dimen/mine_page_user_image_ridus"
             android:layout_height="@dimen/mine_page_user_image_ridus"
@@ -60,7 +60,7 @@
             android:text="Clamdown"
             android:textColor="@color/white" />
     </RelativeLayout>
-    <deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout
+    <com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout
         android:layout_width="match_parent"
         android:layout_below="@+id/layout_title"
         android:layout_above="@+id/layout_buttom_bar"
@@ -145,7 +145,7 @@
             </RelativeLayout>
 
         </ScrollView>
-    </deplink.com.smartwirelessrelay.homegenius.view.scrollview.ScrollViewLinearLayout>
+    </com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout>
 
 
     <RelativeLayout

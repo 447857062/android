@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.AddDeviceQRcodeActivity">
+    tools:context="com.deplink.homegenius.activity.device.AddDeviceQRcodeActivity">
 
     <RelativeLayout
         android:id="@+id/layout_top_area"

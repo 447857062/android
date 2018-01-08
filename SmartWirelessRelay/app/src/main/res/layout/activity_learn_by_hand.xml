@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/viewfinder_mask"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.LearnByHandActivity">
+    tools:context="com.deplink.homegenius.activity.device.remoteControl.LearnByHandActivity">
     <TextView
         android:id="@+id/textview_info_1"
         android:layout_marginTop="@dimen/title_bar_height"

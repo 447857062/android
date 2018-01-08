@@ -23,13 +23,14 @@
             android:textColor="@color/room_type_text"
             android:textSize="@dimen/text_size_small" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        <com.deplink.homegenius.view.edittext.ClearEditText
             android:id="@+id/edittext_input_userid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
             android:gravity="center_vertical|left"
             android:layout_marginLeft="10dp"
+            android:singleLine="true"
             android:layout_toRightOf="@+id/textview_userid"
             android:textColor="@color/room_type_text"
             android:textColorHint="@color/huise"

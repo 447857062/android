@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/loginbackground"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.personal.login.RegistActivity">
+    tools:context="com.deplink.homegenius.activity.personal.login.RegistActivity">
 
     <include
         android:id="@+id/layout_title"

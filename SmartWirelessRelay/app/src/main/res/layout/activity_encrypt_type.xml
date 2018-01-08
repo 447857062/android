@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.wifi.EncryptTypeActivity">
+    tools:context="com.deplink.homegenius.activity.device.router.wifi.EncryptTypeActivity">
 
     <include
         android:id="@+id/layout_topbar"

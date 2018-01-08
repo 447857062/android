@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity">
+    tools:context="com.deplink.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity">
     <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
     <RelativeLayout
         android:layout_marginTop="@dimen/search_band_layout_margintop"
@@ -23,11 +23,12 @@
             android:layout_marginLeft="@dimen/search_band_icon_marginleft"
             android:src="@drawable/searchbrand" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        <com.deplink.homegenius.view.edittext.ClearEditText
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/icon_search_band"
             android:id="@+id/edittext_band_name"
             android:textSize="@dimen/text_size_small"
+            android:maxLength="10"
             android:textColor="@color/room_type_text"
             android:paddingRight="10dp"
             android:layout_width="match_parent"
@@ -64,7 +65,7 @@
             android:textColor="@color/room_type_text"
             android:textSize="30.0dip"
             android:visibility="invisible" />
-        <deplink.com.smartwirelessrelay.homegenius.view.listview.swipemenulistview.sortlistview.SideBar
+        <com.deplink.homegenius.view.listview.sortlistview.SideBar
             android:id="@+id/sidrbar"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"

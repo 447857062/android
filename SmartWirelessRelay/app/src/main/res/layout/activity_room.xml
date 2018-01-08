@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/roombackground"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.room.RoomActivity">
+    tools:context="com.deplink.homegenius.activity.room.RoomActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"
@@ -57,7 +57,7 @@
             android:gravity="center_vertical"
             android:text="我的房间(长按可排序，点击编辑房间)" />
 
-        <deplink.com.smartwirelessrelay.homegenius.view.gridview.DragGridView
+        <com.deplink.homegenius.view.gridview.DragGridView
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/layout_room_content_margin_top"

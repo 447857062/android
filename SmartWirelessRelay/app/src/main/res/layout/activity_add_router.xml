@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="deplink.com.smartwirelessrelay.homegenius.activity.device.router.AddRouterActivity">
+    tools:context="com.deplink.homegenius.activity.device.router.AddRouterActivity">
     <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_title"/>
 
     <RelativeLayout
@@ -27,7 +27,7 @@
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <deplink.com.smartwirelessrelay.homegenius.view.edittext.ClearEditText
+        <com.deplink.homegenius.view.edittext.ClearEditText
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:id="@+id/edittext_add_device_input_name"
@@ -35,6 +35,7 @@
             android:maxLength="10"
             android:textColor="@color/huise"
             android:background="@null"
+            android:singleLine="true"
             android:textSize="@dimen/text_size_small"
             android:layout_toRightOf="@+id/textview_device_name_left"
             android:layout_width="match_parent"
