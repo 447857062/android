@@ -73,7 +73,6 @@ public class MQTTController implements MqttListener {
             mContext = context;
         }
     }
-
     public static MQTTController getSingleton() {
         if (singleton == null) {
             synchronized (MQTTController.class) {

@@ -2,19 +2,13 @@ package com.deplink.sdk.android.sdk.rest;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.deplink.sdk.android.sdk.rest.ConverterFactory.StringConvertFactory;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,28 +45,7 @@ public class RestfulToolsHomeGeniusString {
                 "-----END CERTIFICATE-----";
         builder = new Retrofit.Builder().baseUrl(baseUrl).
                 addConverterFactory(StringConvertFactory.create());
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().cookieJar(new CookieJar() {
-            @Override
-            public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < cookies.size(); i++) {
-                    sb.append(cookies.get(i).toString());
-                }
-                Log.i("saveFromResponse", "" + sb.toString());
-            }
-
-            @Override
-            public List<Cookie> loadForRequest(HttpUrl url) {
-                List<Cookie> cookies = new ArrayList<>();
-                SharedPreferences sp = mContext.getSharedPreferences("user", Context.MODE_PRIVATE);
-                String token = sp.getString("token", null);
-                if (token != null) {
-                    Cookie cookie = Cookie.parse(url, token);
-                    cookies.add(cookie);
-                }
-                return cookies;
-            }
-        });
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(SslUtil.getSocketFactory(ca))
                 .readTimeout(20 * 1000, TimeUnit.MILLISECONDS);
@@ -103,6 +76,34 @@ public class RestfulToolsHomeGeniusString {
         }
         Log.i(TAG, "getRoomInfo:" + username);
         Call<String> call = apiService.getRoomInfo(username, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<String> getDeviceInfo(String username, Callback<String> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "getDeviceInfo:" + username);
+        Call<String> call = apiService.getDeviceInfo(username, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<String> readDeviceInfo(String username, String uid, Callback<String> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "readDeviceInfo:" + username);
+        Call<String> call = apiService.readDeviceInfo(username, uid, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
