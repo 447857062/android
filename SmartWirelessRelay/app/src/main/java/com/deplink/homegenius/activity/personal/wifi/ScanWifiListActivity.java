@@ -57,11 +57,11 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     }
 
     private void initViews() {
-        listview_wifi_list = (ListView) findViewById(R.id.listview_wifi_list);
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        textview_reload_wifilist = (TextView) findViewById(R.id.textview_reload_wifilist);
+        listview_wifi_list = findViewById(R.id.listview_wifi_list);
+        textview_title = findViewById(R.id.textview_title);
+        textview_edit = findViewById(R.id.textview_edit);
+        image_back = findViewById(R.id.image_back);
+        textview_reload_wifilist = findViewById(R.id.textview_reload_wifilist);
     }
 
     @Override

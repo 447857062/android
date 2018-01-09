@@ -40,6 +40,7 @@ import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.ConfigRemoteControlDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -359,6 +360,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         mDeviceManager.bindSmartDevList(device);
     }
 
+    @Override
+    public void responseQueryHttpResult(List<Deviceprops> devices) {
+
+    }
+
     private boolean isSmartDeviceAddSuccess(DeviceList aDeviceList) {
       boolean result=false;
         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
@@ -405,6 +411,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         mHandler.sendMessageDelayed(msg, 3000);
                         if(mGetways.size()>0){
                             //TODO 网关uid要和之前区分
+
                             mDeviceManager.addDeviceHttp(
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     currentSelectGetway.getUid(),

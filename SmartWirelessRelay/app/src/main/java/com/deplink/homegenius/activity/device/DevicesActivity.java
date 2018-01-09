@@ -48,6 +48,7 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -121,6 +122,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceAdapter.setBottomList(datasBottom);
         mDeviceAdapter.notifyDataSetChanged();
         listview_devies.setEmptyView(layout_empty_view_scroll);
+        mDeviceManager.queryDeviceListHttp();
     }
     @Override
     protected void onDestroy() {
@@ -213,7 +215,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
     }
-
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
@@ -222,7 +223,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         layout_personal_center.setOnClickListener(this);
         imageview_add_device.setOnClickListener(this);
         layout_select_room_type.setOnClickListener(this);
-
         listview_devies.getRefreshableView().setSelector(android.R.color.transparent);
         listview_devies.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         // 设置上下刷新 使用 OnRefreshListener2
@@ -348,26 +348,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
     }
 
+    @Override
+    public void responseQueryHttpResult(List<Deviceprops> devices) {
+
+    }
+
     private static final int MSG_GET_DEVS = 0x01;
-    private static final int MSG_SHOW_REFRESH_COMPLEMENT = 0x02;
-    private static final int MSG_HIDE_REFRESH_COMPLEMENT = 0x03;
-    private static final int MSG_HIDE_REFRESH = 0x04;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             String str = (String) msg.obj;
             switch (msg.what) {
-                case MSG_SHOW_REFRESH_COMPLEMENT:
-                    mHandler.sendEmptyMessageDelayed(MSG_HIDE_REFRESH_COMPLEMENT,500);
-                    break;
-                case MSG_HIDE_REFRESH:
-
-                    mHandler.sendEmptyMessageDelayed(MSG_SHOW_REFRESH_COMPLEMENT,1000);
-                    break;
-                case MSG_HIDE_REFRESH_COMPLEMENT:
-
-                    break;
                 case MSG_GET_DEVS:
                     datasTop.clear();
                     datasBottom.clear();

@@ -24,6 +24,7 @@ import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.homegenius.DeviceAddBody;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
@@ -130,11 +131,18 @@ public class DeviceManager implements LocalConnecteListener {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                Log.i(TAG, "" + response.body());
-                ArrayList<Deviceprops>list= ParseUtil.jsonToArrayList( response.body(), Deviceprops.class);
-                for(int i=0;i<list.size();i++){
-                    Log.i(TAG, "devicename=" +list.get(i).toString());
+                if(response.code()==200){
+                    Log.i(TAG, "" + response.body());
+                    ArrayList<Deviceprops>list= ParseUtil.jsonToArrayList( response.body(), Deviceprops.class);
+                    for(int i=0;i<list.size();i++){
+                        Log.i(TAG, "devicename=" +list.get(i).toString());
+                    }
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        mDeviceListenerList.get(i).responseQueryHttpResult(list);
+                    }
                 }
+
+
             }
 
             @Override
@@ -145,12 +153,13 @@ public class DeviceManager implements LocalConnecteListener {
     }
 
     public void addDeviceHttp(String room_uid,String gw_uid,String device_type,String mac) {
+        Log.i(TAG, "room_uid=" + room_uid);
         String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if(userName.equals("")){
             ToastSingleShow.showText(mContext,"用户未登录");
             return;
         }
-        Deviceprops device=new Deviceprops();
+        DeviceAddBody device=new DeviceAddBody();
         device.setDevice_type(device_type);
         if(gw_uid!=null){
             device.setGw_uid(gw_uid);

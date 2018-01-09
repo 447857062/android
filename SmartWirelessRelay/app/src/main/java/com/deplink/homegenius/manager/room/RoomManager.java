@@ -129,7 +129,6 @@ public class RoomManager {
     private List<String> roomNames;
 
     public List<String> getRoomNames() {
-
         return roomNames;
     }
 

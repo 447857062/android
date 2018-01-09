@@ -1,6 +1,7 @@
 package com.deplink.homegenius.manager.device;
 
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 
 import java.util.List;
 
@@ -25,4 +26,8 @@ public interface DeviceListener {
      *返回绑定结果Http
      */
     void responseBindDeviceHttpResult();
+    /**
+     *返回绑定结果Http
+     */
+    void responseQueryHttpResult(List<Deviceprops>devices);
 }
