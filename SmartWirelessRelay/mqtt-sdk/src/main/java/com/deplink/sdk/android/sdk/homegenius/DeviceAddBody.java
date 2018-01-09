@@ -3,13 +3,15 @@
   */
 package com.deplink.sdk.android.sdk.homegenius;
 
+import java.io.Serializable;
+
 /**
  * Auto-generated: 2016-07-06 12:3:50
  *
  * @author aTool.org (i@aTool.org)
  * @website http://www.atool.org/json2javabean.php
  */
-public class DeviceAddBody {
+public class DeviceAddBody implements Serializable{
     private String mac;
     private String sn;
     private String device_type;
