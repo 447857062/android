@@ -3,19 +3,31 @@ package com.deplink.homegenius.manager.device;
 import android.content.Context;
 import android.util.Log;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.QueryWifiList;
 import com.deplink.homegenius.Protocol.json.device.lock.QueryWifiListResult;
+import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.Protocol.json.wifi.Proto;
+import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.ParseUtil;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -25,11 +37,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.deplink.homegenius.Protocol.json.OpResult;
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
-import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
-import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Administrator on 2017/11/9.
@@ -103,6 +113,153 @@ public class DeviceManager implements LocalConnecteListener {
             public void run() {
                 Log.i(TAG, "cachedThreadPool execute queryDeviceList");
                 mLocalConnectmanager.getOut(packet.data);
+            }
+        });
+    }
+    /**
+     * 查询设备列表
+     */
+    public void queryDeviceListHttp() {
+        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(userName.equals("")){
+            ToastSingleShow.showText(mContext,"用户未登录");
+            return;
+        }
+        RestfulToolsHomeGeniusString.getSingleton(mContext).getDeviceInfo(userName, new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                Log.i(TAG, "" + response.body());
+                ArrayList<Deviceprops>list= ParseUtil.jsonToArrayList( response.body(), Deviceprops.class);
+                for(int i=0;i<list.size();i++){
+                    Log.i(TAG, "devicename=" +list.get(i).toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void addDeviceHttp(String room_uid,String gw_uid,String device_type,String mac) {
+        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(userName.equals("")){
+            ToastSingleShow.showText(mContext,"用户未登录");
+            return;
+        }
+        Deviceprops device=new Deviceprops();
+        device.setDevice_type(device_type);
+        if(gw_uid!=null){
+            device.setGw_uid(gw_uid);
+        }
+        device.setRoom_uid(room_uid);
+        device.setMac(mac);
+        RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName,device, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if(response.code()==200){
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        mDeviceListenerList.get(i).responseBindDeviceHttpResult();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+                Log.i(TAG, "" +t.getMessage());
+            }
+        });
+    }
+    public void deleteDeviceHttp(String sn,String uid,String mac) {
+        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(userName.equals("")){
+            ToastSingleShow.showText(mContext,"用户未登录");
+            return;
+        }
+        Deviceprops device=new Deviceprops();
+        if(sn!=null){
+            device.setSn(sn);
+        }
+        if(uid!=null){
+            device.setUid(uid);
+        }
+        if(mac!=null){
+            device.setMac(mac);
+        }
+
+        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName,device, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                Log.i(TAG, "" + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+                Log.i(TAG, "" +t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 修改设备属性
+     */
+    public void alertDeviceHttp(String uid,String room_uid,String device_name) {
+        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(userName.equals("")){
+            ToastSingleShow.showText(mContext,"用户未登录");
+            return;
+        }
+        Deviceprops device=new Deviceprops();
+        device.setUid(uid);
+        if(room_uid!=null){
+            device.setRoom_uid(room_uid);
+        }
+        if(device_name!=null){
+            device.setDevice_name(device_name);
+        }
+        RestfulToolsHomeGenius.getSingleton(mContext).alertDevice(userName,device, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                Log.i(TAG, "" + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+                Log.i(TAG, "" +t.getMessage());
+            }
+        });
+    }
+    /**
+     * 读设备属性
+     */
+    public void readDeviceInfoHttp(String uid) {
+        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(userName.equals("")){
+            ToastSingleShow.showText(mContext,"用户未登录");
+            return;
+        }
+        RestfulToolsHomeGeniusString.getSingleton(mContext).readDeviceInfo(userName,uid, new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                Log.i(TAG, "" + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.i(TAG, "" +t.getMessage());
             }
         });
     }
@@ -424,8 +581,8 @@ public class DeviceManager implements LocalConnecteListener {
                 Device dev = new Device();
                 dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
                 dev.setUid(aDeviceList.getDevice().get(i).getUid());
-                List<Room> rooms = new ArrayList<Room>();
-                rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
+                List<Room> rooms = new ArrayList<>();
+                rooms.addAll(RoomManager.getInstance().queryRooms());
                 dev.setRoomList(rooms);
                 String deviceName = "中继器";
                 List<Device> devices = DataSupport.findAll(Device.class, true);
@@ -490,7 +647,7 @@ public class DeviceManager implements LocalConnecteListener {
                 dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
                 dev.setOrg(aDeviceList.getSmartDev().get(i).getOrg());
                 List<Room> rooms = new ArrayList<>();
-                rooms.addAll(RoomManager.getInstance().getDatabaseRooms());
+                rooms.addAll(RoomManager.getInstance().queryRooms());
                 dev.setRooms(rooms);
                 String deviceName = deviceType;
                 allSmartDevices = DataSupport.findAll(SmartDev.class, true);

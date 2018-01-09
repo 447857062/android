@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -15,30 +14,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
 import com.deplink.homegenius.constant.RoomConstant;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
-import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Room;
-import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class AddRommActivity extends Activity implements View.OnClickListener {
+public class AddRommActivity extends Activity implements View.OnClickListener ,RoomListener{
     private static final String TAG = "AddRommActivity";
     private TextView textview_add_room_complement;
     private ImageView image_back;
@@ -69,6 +64,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         roomManager = RoomManager.getInstance();
+        roomManager.initRoomManager(this,this);
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
         listTop.add(RoomConstant.ROOMTYPE.TYPE_LIVING);
         listTop.add(RoomConstant.ROOMTYPE.TYPE_BED);
@@ -161,13 +157,13 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         super.onResume();
         userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
     }
-
+    private String roomName;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             //完成
             case R.id.textview_add_room_complement:
-                final String roomName = edittext_room_name.getText().toString();
+                  roomName = edittext_room_name.getText().toString();
                 if(!NetUtil.isNetAvailable(this)){
                     ToastSingleShow.showText(this,"无可用网络连接,请检查网络");
                     return;
@@ -176,35 +172,11 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                     ToastSingleShow.showText(this,"用户未登录");
                     return;
                 }
-                Room room=new Room();
-                room.setRoom_name(roomName);
-                room.setRoom_type(roomType);
-                RestfulToolsHomeGenius.getSingleton(this).addRomm(userName, room, new Callback<DeviceOperationResponse>() {
-                    @Override
-                    public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
-                        Log.i(TAG,"response.code()="+response.code());
-                        if(response.code()==200){
-                            if (!roomName.equals("")) {
-                                boolean result = roomManager.addRoom(roomType, roomName,currentSelectGetway);
-                                if (result) {
-                                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
-                                    finish();
-                                } else {
-                                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
-                                }
-                            } else {
-                                Toast.makeText(AddRommActivity.this, "请输入房间名称", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
-                        Log.i(TAG,"addroom onFailure="+t.toString());
-                        ToastSingleShow.showText(AddRommActivity.this,"添加房间失败");
-                    }
-                });
-
+                if (roomName.equals("")) {
+                    Toast.makeText(AddRommActivity.this, "请输入房间名称", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                roomManager.addRoomHttp(roomName,roomType);
                 break;
             case R.id.image_back:
                 onBackPressed();
@@ -219,5 +191,38 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void responseQueryResult(List<Room> result) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        roomManager.removeRoomListener(this);
+    }
+
+    @Override
+    public void responseAddRoomResult(String result) {
+        boolean addDbResult = roomManager.addRoom(roomType, roomName,result,currentSelectGetway);
+        if (addDbResult) {
+            mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
+            finish();
+        } else {
+            mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
+        }
+
+    }
+
+    @Override
+    public void responseDeleteRoomResult() {
+
+    }
+
+    @Override
+    public void responseUpdateRoomNameResult() {
+
     }
 }

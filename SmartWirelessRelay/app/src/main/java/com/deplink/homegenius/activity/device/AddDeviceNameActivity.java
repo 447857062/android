@@ -19,17 +19,22 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.device.adapter.RemoteControlSelectListAdapter;
+import com.deplink.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
 import com.deplink.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import com.deplink.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.ConfigRemoteControlDialog;
@@ -41,12 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity;
-import com.deplink.homegenius.manager.device.DeviceListener;
-import com.deplink.homegenius.manager.device.light.SmartLightManager;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 
 public class AddDeviceNameActivity extends Activity implements DeviceListener, View.OnClickListener {
     private static final String TAG = "AddDeviceNameActivity";
@@ -86,6 +85,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private RelativeLayout layout_remotecontrol_list;
     private ConfigRemoteControlDialog configRemoteControlDialog;
     private SmartLightManager mSmartLightManager;
+    private RoomManager mRoomManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +132,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         mSmartSwitchManager.InitSmartSwitchManager(this);
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
+        mRoomManager=RoomManager.getInstance();
+        mRoomManager.initRoomManager(this,null);
         //getintent data
         currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         deviceType = getIntent().getStringExtra("DeviceType");
@@ -146,35 +148,35 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         }
         switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_LOCK:
-                edittext_add_device_input_name.setHint("例如:我家的门锁（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能门锁");
                 break;
             case "IRMOTE_V2":
-                edittext_add_device_input_name.setHint("例如:智能遥控（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能遥控");
                 break;
             case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
-                edittext_add_device_input_name.setHint("例如:智能空调（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能空调遥控器");
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
-                edittext_add_device_input_name.setHint("例如:智能电视（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能电视遥控器");
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
-                edittext_add_device_input_name.setHint("例如:智能机顶盒遥控（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能机顶盒遥控");
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SWITCH:
-                edittext_add_device_input_name.setHint("例如:智能开关（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能开关");
                 break;
             case DeviceTypeConstant.TYPE.TYPE_MENLING:
-                edittext_add_device_input_name.setHint("例如:智能门铃（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能门铃");
                 break;
             case DeviceTypeConstant.TYPE.TYPE_LIGHT:
-                edittext_add_device_input_name.setHint("例如:智能灯泡（最多10个字）");
+                edittext_add_device_input_name.setHint("（最多10个字）");
                 textview_title.setText("智能灯泡");
                 break;
         }
@@ -352,6 +354,11 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
     }
 
+    @Override
+    public void responseBindDeviceHttpResult() {
+        mDeviceManager.bindSmartDevList(device);
+    }
+
     private boolean isSmartDeviceAddSuccess(DeviceList aDeviceList) {
       boolean result=false;
         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
@@ -393,10 +400,25 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         Log.i(TAG, "绑定智能设备");
                         device.setName(deviceName);
                         DialogThreeBounce.showLoading(this);
-                         msg = Message.obtain();
+                        msg = Message.obtain();
                         msg.what = MSG_HIDE_DIALOG;
                         mHandler.sendMessageDelayed(msg, 3000);
-                        mDeviceManager.bindSmartDevList(device);
+                        if(mGetways.size()>0){
+                            //TODO 网关uid要和之前区分
+                            mDeviceManager.addDeviceHttp(
+                                    mRoomManager.getCurrentSelectedRoom().getUid(),
+                                    currentSelectGetway.getUid(),
+                                    device.getTp(),
+                                    device.getAd()
+                            );
+                        }else{
+                            mDeviceManager.addDeviceHttp(
+                                    mRoomManager.getCurrentSelectedRoom().getUid(),
+                                    null,
+                                    device.getTp(),
+                                    device.getAd()
+                            );
+                        }
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                         if (deviceName.equals("")) {
@@ -405,7 +427,22 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         Log.i(TAG, "智能开关二维码=" + switchqrcode);
                         device = gson.fromJson(switchqrcode, QrcodeSmartDevice.class);
                         device.setName(deviceName);
-                        mDeviceManager.bindSmartDevList(device);
+                        if(mGetways.size()>0){
+                            //TODO 网关uid要和之前区分
+                            mDeviceManager.addDeviceHttp(
+                                    mRoomManager.getCurrentSelectedRoom().getUid(),
+                                    currentSelectGetway.getUid(),
+                                    device.getTp(),
+                                    device.getAd()
+                            );
+                        }else{
+                            mDeviceManager.addDeviceHttp(
+                                    mRoomManager.getCurrentSelectedRoom().getUid(),
+                                    null,
+                                    device.getTp(),
+                                    device.getAd()
+                            );
+                        }
                         break;
                     case "IRMOTE_V2":
                         if (deviceName.equals("")) {
@@ -413,7 +450,22 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         }
                         device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         device.setName(deviceName);
-                        mDeviceManager.bindSmartDevList(device);
+                        if(mGetways.size()>0){
+                            //TODO 网关uid要和之前区分
+                            mDeviceManager.addDeviceHttp(
+                                    mRoomManager.getCurrentSelectedRoom().getUid(),
+                                    currentSelectGetway.getUid(),
+                                    device.getTp(),
+                                    device.getAd()
+                            );
+                        }else{
+                            mDeviceManager.addDeviceHttp(
+                                    mRoomManager.getCurrentSelectedRoom().getUid(),
+                                    null,
+                                    device.getTp(),
+                                    device.getAd()
+                            );
+                        }
                         //TODO 服务没有用调试打开
                         // mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                         break;

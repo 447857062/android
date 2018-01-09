@@ -13,15 +13,14 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.device.adapter.AddDeviceGridViewAdapter;
 import com.deplink.homegenius.activity.device.smartlock.EditSmartLockActivity;
 import com.deplink.homegenius.activity.room.AddRommActivity;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class AddDeviceActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RoomActivity";
@@ -50,7 +49,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager();
+        mRoomManager.initRoomManager(this,null);
         addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (addDeviceSelectRoom) {
@@ -128,7 +127,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        mRooms = mRoomManager.getDatabaseRooms();
+        mRooms = mRoomManager.queryRooms();
         mRoomsAdapter = new AddDeviceGridViewAdapter(this, mRooms);
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);

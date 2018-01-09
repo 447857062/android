@@ -14,8 +14,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
+import com.deplink.homegenius.activity.device.AddDeviceActivity;
+import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.manager.device.DeviceListener;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
+import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.google.gson.Gson;
 
@@ -23,19 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.DeviceList;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
-import com.deplink.homegenius.activity.device.AddDeviceActivity;
-import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
-import com.deplink.homegenius.manager.device.DeviceListener;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
-import com.deplink.homegenius.manager.room.RoomManager;
-import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
-import com.deplink.homegenius.view.edittext.ClearEditText;
 
 public class EditActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "EditDoorbeelActivity";
@@ -237,6 +236,11 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
 
     @Override
     public void responseSetWifirelayResult(int result) {
+
+    }
+
+    @Override
+    public void responseBindDeviceHttpResult() {
 
     }
 }

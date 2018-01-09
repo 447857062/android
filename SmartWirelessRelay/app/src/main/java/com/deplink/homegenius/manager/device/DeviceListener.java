@@ -21,5 +21,8 @@ public interface DeviceListener {
      */
     void responseWifiListResult(List<SSIDList>wifiList);
     void responseSetWifirelayResult(int result);
-
+    /**
+     *返回绑定结果Http
+     */
+    void responseBindDeviceHttpResult();
 }

@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import com.deplink.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
 import com.deplink.homegenius.constant.SmartLockConstant;
@@ -159,7 +160,9 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 mAuthoriseDialog.show();
                 break;
             case R.id.image_back:
-                onBackPressed();
+                Intent intentBack=new Intent(this, DevicesActivity.class);
+                intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intentBack);
                 break;
             case R.id.imageview_unlock:
                 if ((System.currentTimeMillis() - currentTime) / 1000 > 10) {

@@ -15,10 +15,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
+import com.deplink.homegenius.activity.device.AddDeviceActivity;
+import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.manager.device.DeviceListener;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import com.deplink.homegenius.view.edittext.ClearEditText;
 
 import org.litepal.crud.DataSupport;
 
@@ -26,17 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.activity.device.AddDeviceActivity;
-import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
-import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
-import com.deplink.homegenius.manager.device.DeviceListener;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.light.SmartLightManager;
-import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
-import com.deplink.homegenius.view.edittext.ClearEditText;
 
 public class LightEditActivity extends Activity implements View.OnClickListener,DeviceListener{
     private static final String TAG = "LightEditActivity";
@@ -234,6 +233,11 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void responseSetWifirelayResult(int result) {
+
+    }
+
+    @Override
+    public void responseBindDeviceHttpResult() {
 
     }
 }

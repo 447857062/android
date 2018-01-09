@@ -48,8 +48,9 @@ import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectService;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
-import com.deplink.homegenius.util.CharSetUtil;
+import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.scrollview.NonScrollableListView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -57,23 +58,17 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -87,7 +82,7 @@ import retrofit2.Response;
 /**
  * 智能家居主页
  */
-public class SmartHomeMainActivity extends Activity implements View.OnClickListener {
+public class SmartHomeMainActivity extends Activity implements View.OnClickListener,RoomListener {
     private static final String TAG = "SmartHomeMainActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -123,6 +118,29 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private NonScrollableListView layout_roomselect_changed_ype;
     private ScrollView scrollview_root;
 
+    @Override
+    public void responseQueryResult( List<Room> result) {
+       Message msg=Message.obtain();
+        msg.what=MSG_GET_ROOM;
+        msg.obj=result;
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void responseAddRoomResult(String result) {
+
+    }
+
+    @Override
+    public void responseDeleteRoomResult() {
+
+    }
+
+    @Override
+    public void responseUpdateRoomNameResult() {
+
+    }
+
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -148,7 +166,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 Log.i(TAG, "city=" + city);
                 textview_city.setText(city + "/" + district);
                 try {
-                    cityCode = getCityCodeFromCityName(province, city);
+                    cityCode = ParseUtil.getCityCodeFromCityName(SmartHomeMainActivity.this,province, city);
                     Log.i(TAG, "cityCode=" + cityCode);
                     initWaetherData();
                     sendRequestWithHttpClient(city);
@@ -160,79 +178,23 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     }
 
-    public String getCityCodeFromCityName(String provinceName, String cityName) throws XmlPullParserException, IOException {
-        String cityCode = null;
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        //获取XmlPullParser实例
-        XmlPullParser pullParser = factory.newPullParser();
-        InputStream in = this.getAssets().open("city_code_data.xml");
-        pullParser.setInput(in, "UTF-8");
-        //开始
-        int eventCode = pullParser.getEventType();
-        boolean ifExit = false;
-        boolean ifProvinceCatched = false;
-        boolean ifCityCatched = false;
-        while (eventCode != XmlPullParser.END_DOCUMENT) {
-            String nodeName = pullParser.getName();
-            switch (eventCode) {
-                case XmlPullParser.START_DOCUMENT:
-                    break;
-                case XmlPullParser.START_TAG:
-                    if ("Province".equals(nodeName)) {
-                        int i = 0;
-                        while (i < pullParser.getAttributeCount()) {
-                            if (ifProvinceCatched)
-                                break;
-                            String name = pullParser.getAttributeName(i);
-                            String value = pullParser.getAttributeValue(i);
-                            if (name.equalsIgnoreCase("name"))
-                                if (value.equalsIgnoreCase(provinceName)) {
-                                    ifProvinceCatched = true;
-                                    break;
-                                }
-                            i++;
-                        }
-                    } else if ("City".equals(nodeName)) {
-                        int i = 0;
-                        String tempCityCode = null;
-                        while (i < pullParser.getAttributeCount()) {
-                            if (!ifProvinceCatched)
-                                break;
-                            String name = pullParser.getAttributeName(i);
-                            String value = pullParser.getAttributeValue(i);
-                            if (name.equalsIgnoreCase("ID")) {
-                                tempCityCode = pullParser.getAttributeValue(i);
-                            }
-                            if (name.equalsIgnoreCase("name")) {
-                                if (value.equalsIgnoreCase(cityName)) {
-                                    ifCityCatched = true;
-                                }
-                            }
-                            if (ifCityCatched) {
-                                cityCode = tempCityCode;
-                                ifExit = true;
-                                break;
-                            }
-                            i++;
-                        }
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    break;
-                default:
-                    break;
-            }
-            if (ifExit)
-                break;
-            eventCode = pullParser.next();
-        }
-        return cityCode;
-    }
 
+    private static final int MSG_GET_ROOM=100;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            switch (msg.what){
+                case MSG_GET_ROOM:
+                    List<Room>result= (List<Room>) msg.obj;
+                    mRoomList.clear();
+                    mRoomList.addAll(result);
+                    setRoomNormalLayout();
+                    Log.i(TAG,"mRoomList.size="+mRoomList.size());
+                    mAdapter.notifyDataSetChanged();
+                    mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
+                    break;
+            }
         }
     };
 
@@ -296,32 +258,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }).start();
     }
 
-    /**
-     * @param json
-     * @param clazz
-     * @return
-     */
-    public static <T> ArrayList<T> jsonToArrayList(String json, Class<T> clazz) {
-        Type type = new TypeToken<ArrayList<JsonObject>>() {
-        }.getType();
-        ArrayList<JsonObject> jsonObjects = new Gson().fromJson(json, type);
-        ArrayList<T> arrayList = new ArrayList<>();
-        for (JsonObject jsonObject : jsonObjects) {
-            arrayList.add(new Gson().fromJson(jsonObject, clazz));
-        }
-        return arrayList;
-    }
-
     //解析JSON数据
     private void parseJSONObjectOrJSONArray(String jsonData) {
         if (!jsonData.contains("error")) {
-            ArrayList<Pm25Info> pm25lists = jsonToArrayList(jsonData, Pm25Info.class);
+            ArrayList<Pm25Info> pm25lists = ParseUtil.jsonToArrayList(jsonData, Pm25Info.class);
             textview_pm25.setText("" + pm25lists.get(0).getPm2_5());
         }
     }
-
     String cityCode = null;
-
     public void initWaetherData() {
         new Thread(new Runnable() {
             @Override
@@ -373,10 +317,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     };
 
-
+    private boolean isLogin;
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -386,25 +331,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         imageview_devices.setImageResource(R.drawable.nocheckthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
-        mRoomList.clear();
-        mRoomList.addAll(mRoomManager.getDatabaseRooms());
-        int size = mRoomList.size();
-        int length = 92;
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        float density = dm.density;
-        int gridviewWidth = (int) (size * (length + 1) * density);
-        int itemWidth = (int) (length * density);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
-        params.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
-        roomGridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
-        roomGridView.setColumnWidth(itemWidth); // 设置列表项宽
-        roomGridView.setStretchMode(GridView.NO_STRETCH);
-        roomGridView.setNumColumns(size); // 设置列数量=列表集合数
-        roomGridView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        if(isLogin){
+            mRoomList.clear();
+            mRoomList.addAll(mRoomManager.queryRooms());
+            mAdapter.notifyDataSetChanged();
+            setRoomNormalLayout();
+        }
 
         layout_roomselect_changed_ype.setAdapter(mRoomSelectTypeChangedAdapter);
         layout_roomselect_changed_ype.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -420,10 +352,30 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         layout_roomselect_normal.smoothScrollTo(0, 0);
     }
 
+    private void setRoomNormalLayout() {
+        int size = mRoomList.size();
+        int length = 92;
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        float density = dm.density;
+        int gridviewWidth = (int) (size * (length + 1) * density);
+        int itemWidth = (int) (length * density);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
+        roomGridView.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
+        roomGridView.setColumnWidth(itemWidth); // 设置列表项宽
+        roomGridView.setStretchMode(GridView.NO_STRETCH);
+        roomGridView.setNumColumns(size); // 设置列数量=列表集合数
+        roomGridView.setAdapter(mAdapter);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mRoomManager.removeRoomListener(this);
         manager.removeEventCallback(ec);
+        manager.onDestroy();
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -443,7 +395,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         startService(bindIntent);
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager();
+        mRoomManager.initRoomManager(this,this);
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
         mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);
         mExperienceCenterDeviceList = new ArrayList<>();
@@ -473,26 +425,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
-                        //TODO DEBUG
-                        RestfulToolsHomeGeniusString.getSingleton(SmartHomeMainActivity.this).getRoomInfo("13691876442", new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                Log.i(TAG, "" + response.code());
-                                Log.i(TAG, "" + response.message());
-                                Log.i(TAG, "" + response.body());
-                               ArrayList<com.deplink.sdk.android.sdk.homegenius.Room>list= jsonToArrayList( response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
-                                for(int i=0;i<list.size();i++){
-                                    Log.i(TAG, "roomname=" +list.get(i).toString());
-                                    Log.i(TAG, "roomname=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
-                                    Log.i(TAG, "roomtype=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                Log.i(TAG, "" + t.getMessage() + t.toString());
-                            }
-                        });
+                        mRoomList.clear();
+                        mRoomList.addAll(mRoomManager.queryRooms());
+                        mAdapter.notifyDataSetChanged();
+                        setRoomNormalLayout();
                         break;
                 }
             }
@@ -593,12 +529,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         layout_roomselect_changed_ype = findViewById(R.id.layout_roomselect_changed_ype);
         scrollview_root = findViewById(R.id.scrollview_root);
     }
-
     @Override
     protected void onPause() {
         super.onPause();
     }
-
     /**
      * 再按一次退出应用
      */

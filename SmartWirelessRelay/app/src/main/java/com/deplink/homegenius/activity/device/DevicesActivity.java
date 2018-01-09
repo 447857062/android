@@ -16,23 +16,35 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
+import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
+import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
 import com.deplink.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
 import com.deplink.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
+import com.deplink.homegenius.activity.device.remoteControl.tv.TvMainActivity;
+import com.deplink.homegenius.activity.device.router.RouterMainActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchFourActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchOneActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchThreeActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
+import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
+import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
@@ -46,19 +58,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
-import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
-import com.deplink.homegenius.activity.device.remoteControl.tv.TvMainActivity;
-import com.deplink.homegenius.activity.device.router.RouterMainActivity;
-import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
-import com.deplink.homegenius.application.AppManager;
-import com.deplink.homegenius.manager.device.DeviceListener;
-import com.deplink.homegenius.manager.device.light.SmartLightManager;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
-import com.deplink.homegenius.manager.device.router.RouterManager;
-import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
     private static final String TAG = "DevicesActivity";
@@ -135,7 +134,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager();
+        mRoomManager.initRoomManager(this,null);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(DevicesActivity.this);
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
@@ -343,6 +342,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     public void responseSetWifirelayResult(int result) {
 
     }
+
+    @Override
+    public void responseBindDeviceHttpResult() {
+
+    }
+
     private static final int MSG_GET_DEVS = 0x01;
     private static final int MSG_SHOW_REFRESH_COMPLEMENT = 0x02;
     private static final int MSG_HIDE_REFRESH_COMPLEMENT = 0x03;

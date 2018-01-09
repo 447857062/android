@@ -10,20 +10,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
+import com.deplink.homegenius.activity.room.adapter.GridViewAdapter;
+import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.view.gridview.DragGridView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.activity.room.adapter.GridViewAdapter;
-import com.deplink.homegenius.application.AppManager;
-import com.deplink.homegenius.view.gridview.DragGridView;
 
 public class RoomActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RoomActivity";
@@ -64,7 +63,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager();
+        mRoomManager.initRoomManager(this,null);
 
     }
 
@@ -79,7 +78,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         imageview_devices.setImageResource(R.drawable.nocheckthedevice);
         imageview_rooms.setImageResource(R.drawable.checktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
-        mRooms = mRoomManager.getDatabaseRooms();
+        mRooms = mRoomManager.queryRooms();
         mRoomsAdapter = new GridViewAdapter(this, mRooms);
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);

@@ -16,6 +16,7 @@ import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity;
 import com.deplink.homegenius.activity.personal.wifi.adapter.WifiListAdapter;
+import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
@@ -25,8 +26,6 @@ import java.util.Collection;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.manager.device.DeviceListener;
 
 /**
  * 配置wifi网关
@@ -168,6 +167,11 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     @Override
     public void responseSetWifirelayResult(int result) {
         Log.i(TAG, "responseSetWifirelayResult=" + result);
+    }
+
+    @Override
+    public void responseBindDeviceHttpResult() {
+
     }
 
     private WifiRelayInputDialog wifiRelayDialog;
