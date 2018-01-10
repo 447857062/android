@@ -58,7 +58,6 @@ public class ActionListener implements IMqttActionListener {
    */
   @Override
   public void onSuccess(IMqttToken asyncActionToken) {
-	 // System.out.println("onSuccess----------->"+asyncActionToken);
     if(this.mqttListener != null ){
       this.mqttListener.onSuccess(asyncActionToken,action,clientHandle,topic);
     }

@@ -1,4 +1,4 @@
-package com.deplink.sdk.android.sdk.device;
+package com.deplink.sdk.android.sdk.device.router;
 
 import android.util.Log;
 

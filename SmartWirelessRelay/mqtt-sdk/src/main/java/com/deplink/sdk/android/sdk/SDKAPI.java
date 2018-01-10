@@ -1,8 +1,7 @@
 package com.deplink.sdk.android.sdk;
 
 import com.deplink.sdk.android.sdk.bean.User;
-import com.deplink.sdk.android.sdk.bean.UserSession;
-import com.deplink.sdk.android.sdk.device.BaseDevice;
+import com.deplink.sdk.android.sdk.device.router.BaseDevice;
 
 import java.util.List;
 

@@ -37,8 +37,8 @@ public interface RestfulHomeGeniusServer {
     @GET("/user/{user_name}/deviceprops/{uid}")
     Call<String> readDeviceInfo(@Path("user_name") String user_name,@Path("uid") String uid, @Header("token") String token);
     //删除设备
-    @DELETE("/user/{user_name}/devices")
-    Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name, @Body Deviceprops deviceprops,@Header("token") String token);
+    @DELETE("/user/{user_name}/devices/{uid}")
+    Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
     //添加房间
     @POST("/user/{user_name}/rooms")
     Call<DeviceOperationResponse> addRoom(@Path("user_name") String user_name, @Body Room room, @Header("token") String token);

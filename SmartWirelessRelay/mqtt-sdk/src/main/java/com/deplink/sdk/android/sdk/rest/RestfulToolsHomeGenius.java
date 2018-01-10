@@ -87,7 +87,7 @@ public class RestfulToolsHomeGenius {
         return call;
     }
 
-    public Call<DeviceOperationResponse> deleteDevice(String username, Deviceprops deviceprops, Callback<DeviceOperationResponse> cll) {
+    public Call<DeviceOperationResponse> deleteDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
             if (cll != null) {
                 cll.onFailure(null, new Throwable(errMsg));
@@ -95,7 +95,7 @@ public class RestfulToolsHomeGenius {
             return null;
         }
         Log.i(TAG, "addDevice:" + username);
-        Call<DeviceOperationResponse> call = apiService.deleteDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
+        Call<DeviceOperationResponse> call = apiService.deleteDevice(username, uid, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }

@@ -1,0 +1,67 @@
+package com.deplink.sdk.android.sdk.device;
+
+import android.util.Log;
+
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.bean.TopicPair;
+import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.homegenius.QueryOptions;
+import com.deplink.sdk.android.sdk.mqtt.MQTTController;
+import com.google.gson.Gson;
+
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+
+/**
+ * Created by huqs on 2016/7/6.
+ * 路由器设备
+ */
+public class HomeGenius  {
+    public static final String TAG = "HomeGenius";
+    /**
+     * 设备与本APP用户的专用通道
+     */
+    protected TopicPair exclusive;
+    /**
+     * 要求设备上报
+     */
+    public void bindApp(String uid) {
+        QueryOptions queryCmd = new QueryOptions();
+        queryCmd.setOP("SET");
+        queryCmd.setMethod("BindApp");
+        queryCmd.setTimestamp();
+        queryCmd.setAuthId(uid);
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        //exclusive.setSub("");
+//        Log.i(TAG,"exclusive.getSub()="+ exclusive.getSub());
+        MQTTController.getSingleton().publish(/*exclusive.getSub()*/"device/a7282842d44cc3f68521fa5e12b72b34/sub", text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
+    }
+    private class MqttActionHandler implements IMqttActionListener {
+        private String action;
+        public MqttActionHandler(String action) {
+            this.action = action;
+        }
+        @Override
+        public void onSuccess(IMqttToken iMqttToken) {
+            notifySuccess(action);
+        }
+        @Override
+        public void onFailure(IMqttToken iMqttToken, Throwable throwable) {
+            throwable.printStackTrace();
+            Log.d(DeplinkSDK.SDK_TAG, "--->Mqtt failure: " + throwable.getMessage());
+            String error = "操作失败";
+            notifyFailure(action, error);
+        }
+    }
+    private void notifySuccess(String action) {
+       /* if (mSDKCoordinator != null) {
+            mSDKCoordinator.notifyDeviceOpSuccess(action, deviceKey);
+        }*/
+    }
+    private void notifyFailure(String action, String error) {
+       /* if (mSDKCoordinator != null) {
+            mSDKCoordinator.notifyDeviceOpFailure(action, deviceKey, new Throwable(error));
+        }*/
+    }
+}

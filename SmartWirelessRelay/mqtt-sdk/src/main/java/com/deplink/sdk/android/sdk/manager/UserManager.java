@@ -12,7 +12,7 @@ import com.deplink.sdk.android.sdk.bean.DeviceInfo;
 import com.deplink.sdk.android.sdk.bean.DeviceRoot;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.bean.UserSession;
-import com.deplink.sdk.android.sdk.device.BaseDevice;
+import com.deplink.sdk.android.sdk.device.router.BaseDevice;
 import com.deplink.sdk.android.sdk.interfaces.MqttListener;
 import com.deplink.sdk.android.sdk.interfaces.SDKCoordinator;
 import com.deplink.sdk.android.sdk.json.AppUpdateResponse;

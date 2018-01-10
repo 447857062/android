@@ -11,7 +11,7 @@ import com.deplink.sdk.android.sdk.MqttConfig;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.bean.UserSession;
-import com.deplink.sdk.android.sdk.device.BaseDevice;
+import com.deplink.sdk.android.sdk.device.router.BaseDevice;
 import com.deplink.sdk.android.sdk.interfaces.SDKCoordinator;
 import com.deplink.sdk.android.sdk.json.AppUpdateResponse;
 import com.deplink.sdk.android.sdk.mqtt.MQTTController;

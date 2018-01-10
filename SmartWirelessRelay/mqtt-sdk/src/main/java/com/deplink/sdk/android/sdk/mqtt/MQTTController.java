@@ -348,10 +348,8 @@ public class MQTTController implements MqttListener {
             case DISCONNECT:
                 break;
             case SUBSCRIBE:
-                //System.out.println("onSuccess--------------action:"+cation);
                 break;
             case PUBLISH:
-                //System.out.println("onSuccess--------------action:"+cation);
                 break;
             case RECONNECT:
                 mSDKCoordinator.MQTTConnected();

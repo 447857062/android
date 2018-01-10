@@ -9,8 +9,8 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.DeviceInfo;
 import com.deplink.sdk.android.sdk.bean.DeviceRoot;
 import com.deplink.sdk.android.sdk.bean.DeviceUpgradeInfo;
-import com.deplink.sdk.android.sdk.device.BaseDevice;
-import com.deplink.sdk.android.sdk.device.RouterDevice;
+import com.deplink.sdk.android.sdk.device.router.BaseDevice;
+import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.interfaces.MqttListener;
 import com.deplink.sdk.android.sdk.interfaces.SDKCoordinator;
 import com.deplink.sdk.android.sdk.json.Content;
@@ -61,7 +61,9 @@ public class DeviceManager implements MqttListener {
             MQTTController.getSingleton().subscribe(key, this);
         }
         String userTopic = mSDKCoordinator.getUserSession().getTopic_sub().get(0);
+        Log.i(TAG,"userTopic="+userTopic);
         MQTTController.getSingleton().subscribe(userTopic, this);
+       // MQTTController.getSingleton().subscribe("device/a7282842d44cc3f68521fa5e12b72b34/sub", this);
         mSDKCoordinator.notifySuccess(SDKAction.CONNECTED);
     }
 
@@ -96,11 +98,9 @@ public class DeviceManager implements MqttListener {
             return;
         }
         RestfulTools.getSingleton().getBinding(new Callback<DeviceRoot>() {
-
             @Override
             public void onResponse(Call<DeviceRoot> call, Response<DeviceRoot> response) {
                 switch (response.code()) {
-
                     case 200:
                         DeviceRoot deviceRoot = response.body();
                         deviceRoot.getDevice_list();
@@ -108,7 +108,6 @@ public class DeviceManager implements MqttListener {
                         synchronized (mDeviceMap) {
                             mDeviceMap.clear();
                             for (DeviceInfo deviceInfo : deviceRoot.getDevice_list()) {
-                                //    if ("4bf239c9048675e706cfa7a63164fe4e".equals(deviceInfo.getProduct_key())) {
                                 RouterDevice device = new RouterDevice(mSDKCoordinator);
                                 if (TextUtils.isEmpty(deviceInfo.getDeviceName())) {
                                     device.setName(deviceInfo.getProduct());
@@ -139,7 +138,6 @@ public class DeviceManager implements MqttListener {
 
                                 mDeviceMap.put(device.getDeviceKey(), device);
                             }
-                            // }
 
                             Iterator it = mDeviceTopics.keySet().iterator();
                             List<String> topics = new ArrayList<String>();

@@ -1,4 +1,4 @@
-package com.deplink.sdk.android.sdk.device;
+package com.deplink.sdk.android.sdk.device.router;
 
 import com.deplink.sdk.android.sdk.bean.DeviceCookieItem;
 import com.deplink.sdk.android.sdk.bean.DeviceMemberItem;
@@ -18,7 +18,6 @@ public abstract class BaseDevice {
     public static final String UPGRADE_STATE_RUNNING = "running";
     public static final String UPGRADE_STATE_FINISHED = "finished";
     public static final String UPGRADE_STATE_FAILED = "failed";
-
     /**
      * 产品编码
      */
