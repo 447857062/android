@@ -13,13 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.manager.device.getway.GetwayManager;
-import com.google.gson.Gson;
-
-import java.util.List;
-
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
@@ -27,11 +20,18 @@ import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevic
 import com.deplink.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
+import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.google.gson.Gson;
 
-public class GetwayDeviceActivity extends Activity implements View.OnClickListener, GetwayListener {
+import java.util.List;
+
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+
+public class GetwayDeviceActivity extends Activity implements View.OnClickListener, GetwayListener{
     private static final String TAG = "GetwayDeviceActivity";
     private TextView button_delete_device;
     private GetwayManager mGetwayManager;
@@ -46,7 +46,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private String currentSelectDeviceName;
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private DeleteDeviceDialog deleteDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +114,8 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                             Toast.makeText(GetwayDeviceActivity.this, "删除网关设备成功", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(GetwayDeviceActivity.this, ExperienceDevicesActivity.class));
                         } else {
-                            mGetwayManager.deleteGetwayDevice();
+                            mGetwayManager.deleteDeviceHttp();
+
                         }
                     }
                 });
@@ -163,7 +163,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             }
         }
     };
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -191,6 +190,12 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         }
         if (deleteSuccess) {
             mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+        }
+    }
+    @Override
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+        if(result.getStatus()!=null && result.getStatus().equals("ok")){
+            mGetwayManager.deleteGetwayDevice();
         }
     }
 }

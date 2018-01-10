@@ -40,6 +40,7 @@ import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.ConfigRemoteControlDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
@@ -304,7 +305,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_LOCK:
                 device.setTp(DeviceTypeConstant.TYPE.TYPE_LOCK);
-                mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
+                mDeviceManager.addDBSmartDevice(device,addDeviceUid, currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                         mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
@@ -313,7 +314,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 DialogThreeBounce.hideLoading();
                 break;
             case "IRMOTE_V2":
-                mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
+                mDeviceManager.addDBSmartDevice(device, addDeviceUid,currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                         mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
@@ -322,7 +323,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SWITCH:
-                mSmartSwitchManager.addDBSwitchDevice(device);
+                mSmartSwitchManager.addDBSwitchDevice(device,addDeviceUid);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
                     if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
                         mSmartSwitchManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
@@ -354,10 +355,26 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     public void responseSetWifirelayResult(int result) {
 
     }
+    private String addDeviceUid;
+    @Override
+    public void responseAddDeviceHttpResult(String uid) {
+        addDeviceUid=uid;
+        mDeviceManager.bindSmartDevList(device);
+    }
 
     @Override
-    public void responseBindDeviceHttpResult() {
-        mDeviceManager.bindSmartDevList(device);
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseGetDeviceInfoHttpResult(String result) {
+
     }
 
     @Override
@@ -413,17 +430,25 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             //TODO 网关uid要和之前区分
 
                             mDeviceManager.addDeviceHttp(
+                                    deviceName,
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     currentSelectGetway.getUid(),
                                     device.getTp(),
-                                    device.getAd()
+                                    device.getAd(),
+                                    device.getSn(),
+                                    device.getOrg(),
+                                    device.getVer()
                             );
                         }else{
                             mDeviceManager.addDeviceHttp(
+                                    deviceName,
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     null,
                                     device.getTp(),
-                                    device.getAd()
+                                    device.getAd(),
+                                    device.getSn(),
+                                    device.getOrg(),
+                                    device.getVer()
                             );
                         }
                         break;
@@ -437,17 +462,26 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         if(mGetways.size()>0){
                             //TODO 网关uid要和之前区分
                             mDeviceManager.addDeviceHttp(
+                                    deviceName,
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     currentSelectGetway.getUid(),
                                     device.getTp(),
-                                    device.getAd()
+                                    device.getAd(),
+                                    device.getSn(),
+                                    device.getOrg(),
+                                    device.getVer()
                             );
                         }else{
                             mDeviceManager.addDeviceHttp(
+                                    deviceName,
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     null,
                                     device.getTp(),
-                                    device.getAd()
+                                    device.getAd(),
+                                    device.getSn(),
+                                    device.getOrg(),
+                                    device.getVer()
+
                             );
                         }
                         break;
@@ -460,17 +494,25 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         if(mGetways.size()>0){
                             //TODO 网关uid要和之前区分
                             mDeviceManager.addDeviceHttp(
+                                    deviceName,
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     currentSelectGetway.getUid(),
                                     device.getTp(),
-                                    device.getAd()
+                                    device.getAd(),
+                                    device.getOrg(),
+                                    device.getOrg(),
+                                    device.getVer()
                             );
                         }else{
                             mDeviceManager.addDeviceHttp(
+                                    deviceName,
                                     mRoomManager.getCurrentSelectedRoom().getUid(),
                                     null,
                                     device.getTp(),
-                                    device.getAd()
+                                    device.getAd(),
+                                    device.getOrg(),
+                                    device.getOrg(),
+                                    device.getVer()
                             );
                         }
                         //TODO 服务没有用调试打开

@@ -5,9 +5,14 @@ import android.util.Log;
 
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
+import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.google.gson.Gson;
@@ -18,12 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
-import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 
 /**
  * Created by Administrator on 2017/12/7.
@@ -169,13 +168,13 @@ public class SmartSwitchManager implements LocalConnecteListener{
     public void setCurrentAddSwitchSubType(String currentAddSwitchSubType) {
         this.currentAddSwitchSubType = currentAddSwitchSubType;
     }
-    public boolean addDBSwitchDevice(QrcodeSmartDevice device) {
+    public boolean addDBSwitchDevice(QrcodeSmartDevice device,String uid) {
         //查询设备
         Log.i(TAG,"当前添加的开关子类型"+currentAddSwitchSubType);
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
         if (smartDev == null) {
             smartDev = new SmartDev();
-            smartDev.setUid(device.getAd());
+            smartDev.setUid(uid);
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
             smartDev.setType(DeviceTypeConstant.TYPE.TYPE_SWITCH);
@@ -191,7 +190,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
     /**
      * 更新设备所在房间
      */
-    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid, String deviceName) {
+    public void updateSmartDeviceInWhatRoom(Room room ,String deviceUid,String deviceName) {
         Log.i(TAG, "更新智能设备所在的房间=start" + "room=" + (room != null));
         //保存所在的房间
         //查询设备
@@ -208,6 +207,16 @@ public class SmartSwitchManager implements LocalConnecteListener{
         smartDev.setName(deviceName);
         boolean saveResult = smartDev.save();
         Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+    }
+
+    public boolean updateSmartDeviceName(String deviceUid, String deviceName) {
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        smartDev.setName(deviceName);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+        return saveResult;
     }
     /**
      * 删除数据库中的一个智能设备

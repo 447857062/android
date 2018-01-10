@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.RouterDevice;
+import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;

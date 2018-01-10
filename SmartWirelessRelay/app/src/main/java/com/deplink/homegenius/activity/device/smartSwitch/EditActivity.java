@@ -29,6 +29,8 @@ import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -56,7 +58,8 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     private TextView textview_select_getway_name;
     private TextView textview_edit;
     private ImageView imageview_getway_arror_right;
-
+    private String switchType;
+    private String selectGetwayName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +77,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         textview_edit.setOnClickListener(this);
     }
 
-    private String switchType;
-    private String selectGetwayName;
+
 
     private void initDatas() {
         textview_edit.setText("完成");
@@ -169,7 +171,10 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                onBackPressed();
+                String deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                deviceName = edittext_add_device_input_name.getText().toString();
+                mDeviceManager.alertDeviceHttp(deviceUid,null,deviceName,null);
+
                 break;
             case R.id.layout_getway_select:
                 if (layout_getway_list.getVisibility() == View.VISIBLE) {
@@ -191,7 +196,8 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
                     @Override
                     public void onSureBtnClicked() {
                         DialogThreeBounce.showLoading(EditActivity.this);
-                        mDeviceManager.deleteSmartDevice();
+                        mDeviceManager.deleteDeviceHttp();
+
 
                     }
                 });
@@ -240,7 +246,33 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     }
 
     @Override
-    public void responseBindDeviceHttpResult() {
+    public void responseAddDeviceHttpResult(String uid) {
+
+    }
+
+    @Override
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+        if(result.getStatus()!=null && result.getStatus().equals("ok")){
+            mDeviceManager.deleteSmartDevice();
+        }
+    }
+
+    @Override
+    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+        String deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+       boolean saveResult= mSmartSwitchManager.updateSmartDeviceName(deviceUid,deviceName);
+        if(saveResult){
+            onBackPressed();
+        }
+    }
+
+    @Override
+    public void responseGetDeviceInfoHttpResult(String result) {
+
+    }
+
+    @Override
+    public void responseQueryHttpResult(List<Deviceprops> devices) {
 
     }
 }

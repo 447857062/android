@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -66,22 +67,18 @@ public class DeviceManager implements LocalConnecteListener {
     private SmartDev currentSelectSmartDevice;
     private List<SmartDev> allSmartDevices;
     private boolean isStartFromExperience;
-
     public boolean isStartFromExperience() {
         return isStartFromExperience;
     }
-
     public void setStartFromExperience(boolean startFromExperience) {
         isStartFromExperience = startFromExperience;
     }
-
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
             instance = new DeviceManager();
         }
         return instance;
     }
-
     private List<DeviceListener> mDeviceListenerList;
 
     public void addDeviceListener(DeviceListener listener) {
@@ -141,10 +138,7 @@ public class DeviceManager implements LocalConnecteListener {
                         mDeviceListenerList.get(i).responseQueryHttpResult(list);
                     }
                 }
-
-
             }
-
             @Override
             public void onFailure(Call<String> call, Throwable t) {
 
@@ -152,7 +146,15 @@ public class DeviceManager implements LocalConnecteListener {
         });
     }
 
-    public void addDeviceHttp(String room_uid,String gw_uid,String device_type,String mac) {
+    public void addDeviceHttp(
+            String name,
+            String room_uid,
+            String gw_uid,
+            String device_type,
+            String mac,
+            String sn,
+            String org_code,
+            String version) {
         Log.i(TAG, "room_uid=" + room_uid);
         String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if(userName.equals("")){
@@ -161,20 +163,44 @@ public class DeviceManager implements LocalConnecteListener {
         }
         DeviceAddBody device=new DeviceAddBody();
         device.setDevice_type(device_type);
+        if(name!=null){
+            device.setDevice_name(name);
+        }
         if(gw_uid!=null){
             device.setGw_uid(gw_uid);
         }
+        if(org_code!=null){
+            device.setOrg_code(org_code);
+        }
+        if(version!=null){
+            device.setVersion(version);
+        }
+
         device.setRoom_uid(room_uid);
-        device.setMac(mac);
+        if(mac!=null){
+            device.setMac(mac);
+        }
+        if(sn!=null){
+            device.setSn(sn);
+        }
+        Log.i(TAG,"device.getVersion()==null:"+(device.getVersion()==null));
+        Log.i(TAG,device.toString());
         RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName,device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
+                if(response.errorBody()!=null){
+                    try {
+                        Log.i(TAG, "" + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if(response.code()==200){
                     Log.i(TAG, "" + response.body().toString());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
-                        mDeviceListenerList.get(i).responseBindDeviceHttpResult();
+                        mDeviceListenerList.get(i).responseAddDeviceHttpResult(response.body().getUid());
                     }
                 }
 
@@ -186,29 +212,29 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
-    public void deleteDeviceHttp(String sn,String uid,String mac) {
+    public void deleteDeviceHttp() {
+        String uid=currentSelectSmartDevice.getUid();
         String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if(userName.equals("")){
             ToastSingleShow.showText(mContext,"用户未登录");
             return;
         }
         Deviceprops device=new Deviceprops();
-        if(sn!=null){
-            device.setSn(sn);
-        }
+
         if(uid!=null){
             device.setUid(uid);
         }
-        if(mac!=null){
-            device.setMac(mac);
-        }
-
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName,device, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName,uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                Log.i(TAG, "" + response.body().toString());
+                if(response.code()==200){
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        mDeviceListenerList.get(i).responseDeleteDeviceHttpResult(response.body());
+                    }
+                }
             }
 
             @Override
@@ -221,14 +247,19 @@ public class DeviceManager implements LocalConnecteListener {
     /**
      * 修改设备属性
      */
-    public void alertDeviceHttp(String uid,String room_uid,String device_name) {
+    public void alertDeviceHttp(String uid,String room_uid,String device_name,String gw_uid) {
+
         String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if(userName.equals("")){
             ToastSingleShow.showText(mContext,"用户未登录");
             return;
         }
+
         Deviceprops device=new Deviceprops();
         device.setUid(uid);
+        if(gw_uid!=null){
+            device.setGw_uid(gw_uid);
+        }
         if(room_uid!=null){
             device.setRoom_uid(room_uid);
         }
@@ -240,7 +271,20 @@ public class DeviceManager implements LocalConnecteListener {
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                Log.i(TAG, "" + response.body().toString());
+                if(response.errorBody()!=null){
+                    try {
+                        Log.i(TAG, "" +response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(response.code()==200){
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        mDeviceListenerList.get(i).responseAlertDeviceHttpResult(response.body());
+                    }
+                }
+
             }
 
             @Override
@@ -263,7 +307,13 @@ public class DeviceManager implements LocalConnecteListener {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                Log.i(TAG, "" + response.body());
+                if(response.code()==200){
+                    Log.i(TAG, "" + response.body());
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        mDeviceListenerList.get(i).responseGetDeviceInfoHttpResult(response.body());
+                    }
+                }
+
             }
 
             @Override
@@ -379,12 +429,12 @@ public class DeviceManager implements LocalConnecteListener {
      * 如果有这个设备就不处理
      * 添加智能设备成功，需要更新数据库
      */
-    public boolean addDBSmartDevice(QrcodeSmartDevice device, Device getwayDevice) {
+    public boolean addDBSmartDevice(QrcodeSmartDevice device,String uid, Device getwayDevice) {
         //查询设备
-        SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
+        SmartDev smartDev = DataSupport.where("Uid=?", uid).findFirst(SmartDev.class);
         if (smartDev == null) {
             smartDev = new SmartDev();
-            smartDev.setUid(device.getAd());
+            smartDev.setUid(uid);
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
             smartDev.setType(device.getTp());
@@ -508,11 +558,11 @@ public class DeviceManager implements LocalConnecteListener {
             if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
                 mSmartDevList.clear();
                 mSmartDevList.addAll(DataSupport.findAll(SmartDev.class));
-                handleSmartDeviceList(aDeviceList);
+              //  handleSmartDeviceList(aDeviceList);
             }
             //存储设备列表
             if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
-                handleNormalDeviceList(aDeviceList);
+             //   handleNormalDeviceList(aDeviceList);
             }
             for (int i = 0; i < mDeviceListenerList.size(); i++) {
                 mDeviceListenerList.get(i).responseQueryResult(result);
@@ -667,7 +717,6 @@ public class DeviceManager implements LocalConnecteListener {
                 }
                 dev.setName(deviceName);
                 boolean success = dev.save();
-                Log.i(TAG, "保存智能锁设备=" + success);
             }
         });
 

@@ -3,6 +3,21 @@ package com.deplink.homegenius.manager.device.getway;
 import android.content.Context;
 import android.util.Log;
 
+import com.deplink.homegenius.Protocol.json.QueryOptions;
+import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
+import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
+import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -12,15 +27,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.deplink.homegenius.Protocol.json.QueryOptions;
-import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
-import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
-import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
-import com.deplink.homegenius.Protocol.packet.GeneralPacket;
-import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
-import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
-import com.deplink.homegenius.manager.room.RoomManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -45,7 +54,37 @@ public class GetwayManager implements LocalConnecteListener {
         Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
         return currentAddDevice;
     }
+    public void deleteDeviceHttp() {
+        String uid=currentSelectGetwayDevice.getUid();
+        Log.i(TAG,"删除设备uid="+uid);
+        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(userName.equals("")){
+            ToastSingleShow.showText(mContext,"用户未登录");
+            return;
+        }
+        Deviceprops device=new Deviceprops();
+        if(uid!=null){
+            device.setUid(uid);
+        }
+        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName,uid, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if(response.code()==200){
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mGetwayListenerList.size(); i++) {
+                        mGetwayListenerList.get(i).responseDeleteDeviceHttpResult(response.body());
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+                Log.i(TAG, "" +t.getMessage());
+            }
+        });
+    }
     public void setCurrentAddDevice(String currentAddDevice) {
         this.currentAddDevice = currentAddDevice;
     }
@@ -136,10 +175,11 @@ public class GetwayManager implements LocalConnecteListener {
         });
     }
 
-    public boolean addDBGetwayDevice(QrcodeSmartDevice device) {
+    public boolean addDBGetwayDevice(QrcodeSmartDevice device,String uid) {
         //查询设备
         currentAddGetwayDevice = new Device();
-        currentAddGetwayDevice.setUid(device.getSn());
+        currentAddGetwayDevice.setType(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
+        currentAddGetwayDevice.setUid(uid);
         currentAddGetwayDevice.setName(device.getName());
         boolean addResult = currentAddGetwayDevice.save();
         Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
@@ -154,7 +194,6 @@ public class GetwayManager implements LocalConnecteListener {
      * @param deviceUid 当前网关设备
      */
     public void updateGetwayDeviceInWhatRoom(Room room, String deviceUid) {
-
         //保存所在的房间
         //查询设备
         Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);

@@ -33,6 +33,8 @@ import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -290,7 +292,27 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     }
 
     @Override
-    public void responseBindDeviceHttpResult() {
+    public void responseAddDeviceHttpResult(String uid) {
+
+    }
+
+    @Override
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseGetDeviceInfoHttpResult(String result) {
+
+    }
+
+    @Override
+    public void responseQueryHttpResult(List<Deviceprops> devices) {
 
     }
 }

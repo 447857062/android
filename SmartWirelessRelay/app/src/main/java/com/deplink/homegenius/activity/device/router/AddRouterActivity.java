@@ -16,28 +16,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
+import com.deplink.homegenius.activity.device.AddDeviceActivity;
+import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.device.router.RouterManager;
+import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.RouterDevice;
+import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.activity.device.AddDeviceActivity;
-import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.manager.device.router.RouterManager;
-import com.deplink.homegenius.manager.room.RoomManager;
-import com.deplink.homegenius.util.NetUtil;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 
 public class AddRouterActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "AddRouterActivity";

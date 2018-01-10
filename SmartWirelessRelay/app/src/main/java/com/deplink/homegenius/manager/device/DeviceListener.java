@@ -1,6 +1,7 @@
 package com.deplink.homegenius.manager.device;
 
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 
 import java.util.List;
@@ -23,11 +24,12 @@ public interface DeviceListener {
     void responseWifiListResult(List<SSIDList>wifiList);
     void responseSetWifirelayResult(int result);
     /**
-     *返回绑定结果Http
      */
-    void responseBindDeviceHttpResult();
+    void responseAddDeviceHttpResult(String uid);
+    void responseDeleteDeviceHttpResult(DeviceOperationResponse result);
+    void responseAlertDeviceHttpResult(DeviceOperationResponse result);
+    void responseGetDeviceInfoHttpResult(String result);
     /**
-     *返回绑定结果Http
      */
     void responseQueryHttpResult(List<Deviceprops>devices);
 }

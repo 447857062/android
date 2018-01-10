@@ -37,6 +37,7 @@ import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
@@ -48,6 +49,8 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
+import com.deplink.sdk.android.sdk.device.HomeGenius;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -94,6 +97,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_room_name;
     private List<String> mRooms = new ArrayList<>();
     private ScrollView layout_empty_view_scroll;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +106,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         initDatas();
         initEvents();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -123,7 +128,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceAdapter.notifyDataSetChanged();
         listview_devies.setEmptyView(layout_empty_view_scroll);
         mDeviceManager.queryDeviceListHttp();
+        homeGenius = new HomeGenius();
+        homeGenius.bindApp(AppConstant.BIND_APP_MAC);
     }
+
+    HomeGenius homeGenius;
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -136,7 +146,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this,null);
+        mRoomManager.initRoomManager(this, null);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(DevicesActivity.this);
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
@@ -148,7 +158,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         listview_devies.getRefreshableView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                position-=1;
+                position -= 1;
                 if (datasTop.size() < (position + 1)) {
                     //智能设备
                     String deviceType = datasBottom.get(position - datasTop.size()).getType();
@@ -185,7 +195,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                             SmartSwitchManager.getInstance().setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
                             switch (deviceSubType) {
-                                case  DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
                                     startActivity(new Intent(DevicesActivity.this, SwitchOneActivity.class));
                                     break;
                                 case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
@@ -215,6 +225,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         });
     }
+
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
@@ -238,11 +249,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             public void run() {
                                 listview_devies.onRefreshComplete();
                             }
-                        },3000);
+                        }, 3000);
 
                     }
                 }, 500);
             }
+
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 
@@ -317,12 +329,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
 
-
     @Override
     public void responseQueryResult(String result) {
         if (result.contains("DevList")) {
             Message msg = Message.obtain();
-            msg.what = MSG_GET_DEVS;
+            msg.what = MSG_UPDATE_DEVS;
             msg.obj = result;
             mHandler.sendMessage(msg);
         }
@@ -344,27 +355,134 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
     @Override
-    public void responseBindDeviceHttpResult() {
+    public void responseAddDeviceHttpResult(String uid) {
+
+    }
+
+    @Override
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseGetDeviceInfoHttpResult(String result) {
 
     }
 
     @Override
     public void responseQueryHttpResult(List<Deviceprops> devices) {
-
+        //保存设备列表
+        List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
+        for (int i = 0; i < devices.size(); i++) {
+            boolean addToDb = true;
+            for (int j = 0; j < dbSmartDev.size(); j++) {
+                if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid()) || devices.get(i).getDevice_type().equalsIgnoreCase("LKSWG")) {
+                    addToDb = false;
+                }
+            }
+            if (addToDb) {
+                saveSmartDeviceToSqlite(devices, i);
+            }
+        }
+        List<Device> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
+        for (int i = 0; i < devices.size(); i++) {
+            boolean addToDb = true;
+            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSWG")) {
+                for (int j = 0; j < dbGetwayDev.size(); j++) {
+                    if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                        addToDb = false;
+                    }
+                }
+            } else {
+                addToDb = false;
+            }
+            if (addToDb) {
+                saveGetwayDeviceToSqlite(devices, i);
+            }
+        }
+        mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);
     }
 
-    private static final int MSG_GET_DEVS = 0x01;
+    private void saveGetwayDeviceToSqlite(List<Deviceprops> devices, int i) {
+        Device dev = new Device();
+        String deviceType = devices.get(i).getDevice_type();
+        dev.setType(deviceType);
+        if (deviceType.equalsIgnoreCase("LKSWG")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY;
+            dev.setType(deviceType);
+        }
+        dev.setUid(devices.get(i).getUid());
+        //dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
+        // dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
+        dev.setOrg(devices.get(i).getOrg_code());
+        dev.setVer(devices.get(i).getVersion());
+       /* List<Room> rooms = new ArrayList<>();
+        rooms.addAll(RoomManager.getInstance().queryRooms());
+        dev.setRooms(rooms);*/
+        String deviceName = devices.get(i).getDevice_name();
+        dev.setName(deviceName);
+        boolean success = dev.save();
+        Log.i(TAG, "保存设备:" + success);
+    }
+
+
+    private void saveSmartDeviceToSqlite(List<Deviceprops> devices, int i) {
+        SmartDev dev = new SmartDev();
+        String deviceType = devices.get(i).getDevice_type();
+        dev.setType(deviceType);
+        if (deviceType.equalsIgnoreCase("SMART_LOCK")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
+            dev.setType(deviceType);
+        } else if (deviceType.equalsIgnoreCase("IRMOTE_V2")) {
+            dev.setType(deviceType);
+            deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch1")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch2")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch3")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch4")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
+        } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
+            dev.setType(deviceType);
+        }
+        dev.setUid(devices.get(i).getUid());
+        //dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
+        // dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
+        dev.setOrg(devices.get(i).getOrg_code());
+       /* List<Room> rooms = new ArrayList<>();
+        rooms.addAll(RoomManager.getInstance().queryRooms());
+        dev.setRooms(rooms);*/
+        String deviceName = devices.get(i).getDevice_name();
+        dev.setName(deviceName);
+        boolean success = dev.save();
+        Log.i(TAG, "保存设备:" + success);
+    }
+
+    private static final int MSG_UPDATE_DEVS = 0x01;
+    private static final int MSG_GET_DEVS_HTTPS = 0x02;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             String str = (String) msg.obj;
             switch (msg.what) {
-                case MSG_GET_DEVS:
-                    datasTop.clear();
-                    datasBottom.clear();
-                    datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
-                    datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
+                case MSG_UPDATE_DEVS:
                     List<Device> tempDevice = new ArrayList<>();
                     List<SmartDev> tempSmartDevice = new ArrayList<>();
                     Gson gson = new Gson();
@@ -390,15 +508,20 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             }
                         }
                     }
+                    Log.i(TAG, "设备列表=" + str);
+                    break;
+                case MSG_GET_DEVS_HTTPS:
+                    datasTop.clear();
+                    datasBottom.clear();
+                    datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
+                    datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
                     listview_devies.onRefreshComplete();
                     mDeviceAdapter.setTopList(datasTop);
                     mDeviceAdapter.setBottomList(datasBottom);
                     mDeviceAdapter.notifyDataSetChanged();
-                    Log.i(TAG, "设备列表=" + str);
                     break;
 
             }
         }
     };
-
 }

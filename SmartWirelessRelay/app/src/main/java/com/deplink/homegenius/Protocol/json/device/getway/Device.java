@@ -18,7 +18,26 @@ public class Device extends DataSupport implements Serializable{
     private String Status;
     private String Type;
     private String Mac;
+    private String Org;
+    private String Ver;
     private String name;
+
+    public String getOrg() {
+        return Org;
+    }
+
+    public void setOrg(String org) {
+        Org = org;
+    }
+
+    public String getVer() {
+        return Ver;
+    }
+
+    public void setVer(String ver) {
+        Ver = ver;
+    }
+
     private List<Room>roomList=new ArrayList<>();
     /**
      * 网关的IP地址

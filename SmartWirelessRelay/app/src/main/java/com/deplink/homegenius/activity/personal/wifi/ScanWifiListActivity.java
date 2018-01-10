@@ -20,6 +20,8 @@ import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -170,7 +172,27 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     }
 
     @Override
-    public void responseBindDeviceHttpResult() {
+    public void responseAddDeviceHttpResult(String uid) {
+
+    }
+
+    @Override
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseGetDeviceInfoHttpResult(String result) {
+
+    }
+
+    @Override
+    public void responseQueryHttpResult(List<Deviceprops> devices) {
 
     }
 

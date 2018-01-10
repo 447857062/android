@@ -25,6 +25,8 @@ public class SmartDev extends DataSupport implements Serializable {
     private String Status;
     private String Org;
     private String Ver;
+    private String sn;
+    private String mac;
     private String name;
     /*绑定的网关*/
     private Device getwayDevice;
@@ -33,6 +35,23 @@ public class SmartDev extends DataSupport implements Serializable {
     private boolean switch_three_open;
     private boolean switch_four_open;
     private Router router;
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
+    }
+
     public Router getRouter() {
         return router;
     }

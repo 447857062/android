@@ -10,14 +10,21 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
+import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
+import com.deplink.homegenius.manager.device.DeviceListener;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchListener;
+import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.OpResult;
-import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
+import java.util.List;
 
-public class SwitchFourActivity extends Activity implements View.OnClickListener, SmartSwitchListener {
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+
+public class SwitchFourActivity extends Activity implements View.OnClickListener, SmartSwitchListener,DeviceListener {
     private static final String TAG = "SwitchFourActivity";
     private FrameLayout image_back;
     private TextView textview_title;
@@ -28,7 +35,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
     private Button button_switch_right;
     private SmartSwitchManager mSmartSwitchManager;
     private Button button_all_switch;
-
+    private DeviceManager mDeviceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +53,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         button_switch_3.setOnClickListener(this);
         button_switch_right.setOnClickListener(this);
         button_all_switch.setOnClickListener(this);
-
     }
-
     private boolean switch_one_open;
     private boolean switch_two_open;
     private boolean switch_three_open;
@@ -63,6 +68,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         switch_four_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_four_open();
         setSwitchImageviewBackground();
         mSmartSwitchManager.querySwitchStatus("query");
+        mDeviceManager.readDeviceInfoHttp(mDeviceManager.getCurrentSelectSmartDevice().getUid());
     }
 
     private void setSwitchImageviewBackground() {
@@ -103,6 +109,8 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         mSmartSwitchManager = SmartSwitchManager.getInstance();
         mSmartSwitchManager.InitSmartSwitchManager(this);
         mSmartSwitchManager.addSmartSwitchListener(this);
+        mDeviceManager=DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this,this);
     }
 
     private void initViews() {
@@ -254,6 +262,51 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
                 mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
             }
         });
+
+    }
+
+    @Override
+    public void responseQueryResult(String result) {
+
+    }
+
+    @Override
+    public void responseBindDeviceResult(String result) {
+
+    }
+
+    @Override
+    public void responseWifiListResult(List<SSIDList> wifiList) {
+
+    }
+
+    @Override
+    public void responseSetWifirelayResult(int result) {
+
+    }
+
+    @Override
+    public void responseAddDeviceHttpResult(String uid) {
+
+    }
+
+    @Override
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+
+    }
+
+    @Override
+    public void responseGetDeviceInfoHttpResult(String result) {
+        Log.i(TAG,"读设备属性="+result);
+    }
+
+    @Override
+    public void responseQueryHttpResult(List<Deviceprops> devices) {
 
     }
 }
