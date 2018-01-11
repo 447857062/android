@@ -2,6 +2,7 @@ package com.deplink.homegenius.activity.device;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +20,7 @@ import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
+import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
 import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
@@ -35,6 +37,7 @@ import com.deplink.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
@@ -48,10 +51,15 @@ import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
-import com.deplink.sdk.android.sdk.device.HomeGenius;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -97,7 +105,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private TextView textview_room_name;
     private List<String> mRooms = new ArrayList<>();
     private ScrollView layout_empty_view_scroll;
-
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +128,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_devices.setImageResource(R.drawable.checkthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
-        mDeviceManager.queryDeviceList();
+        if(isUserLogin){
+            mDeviceManager.queryDeviceList();
+        }
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
@@ -128,11 +140,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceAdapter.notifyDataSetChanged();
         listview_devies.setEmptyView(layout_empty_view_scroll);
         mDeviceManager.queryDeviceListHttp();
-        homeGenius = new HomeGenius();
-        homeGenius.bindApp(AppConstant.BIND_APP_MAC);
+      //  homeGenius = new HomeGenius();
+
+      //  homeGenius.bindApp(AppConstant.PERFENCE_BIND_APP_UUID);
     }
 
-    HomeGenius homeGenius;
+ //   HomeGenius homeGenius;
 
     @Override
     protected void onDestroy() {
@@ -224,8 +237,67 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 }
             }
         });
-    }
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new MakeSureDialog(DevicesActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(DevicesActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+                switch (action) {
+                    case GET_BINDING:
+                       //获取devicekey
 
+                        break;
+                }
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+                switch (op) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+                switch (action) {
+                    case GET_BINDING:
+
+                        break;
+
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+    }
+    private boolean isUserLogin;
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
@@ -355,7 +427,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
     @Override
-    public void responseAddDeviceHttpResult(String uid) {
+    public void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse) {
 
     }
 
@@ -373,26 +445,30 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     public void responseGetDeviceInfoHttpResult(String result) {
 
     }
-
     @Override
     public void responseQueryHttpResult(List<Deviceprops> devices) {
         //保存设备列表
         List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
         for (int i = 0; i < devices.size(); i++) {
             boolean addToDb = true;
-            for (int j = 0; j < dbSmartDev.size(); j++) {
-                if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid()) || devices.get(i).getDevice_type().equalsIgnoreCase("LKSWG")) {
-                    addToDb = false;
+            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                addToDb = false;
+            }else{
+                for (int j = 0; j < dbSmartDev.size(); j++) {
+                    if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())){
+                        addToDb = false;
+                    }
                 }
             }
             if (addToDb) {
+                Log.i(TAG,"http查询到智能设备,保存下来:");
                 saveSmartDeviceToSqlite(devices, i);
             }
         }
         List<Device> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
         for (int i = 0; i < devices.size(); i++) {
             boolean addToDb = true;
-            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSWG")) {
+            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
                 for (int j = 0; j < dbGetwayDev.size(); j++) {
                     if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
                         addToDb = false;
@@ -460,6 +536,22 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
             dev.setType(deviceType);
+        }
+        else if (deviceType.equalsIgnoreCase("LKRT")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
+            dev.setType(deviceType);
+            Router router=new Router();
+            Log.i(TAG,"获取绑定的设备");
+            //获取devicekey
+            for (int j = 0; j < manager.getDeviceList().size(); j++) {
+                if (manager.getDeviceList().get(j).getDeviceSN().equals(dev.getSn())) {
+                    Log.i(TAG,"赋值device key:"+manager.getDeviceList().get(j).getDeviceKey());
+                    router.setRouterDeviceKey(manager.getDeviceList().get(j).getDeviceKey());
+                }
+            }
+            router.setSmartDev(dev);
+            router.save();
+            dev.setRouter(router);
         }
         dev.setUid(devices.get(i).getUid());
         //dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());

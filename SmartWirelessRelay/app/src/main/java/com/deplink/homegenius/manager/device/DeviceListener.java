@@ -25,7 +25,7 @@ public interface DeviceListener {
     void responseSetWifirelayResult(int result);
     /**
      */
-    void responseAddDeviceHttpResult(String uid);
+    void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse);
     void responseDeleteDeviceHttpResult(DeviceOperationResponse result);
     void responseAlertDeviceHttpResult(DeviceOperationResponse result);
     void responseGetDeviceInfoHttpResult(String result);

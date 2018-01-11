@@ -246,7 +246,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     }
 
     @Override
-    public void responseAddDeviceHttpResult(String uid) {
+    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
 
     }
 

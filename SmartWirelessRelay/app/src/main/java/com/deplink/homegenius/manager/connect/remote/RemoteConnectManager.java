@@ -6,5 +6,4 @@ package com.deplink.homegenius.manager.connect.remote;
 public class RemoteConnectManager {
     private static final String TAG="RemoteConnectManager";
 
-
 }

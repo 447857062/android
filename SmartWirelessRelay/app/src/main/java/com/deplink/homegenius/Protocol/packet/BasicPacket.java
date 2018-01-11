@@ -3,13 +3,13 @@ package com.deplink.homegenius.Protocol.packet;
 import android.content.Context;
 import android.util.Log;
 
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.ComandID;
 import com.deplink.homegenius.util.DataExchange;
+import com.deplink.homegenius.util.Perfence;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-
-import com.deplink.homegenius.constant.AppConstant;
 
 
 /**
@@ -63,7 +63,7 @@ public class BasicPacket {
         // 设备uid，必填
         String uid;
         //tcp连接发送默认的uid
-        uid =AppConstant.BIND_APP_MAC;
+        uid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
         System.arraycopy(uid.getBytes(), 0, data, len, 32);
         //uid32位，最后一个结束标志0
         len += 32;
@@ -139,7 +139,7 @@ public class BasicPacket {
         // 设备uid，必填
         String uid;
         //连接发送默认的uid
-        uid = AppConstant.BIND_APP_MAC;
+        uid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
         System.arraycopy(uid.getBytes(), 0, data, len, 32);
         //uid32位，最后一个结束标志0
         len += 32;

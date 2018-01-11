@@ -307,7 +307,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             super.handleMessage(msg);
             JSONObject object = (JSONObject) msg.obj;
             try {
-                String tempture = object.getString("temp");
+                String tempture = object.getString("temp1");
                 tempture = tempture.split("℃")[0];
                 Log.i(TAG, "tempture=" + tempture);
                 textview_tempature.setText(tempture);
@@ -417,7 +417,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 switch (action) {
                     case LOGIN:
                         manager.connectMQTT(SmartHomeMainActivity.this);
-                        Log.i(TAG, "LOGIN success");
+                        Log.i(TAG, "LOGIN success uuid="+manager.getUserInfo().getUuid());
+                        Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
+
+                        Log.i(TAG, "LOGIN success uuid read="+Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID));
                         break;
                     case CONNECTED:
                         Log.i(TAG, "CONNECTED mqtt");
@@ -425,6 +428,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
+
                         mRoomList.clear();
                         mRoomList.addAll(mRoomManager.queryRooms());
                         mAdapter.notifyDataSetChanged();

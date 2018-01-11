@@ -286,7 +286,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
     }
 
     @Override
-    public void responseAddDeviceHttpResult(String uid) {
+    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
 
     }
 

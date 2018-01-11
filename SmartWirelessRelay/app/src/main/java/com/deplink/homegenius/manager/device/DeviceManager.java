@@ -67,18 +67,22 @@ public class DeviceManager implements LocalConnecteListener {
     private SmartDev currentSelectSmartDevice;
     private List<SmartDev> allSmartDevices;
     private boolean isStartFromExperience;
+
     public boolean isStartFromExperience() {
         return isStartFromExperience;
     }
+
     public void setStartFromExperience(boolean startFromExperience) {
         isStartFromExperience = startFromExperience;
     }
+
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
             instance = new DeviceManager();
         }
         return instance;
     }
+
     private List<DeviceListener> mDeviceListenerList;
 
     public void addDeviceListener(DeviceListener listener) {
@@ -114,13 +118,14 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 查询设备列表
      */
     public void queryDeviceListHttp() {
-        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(userName.equals("")){
-            ToastSingleShow.showText(mContext,"用户未登录");
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         RestfulToolsHomeGeniusString.getSingleton(mContext).getDeviceInfo(userName, new Callback<String>() {
@@ -128,17 +133,18 @@ public class DeviceManager implements LocalConnecteListener {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Log.i(TAG, "" + response.body());
-                    ArrayList<Deviceprops>list= ParseUtil.jsonToArrayList( response.body(), Deviceprops.class);
-                    for(int i=0;i<list.size();i++){
-                        Log.i(TAG, "devicename=" +list.get(i).toString());
+                    ArrayList<Deviceprops> list = ParseUtil.jsonToArrayList(response.body(), Deviceprops.class);
+                    for (int i = 0; i < list.size(); i++) {
+                        Log.i(TAG, "devicename=" + list.get(i).toString());
                     }
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
                         mDeviceListenerList.get(i).responseQueryHttpResult(list);
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<String> call, Throwable t) {
 
@@ -146,90 +152,59 @@ public class DeviceManager implements LocalConnecteListener {
         });
     }
 
-    public void addDeviceHttp(
-            String name,
-            String room_uid,
-            String gw_uid,
-            String device_type,
-            String mac,
-            String sn,
-            String org_code,
-            String version) {
-        Log.i(TAG, "room_uid=" + room_uid);
-        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(userName.equals("")){
-            ToastSingleShow.showText(mContext,"用户未登录");
+    public void addDeviceHttp(DeviceAddBody device) {
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
-        DeviceAddBody device=new DeviceAddBody();
-        device.setDevice_type(device_type);
-        if(name!=null){
-            device.setDevice_name(name);
-        }
-        if(gw_uid!=null){
-            device.setGw_uid(gw_uid);
-        }
-        if(org_code!=null){
-            device.setOrg_code(org_code);
-        }
-        if(version!=null){
-            device.setVersion(version);
-        }
-
-        device.setRoom_uid(room_uid);
-        if(mac!=null){
-            device.setMac(mac);
-        }
-        if(sn!=null){
-            device.setSn(sn);
-        }
-        Log.i(TAG,"device.getVersion()==null:"+(device.getVersion()==null));
-        Log.i(TAG,device.toString());
-        RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName,device, new Callback<DeviceOperationResponse>() {
+        Log.i(TAG, device.toString());
+        RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.errorBody()!=null){
+                if (response.errorBody() != null) {
                     try {
                         Log.i(TAG, "" + response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
-                        mDeviceListenerList.get(i).responseAddDeviceHttpResult(response.body().getUid());
+                        mDeviceListenerList.get(i).responseAddDeviceHttpResult(
+                                response.body()
+                        );
                     }
                 }
-
             }
 
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
-                Log.i(TAG, "" +t.getMessage());
+                Log.i(TAG, "" + t.getMessage());
             }
         });
     }
+
     public void deleteDeviceHttp() {
-        String uid=currentSelectSmartDevice.getUid();
-        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(userName.equals("")){
-            ToastSingleShow.showText(mContext,"用户未登录");
+        String uid = currentSelectSmartDevice.getUid();
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
-        Deviceprops device=new Deviceprops();
-
-        if(uid!=null){
+        Deviceprops device = new Deviceprops();
+        if (uid != null) {
             device.setUid(uid);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName,uid, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
                         mDeviceListenerList.get(i).responseDeleteDeviceHttpResult(response.body());
@@ -239,7 +214,7 @@ public class DeviceManager implements LocalConnecteListener {
 
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
-                Log.i(TAG, "" +t.getMessage());
+                Log.i(TAG, "" + t.getMessage());
             }
         });
     }
@@ -247,38 +222,38 @@ public class DeviceManager implements LocalConnecteListener {
     /**
      * 修改设备属性
      */
-    public void alertDeviceHttp(String uid,String room_uid,String device_name,String gw_uid) {
+    public void alertDeviceHttp(String uid, String room_uid, String device_name, String gw_uid) {
 
-        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(userName.equals("")){
-            ToastSingleShow.showText(mContext,"用户未登录");
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
 
-        Deviceprops device=new Deviceprops();
+        Deviceprops device = new Deviceprops();
         device.setUid(uid);
-        if(gw_uid!=null){
+        if (gw_uid != null) {
             device.setGw_uid(gw_uid);
         }
-        if(room_uid!=null){
+        if (room_uid != null) {
             device.setRoom_uid(room_uid);
         }
-        if(device_name!=null){
+        if (device_name != null) {
             device.setDevice_name(device_name);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).alertDevice(userName,device, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton(mContext).alertDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.errorBody()!=null){
+                if (response.errorBody() != null) {
                     try {
-                        Log.i(TAG, "" +response.errorBody().string());
+                        Log.i(TAG, "" + response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
                         mDeviceListenerList.get(i).responseAlertDeviceHttpResult(response.body());
@@ -289,25 +264,26 @@ public class DeviceManager implements LocalConnecteListener {
 
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
-                Log.i(TAG, "" +t.getMessage());
+                Log.i(TAG, "" + t.getMessage());
             }
         });
     }
+
     /**
      * 读设备属性
      */
     public void readDeviceInfoHttp(String uid) {
-        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(userName.equals("")){
-            ToastSingleShow.showText(mContext,"用户未登录");
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
-        RestfulToolsHomeGeniusString.getSingleton(mContext).readDeviceInfo(userName,uid, new Callback<String>() {
+        RestfulToolsHomeGeniusString.getSingleton(mContext).readDeviceInfo(userName, uid, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Log.i(TAG, "" + response.body());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
                         mDeviceListenerList.get(i).responseGetDeviceInfoHttpResult(response.body());
@@ -318,7 +294,7 @@ public class DeviceManager implements LocalConnecteListener {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i(TAG, "" +t.getMessage());
+                Log.i(TAG, "" + t.getMessage());
             }
         });
     }
@@ -333,7 +309,6 @@ public class DeviceManager implements LocalConnecteListener {
         allSmartDevices = DataSupport.findAll(SmartDev.class, true);
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            //  mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -407,7 +382,7 @@ public class DeviceManager implements LocalConnecteListener {
         SmartDev dev = new SmartDev();
         dev.setUid(smartDevice.getAd());
         dev.setOrg(smartDevice.getOrg());
-        Log.i(TAG,"bindSmartDevList type="+smartDevice.getTp());
+        Log.i(TAG, "bindSmartDevList type=" + smartDevice.getTp());
         dev.setType(smartDevice.getTp());
         dev.setVer(smartDevice.getVer());
         //设备列表添加一个设备
@@ -429,7 +404,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 如果有这个设备就不处理
      * 添加智能设备成功，需要更新数据库
      */
-    public boolean addDBSmartDevice(QrcodeSmartDevice device,String uid, Device getwayDevice) {
+    public boolean addDBSmartDevice(QrcodeSmartDevice device, String uid, Device getwayDevice) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", uid).findFirst(SmartDev.class);
         if (smartDev == null) {
@@ -558,11 +533,11 @@ public class DeviceManager implements LocalConnecteListener {
             if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
                 mSmartDevList.clear();
                 mSmartDevList.addAll(DataSupport.findAll(SmartDev.class));
-              //  handleSmartDeviceList(aDeviceList);
+                //  handleSmartDeviceList(aDeviceList);
             }
             //存储设备列表
             if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
-             //   handleNormalDeviceList(aDeviceList);
+                //   handleNormalDeviceList(aDeviceList);
             }
             for (int i = 0; i < mDeviceListenerList.size(); i++) {
                 mDeviceListenerList.get(i).responseQueryResult(result);
@@ -671,32 +646,26 @@ public class DeviceManager implements LocalConnecteListener {
                 if (deviceType.equalsIgnoreCase("SMART_LOCK")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
                     dev.setType(deviceType);
-                }
-                else if (deviceType.equalsIgnoreCase("IRMOTE_V2")) {
+                } else if (deviceType.equalsIgnoreCase("IRMOTE_V2")) {
                     dev.setType(deviceType);
                     deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
-                }
-                else if (deviceType.equalsIgnoreCase("SmartWallSwitch1")) {
+                } else if (deviceType.equalsIgnoreCase("SmartWallSwitch1")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
                     dev.setType(deviceType);
                     dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY);
-                }
-                else if (deviceType.equalsIgnoreCase("SmartWallSwitch2")) {
+                } else if (deviceType.equalsIgnoreCase("SmartWallSwitch2")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
                     dev.setType(deviceType);
                     dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY);
-                }
-                else if (deviceType.equalsIgnoreCase("SmartWallSwitch3")) {
+                } else if (deviceType.equalsIgnoreCase("SmartWallSwitch3")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
                     dev.setType(deviceType);
                     dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY);
-                }
-                else if (deviceType.equalsIgnoreCase("SmartWallSwitch4")) {
+                } else if (deviceType.equalsIgnoreCase("SmartWallSwitch4")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
                     dev.setType(deviceType);
                     dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
-                }
-                else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
+                } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
                     deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
                     dev.setType(deviceType);
                 }

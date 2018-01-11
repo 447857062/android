@@ -170,7 +170,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             showQueryingDialog();
         } else {
             manager.addEventCallback(ec);
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            try {
+                routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Log.i(TAG, "routerDevice=" + (routerDevice != null)+"isUserLogin="+isUserLogin);
             if(!isUserLogin){
                 textview_cpu_use.setText("--");

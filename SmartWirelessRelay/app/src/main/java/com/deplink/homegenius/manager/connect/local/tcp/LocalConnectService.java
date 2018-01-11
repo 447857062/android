@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.Perfence;
 
 public class LocalConnectService extends Service {
     public static final String TAG = "LocalConnectService";
@@ -16,7 +17,8 @@ public class LocalConnectService extends Service {
     }
     @Override
     public IBinder onBind(Intent intent) {
-        connectmanager.InitLocalConnectManager(getApplicationContext(), AppConstant.BIND_APP_MAC);
+        String uuid= Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+        connectmanager.InitLocalConnectManager(getApplicationContext(), uuid);
         connectmanager.registerNetBroadcast(getApplicationContext());
         return connectmanager;
     }

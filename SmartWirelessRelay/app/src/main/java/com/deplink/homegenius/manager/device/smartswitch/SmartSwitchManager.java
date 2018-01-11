@@ -15,6 +15,7 @@ import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -79,7 +80,8 @@ public class SmartSwitchManager implements LocalConnecteListener{
         this.mSmartSwitchListenerList=new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            mLocalConnectmanager.InitLocalConnectManager(context, AppConstant.BIND_APP_MAC);
+            String uuid= Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            mLocalConnectmanager.InitLocalConnectManager(context, uuid);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);

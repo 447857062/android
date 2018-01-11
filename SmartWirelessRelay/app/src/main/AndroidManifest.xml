@@ -176,9 +176,6 @@
             android:name="com.deplink.homegenius.activity.device.router.RouterMainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.deplink.homegenius.activity.device.router.AddRouterActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.deplink.homegenius.activity.device.router.RouterSettingActivity"
             android:screenOrientation="portrait" />
         <activity

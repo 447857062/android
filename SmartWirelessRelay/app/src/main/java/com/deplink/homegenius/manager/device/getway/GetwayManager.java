@@ -7,7 +7,6 @@ import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
-import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
@@ -102,7 +101,6 @@ public class GetwayManager implements LocalConnecteListener {
         mGetwayListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            // mLocalConnectmanager.InitLocalConnectManager(mContext, AppConstant.BIND_APP_MAC);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -175,12 +173,12 @@ public class GetwayManager implements LocalConnecteListener {
         });
     }
 
-    public boolean addDBGetwayDevice(QrcodeSmartDevice device,String uid) {
+    public boolean addDBGetwayDevice(String deviceName,String uid) {
         //查询设备
         currentAddGetwayDevice = new Device();
         currentAddGetwayDevice.setType(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
         currentAddGetwayDevice.setUid(uid);
-        currentAddGetwayDevice.setName(device.getName());
+        currentAddGetwayDevice.setName(deviceName);
         boolean addResult = currentAddGetwayDevice.save();
         Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
         if (!addResult) {
@@ -219,7 +217,7 @@ public class GetwayManager implements LocalConnecteListener {
     /**
      * 绑定网关，中继器
      */
-    public void bindDevice(QrcodeSmartDevice device) {
+    public void bindDevice(String uuid) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
@@ -228,9 +226,9 @@ public class GetwayManager implements LocalConnecteListener {
         //设备赋值
         Device dev = new Device();
         //调试  uid 77685180654101946200316696479888
-        dev.setUid(device.getSn());
-        dev.setMac(device.getAd());
-        dev.setType(device.getTp());
+        dev.setUid(uuid);
+      /*  dev.setMac(device.getAd());
+        dev.setType(device.getTp());*/
         devs.add(dev);
         queryCmd.setDevice(devs);
         Gson gson = new Gson();

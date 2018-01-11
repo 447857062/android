@@ -4,7 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.Protocol.packet.udp.UdpPacket;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.NetStatusUtil;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.PublicMethod;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -12,10 +16,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.deplink.homegenius.Protocol.packet.udp.UdpPacket;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.PublicMethod;
 
 
 /**
@@ -74,7 +74,11 @@ public class UdpThread {
             mTimerTimeoutTask=new TimerTask() {
                 @Override
                 public void run() {
-                    timerTimeout();
+                    boolean isUserLogin= Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                    if(isUserLogin){
+                        timerTimeout();
+                    }
+
                 }
             };
             timer.schedule(mTimerTimeoutTask, 1000, 5000);

@@ -172,7 +172,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     }
 
     @Override
-    public void responseAddDeviceHttpResult(String uid) {
+    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
 
     }
 

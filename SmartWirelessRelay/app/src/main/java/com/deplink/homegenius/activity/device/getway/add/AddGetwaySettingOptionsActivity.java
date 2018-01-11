@@ -109,7 +109,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
                         deviceName="智能中继";
                     }
                     Log.i(TAG,"device.getSn()="+device.getSn());
-                    mDeviceManager.addDeviceHttp(
+                   /* mDeviceManager.addDeviceHttp(
                             deviceName,
                             mRoomManager.getCurrentSelectedRoom().getUid(),
                             null,
@@ -118,7 +118,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
                             device.getSn(),
                             null,
                             null
-                    );
+                    );*/
 
 
                 }
@@ -155,8 +155,6 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
 
     private String deviceName;
     private String mRoomName;
-
-
     @Override
     public void responseResult(String result) {
         Log.i(TAG, "绑定网关设备返回：" + result + "当前要绑定的是：");
@@ -170,7 +168,7 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
             deviceName = "家里的网关";
         }
         tempDevice.setName(deviceName);
-        mGetwayManager.addDBGetwayDevice(tempDevice,addDeviceUid);
+        mGetwayManager.addDBGetwayDevice(deviceName,addDeviceUid);
         for (int i = 0; i < mDeviceList.getDevice().size(); i++) {
             if (mDeviceList.getDevice().get(i).getUid().equals(addDeviceUid)) {
                 Room room = RoomManager.getInstance().findRoom(mRoomName, true);
@@ -203,15 +201,14 @@ public class AddGetwaySettingOptionsActivity extends Activity implements View.On
     }
     private String addDeviceUid;
     @Override
-    public void responseAddDeviceHttpResult(String uid) {
-        addDeviceUid=uid;
+    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
+        addDeviceUid=responseBody.getUid();
         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-            mGetwayManager.bindDevice(device);
+          /*  mGetwayManager.bindDevice(device);*/
         } else {
             ToastSingleShow.showText(this, "无可用的网关");
 
         }
-
     }
 
     @Override

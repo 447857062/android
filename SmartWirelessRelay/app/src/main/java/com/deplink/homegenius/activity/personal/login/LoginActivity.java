@@ -12,7 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.StringValidatorUtil;
+import com.deplink.homegenius.view.dialog.loadingdialog.DialogLoading;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -21,10 +25,6 @@ import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.StringValidatorUtil;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogLoading;
 
 public class LoginActivity extends Activity implements View.OnClickListener,View.OnFocusChangeListener{
     private static final String TAG="LoginActivity";
@@ -68,6 +68,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                     case LOGIN:
                         manager.connectMQTT(getApplicationContext());
                         Log.i(TAG, "onSuccess login");
+                        Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
                         break;
                     case CONNECTED:
                         User user = manager.getUserInfo();

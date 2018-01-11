@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.room.RoomManager;
 
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -91,9 +90,9 @@ public class RouterManager {
         return affectColumn;
     }
 
-    public boolean updateDeviceInWhatRoom(Room room, String sn, String deviceName) {
+    public boolean updateDeviceInWhatRoom(Room room, String uid, String deviceName) {
         Log.i(TAG, "更新路由器设备所在的房间=start");
-        SmartDev smartDev = DataSupport.where("Uid=?", sn).findFirst(SmartDev.class, true);
+        SmartDev smartDev = DataSupport.where("Uid=?", uid).findFirst(SmartDev.class, true);
         List<Room> rooms = new ArrayList<>();
         rooms.clear();
         if (room != null) {

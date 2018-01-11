@@ -292,7 +292,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     }
 
     @Override
-    public void responseAddDeviceHttpResult(String uid) {
+    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
 
     }
 

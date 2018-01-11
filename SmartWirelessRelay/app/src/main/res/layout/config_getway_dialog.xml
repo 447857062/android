@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="130dp"
+    android:background="@drawable/radius8_bg_white_layout_background"
+   >
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_marginTop="@dimen/doorlock_clear_record_dialog_title_margintop"
+        android:textColor="@color/huise"
+        android:text="配置中继器"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="@dimen/layout_top_bar_item_text_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/textview_makesure"
+        android:layout_below="@+id/textview_title"
+        android:layout_marginTop="@dimen/doorlock_clear_record_dialog_title_margintop"
+        android:textColor="@color/room_type_text"
+        android:textSize="@dimen/layout_top_bar_item_text_size"
+        android:text="需要现在配置中继器吗(中继器插上电,然后连接中继器的wifi)?"
+        android:gravity="center_horizontal|center_vertical"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:id="@+id/view_line"
+        android:background="@color/huise"
+        android:layout_below="@+id/textview_makesure"
+        android:layout_marginTop="@dimen/doorlock_clear_record_dialog_title_margintop"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <RelativeLayout
+        android:layout_below="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/doorlock_clear_record_dialog_makesure_button_height">
+        <TextView
+
+            android:text="跳过"
+            android:layout_toLeftOf="@+id/view_ver_line"
+            android:textColor="@color/huise"
+            android:textSize="@dimen/delete_textview_size"
+            android:gravity="center_horizontal|center_vertical"
+            android:id="@+id/textview_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <View
+            android:layout_centerHorizontal="true"
+            android:background="@color/huise"
+            android:id="@+id/view_ver_line"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:text="确定"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_toRightOf="@+id/view_ver_line"
+            android:textColor="@color/title_blue_bg"
+            android:textSize="@dimen/delete_textview_size"
+            android:id="@+id/textview_center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</RelativeLayout>
