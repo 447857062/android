@@ -12,7 +12,7 @@ package com.deplink.sdk.android.sdk.homegenius;
 public class RoomUpdateName {
     private String room_uid;
     private String room_name;
-
+    private int sort_num;
     public String getRoom_uid() {
         return room_uid;
     }
@@ -29,11 +29,20 @@ public class RoomUpdateName {
         this.room_name = room_name;
     }
 
+    public int getSort_num() {
+        return sort_num;
+    }
+
+    public void setSort_num(int sort_num) {
+        this.sort_num = sort_num;
+    }
+
     @Override
     public String toString() {
         return "RoomUpdateName{" +
                 "room_uid='" + room_uid + '\'' +
                 ", room_name='" + room_name + '\'' +
+                ", sort_num=" + sort_num +
                 '}';
     }
 }

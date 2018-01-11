@@ -17,9 +17,18 @@ public class DeviceOperationResponse {
     private String status;
     private String uid;
     private int errcode;
+    private int sort_num;
     private String device_type;
     private String topic;
     private Channels channels;
+
+    public int getSort_num() {
+        return sort_num;
+    }
+
+    public void setSort_num(int sort_num) {
+        this.sort_num = sort_num;
+    }
 
     public String getMac() {
         return mac;
@@ -93,6 +102,7 @@ public class DeviceOperationResponse {
                 ", status='" + status + '\'' +
                 ", uid='" + uid + '\'' +
                 ", errcode=" + errcode +
+                ", sort_num=" + sort_num +
                 ", device_type='" + device_type + '\'' +
                 ", topic='" + topic + '\'' +
                 ", channels=" + channels +
