@@ -128,6 +128,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_devices.setImageResource(R.drawable.checkthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
+        isUserLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if(isUserLogin){
             mDeviceManager.queryDeviceList();
         }
