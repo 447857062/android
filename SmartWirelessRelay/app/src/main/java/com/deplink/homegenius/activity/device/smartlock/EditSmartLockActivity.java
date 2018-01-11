@@ -25,11 +25,14 @@ import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
@@ -159,9 +162,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
             case R.id.textview_edit:
                 String devciename = edittext_input_devie_name.getText().toString();
                 mSmartLockManager.updateSmartDeviceName(devciename);
-                Intent intentBack=new Intent(this,SmartLockActivity.class);
+                Intent intentBack = new Intent(this, SmartLockActivity.class);
                 intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intentBack );
+                startActivity(intentBack);
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
@@ -175,9 +178,14 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
+
                         if (!isStartFromExperience) {
-                            DialogThreeBounce.showLoading(EditSmartLockActivity.this);
-                            mDeviceManager.deleteSmartDevice();
+                            if (isLogin) {
+                                DialogThreeBounce.showLoading(EditSmartLockActivity.this);
+                                mDeviceManager.deleteDeviceHttp();
+
+                            }
+
                         } else {
                             startActivity(new Intent(EditSmartLockActivity.this, ExperienceDevicesActivity.class));
                         }
@@ -201,9 +209,12 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         }
     }
 
+    private boolean isLogin;
+
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isStartFromExperience) {
 
         } else {
@@ -213,11 +224,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 Log.i(TAG, "lockName=" + lockName + "lockName.length()=" + lockName.length());
                 edittext_input_devie_name.setSelection(lockName.length());
             }
-           String roomname= getIntent().getStringExtra("roomName");
-            if(roomname!=null){
+            String roomname = getIntent().getStringExtra("roomName");
+            if (roomname != null) {
                 textview_select_room_name.setText(roomname);
-            }
-            else if (!isOnActivityResult) {
+            } else if (!isOnActivityResult) {
                 isOnActivityResult = false;
                 if (mSmartLockManager.getCurrentSelectLock().getRooms().size() == 1) {
                     textview_select_room_name.setText(mSmartLockManager.getCurrentSelectLock().getRooms().get(0).getRoomName());
@@ -298,7 +308,12 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
 
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-
+        if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+            mDeviceManager.deleteSmartDevice();
+        } else {
+            DialogThreeBounce.hideLoading();
+            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+        }
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.deplink.homegenius.activity.device.light;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,22 +17,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
+import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
@@ -66,10 +75,11 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
         initDatas();
         initEvents();
     }
-
+    private boolean isLogin;
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
             textview_select_room_name.setText("全部");
@@ -174,7 +184,25 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
             textview_select_room_name.setText(roomName);
         }
     }
-
+    private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
+    private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_HANDLE_DELETE_DEVICE_RESULT:
+                    mDeviceManager.deleteDBSmartDevice(mDeviceManager.getCurrentSelectSmartDevice().getUid());
+                    Toast.makeText(LightEditActivity.this, "删除设备成功", Toast.LENGTH_SHORT).show();
+                    mDeviceManager.deleteDBSmartDevice(mDeviceManager.getCurrentSelectSmartDevice().getUid());
+                    startActivity(new Intent(LightEditActivity.this, DevicesActivity.class));
+                    break;
+                case MSG_HANDLE_DELETE_DEVICE_FAILED:
+                    Toast.makeText(LightEditActivity.this, "删除设备失败", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -196,8 +224,14 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
                     @Override
                     public void onSureBtnClicked() {
                         if (!isStartFromExperience) {
-                            DialogThreeBounce.showLoading(LightEditActivity.this);
-                            mDeviceManager.deleteSmartDevice();
+                            if(isLogin){
+                                DialogThreeBounce.showLoading(LightEditActivity.this);
+                                mDeviceManager.deleteDeviceHttp();
+                            }else{
+                                ToastSingleShow.showText(LightEditActivity.this,"用户未登录");
+                            }
+
+
                         } else {
                             startActivity(new Intent(LightEditActivity.this, ExperienceDevicesActivity.class));
                         }
@@ -225,7 +259,20 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void responseBindDeviceResult(String result) {
-
+        Gson gson = new Gson();
+        boolean deleteSuccess = true;
+        DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
+        for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
+            if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
+                deleteSuccess = false;
+            }
+        }
+        DialogThreeBounce.hideLoading();
+        if (deleteSuccess) {
+            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+        } else {
+            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
+        }
     }
 
     @Override
@@ -245,6 +292,12 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+        if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+            mDeviceManager.deleteSmartDevice();
+        }else{
+            DialogThreeBounce.hideLoading();
+            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+        }
 
     }
 

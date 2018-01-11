@@ -316,10 +316,12 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
 
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-        if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+        if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
             mDeviceManager.deleteSmartDevice();
-        }else{
-            ToastSingleShow.showText(RemoteControlActivity.this,"无可用的网关");
+        } else {
+            DialogThreeBounce.hideLoading();
+            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+            ToastSingleShow.showText(RemoteControlActivity.this, "无可用的网关");
         }
 
     }
