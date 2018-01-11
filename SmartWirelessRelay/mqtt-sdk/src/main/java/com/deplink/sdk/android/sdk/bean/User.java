@@ -13,6 +13,7 @@ public class User implements Serializable {
         private String password=null;
         private String verify_code=null;
         private String avatar=null;
+        private String uuid=null;
 
         public String getToken() {
             return token;
@@ -62,12 +63,24 @@ public class User implements Serializable {
             this.avatar = avatar;
         }
 
-        @Override
-        public String toString() {
-            return "User{" +
-                    "name='" + name + '\'' +
-                    ", password='" + password + '\'' +
-                    ", application_key='" + application_key + '\'' +
-                    '}';
-        }
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "token='" + token + '\'' +
+                ", application_key='" + application_key + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", verify_code='" + verify_code + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", uuid='" + uuid + '\'' +
+                '}';
+    }
 }

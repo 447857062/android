@@ -124,7 +124,6 @@ public class MQTTController implements MqttListener {
             if (listener != null) {
                 mTopicListeners.put(topic, listener);
             }
-
             Connections.getInstance().getConnection(mConnection.handle()).getClient()
                     .subscribe(topic, 0, null, new ActionListener(MqttAction.SUBSCRIBE, mConnection.handle(), this, topic));
         } catch (Exception e) {
@@ -172,11 +171,9 @@ public class MQTTController implements MqttListener {
     public void publish(String topic, String message, IMqttActionListener listener) {
         if (null == mConnection) return;
         int qos = ActivityConstants.defaultQos;
-        boolean retained = false;
         String[] args = new String[2];
         args[0] = message;
         args[1] = topic;
-
         try {
             Log.i(TAG, "send message=" + message);
             Connections.getInstance().getConnection(mConnection.handle()).getClient().publish(topic, message.getBytes(), qos, false, null, listener);

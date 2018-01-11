@@ -162,7 +162,9 @@ public class UserManager implements MqttListener {
                 String error = "", errorJson = "";
                 if (code == 200) { //登录成功
                     mUserSession = response.body();
+                    Log.i(TAG,"mUserSession:"+mUserSession.toString());
                     mUserInfo.setAvatar(mUserSession.getAvatar());
+                    mUserInfo.setUuid(mUserSession.getUuid());
                     RestfulTools.getSingleton().setUsername(mUserInfo.getName());
                     RestfulTools.getSingleton().setToken(mUserSession.getToken());
                     mSDKCoordinator.notifySuccess(SDKAction.LOGIN);

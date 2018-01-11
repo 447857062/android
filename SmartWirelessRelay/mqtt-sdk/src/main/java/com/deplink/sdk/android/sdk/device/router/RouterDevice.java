@@ -554,7 +554,6 @@ public class RouterDevice extends BaseDevice {
                         break;
                 }
             }
-
             @Override
             public void onFailure(Call<CommonRes> call, Throwable t) {
                 String error = "修改成员失败";
@@ -602,7 +601,6 @@ public class RouterDevice extends BaseDevice {
                                 e.printStackTrace();
                             }
                         }
-
                         break;
                 }
             }
@@ -761,7 +759,6 @@ public class RouterDevice extends BaseDevice {
      * 设置LAN
      */
     public void setLan(Lan lan) {
-
         lan.setOP("LAN");
         lan.setMethod("SET");
         lan.setTimestamp(System.currentTimeMillis() / 1000);

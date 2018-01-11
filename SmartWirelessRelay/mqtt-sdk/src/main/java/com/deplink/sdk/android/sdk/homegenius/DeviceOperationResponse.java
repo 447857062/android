@@ -3,6 +3,8 @@
   */
 package com.deplink.sdk.android.sdk.homegenius;
 
+import com.deplink.sdk.android.sdk.bean.Channels;
+
 /**
  * Auto-generated: 2016-07-06 12:3:50
  *
@@ -11,9 +13,37 @@ package com.deplink.sdk.android.sdk.homegenius;
  */
 public class DeviceOperationResponse {
     private String msg;
+    private String mac;
     private String status;
     private String uid;
     private int errcode;
+    private String device_type;
+    private String topic;
+    private Channels channels;
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public Channels getChannels() {
+        return channels;
+    }
+
+    public void setChannels(Channels channels) {
+        this.channels = channels;
+    }
 
     public String getMsg() {
         return msg;
@@ -47,13 +77,25 @@ public class DeviceOperationResponse {
         this.errcode = errcode;
     }
 
+    public String getDevice_type() {
+        return device_type;
+    }
+
+    public void setDevice_type(String device_type) {
+        this.device_type = device_type;
+    }
+
     @Override
     public String toString() {
         return "DeviceOperationResponse{" +
                 "msg='" + msg + '\'' +
+                ", mac='" + mac + '\'' +
                 ", status='" + status + '\'' +
                 ", uid='" + uid + '\'' +
                 ", errcode=" + errcode +
+                ", device_type='" + device_type + '\'' +
+                ", topic='" + topic + '\'' +
+                ", channels=" + channels +
                 '}';
     }
 }

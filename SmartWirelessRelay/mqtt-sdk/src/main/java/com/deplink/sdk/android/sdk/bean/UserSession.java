@@ -25,6 +25,7 @@ public class UserSession implements Serializable {
     private String token;
 
     private String avatar;
+    private String uuid;
 
     public void setStatus(String status) {
         this.status = status;
@@ -114,11 +115,20 @@ public class UserSession implements Serializable {
         return avatar;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public String toString() {
         return "UserSession{" +
                 "status='" + status + '\'' +
                 ", msg='" + msg + '\'' +
+                ", mobile='" + mobile + '\'' +
                 ", servers=" + servers +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
@@ -126,6 +136,8 @@ public class UserSession implements Serializable {
                 ", topic_pub=" + topic_pub +
                 ", topic_sub=" + topic_sub +
                 ", token='" + token + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }

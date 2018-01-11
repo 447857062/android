@@ -10,7 +10,6 @@ package com.deplink.sdk.android.sdk.bean;
  * @website http://www.atool.org/json2javabean.php
  */
     public class TopicPair {
-
     private String sub;
     private String pub;
     public void setSub(String sub) {

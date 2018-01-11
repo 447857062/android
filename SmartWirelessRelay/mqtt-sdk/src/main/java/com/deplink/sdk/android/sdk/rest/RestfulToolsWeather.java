@@ -23,7 +23,7 @@ public class RestfulToolsWeather {
      */
     private RestfulToolsWeather() {
 
-        Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://www.weather.com.cn/data/sk/")
+        Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://www.weather.com.cn/data/cityinfo/")
                 .addConverterFactory(GsonConverterFactory.create());
 
 
