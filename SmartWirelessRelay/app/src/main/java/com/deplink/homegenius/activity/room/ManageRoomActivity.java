@@ -58,15 +58,12 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         initDatas();
         initEvents();
     }
-
     private void initDatas() {
         textview_title.setText("编辑");
         textview_edit.setText("完成");
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager(this, this);
-        mRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
 
-        Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
@@ -118,6 +115,8 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        mRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
+        Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
         textview_room_name.setText(mRoomName);
         List<Device> mGetways = mRoomManager.getCurrentSelectedRoom().getmGetwayDevices();
         if (mGetways == null || mGetways.size() == 0) {

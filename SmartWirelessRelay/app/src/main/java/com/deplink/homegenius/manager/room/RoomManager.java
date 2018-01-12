@@ -18,6 +18,7 @@ import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -277,7 +278,7 @@ public class RoomManager {
     /**
      * 删除房间
      */
-    public void updateRoomNameHttp(String roomUid,String roomName) {
+    public void updateRoomNameHttp(String roomUid,String roomName,int sort_num) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
             ToastSingleShow.showText(mContext, "用户未登录");
@@ -286,13 +287,21 @@ public class RoomManager {
         RoomUpdateName roomUpdateName=new RoomUpdateName();
         roomUpdateName.setRoom_uid(roomUid);
         roomUpdateName.setRoom_name(roomName);
+        roomUpdateName.setSort_num(sort_num);
         RestfulToolsHomeGenius.getSingleton(mContext).updateRoomName(userName, roomUpdateName, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                Log.i(TAG, "" + response.body());
+                if(response.errorBody()!=null){
+                    try {
+                        Log.i(TAG, "" + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (response.code() == 200) {
+                    Log.i(TAG, "" + response.body());
                     for (int i = 0; i < mRoomListenerList.size(); i++) {
                         mRoomListenerList.get(i).responseUpdateRoomNameResult();
                     }
