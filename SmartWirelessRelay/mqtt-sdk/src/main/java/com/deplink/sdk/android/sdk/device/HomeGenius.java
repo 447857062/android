@@ -31,12 +31,13 @@ public class HomeGenius  {
         queryCmd.setMethod("BindApp");
         queryCmd.setTimestamp();
         queryCmd.setAuthId(uid);
-        queryCmd.setSendid(userUuid);
+        queryCmd.setSenderId(userUuid);
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         //exclusive.setSub("");
 //        Log.i(TAG,"exclusive.getSub()="+ exclusive.getSub());
-        MQTTController.getSingleton().publish(/*exclusive.getSub()*/"device/a7282842d44cc3f68521fa5e12b72b34/sub", text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
+      //  MQTTController.getSingleton().publish(/*exclusive.getSub()*/"device/a7282842d44cc3f68521fa5e12b72b34/sub", text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
+        MQTTController.getSingleton().publish(/*exclusive.getSub()*/"device/44ebba9138a4b2b8c3f391f587148ff0/sub", text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
     }
     private class MqttActionHandler implements IMqttActionListener {
         private String action;

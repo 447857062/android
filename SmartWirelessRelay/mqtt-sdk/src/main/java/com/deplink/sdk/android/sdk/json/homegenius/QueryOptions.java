@@ -20,7 +20,7 @@ public class QueryOptions implements Serializable {
     private int  yellow;
     private int  white;
     private int  open;
-    private String  sendid;
+    private String  SenderId;
 
     public int getOpen() {
         return open;
@@ -156,12 +156,13 @@ public class QueryOptions implements Serializable {
         Time = time;
     }
 
-    public String getSendid() {
-        return sendid;
+
+    public String getSenderId() {
+        return SenderId;
     }
 
-    public void setSendid(String sendid) {
-        this.sendid = sendid;
+    public void setSenderId(String senderId) {
+        SenderId = senderId;
     }
 
     @Override
@@ -181,7 +182,7 @@ public class QueryOptions implements Serializable {
                 ", yellow=" + yellow +
                 ", white=" + white +
                 ", open=" + open +
-                ", sendid='" + sendid + '\'' +
+                ", SenderId='" + SenderId + '\'' +
                 ", SmartUid='" + SmartUid + '\'' +
                 '}';
     }

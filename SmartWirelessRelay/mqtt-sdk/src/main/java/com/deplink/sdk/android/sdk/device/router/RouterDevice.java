@@ -625,7 +625,6 @@ public class RouterDevice extends BaseDevice {
         Log.i(TAG,"exclusive.getSub()="+ exclusive.getSub());
         MQTTController.getSingleton().publish(exclusive.getSub(), text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
     }
-
     /**
      * 查询设备
      */

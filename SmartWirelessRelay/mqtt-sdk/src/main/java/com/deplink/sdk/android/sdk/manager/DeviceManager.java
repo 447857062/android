@@ -121,9 +121,12 @@ public class DeviceManager implements MqttListener {
                                 if (deviceInfo.getChannels().getCommon() != null) {
                                     device.setCommonCh(deviceInfo.getChannels().getCommon());
                                 }
+                                Log.i(TAG,"通道Primary="+(deviceInfo.getChannels().getPrimary() != null)+"Secondary="+(deviceInfo.getChannels().getSecondary()));
                                 if (deviceInfo.getChannels().getPrimary() != null) {
+                                    Log.i(TAG,"设置通道getPrimary="+deviceInfo.getChannels().getPrimary());
                                     device.setExclusiveCh(deviceInfo.getChannels().getPrimary());
                                 } else if (deviceInfo.getChannels().getSecondary() != null) {
+                                    Log.i(TAG,"getSecondary="+deviceInfo.getChannels().getSecondary());
                                     device.setExclusiveCh(deviceInfo.getChannels().getSecondary());
                                 }
                                 if (device.getCommonCh() != null) {

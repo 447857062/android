@@ -11,7 +11,7 @@ import retrofit2.Converter;
  * Created by Administrator on 2017/7/29.
  */
 public class StringResponseBodyConverter implements Converter<ResponseBody, String> {
-    private  static final String TAG="PngConverter";
+    private  static final String TAG="StrResponseConverter";
     @Override
     public String convert(ResponseBody value) throws IOException {
         try {
