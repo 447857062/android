@@ -117,7 +117,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private HorizontalScrollView layout_roomselect_normal;
     private NonScrollableListView layout_roomselect_changed_ype;
     private ScrollView scrollview_root;
-
+    private boolean isLogin;
     @Override
     public void responseQueryResultHttps( List<Room> result) {
        Message msg=Message.obtain();
@@ -317,7 +317,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     };
 
-    private boolean isLogin;
+
     @Override
     protected void onResume() {
         super.onResume();

@@ -256,7 +256,6 @@ public class RoomManager {
                 } else if (response.code() == 500) {
                     if (response.errorBody() != null) {
                         try {
-
                             Log.i(TAG, "" + response.errorBody().string());
                             Log.i(TAG, "" + response.body().toString());
                         } catch (IOException e) {
@@ -361,7 +360,6 @@ public class RoomManager {
             }
         });
     }
-
     /**
      * 初始化本地连接管理器
      */
@@ -389,7 +387,6 @@ public class RoomManager {
 
     public void updateRooms() {
         queryRoomListHttp();
-
     }
 
     /**

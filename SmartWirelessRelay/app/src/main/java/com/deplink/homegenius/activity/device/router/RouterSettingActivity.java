@@ -97,8 +97,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (!DeviceManager.getInstance().isStartFromExperience()) {
+        if (!mDeviceManager.isStartFromExperience()) {
             textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
             if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")) {
                 layout_lan_setting_out.setVisibility(View.GONE);
@@ -136,6 +135,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             }
         }
     }
+
     private void initDatas() {
         textview_title.setText("路由器设置");
         mRouterManager = RouterManager.getInstance();
@@ -157,11 +157,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
             @Override
             public void onSuccess(SDKAction action) {
-                switch (action) {
-                    case UNBIND:
-
-                        break;
-                }
             }
 
             @Override
@@ -186,11 +181,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
-                switch (action) {
-                    case UNBIND:
-                        ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定失败");
-                        break;
-                }
             }
 
             @Override
@@ -235,25 +225,23 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         textview_route_name_2 = findViewById(R.id.textview_route_name_2);
     }
 
+    private String action;
+    private String roomName;
+    private Room room;
+    private  String deviceUid;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            if (DeviceManager.getInstance().isStartFromExperience()) {
+            if (mDeviceManager.isStartFromExperience()) {
 
             } else {
-                final String roomName = data.getStringExtra("roomName");
-                Room room = RoomManager.getInstance().findRoom(roomName, true);
-                String deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
-                String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
-                boolean result = mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName);
-                if (result) {
-                    textview_room_select_2.setText(roomName);
-                } else {
-                    Message msg = Message.obtain();
-                    msg.what = MSG_UPDATE_ROOM_FAIL;
-                    mHandler.sendMessage(msg);
-                }
+                 roomName = data.getStringExtra("roomName");
+                 room = RoomManager.getInstance().findRoom(roomName, true);
+                 deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
+                action = "alertroom";
+                mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
+
             }
         }
     }
@@ -534,7 +522,20 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     @Override
     public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+        if (action.equals("alertroom")) {
+            String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
+            boolean saveResult = mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName);
+            if (saveResult) {
+                textview_room_select_2.setText(roomName);
+            } else {
+                Message msg = Message.obtain();
+                msg.what = MSG_UPDATE_ROOM_FAIL;
+                mHandler.sendMessage(msg);
+                action="";
+            }
+        } else if (action.equalsIgnoreCase("alertname")) {
 
+        }
     }
 
     @Override
