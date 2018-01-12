@@ -161,7 +161,7 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     }
 
     @Override
-    public void responseQueryResult(List<Room> result) {
+    public void responseQueryResultHttps(List<Room> result) {
 
     }
 

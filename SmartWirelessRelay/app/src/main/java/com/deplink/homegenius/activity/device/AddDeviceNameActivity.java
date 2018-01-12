@@ -316,11 +316,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     textview_select_getway_name.setText("未检测到网关");
                 }
             }
-
         }
     }
-
-
     @Override
     public void responseQueryResult(String result) {
     }
@@ -360,6 +357,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     break;
                 case MSG_BIND_DEVICE_RESPONSE:
                     DialogThreeBounce.hideLoading();
+                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                    Toast.makeText(AddDeviceNameActivity.this, "添加中继器成功", Toast.LENGTH_SHORT).show();
                     break;
                 case MSG_ADD_ROUTER_SUCCESS:
                     startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
@@ -368,7 +367,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             }
         }
     };
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -401,8 +399,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             case "IRMOTE_V2":
                 mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
                 for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
+                    if (aDeviceList.getSmartDev().get(i).getUid().equals(addDeviceUid)) {
+                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom,addDeviceUid, deviceName);
                     }
                 }
 
@@ -446,71 +444,80 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         Log.i(TAG, responseBody.toString());
         addDeviceUid = responseBody.getUid();
         String deviceTypeHttp=responseBody.getDevice_type();
-        if (deviceTypeHttp.equalsIgnoreCase("LKSGW")) {
-            //TODO 扫网关
-            //如果有可用的网关
-            if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
-                mGetwayManager.bindDevice(addDeviceUid);
-            }else{
-              //提示连接
-                mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
-                    @Override
-                    public void onSureBtnClicked() {
-                        //TODO 拿到mac地址后提示用户连接这个wifi,这里跳转到wifi连接去
-
-                    }
-                });
-                mConfigGetwayDialog.setCancelBtnClickListener(new ConfigGetwayDialog.onCancelBtnClickListener() {
-                    @Override
-                    public void onCancelClick() {
-                        mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid);
-                        mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom,addDeviceUid);
-                        mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
-                    }
-                });
-                mConfigGetwayDialog.show();
-            }
-
-        } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
-            SmartDev currentAddRouter = new SmartDev();
-            //路由器
-            currentAddRouter.setUid(addDeviceUid);
-            currentAddRouter.setType(DeviceTypeConstant.TYPE.TYPE_ROUTER);
-            for (int i = 0; i < manager.getDeviceList().size(); i++) {
-                //查询设备列表，sn和上传时一样才修改名字
-                if (manager.getDeviceList().get(i).getDeviceSN().equals(currentAddDevice)) {
-                    Router router = new Router();
-                    router.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
-                    router.setSmartDev(currentAddRouter);
-                    Log.i(TAG,"添加路由器返回的channels:"+responseBody.getChannels().toString());
-                    router.setChannels(responseBody.getChannels());
-                    router.save();
-                    currentAddRouter.setRouter(router);
-                }
-            }
-            boolean saveResult = mRouterManager.saveRouter(currentAddRouter);
-            if (!saveResult) {
-
-            } else {
-                Room room = RoomManager.getInstance().getCurrentSelectedRoom();
-                if (room != null) {
-                    Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
-                }
-                boolean result = mRouterManager.updateDeviceInWhatRoom(room, addDeviceUid, deviceName);
-                if (result) {
-                    Message msg = Message.obtain();
-                    msg.what = MSG_ADD_ROUTER_SUCCESS;
-                    mHandler.sendMessage(msg);
-                }
-            }
-        } else {
+        if(deviceTypeHttp==null){
             if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                 mDeviceManager.bindSmartDevList(device);
             } else {
                 ToastSingleShow.showText(AddDeviceNameActivity.this, "本地网关不可用");
             }
+        }else{
+            if (deviceTypeHttp.equalsIgnoreCase("LKSGW")) {
+                //TODO 扫网关
+                //如果有可用的网关
+                if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                    mGetwayManager.bindDevice(addDeviceUid);
+                }else{
+                    //提示连接
+                    mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
+                        @Override
+                        public void onSureBtnClicked() {
+                            //TODO 拿到mac地址后提示用户连接这个wifi,这里跳转到wifi连接去
 
+                        }
+                    });
+                    mConfigGetwayDialog.setCancelBtnClickListener(new ConfigGetwayDialog.onCancelBtnClickListener() {
+                        @Override
+                        public void onCancelClick() {
+                            mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid);
+                            mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom,addDeviceUid);
+                            mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
+                        }
+                    });
+                    mConfigGetwayDialog.show();
+                }
+
+            } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
+                SmartDev currentAddRouter = new SmartDev();
+                //路由器
+                currentAddRouter.setUid(addDeviceUid);
+                currentAddRouter.setType(DeviceTypeConstant.TYPE.TYPE_ROUTER);
+                for (int i = 0; i < manager.getDeviceList().size(); i++) {
+                    //查询设备列表，sn和上传时一样才修改名字
+                    if (manager.getDeviceList().get(i).getDeviceSN().equals(currentAddDevice)) {
+                        Router router = new Router();
+                        router.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
+                        router.setSmartDev(currentAddRouter);
+                        Log.i(TAG,"添加路由器返回的channels:"+responseBody.getChannels().toString());
+                        router.setChannels(responseBody.getChannels());
+                        router.save();
+                        currentAddRouter.setRouter(router);
+                    }
+                }
+                boolean saveResult = mRouterManager.saveRouter(currentAddRouter);
+                if (!saveResult) {
+
+                } else {
+                    Room room = RoomManager.getInstance().getCurrentSelectedRoom();
+                    if (room != null) {
+                        Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
+                    }
+                    boolean result = mRouterManager.updateDeviceInWhatRoom(room, addDeviceUid, deviceName);
+                    if (result) {
+                        Message msg = Message.obtain();
+                        msg.what = MSG_ADD_ROUTER_SUCCESS;
+                        mHandler.sendMessage(msg);
+                    }
+                }
+            } else {
+                if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+                    mDeviceManager.bindSmartDevList(device);
+                } else {
+                    ToastSingleShow.showText(AddDeviceNameActivity.this, "本地网关不可用");
+                }
+
+            }
         }
+
 
     }
 

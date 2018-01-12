@@ -3,6 +3,9 @@ package com.deplink.homegenius.activity.room;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -15,6 +18,7 @@ import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.adapter.GridViewAdapter;
 import com.deplink.homegenius.application.AppManager;
+import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.view.gridview.DragGridView;
 
@@ -24,16 +28,14 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class RoomActivity extends Activity implements View.OnClickListener {
+public class RoomActivity extends Activity implements View.OnClickListener, RoomListener {
     private static final String TAG = "RoomActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
-
     private DragGridView mDragGridView;
     private GridViewAdapter mRoomsAdapter;
-
     private RoomManager mRoomManager;
     private List<Room> mRooms = new ArrayList<>();
     private ImageView imageview_addroom;
@@ -45,6 +47,22 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private TextView textview_device;
     private TextView textview_room;
     private TextView textview_mine;
+    private static final int MSG_UPDATE_ROOM = 100;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_UPDATE_ROOM:
+                    mRooms.clear();
+                    mRooms.addAll(mRoomManager.queryRooms());
+                    Log.i(TAG, "handler界面显示房间的列表大小" + mRooms.size());
+                    mRoomsAdapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +78,9 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         mRoomManager.updateRoomsOrdinalNumber();
     }
 
-
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this,null);
-
+        mRoomManager.initRoomManager(this, this);
     }
 
     @Override
@@ -82,7 +98,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         mRoomsAdapter = new GridViewAdapter(this, mRooms);
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);
-
+        mRoomManager.updateRooms();
     }
 
     private void initEvents() {
@@ -122,7 +138,6 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         });
     }
 
-
     private void initViews() {
         textview_home = findViewById(R.id.textview_home);
         textview_device = findViewById(R.id.textview_device);
@@ -159,5 +174,28 @@ public class RoomActivity extends Activity implements View.OnClickListener {
                 startActivity(new Intent(RoomActivity.this, AddRommActivity.class));
                 break;
         }
+    }
+
+    @Override
+    public void responseQueryResultHttps(List<Room> result) {
+        Log.i(TAG, "更新房间排序:" + result.size());
+        Message msg = Message.obtain();
+        msg.what = MSG_UPDATE_ROOM;
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void responseAddRoomResult(String result) {
+
+    }
+
+    @Override
+    public void responseDeleteRoomResult() {
+
+    }
+
+    @Override
+    public void responseUpdateRoomNameResult() {
+
     }
 }

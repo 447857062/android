@@ -30,6 +30,7 @@ import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.litepal.crud.DataSupport;
 
@@ -102,7 +103,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 查询设备列表
      */
     public void queryDeviceList() {
-        Log.i(TAG, "查询设备列表");
+        Log.i(TAG, "本地接口查询设备列表");
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("QUERY");
         queryCmd.setMethod("DevList");
@@ -113,7 +114,6 @@ public class DeviceManager implements LocalConnecteListener {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG, "cachedThreadPool execute queryDeviceList");
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
@@ -159,9 +159,9 @@ public class DeviceManager implements LocalConnecteListener {
             return;
         }
         Log.i(TAG, device.toString());
-        RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName, device, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName, device, new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.errorBody() != null) {
@@ -171,21 +171,29 @@ public class DeviceManager implements LocalConnecteListener {
                         e.printStackTrace();
                     }
                 }
+                Gson gson=new Gson();
+                DeviceOperationResponse deviceOperationResponse=
+                        gson.fromJson(response.body().toString(),DeviceOperationResponse.class);
                 if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
-                        mDeviceListenerList.get(i).responseAddDeviceHttpResult(
-                                response.body()
+                       mDeviceListenerList.get(i).responseAddDeviceHttpResult(
+                               deviceOperationResponse
                         );
+                    }
+                }else if(response.code()==403){
+                    int errorcode=deviceOperationResponse.getErrcode();
+                    if(errorcode==100006){
+                        ToastSingleShow.showText(mContext,"没有授权,请让第一次添加此设备的用户给你授权");
                     }
                 }
             }
-
             @Override
-            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());
             }
         });
+
     }
 
     public void deleteDeviceHttp() {
@@ -223,13 +231,11 @@ public class DeviceManager implements LocalConnecteListener {
      * 修改设备属性
      */
     public void alertDeviceHttp(String uid, String room_uid, String device_name, String gw_uid) {
-
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
             ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
-
         Deviceprops device = new Deviceprops();
         device.setUid(uid);
         if (gw_uid != null) {
@@ -241,6 +247,7 @@ public class DeviceManager implements LocalConnecteListener {
         if (device_name != null) {
             device.setDevice_name(device_name);
         }
+        Log.i(TAG,"alert device:"+device.toString());
         RestfulToolsHomeGenius.getSingleton(mContext).alertDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
@@ -525,7 +532,7 @@ public class DeviceManager implements LocalConnecteListener {
     @Override
     public void OnGetQueryresult(String result) {
         //返回查询结果：开锁记录，设备列表
-        Log.i(TAG, "返回查询结果：开锁记录，设备列表=" + result);
+        Log.i(TAG, "返回查询结果：设备列表=" + result);
         //保存智能锁设备的DevUid
         if (result.contains("DevList")) {
             Gson gson = new Gson();

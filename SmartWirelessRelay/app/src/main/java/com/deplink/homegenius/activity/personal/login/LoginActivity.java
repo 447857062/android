@@ -66,9 +66,9 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
             public void onSuccess(SDKAction action) {
                 switch (action) {
                     case LOGIN:
+                        Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
                         manager.connectMQTT(getApplicationContext());
                         Log.i(TAG, "onSuccess login");
-                        Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
                         break;
                     case CONNECTED:
                         User user = manager.getUserInfo();

@@ -119,7 +119,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private ScrollView scrollview_root;
 
     @Override
-    public void responseQueryResult( List<Room> result) {
+    public void responseQueryResultHttps( List<Room> result) {
        Message msg=Message.obtain();
         msg.what=MSG_GET_ROOM;
         msg.obj=result;

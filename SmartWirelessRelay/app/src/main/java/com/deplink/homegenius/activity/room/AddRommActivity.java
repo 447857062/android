@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -28,12 +29,14 @@ import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class AddRommActivity extends Activity implements View.OnClickListener ,RoomListener{
+public class AddRommActivity extends Activity implements View.OnClickListener, RoomListener {
     private static final String TAG = "AddRommActivity";
     private TextView textview_add_room_complement;
     private ImageView image_back;
@@ -64,7 +67,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener ,R
 
     private void initDatas() {
         roomManager = RoomManager.getInstance();
-        roomManager.initRoomManager(this,this);
+        roomManager.initRoomManager(this, this);
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
         listTop.add(RoomConstant.ROOMTYPE.TYPE_LIVING);
         listTop.add(RoomConstant.ROOMTYPE.TYPE_BED);
@@ -79,8 +82,8 @@ public class AddRommActivity extends Activity implements View.OnClickListener ,R
         fromAddDevice = getIntent().getBooleanExtra("fromAddDevice", false);
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
-        if(mGetways.size()>0){
-            currentSelectGetway=mGetways.get(0);
+        if (mGetways.size() > 0) {
+            currentSelectGetway = mGetways.get(0);
         }
 
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
@@ -89,7 +92,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener ,R
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectGetwayName = mGetways.get(position).getName();
-                currentSelectGetway=mGetways.get(position);
+                currentSelectGetway = mGetways.get(position);
                 textview_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
             }
@@ -155,28 +158,32 @@ public class AddRommActivity extends Activity implements View.OnClickListener ,R
     @Override
     protected void onResume() {
         super.onResume();
-        userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
     }
+
     private String roomName;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             //完成
             case R.id.textview_add_room_complement:
-                  roomName = edittext_room_name.getText().toString();
-                if(!NetUtil.isNetAvailable(this)){
-                    ToastSingleShow.showText(this,"无可用网络连接,请检查网络");
+                roomName = edittext_room_name.getText().toString();
+                if (!NetUtil.isNetAvailable(this)) {
+                    ToastSingleShow.showText(this, "无可用网络连接,请检查网络");
                     return;
                 }
-                if(userName.equals("")){
-                    ToastSingleShow.showText(this,"用户未登录");
+                if (userName.equals("")) {
+                    ToastSingleShow.showText(this, "用户未登录");
                     return;
                 }
                 if (roomName.equals("")) {
                     Toast.makeText(AddRommActivity.this, "请输入房间名称", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                roomManager.addRoomHttp(roomName,roomType);
+                int sort_num = DataSupport.findAll(Room.class, true).size();
+                Log.i(TAG,"sort_num="+sort_num);
+                roomManager.addRoomHttp(roomName, roomType, sort_num - 1);
                 break;
             case R.id.image_back:
                 onBackPressed();
@@ -194,7 +201,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener ,R
     }
 
     @Override
-    public void responseQueryResult(List<Room> result) {
+    public void responseQueryResultHttps(List<Room> result) {
 
     }
 
@@ -206,7 +213,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener ,R
 
     @Override
     public void responseAddRoomResult(String result) {
-        boolean addDbResult = roomManager.addRoom(roomType, roomName,result,currentSelectGetway);
+        boolean addDbResult = roomManager.addRoom(roomType, roomName, result, currentSelectGetway);
         if (addDbResult) {
             mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
             finish();

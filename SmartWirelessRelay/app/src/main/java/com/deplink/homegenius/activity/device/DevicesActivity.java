@@ -57,6 +57,7 @@ import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.device.HomeGenius;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
@@ -108,6 +109,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private HomeGenius homeGenius;
+    private boolean isUserLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,9 +132,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         imageview_devices.setImageResource(R.drawable.checkthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
-        isUserLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        if(isUserLogin){
-            mDeviceManager.queryDeviceList();
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        if (isUserLogin) {
+            mDeviceManager.queryDeviceListHttp();
+            homeGenius = new HomeGenius();
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            homeGenius.bindApp(uuid, uuid);
         }
         datasTop.clear();
         datasBottom.clear();
@@ -140,13 +147,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mDeviceAdapter.setBottomList(datasBottom);
         mDeviceAdapter.notifyDataSetChanged();
         listview_devies.setEmptyView(layout_empty_view_scroll);
-        mDeviceManager.queryDeviceListHttp();
-      //  homeGenius = new HomeGenius();
+        mDeviceManager.queryDeviceList();
 
-      //  homeGenius.bindApp(AppConstant.PERFENCE_BIND_APP_UUID);
     }
-
- //   HomeGenius homeGenius;
 
     @Override
     protected void onDestroy() {
@@ -158,7 +161,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
         mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(DevicesActivity.this, DevicesActivity.this);
+        mDeviceManager.InitDeviceManager(this, this);
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager(this, null);
         mRouterManager = RouterManager.getInstance();
@@ -250,12 +253,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         ec = new EventCallback() {
             @Override
             public void onSuccess(SDKAction action) {
-                switch (action) {
-                    case GET_BINDING:
-                       //获取devicekey
-
-                        break;
-                }
             }
 
             @Override
@@ -272,19 +269,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op) {
-
-                }
             }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
-                switch (action) {
-                    case GET_BINDING:
-
-                        break;
-
-                }
             }
 
             @Override
@@ -298,7 +286,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
         };
     }
-    private boolean isUserLogin;
+
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
@@ -404,6 +392,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
     @Override
     public void responseQueryResult(String result) {
+        Log.i(TAG, "responseQueryResult:" + result);
         if (result.contains("DevList")) {
             Message msg = Message.obtain();
             msg.what = MSG_UPDATE_DEVS;
@@ -446,6 +435,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     public void responseGetDeviceInfoHttpResult(String result) {
 
     }
+
     @Override
     public void responseQueryHttpResult(List<Deviceprops> devices) {
         //保存设备列表
@@ -454,15 +444,15 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             boolean addToDb = true;
             if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
                 addToDb = false;
-            }else{
+            } else {
                 for (int j = 0; j < dbSmartDev.size(); j++) {
-                    if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())){
+                    if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
                         addToDb = false;
                     }
                 }
             }
             if (addToDb) {
-                Log.i(TAG,"http查询到智能设备,保存下来:");
+                Log.i(TAG, "http查询到智能设备,保存下来:");
                 saveSmartDeviceToSqlite(devices, i);
             }
         }
@@ -494,13 +484,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             dev.setType(deviceType);
         }
         dev.setUid(devices.get(i).getUid());
-        //dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
-        // dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
         dev.setOrg(devices.get(i).getOrg_code());
         dev.setVer(devices.get(i).getVersion());
-       /* List<Room> rooms = new ArrayList<>();
-        rooms.addAll(RoomManager.getInstance().queryRooms());
-        dev.setRooms(rooms);*/
+        List<Room> rooms = new ArrayList<>();
+        Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
+        rooms.add(room);
+        dev.setRoomList(rooms);
         String deviceName = devices.get(i).getDevice_name();
         dev.setName(deviceName);
         boolean success = dev.save();
@@ -537,16 +526,15 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
             dev.setType(deviceType);
-        }
-        else if (deviceType.equalsIgnoreCase("LKRT")) {
+        } else if (deviceType.equalsIgnoreCase("LKRT")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
             dev.setType(deviceType);
-            Router router=new Router();
-            Log.i(TAG,"获取绑定的设备");
+            Router router = new Router();
+            Log.i(TAG, "获取绑定的设备");
             //获取devicekey
             for (int j = 0; j < manager.getDeviceList().size(); j++) {
                 if (manager.getDeviceList().get(j).getDeviceSN().equals(dev.getSn())) {
-                    Log.i(TAG,"赋值device key:"+manager.getDeviceList().get(j).getDeviceKey());
+                    Log.i(TAG, "赋值device key:" + manager.getDeviceList().get(j).getDeviceKey());
                     router.setRouterDeviceKey(manager.getDeviceList().get(j).getDeviceKey());
                 }
             }
@@ -555,14 +543,14 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             dev.setRouter(router);
         }
         dev.setUid(devices.get(i).getUid());
-        //dev.setCtrUid(aDeviceList.getSmartDev().get(i).getCtrUid());
-        // dev.setStatus(aDeviceList.getSmartDev().get(i).getStatus());
         dev.setOrg(devices.get(i).getOrg_code());
-       /* List<Room> rooms = new ArrayList<>();
-        rooms.addAll(RoomManager.getInstance().queryRooms());
-        dev.setRooms(rooms);*/
         String deviceName = devices.get(i).getDevice_name();
         dev.setName(deviceName);
+        List<Room> rooms = new ArrayList<>();
+        Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
+        Log.i(TAG, "保存设备:" + room.toString());
+        rooms.add(room);
+        dev.setRooms(rooms);
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
     }
@@ -587,6 +575,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                     if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
                         tempDevice.addAll(aDeviceList.getDevice());
                     }
+                    //网关设备更新状态
                     for (int i = 0; i < tempDevice.size(); i++) {
                         for (int j = 0; j < datasTop.size(); j++) {
                             if (datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())) {
@@ -594,6 +583,14 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             }
                         }
                     }
+                    //网关设备下发列表
+                       /* for (int j = 0; j < datasTop.size(); j++) {
+                            if (datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())) {
+                                datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
+                            }
+                        }*/
+
+                    //智能设备更新状态
                     for (int i = 0; i < tempSmartDevice.size(); i++) {
                         for (int j = 0; j < datasBottom.size(); j++) {
                             if (datasBottom.get(j).getUid().equals(tempSmartDevice.get(i).getUid())) {

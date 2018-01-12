@@ -11,7 +11,7 @@ public interface RoomListener {
     /**
      *返回查询结果
      */
-    void responseQueryResult(List<Room> result);
+    void responseQueryResultHttps(List<Room> result);
     void responseAddRoomResult(String result);
     void responseDeleteRoomResult();
     void responseUpdateRoomNameResult();

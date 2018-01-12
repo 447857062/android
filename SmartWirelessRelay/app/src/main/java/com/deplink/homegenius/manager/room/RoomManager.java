@@ -167,11 +167,12 @@ public class RoomManager {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                Log.i(TAG, "" + response.body());
+
                 if (response.code() == 400) {
                     //Bad Request
-                } else {
-                    if (!response.body().contains("errcode")) {
+                } else if (response.code() == 200) {
+                    if (response.body() != null && !response.body().contains("errcode")) {
+                        Log.i(TAG, "" + response.body());
                         ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list = ParseUtil.jsonToArrayList(response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
                         Room temp;
 
@@ -185,7 +186,6 @@ public class RoomManager {
                                     addToDb = false;
                                 }
                             }
-
                             if (addToDb) {
                                 temp.setRoomName(CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
                                 temp.setRoomOrdinalNumber(i);
@@ -194,15 +194,23 @@ public class RoomManager {
                                 temp.save();
                                 mRooms.add(temp);
                             }
-
                         }
                         List<Room> rooms = sortRooms();
+                        Log.i(TAG, "查询https 房间返回房间列表大小:" + rooms.size());
                         for (int i = 0; i < mRoomListenerList.size(); i++) {
-                            mRoomListenerList.get(i).responseQueryResult(rooms);
+                            mRoomListenerList.get(i).responseQueryResultHttps(rooms);
+                        }
+
+                    }
+                } else {
+                    if (response.errorBody() != null) {
+                        try {
+                            Log.i(TAG, "" + response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
-
             }
 
             @Override
@@ -215,7 +223,7 @@ public class RoomManager {
     /**
      * 添加房间
      */
-    public void addRoomHttp(String roomName, String roomType) {
+    public void addRoomHttp(String roomName, String roomType, int sort_num) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
             ToastSingleShow.showText(mContext, "用户未登录");
@@ -224,6 +232,7 @@ public class RoomManager {
         com.deplink.sdk.android.sdk.homegenius.Room room = new com.deplink.sdk.android.sdk.homegenius.Room();
         room.setRoom_name(roomName);
         room.setRoom_type(roomType);
+        room.setSort_num(sort_num);
         RestfulToolsHomeGenius.getSingleton(mContext).addRomm(userName, room, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
@@ -231,10 +240,27 @@ public class RoomManager {
                 if (response.code() == 200) {
                     Log.i(TAG, "" + response.message());
                     Log.i(TAG, "" + response.body());
+                    if (response.errorBody() != null) {
+                        try {
+                            Log.i(TAG, "" + response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     DeviceOperationResponse result = response.body();
                     if (result.getStatus().equalsIgnoreCase("ok")) {
                         for (int i = 0; i < mRoomListenerList.size(); i++) {
                             mRoomListenerList.get(i).responseAddRoomResult(result.getUid());
+                        }
+                    }
+                } else if (response.code() == 500) {
+                    if (response.errorBody() != null) {
+                        try {
+
+                            Log.i(TAG, "" + response.errorBody().string());
+                            Log.i(TAG, "" + response.body().toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -275,25 +301,27 @@ public class RoomManager {
             }
         });
     }
+
     /**
      * 删除房间
      */
-    public void updateRoomNameHttp(String roomUid,String roomName,int sort_num) {
+    public void updateRoomNameHttp(String roomUid, String roomName, int sort_num) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
             ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
-        RoomUpdateName roomUpdateName=new RoomUpdateName();
+        RoomUpdateName roomUpdateName = new RoomUpdateName();
         roomUpdateName.setRoom_uid(roomUid);
         roomUpdateName.setRoom_name(roomName);
         roomUpdateName.setSort_num(sort_num);
+        Log.i(TAG, "roomUpdateName=" + roomUpdateName.toString());
         RestfulToolsHomeGenius.getSingleton(mContext).updateRoomName(userName, roomUpdateName, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.errorBody()!=null){
+                if (response.errorBody() != null) {
                     try {
                         Log.i(TAG, "" + response.errorBody().string());
                     } catch (IOException e) {
@@ -324,6 +352,7 @@ public class RoomManager {
             @Override
             public void run() {
                 for (int i = 0; i < mRooms.size(); i++) {
+                    updateRoomNameHttp(mRooms.get(i).getUid(), mRooms.get(i).getRoomName(), i);
                     mRooms.get(i).setRoomOrdinalNumber(i);
                     //如果对象是持久化的，执行save操作就相当于更新这条数据，如：
                     //如果一个对象是没有持久化的，执行save操作相当于新增一条数据
@@ -331,8 +360,6 @@ public class RoomManager {
                 }
             }
         });
-
-
     }
 
     /**
@@ -356,8 +383,13 @@ public class RoomManager {
      */
     public List<Room> queryRooms() {
         mRooms = DataSupport.findAll(Room.class, true);
-        queryRoomListHttp();
+        sortRooms();
         return mRooms;
+    }
+
+    public void updateRooms() {
+        queryRoomListHttp();
+
     }
 
     /**

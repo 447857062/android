@@ -11,7 +11,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
-import com.deplink.homegenius.Protocol.packet.udp.UdpPacket;
+import com.deplink.homegenius.manager.connect.local.udp.packet.UdpPacket;
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import com.deplink.homegenius.util.IPV4Util;
 import com.deplink.homegenius.util.NetUtil;

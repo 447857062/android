@@ -10,9 +10,17 @@ import android.os.Binder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.QueryOptions;
+import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
+import com.deplink.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecord;
+import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.ComandID;
+import com.deplink.homegenius.manager.connect.ConnectionMonitor;
+import com.deplink.homegenius.manager.connect.local.udp.UdpManager;
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import com.deplink.homegenius.util.DataExchange;
+import com.deplink.homegenius.util.NetUtil;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -33,14 +41,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.QueryOptions;
-import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
-import com.deplink.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecord;
-import com.deplink.homegenius.Protocol.packet.GeneralPacket;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.manager.connect.ConnectionMonitor;
-import com.deplink.homegenius.manager.connect.local.udp.UdpManager;
-import com.deplink.homegenius.util.NetUtil;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -320,7 +320,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
     public String getIn() {
         if (sslSocket == null) {
             Log.i(TAG, "getIn() socket==null cannot receive message");
-
             return "";
         }
         if (sslSocket.isClosed()) {

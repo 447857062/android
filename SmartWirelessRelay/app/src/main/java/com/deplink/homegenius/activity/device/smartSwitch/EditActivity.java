@@ -60,6 +60,12 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     private ImageView imageview_getway_arror_right;
     private String switchType;
     private String selectGetwayName;
+    private boolean isStartFromExperience;
+    private String deviceName;
+    private boolean isOnActivityResult;
+    private String action;
+    private String deviceUid;
+    private Room room;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +82,6 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         layout_getway_select.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
     }
-
 
 
     private void initDatas() {
@@ -111,8 +116,8 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         super.onResume();
         deviceName = mSmartSwitchManager.getCurrentSelectSmartDevice().getName();
         if (deviceName != null && deviceName.length() > 0) {
-            if(deviceName.length()>10){
-                deviceName=deviceName.substring(0,10);
+            if (deviceName.length() > 10) {
+                deviceName = deviceName.substring(0, 10);
             }
             edittext_add_device_input_name.setText(deviceName);
             edittext_add_device_input_name.setSelection(deviceName.length());
@@ -120,6 +125,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         if (!isOnActivityResult) {
             isOnActivityResult = false;
             if (mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().size() == 1) {
+
                 textview_select_room_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().get(0).getRoomName());
             } else {
                 textview_select_room_name.setText("全部");
@@ -143,9 +149,6 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         textview_edit = findViewById(R.id.textview_edit);
     }
 
-    private boolean isStartFromExperience;
-    private String deviceName;
-    private boolean isOnActivityResult;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,14 +158,17 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
             Log.i(TAG, "isStartFromExperience=" + isStartFromExperience);
             isOnActivityResult = true;
             if (!isStartFromExperience) {
-                Room room = RoomManager.getInstance().findRoom(roomName, true);
-                String deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                action = "alertroom";
+                room = RoomManager.getInstance().findRoom(roomName, true);
+                deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
                 deviceName = edittext_add_device_input_name.getText().toString();
-                mSmartSwitchManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
+                mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
             }
             textview_select_room_name.setText(roomName);
         }
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -171,9 +177,10 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                String deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                action = "alertname";
+                deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
                 deviceName = edittext_add_device_input_name.getText().toString();
-                mDeviceManager.alertDeviceHttp(deviceUid,null,deviceName,null);
+                mDeviceManager.alertDeviceHttp(deviceUid, null, deviceName, null);
 
                 break;
             case R.id.layout_getway_select:
@@ -252,18 +259,23 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
 
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-        if(result.getStatus()!=null && result.getStatus().equals("ok")){
+        if (result.getStatus() != null && result.getStatus().equals("ok")) {
             mDeviceManager.deleteSmartDevice();
         }
     }
 
     @Override
     public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-        String deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
-       boolean saveResult= mSmartSwitchManager.updateSmartDeviceName(deviceUid,deviceName);
-        if(saveResult){
-            onBackPressed();
+        deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+        if (action.equals("alertroom")) {
+            mSmartSwitchManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
+        } else if (action.equals("alertname")) {
+            boolean saveResult = mSmartSwitchManager.updateSmartDeviceName(deviceUid, deviceName);
+            if (saveResult) {
+                onBackPressed();
+            }
         }
+        action = "";
     }
 
     @Override

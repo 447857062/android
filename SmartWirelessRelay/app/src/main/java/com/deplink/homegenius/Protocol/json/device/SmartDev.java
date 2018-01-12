@@ -28,6 +28,7 @@ public class SmartDev extends DataSupport implements Serializable {
     private String sn;
     private String mac;
     private String name;
+    private String bindLocal;
     /*绑定的网关*/
     private Device getwayDevice;
     private boolean switch_one_open;
@@ -55,6 +56,15 @@ public class SmartDev extends DataSupport implements Serializable {
     public Router getRouter() {
         return router;
     }
+
+    public String getBindLocal() {
+        return bindLocal;
+    }
+
+    public void setBindLocal(String bindLocal) {
+        this.bindLocal = bindLocal;
+    }
+
     public void setRouter(Router router) {
         this.router = router;
     }

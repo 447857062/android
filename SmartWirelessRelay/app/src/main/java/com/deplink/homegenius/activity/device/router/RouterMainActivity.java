@@ -326,7 +326,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private void initDatas() {
         textview_title.setText("路由器");
         image_setting.setImageResource(R.drawable.settingicon);
-
         mConnectedDevices = new ArrayList<>();
         mBlackListDatas = new ArrayList<>();
         mAdapter = new ConnectedDeviceListAdapter(this, mConnectedDevices);

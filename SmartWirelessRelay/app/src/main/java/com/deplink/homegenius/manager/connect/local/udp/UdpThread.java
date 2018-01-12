@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
-import com.deplink.homegenius.Protocol.packet.udp.UdpPacket;
+import com.deplink.homegenius.manager.connect.local.udp.packet.UdpPacket;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.NetStatusUtil;
 import com.deplink.homegenius.util.Perfence;

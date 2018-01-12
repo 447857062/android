@@ -23,13 +23,9 @@ public interface DeviceListener {
      */
     void responseWifiListResult(List<SSIDList>wifiList);
     void responseSetWifirelayResult(int result);
-    /**
-     */
     void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse);
     void responseDeleteDeviceHttpResult(DeviceOperationResponse result);
     void responseAlertDeviceHttpResult(DeviceOperationResponse result);
     void responseGetDeviceInfoHttpResult(String result);
-    /**
-     */
     void responseQueryHttpResult(List<Deviceprops>devices);
 }

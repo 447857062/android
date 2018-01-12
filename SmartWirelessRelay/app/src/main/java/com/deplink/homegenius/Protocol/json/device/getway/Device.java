@@ -21,6 +21,15 @@ public class Device extends DataSupport implements Serializable{
     private String Org;
     private String Ver;
     private String name;
+    private String bindLocal;
+
+    public String getBindLocal() {
+        return bindLocal;
+    }
+
+    public void setBindLocal(String bindLocal) {
+        this.bindLocal = bindLocal;
+    }
 
     public String getOrg() {
         return Org;
@@ -108,7 +117,10 @@ public class Device extends DataSupport implements Serializable{
                 ", Status='" + Status + '\'' +
                 ", Type='" + Type + '\'' +
                 ", Mac='" + Mac + '\'' +
+                ", Org='" + Org + '\'' +
+                ", Ver='" + Ver + '\'' +
                 ", name='" + name + '\'' +
+                ", bindLocal='" + bindLocal + '\'' +
                 ", roomList=" + roomList +
                 ", ipAddress='" + ipAddress + '\'' +
                 '}';

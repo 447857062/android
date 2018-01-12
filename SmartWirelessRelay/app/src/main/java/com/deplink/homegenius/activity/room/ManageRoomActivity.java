@@ -182,7 +182,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     }
 
     @Override
-    public void responseQueryResult(List<Room> result) {
+    public void responseQueryResultHttps(List<Room> result) {
 
     }
 
