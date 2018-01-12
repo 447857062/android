@@ -25,12 +25,13 @@ public class HomeGenius  {
     /**
      * 要求设备上报
      */
-    public void bindApp(String uid) {
+    public void bindApp(String uid,String userUuid) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("BindApp");
         queryCmd.setTimestamp();
         queryCmd.setAuthId(uid);
+        queryCmd.setSendid(userUuid);
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         //exclusive.setSub("");
@@ -44,6 +45,7 @@ public class HomeGenius  {
         }
         @Override
         public void onSuccess(IMqttToken iMqttToken) {
+            Log.d(DeplinkSDK.SDK_TAG, "--->Mqtt onSuccess: " + iMqttToken.toString());
             notifySuccess(action);
         }
         @Override

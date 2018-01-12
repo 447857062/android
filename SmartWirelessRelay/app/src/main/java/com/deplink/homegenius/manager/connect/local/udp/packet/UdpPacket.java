@@ -1,4 +1,4 @@
-package com.deplink.homegenius.Protocol.packet.udp;
+package com.deplink.homegenius.manager.connect.local.udp.packet;
 
 import android.content.Context;
 import android.util.Log;

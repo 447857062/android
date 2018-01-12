@@ -135,7 +135,6 @@ public class DeviceManager implements MqttListener {
                                 device.retrieveDeviceCookie();
                                 device.retrieveUpgradeInfo();
                                 device.retrieveDeviceProperty();
-
                                 mDeviceMap.put(device.getDeviceKey(), device);
                             }
 
@@ -155,6 +154,9 @@ public class DeviceManager implements MqttListener {
                                 mDeviceTopics.remove(topic);
                             }
                         }
+                        String uuid=  DeplinkSDK.getSDKManager().getUserInfo().getUuid();
+                        Log.i(TAG,"devicemanager uuid="+uuid);
+                       // MQTTController.getSingleton().subscribe("user/"+uuid+"/sub", DeviceManager.this);
                         Log.i(TAG, "getBinding绑定的设备 mDeviceMap.size=" + mDeviceMap.size());
                         mSDKCoordinator.notifySuccess(SDKAction.GET_BINDING);
                         break;

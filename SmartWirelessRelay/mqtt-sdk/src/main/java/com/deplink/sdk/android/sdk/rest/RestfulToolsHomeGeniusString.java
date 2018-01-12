@@ -109,4 +109,18 @@ public class RestfulToolsHomeGeniusString {
         }
         return call;
     }
+  /*  public Call<String> addDevice(String username, DeviceAddBody deviceAddBody, Callback<String> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "addDevice:" + username);
+        Call<String> call = apiService.addDevice(username, deviceAddBody.toString(), RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }*/
 }

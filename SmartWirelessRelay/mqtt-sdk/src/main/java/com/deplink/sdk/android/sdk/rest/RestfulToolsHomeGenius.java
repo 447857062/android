@@ -10,6 +10,7 @@ import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
+import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
 
@@ -72,7 +73,7 @@ public class RestfulToolsHomeGenius {
         return singleton;
     }
 
-    public Call<DeviceOperationResponse> addDevice(String username, DeviceAddBody deviceAddBody, Callback<DeviceOperationResponse> cll) {
+    public Call<JsonObject> addDevice(String username, DeviceAddBody deviceAddBody, Callback<JsonObject> cll) {
         if (null == username) {
             if (cll != null) {
                 cll.onFailure(null, new Throwable(errMsg));
@@ -80,7 +81,7 @@ public class RestfulToolsHomeGenius {
             return null;
         }
         Log.i(TAG, "addDevice:" + username);
-        Call<DeviceOperationResponse> call = apiService.addDevice(username, deviceAddBody, RestfulTools.getSingleton().getToken());
+        Call<JsonObject> call = apiService.addDevice(username, deviceAddBody, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }

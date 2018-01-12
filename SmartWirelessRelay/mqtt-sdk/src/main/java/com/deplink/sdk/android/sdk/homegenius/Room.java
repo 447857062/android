@@ -14,6 +14,15 @@ public class Room {
     private String room_name;
     private String room_type;
     private int device_num;
+    private int sort_num;
+
+    public int getSort_num() {
+        return sort_num;
+    }
+
+    public void setSort_num(int sort_num) {
+        this.sort_num = sort_num;
+    }
 
     public String getUid() {
         return uid;
@@ -54,6 +63,7 @@ public class Room {
                 ", room_name='" + room_name + '\'' +
                 ", room_type='" + room_type + '\'' +
                 ", device_num=" + device_num +
+                ", sort_num=" + sort_num +
                 '}';
     }
 }

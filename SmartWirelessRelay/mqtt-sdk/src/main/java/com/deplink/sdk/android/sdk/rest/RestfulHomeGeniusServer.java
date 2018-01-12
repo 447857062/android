@@ -6,6 +6,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -27,9 +28,13 @@ public interface RestfulHomeGeniusServer {
     //读绑定设备信息
     @GET("/user/{user_name}/devices")
     Call<String> getDeviceInfo(@Path("user_name") String user_name, @Header("token") String token);
-    //添加设备
+  //添加设备
     @PUT("/user/{user_name}/devices")
-    Call<DeviceOperationResponse> addDevice(@Path("user_name") String user_name, @Body DeviceAddBody deviceAddBody, @Header("token") String token);
+    Call<JsonObject> addDevice(@Path("user_name") String user_name, @Body DeviceAddBody deviceAddBody, @Header("token") String token);
+
+    //添加设备
+   /* @PUT("/user/{user_name}/devices")
+    Call<String> addDevice(@Path("user_name") String user_name, @Body String deviceAddBody, @Header("token") String token);*/
     //修改设备属性
     @PUT("/user/{user_name}/deviceprops")
     Call<DeviceOperationResponse> alertDevice(@Path("user_name") String user_name, @Body Deviceprops deviceprops, @Header("token") String token);

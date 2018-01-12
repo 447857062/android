@@ -1,7 +1,8 @@
-package com.deplink.homegenius.Protocol.packet.udp;
+package com.deplink.homegenius.manager.connect.local.udp.packet;
 
 import android.util.Log;
 
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.OnRecvLocalConnectIpListener;
 import com.deplink.homegenius.util.DataExchange;
 
@@ -10,8 +11,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Arrays;
-
-import com.deplink.homegenius.constant.AppConstant;
 
 
 /**
@@ -127,7 +126,7 @@ public class UdpComm {
                         byte[] uidResult = new byte[33];
                         System.arraycopy(result, 6, uidResult, 0, 33);
                         String uid=new String(uidResult);
-                        Log.i(TAG, "网关UID:" +uid);
+                        Log.i(TAG, "网关SN:" +uid);
                         listener.OnRecvIp(packet.getAddress().getAddress(), uid);
                     }
                 } catch (IOException e) {
