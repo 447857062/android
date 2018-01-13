@@ -3,14 +3,21 @@ package com.deplink.homegenius.manager.device.getway;
 import android.content.Context;
 import android.util.Log;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
+import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
+import com.deplink.homegenius.Protocol.json.wifi.Proto;
+import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -46,9 +53,11 @@ public class GetwayManager implements LocalConnecteListener {
     private String currentAddDevice;
     private GeneralPacket packet;
     private LocalConnectmanager mLocalConnectmanager;
-    private Device currentSelectGetwayDevice;
-    private Device currentAddGetwayDevice;
+    private RemoteConnectManager mRemoteConnectManager;
+    private GatwayDevice currentSelectGetwayDevice;
+    private GatwayDevice currentAddGetwayDevice;
     private ExecutorService cachedThreadPool;
+    private HomeGenius mHomeGenius;
     public String getCurrentAddDevice() {
         Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
         return currentAddDevice;
@@ -102,6 +111,12 @@ public class GetwayManager implements LocalConnecteListener {
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
         }
+        if(mRemoteConnectManager==null){
+            mRemoteConnectManager= RemoteConnectManager.getInstance();
+        }
+        if(mHomeGenius==null){
+            mHomeGenius=new HomeGenius();
+        }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         if (cachedThreadPool == null) {
@@ -127,15 +142,43 @@ public class GetwayManager implements LocalConnecteListener {
      * 删除数据库中的一个网关设备
      */
     public int deleteDBGetwayDevice(String uid) {
-        int affectcolumn = DataSupport.deleteAll(Device.class, "Uid=?", uid);
+        int affectcolumn = DataSupport.deleteAll(GatwayDevice.class, "Uid=?", uid);
         Log.i(TAG, "删除一个网关设备，删除影响的行数=" + affectcolumn);
         return affectcolumn;
     }
 
+    /**
+     * 中继连接
+     */
+    public void setWifiRelay(AP_CLIENT paramas) {
+        Log.i(TAG, "setWifiRelay");
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            WifiRelaySet setCmd = new WifiRelaySet();
+            setCmd.setTimestamp();
+            Proto proto = new Proto();
+            proto.setAP_CLIENT(paramas);
+            setCmd.setProto(proto);
+            Gson gson = new Gson();
+            String text = gson.toJson(setCmd);
+            packet.packSetWifiListData(text.getBytes());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else if(mRemoteConnectManager.isRemoteConnectAvailable()){
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+            Log.i(TAG,"device.getTopic()="+device.getTopic());
+            if(device.getTopic()!=null && !device.getTopic().equals("")){
+                mHomeGenius.setWifiRelay(device.getTopic(),uuid,paramas);
+            }
+        }
+    }
 
-
-    public List<Device> getAllGetwayDevice() {
-        List<Device> list = DataSupport.findAll(Device.class, true);
+    public List<GatwayDevice> getAllGetwayDevice() {
+        List<GatwayDevice> list = DataSupport.findAll(GatwayDevice.class, true);
         if (list.size() > 0) {
             Log.i(TAG, "查询到的网关设备个数=" + list.size() + list.get(0).getUid());
         }
@@ -143,11 +186,11 @@ public class GetwayManager implements LocalConnecteListener {
     }
 
 
-    public Device getCurrentSelectGetwayDevice() {
+    public GatwayDevice getCurrentSelectGetwayDevice() {
         return currentSelectGetwayDevice;
     }
 
-    public void setCurrentSelectGetwayDevice(Device currentSelectGetwayDevice) {
+    public void setCurrentSelectGetwayDevice(GatwayDevice currentSelectGetwayDevice) {
         this.currentSelectGetwayDevice = currentSelectGetwayDevice;
     }
 
@@ -156,9 +199,9 @@ public class GetwayManager implements LocalConnecteListener {
         queryCmd.setOP("DELETE");
         queryCmd.setMethod("DevList");
         queryCmd.setTimestamp();
-        List<Device> devs = new ArrayList<>();
+        List<GatwayDevice> devs = new ArrayList<>();
         //设备赋值
-        Device dev = new Device();
+        GatwayDevice dev = new GatwayDevice();
         dev.setUid(currentSelectGetwayDevice.getUid());
         devs.add(dev);
         queryCmd.setDevice(devs);
@@ -173,12 +216,13 @@ public class GetwayManager implements LocalConnecteListener {
         });
     }
 
-    public boolean addDBGetwayDevice(String deviceName,String uid) {
+    public boolean addDBGetwayDevice(String deviceName,String uid,String topic) {
         //查询设备
-        currentAddGetwayDevice = new Device();
+        currentAddGetwayDevice = new GatwayDevice();
         currentAddGetwayDevice.setType(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
         currentAddGetwayDevice.setUid(uid);
         currentAddGetwayDevice.setName(deviceName);
+        currentAddGetwayDevice.setTopic(topic);
         boolean addResult = currentAddGetwayDevice.save();
         Log.i(TAG, "向数据库中添加一条网关设备数据=" + addResult);
         if (!addResult) {
@@ -194,7 +238,7 @@ public class GetwayManager implements LocalConnecteListener {
     public void updateGetwayDeviceInWhatRoom(Room room, String deviceUid) {
         //保存所在的房间
         //查询设备
-        Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
+        GatwayDevice getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(GatwayDevice.class, true);
         //找到要更行的设备,设置关联的房间
         List<Room> roomList = new ArrayList<>();
         if (room != null) {
@@ -222,9 +266,9 @@ public class GetwayManager implements LocalConnecteListener {
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
         queryCmd.setTimestamp();
-        List<Device> devs = new ArrayList<>();
+        List<GatwayDevice> devs = new ArrayList<>();
         //设备赋值
-        Device dev = new Device();
+        GatwayDevice dev = new GatwayDevice();
         //调试  uid 77685180654101946200316696479888
         dev.setUid(deviceUid);
       /*  dev.setMac(device.getAd());
@@ -244,11 +288,9 @@ public class GetwayManager implements LocalConnecteListener {
     }
 
     public void deleteGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
-
-
         //保存所在的房间
         //查询设备
-        Device getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(Device.class, true);
+        GatwayDevice getwayDevice = DataSupport.where("Uid=?", deviceUid).findFirst(GatwayDevice.class, true);
         //找到要更行的设备,设置关联的房间
         List<Room> roomList = new ArrayList<>();
         roomList.addAll(getwayDevice.getRoomList());
@@ -260,8 +302,6 @@ public class GetwayManager implements LocalConnecteListener {
         getwayDevice.setRoomList(roomList);
         boolean saveResult = getwayDevice.save();
         Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
-
-
     }
 
 
@@ -295,12 +335,17 @@ public class GetwayManager implements LocalConnecteListener {
 
     @Override
     public void onSetWifiRelayResult(String result) {
-
+        Log.i(TAG, "onSetWifiRelayResult=" + result);
+        Gson gson = new Gson();
+        OpResult opResult = gson.fromJson(result, OpResult.class);
+        if (opResult.getOP().equals("REPORT") && opResult.getMethod().equals("WIFI"))
+            for (int i = 0; i < mGetwayListenerList.size(); i++) {
+                mGetwayListenerList.get(i).responseSetWifirelayResult(opResult.getResult());
+            }
     }
 
     @Override
     public void onGetalarmRecord(List<Info> alarmList) {
 
     }
-
 }

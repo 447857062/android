@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
@@ -62,7 +62,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private TextView textview_title;
     private FrameLayout image_back;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device> mGetways;
+    private List<GatwayDevice> mGetways;
     private ListView listview_select_getway;
     private RelativeLayout layout_getway_list;
     private TextView textview_select_getway_name;
@@ -205,7 +205,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 }
 
                 SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
-                Device temp = smartDev.getGetwayDevice();
+                GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {
                     textview_select_getway_name.setText("未设置网关");
                 } else {
@@ -373,10 +373,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
 
     }
 
-    @Override
-    public void responseSetWifirelayResult(int result) {
 
-    }
 
     @Override
     public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {

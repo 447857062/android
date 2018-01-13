@@ -6,7 +6,7 @@ import android.util.Log;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
@@ -41,6 +41,7 @@ public class SmartLightManager implements LocalConnecteListener {
      */
     private static SmartLightManager instance;
     private SmartDev currentSelectLight;
+
     private SmartLightManager() {
 
     }
@@ -59,6 +60,7 @@ public class SmartLightManager implements LocalConnecteListener {
         }
         return instance;
     }
+
     private List<SmartLightListener> mSmartLightListenerList;
 
     /**
@@ -66,10 +68,10 @@ public class SmartLightManager implements LocalConnecteListener {
      */
     public void InitSmartLightManager(Context context) {
         this.mContext = context;
-        this.mSmartLightListenerList=new ArrayList<>();
+        this.mSmartLightListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            String uuid= Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             mLocalConnectmanager.InitLocalConnectManager(context, uuid);
         }
         mLocalConnectmanager.addLocalConnectListener(this);
@@ -79,11 +81,13 @@ public class SmartLightManager implements LocalConnecteListener {
         }
 
     }
+
     public void addSmartLightListener(SmartLightListener listener) {
         if (listener != null && !mSmartLightListenerList.contains(listener)) {
             this.mSmartLightListenerList.add(listener);
         }
     }
+
     public void removeSmartLightListener(SmartLightListener listener) {
         if (listener != null && mSmartLightListenerList.contains(listener)) {
             this.mSmartLightListenerList.remove(listener);
@@ -93,13 +97,13 @@ public class SmartLightManager implements LocalConnecteListener {
     public void releaswSmartManager() {
         mLocalConnectmanager.removeLocalConnectListener(this);
     }
+
     public void setSmartLightSwitch(String cmd) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("YWLIGHTCONTROL");
         queryCmd.setSmartUid(currentSelectLight.getUid());
         queryCmd.setCommand(cmd);
-
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
         packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
@@ -110,9 +114,9 @@ public class SmartLightManager implements LocalConnecteListener {
                 mLocalConnectmanager.getOut(packet.data);
             }
         });
-
     }
-    public void setSmartLightParamas(String cmd,int yellow,int white ) {
+
+    public void setSmartLightParamas(String cmd, int yellow, int white) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("YWLIGHTCONTROL");
@@ -132,6 +136,7 @@ public class SmartLightManager implements LocalConnecteListener {
         });
 
     }
+
     public void queryLightStatus() {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
@@ -149,6 +154,7 @@ public class SmartLightManager implements LocalConnecteListener {
             }
         });
     }
+
     public boolean addDBSwitchDevice(QrcodeSmartDevice device) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
@@ -166,13 +172,15 @@ public class SmartLightManager implements LocalConnecteListener {
         Log.i(TAG, "数据库中已存在相同设备，不必要添加");
         return false;
     }
-    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+
+    public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
         currentSelectLight.setGetwayDevice(getwayDevice);
         boolean saveResult = currentSelectLight.save();
         Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
         return saveResult;
     }
+
     /**
      * 更新设备所在房间
      */
@@ -194,6 +202,7 @@ public class SmartLightManager implements LocalConnecteListener {
         boolean saveResult = smartDev.save();
         Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
     }
+
     /**
      * 更新设备所在房间
      */
@@ -233,7 +242,7 @@ public class SmartLightManager implements LocalConnecteListener {
      */
     @Override
     public void OnGetSetresult(String setResult) {
-        Log.i(TAG,"setResult="+setResult);
+        Log.i(TAG, "setResult=" + setResult);
         for (int i = 0; i < mSmartLightListenerList.size(); i++) {
             mSmartLightListenerList.get(i).responseSetResult(setResult);
         }

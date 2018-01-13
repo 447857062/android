@@ -24,7 +24,7 @@
     -->
     <list>
         <mapping class="com.deplink.homegenius.Protocol.json.device.SmartDev"></mapping>
-        <mapping class="com.deplink.homegenius.Protocol.json.device.getway.Device"></mapping>
+        <mapping class="com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.Room"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.lock.SmartLock"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info"></mapping>

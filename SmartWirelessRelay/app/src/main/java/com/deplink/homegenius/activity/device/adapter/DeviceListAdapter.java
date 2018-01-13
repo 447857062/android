@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import com.deplink.homegenius.Protocol.json.device.SmartDev;
  */
 public class DeviceListAdapter extends BaseAdapter {
     private static final String TAG = "DeviceListAdapter";
-    private List<Device> listTop = null;
+    private List<GatwayDevice> listTop = null;
     private List<SmartDev> listBottom = null;
     private Context mContext;
     private final int TOP_ITEM = 0, BOTTOM_ITEM = 1, TYPE_COUNT = 2;
@@ -30,7 +30,7 @@ public class DeviceListAdapter extends BaseAdapter {
      */
     private int TopCount = 0;
 
-    public DeviceListAdapter(Context mContext, List<Device> list,
+    public DeviceListAdapter(Context mContext, List<GatwayDevice> list,
                              List<SmartDev> datasOther) {
         this.mContext = mContext;
         this.listTop = list;
@@ -43,7 +43,7 @@ public class DeviceListAdapter extends BaseAdapter {
      *
      * @param list
      */
-    public void setTopList(List<Device> list) {
+    public void setTopList(List<GatwayDevice> list) {
         this.listTop = list;
         TopCount = listTop.size();
     }

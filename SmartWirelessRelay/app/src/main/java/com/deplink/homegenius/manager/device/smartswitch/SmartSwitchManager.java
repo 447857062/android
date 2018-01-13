@@ -3,10 +3,9 @@ package com.deplink.homegenius.manager.device.smartswitch;
 import android.content.Context;
 import android.util.Log;
 
-import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
@@ -17,7 +16,7 @@ import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.google.gson.Gson;
-
+import com.deplink.homegenius.Protocol.json.QueryOptions;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
@@ -104,7 +103,6 @@ public class SmartSwitchManager implements LocalConnecteListener{
      *
      */
     public void setSwitchCommand(String cmd) {
-
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("SmartWallSwitch");
@@ -139,7 +137,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
             }
         });
     }
-    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+    public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
         currentSelectSmartDevice.setGetwayDevice(getwayDevice);
         boolean saveResult = currentSelectSmartDevice.saveFast();

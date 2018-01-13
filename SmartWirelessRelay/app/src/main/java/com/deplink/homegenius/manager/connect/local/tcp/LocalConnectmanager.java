@@ -79,7 +79,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
      */
     private SSLSocket sslSocket;
     private UdpManager mUdpmanager;
-    private InetSocketAddress address;
 
     /**
      * sslsocket握手成功
@@ -199,7 +198,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
             InputStream cert = mContext.getResources().openRawResource(R.raw.server);
             server_ca = (X509Certificate) cf.generateCertificate(cert);
             cert.close();
-
             // Creating a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();
             KeyStore keyStore = KeyStore.getInstance(keyStoreType);
@@ -232,7 +230,7 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                     handshakeCompleted = true;
                 }
             });
-            address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
+            InetSocketAddress address = new InetSocketAddress(ipAddress, AppConstant.TCP_CONNECT_PORT);
             sslSocket.connect(address, AppConstant.SERVER_CONNECT_TIMEOUT);
             Log.e(TAG, "创建sslsocket success" + address.toString());
             if (appAuth == null) {
@@ -278,7 +276,7 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
      */
     public int getOut(byte[] message) {
         if (sslSocket == null) {
-            initSocketing=false;
+            initSocketing = false;
             Log.i(TAG, "socket==null cannot send tcp ip message");
             return -1;
         }
@@ -373,10 +371,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                         }
                         break;
                     case ComandID.CMD_SEND_SMART_DEV_RESPONSE:
-                        // 绑定网关（中继器） 回应:{ "OP": "REPORT", "Method": "SetDevList", "Result": 0 }
-                        //绑定设备回应当前所有已绑定的设备，自己对有没有绑定上
-                        //{ "OP": "REPORT", "Method": "DevList", "Device": [ { "Uid": "77685180654101946200316696479888", "Status": "lo" } ], "SmartDev": [ { "Uid": "00-12-4b-00-0b-26-c2-15", "Org": "ismart", "Type": "SMART_LOCK", "Ver": "1" } ] }
-                        //删除智能回应:{ "OP": "REPORT", "Method": "DevList", "Device": [ { "Uid": "77685180654101946200316696479888", "Status": "lo" } ], "SmartDev": [ ] }
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         System.out.println("绑定智能回应:" + str);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
@@ -416,16 +410,12 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
         Gson gson = new Gson();
         ReportAlertRecord record = gson.fromJson(str, ReportAlertRecord.class);
         if (record != null) {
-
-
-                List<Info> alermList = record.getInfo();
-                Log.i(TAG, "报警记录=" + alermList.size());
-                for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                    mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
-                }
+            List<Info> alermList = record.getInfo();
+            Log.i(TAG, "报警记录=" + alermList.size());
+            for (int i = 0; i < mLocalConnecteListener.size(); i++) {
+                mLocalConnecteListener.get(i).onGetalarmRecord(alermList);
             }
-
-
+        }
     }
 
 
@@ -463,8 +453,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                 Log.i(TAG, "网络连接变化");
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeInfo = manager.getActiveNetworkInfo();
-                long currentTime;
-                currentTime=System.currentTimeMillis();
                 if (activeInfo != null && NetUtil.isWiFiActive(context)) {
                     if (NetUtil.isWiFiActive(mContext)) {
                         currentNetStatu = NET_TYPE_WIFI_CONNECTED;
@@ -481,7 +469,7 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                                     mUdpmanager.InitUdpConnect(mContext, LocalConnectmanager.this);
                                 }
                             }
-                        } else  {
+                        } else {
                             if (mUdpmanager != null) {
                                 mUdpmanager = null;
                             }
@@ -521,7 +509,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
         if (!initSocketing) {
             initSocketing = true;
             InitConnect(ipAddress);
-
         }
     }
 }

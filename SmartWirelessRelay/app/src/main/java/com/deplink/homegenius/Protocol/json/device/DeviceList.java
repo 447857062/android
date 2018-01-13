@@ -1,6 +1,6 @@
 package com.deplink.homegenius.Protocol.json.device;
 
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.List;
 public class DeviceList   implements Serializable {
     private String OP;
     private String Method;
-    private List<com.deplink.homegenius.Protocol.json.device.getway.Device> Device;
+    private List<GatwayDevice> Device;
     private List<SmartDev>SmartDev;
-    public List<Device> getDevice() {
+    public List<GatwayDevice> getDevice() {
         return Device;
     }
 
-    public void setDevice(List<Device> device) {
+    public void setDevice(List<GatwayDevice> device) {
         Device = device;
     }
 
@@ -45,13 +45,4 @@ public class DeviceList   implements Serializable {
         Method = method;
     }
 
-    @Override
-    public String toString() {
-        return "DeviceList{" +
-                "OP='" + OP + '\'' +
-                ", Method='" + Method + '\'' +
-                ", Device=" + Device +
-                ", SmartDev=" + SmartDev +
-                '}';
-    }
 }

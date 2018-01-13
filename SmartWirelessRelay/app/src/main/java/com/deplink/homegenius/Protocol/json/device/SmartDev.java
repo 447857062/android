@@ -1,7 +1,7 @@
 package com.deplink.homegenius.Protocol.json.device;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 
@@ -26,11 +26,11 @@ public class SmartDev extends DataSupport implements Serializable {
     private String Org;
     private String Ver;
     private String sn;
-    private String mac;
+    private String Mac;
     private String name;
     private String bindLocal;
     /*绑定的网关*/
-    private Device getwayDevice;
+    private GatwayDevice getwayDevice;
     private boolean switch_one_open;
     private boolean switch_two_open;
     private boolean switch_three_open;
@@ -38,11 +38,11 @@ public class SmartDev extends DataSupport implements Serializable {
     private Router router;
 
     public String getMac() {
-        return mac;
+        return Mac;
     }
 
     public void setMac(String mac) {
-        this.mac = mac;
+        this.Mac = mac;
     }
 
     public String getSn() {
@@ -120,11 +120,11 @@ public class SmartDev extends DataSupport implements Serializable {
         this.remotecontrolUid = remotecontrolUid;
     }
 
-    public Device getGetwayDevice() {
+    public GatwayDevice getGetwayDevice() {
         return getwayDevice;
     }
 
-    public void setGetwayDevice(Device getwayDevice) {
+    public void setGetwayDevice(GatwayDevice getwayDevice) {
         this.getwayDevice = getwayDevice;
     }
 

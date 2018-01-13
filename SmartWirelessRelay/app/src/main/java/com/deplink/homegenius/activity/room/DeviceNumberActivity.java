@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
@@ -56,7 +56,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     /**
      * 上面半部分列表的数据
      */
-    private List<Device> datasTop;
+    private List<GatwayDevice> datasTop;
     /**
      * 下面半部分列表的数据
      */

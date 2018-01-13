@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.room.RoomListener;
@@ -45,7 +45,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private RelativeLayout layout_getway_list;
     private TextView textview_select_getway_name;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device> mGetways;
+    private List<GatwayDevice> mGetways;
     private String selectGetwayName;
     private ImageView imageview_getway_arror_right;
     private ConfirmDialog mConfirmDialog;
@@ -118,7 +118,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         mRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
         Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
         textview_room_name.setText(mRoomName);
-        List<Device> mGetways = mRoomManager.getCurrentSelectedRoom().getmGetwayDevices();
+        List<GatwayDevice> mGetways = mRoomManager.getCurrentSelectedRoom().getmGetwayDevices();
         if (mGetways == null || mGetways.size() == 0) {
             textview_select_getway_name.setText("未设置网关");
         } else {

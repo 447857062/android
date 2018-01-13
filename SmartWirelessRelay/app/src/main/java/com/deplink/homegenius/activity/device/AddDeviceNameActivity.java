@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
@@ -85,7 +85,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private RelativeLayout layout_room_select;
     private DoorbeelManager mDoorbeelManager;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device> mGetways;
+    private List<GatwayDevice> mGetways;
     private ListView listview_select_getway;
     private RemoteControlSelectListAdapter selectRemotecontrolAdapter;
     private List<SmartDev> mRemoteControls;
@@ -96,7 +96,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private TextView textview_select_remotecontrol_name;
     private String deviceName;
     private Room currentSelectedRoom;
-    private Device currentSelectGetway;
+    private GatwayDevice currentSelectGetway;
     private SmartDev currentSelectRemotecontrol;
     private RelativeLayout layout_remotecontrol_select;
     private RelativeLayout layout_remotecontrol_list;
@@ -105,7 +105,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private RoomManager mRoomManager;
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private boolean isOnActivityResult;
-    private boolean isStartFromExperience;
     private GetwayManager mGetwayManager;
     private SDKManager manager;
     private EventCallback ec;
@@ -115,7 +114,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     private String selectRemotecontrolName;
     private String addDeviceUid;
     private RouterManager mRouterManager;
-
+    private ConfigGetwayDialog mConfigGetwayDialog;
+    private String topic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,7 +153,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     }
 
     private void initDatas() {
-        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDoorbeelManager.InitDoorbeelManager(this);
         mSmartLightManager = SmartLightManager.getInstance();
@@ -168,7 +167,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         mGetwayManager.InitGetwayManager(this, this);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
-        mConfigGetwayDialog=new ConfigGetwayDialog(this);
+        mConfigGetwayDialog = new ConfigGetwayDialog(this);
         //getintent data
         currentAddDevice = getIntent().getStringExtra("currentAddDevice");
         deviceType = getIntent().getStringExtra("DeviceType");
@@ -318,6 +317,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             }
         }
     }
+
     @Override
     public void responseQueryResult(String result) {
     }
@@ -336,11 +336,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             switch (msg.what) {
                 case MSG_ADD_DEVICE_RESULT:
                     boolean success = (boolean) msg.obj;
-                    if (success) {
-                        Toast.makeText(AddDeviceNameActivity.this, "添加设备" + deviceType + "成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(AddDeviceNameActivity.this, "添加设备" + deviceType + "失败", Toast.LENGTH_SHORT).show();
-                    }
                     mHandler.sendEmptyMessageDelayed(MSG_FINISH_ACTIVITY, 1500);
                     break;
                 case MSG_FINISH_ACTIVITY:
@@ -367,10 +362,18 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             }
         }
     };
+
     @Override
     protected void onResume() {
         super.onResume();
-        isUserLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        manager.addEventCallback(ec);
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
     }
 
     @Override
@@ -378,6 +381,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
     }
+
     @Override
     public void responseBindDeviceResult(String result) {
         Gson gson = new Gson();
@@ -385,43 +389,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
         boolean success;
         Log.i(TAG, "绑定结果 type=" + deviceType);
         success = isSmartDeviceAddSuccess(aDeviceList);
-        switch (deviceType) {
-            case DeviceTypeConstant.TYPE.TYPE_LOCK:
-                device.setTp(DeviceTypeConstant.TYPE.TYPE_LOCK);
-                mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
-                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
-                    }
-                }
-                DialogThreeBounce.hideLoading();
-                break;
-            case "IRMOTE_V2":
-                mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
-                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                    if (aDeviceList.getSmartDev().get(i).getUid().equals(addDeviceUid)) {
-                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom,addDeviceUid, deviceName);
-                    }
-                }
-
-                break;
-            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
-                mSmartSwitchManager.addDBSwitchDevice(device, addDeviceUid);
-                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                        mSmartSwitchManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
-                    }
-                }
-                break;
-            case DeviceTypeConstant.TYPE.TYPE_LIGHT:
-                mSmartLightManager.addDBSwitchDevice(device);
-                for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
-                    if (aDeviceList.getSmartDev().get(i).getUid().equals(device.getAd())) {
-                        mSmartLightManager.updateSmartDeviceRoomAndName(currentSelectedRoom, aDeviceList.getSmartDev().get(i).getUid(), deviceName);
-                    }
-                }
-                break;
-        }
         Message msg = Message.obtain();
         msg.what = MSG_ADD_DEVICE_RESULT;
         msg.obj = success;
@@ -437,29 +404,28 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     public void responseSetWifirelayResult(int result) {
 
     }
-
-    private ConfigGetwayDialog mConfigGetwayDialog;
     @Override
     public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
         Log.i(TAG, responseBody.toString());
         addDeviceUid = responseBody.getUid();
-        String deviceTypeHttp=responseBody.getDevice_type();
-        if(deviceTypeHttp==null){
+        String deviceTypeHttp = responseBody.getDevice_type();
+        if (deviceTypeHttp == null) {
             if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                 mDeviceManager.bindSmartDevList(device);
             } else {
                 ToastSingleShow.showText(AddDeviceNameActivity.this, "本地网关不可用");
             }
-        }else{
+        } else {
             if (deviceTypeHttp.equalsIgnoreCase("LKSGW")) {
+                topic = responseBody.getTopic();
                 //TODO 扫网关
                 //如果有可用的网关
-                deviceName="中继器";
-                if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                deviceName = "中继器";
+                mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid, topic);
+                mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom, addDeviceUid);
+                if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mGetwayManager.bindDevice(addDeviceUid);
-                }else{
-                    mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid);
-                    mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom,addDeviceUid);
+                } else {
                     //提示连接
                     mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
                         @Override
@@ -478,9 +444,8 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 }
 
             } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
-                deviceName="路由器";
+                deviceName = "路由器";
                 SmartDev currentAddRouter = new SmartDev();
-                //
                 currentAddRouter.setName(deviceName);
                 currentAddRouter.setUid(addDeviceUid);
                 currentAddRouter.setType(DeviceTypeConstant.TYPE.TYPE_ROUTER);
@@ -490,7 +455,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         Router router = new Router();
                         router.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
                         router.setSmartDev(currentAddRouter);
-                        Log.i(TAG,"添加路由器返回的channels:"+responseBody.getChannels().toString());
+                        Log.i(TAG, "添加路由器返回的channels:" + responseBody.getChannels().toString());
                         router.setChannels(responseBody.getChannels());
                         router.save();
                         currentAddRouter.setRouter(router);
@@ -512,6 +477,27 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     }
                 }
             } else {
+                DialogThreeBounce.hideLoading();
+                switch (deviceType) {
+                    case DeviceTypeConstant.TYPE.TYPE_LOCK:
+                        device.setTp(DeviceTypeConstant.TYPE.TYPE_LOCK);
+                        mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
+                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+                        break;
+                    case "IRMOTE_V2":
+                        mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
+                        mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+                        break;
+                    case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+                        mSmartSwitchManager.addDBSwitchDevice(device, addDeviceUid);
+                        mSmartSwitchManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+
+                        break;
+                    case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                        mSmartLightManager.addDBSwitchDevice(device);
+                        mSmartLightManager.updateSmartDeviceRoomAndName(currentSelectedRoom, addDeviceUid, deviceName);
+                        break;
+                }
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.bindSmartDevList(device);
                 } else {
@@ -544,29 +530,19 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
     }
 
     //网关管理接口
+
     @Override
     public void responseResult(String result) {
         Log.i(TAG, "绑定网关设备返回：" + result + "当前要绑定的是：");
         Gson gson = new Gson();
         boolean addDeviceSuccess;
         DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-        deviceName = edittext_add_device_input_name.getText().toString();
-        if (deviceName.equals("")) {
-            deviceName = "家里的网关";
-        }
         if (deviceType.equals(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY)) {
             addDeviceSuccess = isGetwayDeviceAddSuccess(mDeviceList, currentAddDevice);
-            mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid);
-            for (int i = 0; i < mDeviceList.getDevice().size(); i++) {
-                if (mDeviceList.getDevice().get(i).getUid().equals(addDeviceUid)) {
-                    mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom,addDeviceUid);
-                }
-            }
             if (addDeviceSuccess) {
                 mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
             }
         }
-
     }
 
     @Override
@@ -920,6 +896,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 break;
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -9,7 +9,7 @@ import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.AppConstant;
@@ -129,13 +129,12 @@ public class SmartLockManager implements LocalConnecteListener {
      * 查询开锁记录
      */
     public void queryLockHistory() {
-
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("QUERY");
         queryCmd.setMethod("SmartLock");
         queryCmd.setCommand("HisRecord");
         queryCmd.setUserID("1001");
-        queryCmd.setSmartUid(currentSelectLock.getUid());
+        queryCmd.setSmartUid(currentSelectLock.getMac());
         Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
         queryCmd.setTimestamp();
         Gson gson = new Gson();
@@ -184,7 +183,7 @@ public class SmartLockManager implements LocalConnecteListener {
         Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
     }
 
-    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+    public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
         currentSelectLock.setGetwayDevice(getwayDevice);
         boolean saveResult = currentSelectLock.save();
@@ -202,11 +201,10 @@ public class SmartLockManager implements LocalConnecteListener {
      * @param limitedTime  授权时限
      */
     public void setSmartLockParmars(String cmd, String userId, String managePasswd, String authPwd, String limitedTime) {
-
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("SmartLock");
-        queryCmd.setSmartUid(currentSelectLock.getUid());
+        queryCmd.setSmartUid(currentSelectLock.getMac());
         queryCmd.setCommand(cmd);
         if (authPwd != null) {
             queryCmd.setAuthPwd(authPwd);
@@ -251,7 +249,6 @@ public class SmartLockManager implements LocalConnecteListener {
             if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
 
             }
-
         }
         //SmartLock-HisRecord"
         if (result.contains("HisRecord")) {

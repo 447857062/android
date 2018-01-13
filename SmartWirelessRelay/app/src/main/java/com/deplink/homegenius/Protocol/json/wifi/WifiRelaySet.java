@@ -8,6 +8,19 @@ public class WifiRelaySet {
     private String Method="SET";
     private long timestamp;
     private Proto Proto;
+    private String  SenderId;
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getSenderId() {
+        return SenderId;
+    }
+
+    public void setSenderId(String senderId) {
+        SenderId = senderId;
+    }
 
     public long getTimestamp() {
         return timestamp;

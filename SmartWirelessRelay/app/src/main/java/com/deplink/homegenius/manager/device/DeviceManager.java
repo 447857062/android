@@ -3,23 +3,22 @@ package com.deplink.homegenius.manager.device;
 import android.content.Context;
 import android.util.Log;
 
-import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.QueryWifiList;
 import com.deplink.homegenius.Protocol.json.device.lock.QueryWifiListResult;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
-import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
-import com.deplink.homegenius.Protocol.json.wifi.Proto;
-import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
@@ -68,11 +67,11 @@ public class DeviceManager implements LocalConnecteListener {
     private SmartDev currentSelectSmartDevice;
     private List<SmartDev> allSmartDevices;
     private boolean isStartFromExperience;
-
+    private RemoteConnectManager mRemoteConnectManager;
     public boolean isStartFromExperience() {
         return isStartFromExperience;
     }
-
+    private HomeGenius mHomeGenius;
     public void setStartFromExperience(boolean startFromExperience) {
         isStartFromExperience = startFromExperience;
     }
@@ -103,20 +102,33 @@ public class DeviceManager implements LocalConnecteListener {
      * 查询设备列表
      */
     public void queryDeviceList() {
-        Log.i(TAG, "本地接口查询设备列表");
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("QUERY");
-        queryCmd.setMethod("DevList");
-        queryCmd.setTimestamp();
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packQueryDevListData(text.getBytes(), false, null);
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        Log.i(TAG, "本地接口查询设备列表 mLocalConnectmanager.isLocalconnectAvailable():"
+                +mLocalConnectmanager.isLocalconnectAvailable()+
+                "mRemoteConnectManager.isRemoteConnectAvailable():"+mRemoteConnectManager.isRemoteConnectAvailable()
+        );
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("QUERY");
+            queryCmd.setMethod("DevList");
+            queryCmd.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packQueryDevListData(text.getBytes(), false, null);
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else if(mRemoteConnectManager.isRemoteConnectAvailable()){
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+            Log.i(TAG,"device.getTopic()="+device.getTopic());
+            if(device.getTopic()!=null && !device.getTopic().equals("")){
+                mHomeGenius.queryDeviceList(device.getTopic(),uuid);
             }
-        });
+        }
+
     }
 
     /**
@@ -134,17 +146,15 @@ public class DeviceManager implements LocalConnecteListener {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
-                    Log.i(TAG, "" + response.body());
                     ArrayList<Deviceprops> list = ParseUtil.jsonToArrayList(response.body(), Deviceprops.class);
                     for (int i = 0; i < list.size(); i++) {
-                        Log.i(TAG, "devicename=" + list.get(i).toString());
+                        Log.i(TAG, "device=" + list.get(i).toString());
                     }
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
                         mDeviceListenerList.get(i).responseQueryHttpResult(list);
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<String> call, Throwable t) {
 
@@ -193,9 +203,7 @@ public class DeviceManager implements LocalConnecteListener {
                 Log.i(TAG, "" + t.getMessage());
             }
         });
-
     }
-
     public void deleteDeviceHttp() {
         String uid = currentSelectSmartDevice.getUid();
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
@@ -219,7 +227,6 @@ public class DeviceManager implements LocalConnecteListener {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());
@@ -266,9 +273,7 @@ public class DeviceManager implements LocalConnecteListener {
                         mDeviceListenerList.get(i).responseAlertDeviceHttpResult(response.body());
                     }
                 }
-
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());
@@ -317,6 +322,13 @@ public class DeviceManager implements LocalConnecteListener {
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
         }
+        if(mRemoteConnectManager==null){
+            mRemoteConnectManager=RemoteConnectManager.getInstance();
+        }
+
+        if(mHomeGenius==null){
+            mHomeGenius=new HomeGenius();
+        }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         cachedThreadPool = Executors.newCachedThreadPool();
@@ -339,6 +351,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 返回:{ "OP": "REPORT", "Method": "WIFIRELAY", "SSIDList": [ ] }
      */
     public void queryWifiList() {
+        Log.i(TAG,"queryWifiList");
         QueryWifiList query = new QueryWifiList();
         query.setTimestamp();
         Gson gson = new Gson();
@@ -352,26 +365,7 @@ public class DeviceManager implements LocalConnecteListener {
         });
     }
 
-    /**
-     * 中继连接
-     */
-    public void setWifiRelay(AP_CLIENT paramas) {
-        Log.i(TAG, "setWifiRelay");
-        WifiRelaySet setCmd = new WifiRelaySet();
-        setCmd.setTimestamp();
-        Proto proto = new Proto();
-        proto.setAP_CLIENT(paramas);
-        setCmd.setProto(proto);
-        Gson gson = new Gson();
-        String text = gson.toJson(setCmd);
-        packet.packSetWifiListData(text.getBytes());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
-            }
-        });
-    }
+
 
     /**
      * 绑定智能设备列表
@@ -380,30 +374,40 @@ public class DeviceManager implements LocalConnecteListener {
      * @param smartDevice 智能设备（除去网关设备：中继器）
      */
     public void bindSmartDevList(QrcodeSmartDevice smartDevice) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("DevList");
-        queryCmd.setTimestamp();
-        List<SmartDev> devs = new ArrayList<>();
-        //设备赋值
-        SmartDev dev = new SmartDev();
-        dev.setUid(smartDevice.getAd());
-        dev.setOrg(smartDevice.getOrg());
-        Log.i(TAG, "bindSmartDevList type=" + smartDevice.getTp());
-        dev.setType(smartDevice.getTp());
-        dev.setVer(smartDevice.getVer());
-        //设备列表添加一个设备
-        devs.add(dev);
-        queryCmd.setSmartDev(devs);
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSendSmartDevsData(text.getBytes());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("DevList");
+            queryCmd.setTimestamp();
+            List<SmartDev> devs = new ArrayList<>();
+            //设备赋值
+            SmartDev dev = new SmartDev();
+            dev.setMac(smartDevice.getAd());
+            dev.setOrg(smartDevice.getOrg());
+            Log.i(TAG, "bindSmartDevList type=" + smartDevice.getTp()+"getVer="+smartDevice.getVer()+"smartDevice="+smartDevice.getAd());
+            dev.setType(smartDevice.getTp());
+            dev.setVer(smartDevice.getVer());
+            //设备列表添加一个设备
+            devs.add(dev);
+            queryCmd.setSmartDev(devs);
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSendSmartDevsData(text.getBytes());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else if(mRemoteConnectManager.isRemoteConnectAvailable()){
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+            Log.i(TAG,"device.getTopic()="+device.getTopic());
+            if(device.getTopic()!=null && !device.getTopic().equals("")){
+                mHomeGenius.bindSmartDevList(device.getTopic(),uuid,smartDevice);
             }
-        });
+        }
+
     }
 
     /**
@@ -411,7 +415,7 @@ public class DeviceManager implements LocalConnecteListener {
      * 如果有这个设备就不处理
      * 添加智能设备成功，需要更新数据库
      */
-    public boolean addDBSmartDevice(QrcodeSmartDevice device, String uid, Device getwayDevice) {
+    public boolean addDBSmartDevice(QrcodeSmartDevice device, String uid, GatwayDevice getwayDevice) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", uid).findFirst(SmartDev.class);
         if (smartDev == null) {
@@ -422,6 +426,7 @@ public class DeviceManager implements LocalConnecteListener {
             smartDev.setType(device.getTp());
             smartDev.setGetwayDevice(getwayDevice);
             smartDev.setName(device.getName());
+            smartDev.setMac(device.getAd());
             boolean addResult = smartDev.save();
             Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
             return addResult;
@@ -596,7 +601,7 @@ public class DeviceManager implements LocalConnecteListener {
     private void handleNormalDeviceList(DeviceList aDeviceList) {
         for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
             //查询数据库
-            List<Device> devices = DataSupport.findAll(Device.class);
+            List<GatwayDevice> devices = DataSupport.findAll(GatwayDevice.class);
             if (devices.size() > 0) {
                 //有设备，要判断devUID如果有了就不能保存了
                 boolean addToDb = true;
@@ -619,14 +624,14 @@ public class DeviceManager implements LocalConnecteListener {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                Device dev = new Device();
+                GatwayDevice dev = new GatwayDevice();
                 dev.setStatus(aDeviceList.getDevice().get(i).getStatus());
                 dev.setUid(aDeviceList.getDevice().get(i).getUid());
                 List<Room> rooms = new ArrayList<>();
                 rooms.addAll(RoomManager.getInstance().queryRooms());
                 dev.setRoomList(rooms);
                 String deviceName = "中继器";
-                List<Device> devices = DataSupport.findAll(Device.class, true);
+                List<GatwayDevice> devices = DataSupport.findAll(GatwayDevice.class, true);
                 for (int i = 0; i < devices.size(); i++) {
                     if (devices.get(i).getName().equals(deviceName)) {
                         deviceName = deviceName + 1;
@@ -719,16 +724,9 @@ public class DeviceManager implements LocalConnecteListener {
             mDeviceListenerList.get(i).responseWifiListResult(wifiList.getSSIDList());
         }
     }
-
     @Override
     public void onSetWifiRelayResult(String result) {
-        Log.i(TAG, "onSetWifiRelayResult=" + result);
-        Gson gson = new Gson();
-        OpResult opResult = gson.fromJson(result, OpResult.class);
-        if (opResult.getOP().equals("REPORT") && opResult.getMethod().equals("WIFI"))
-            for (int i = 0; i < mDeviceListenerList.size(); i++) {
-                mDeviceListenerList.get(i).responseSetWifirelayResult(opResult.getResult());
-            }
+
     }
 
     @Override

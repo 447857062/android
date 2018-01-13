@@ -1,11 +1,10 @@
 package com.deplink.homegenius.Protocol.json;
 
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -20,13 +19,22 @@ public class QueryOptions implements Serializable {
     private String Time;
     private String Result;
     private List<SmartDev>SmartDev;
-    private List<com.deplink.homegenius.Protocol.json.device.getway.Device> Device;
+    private List<com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice> Device;
     private long timestamp;
     private String  AuthId;
     private String  Data;
     private int  yellow;
     private int  white;
     private int  open;
+    private String SenderId;
+
+    public String getSenderId() {
+        return SenderId;
+    }
+
+    public void setSenderId(String senderId) {
+        SenderId = senderId;
+    }
 
     public int getOpen() {
         return open;
@@ -94,11 +102,11 @@ public class QueryOptions implements Serializable {
         SmartDev = smartDev;
     }
 
-    public List<Device> getDevice() {
+    public List<GatwayDevice> getDevice() {
         return Device;
     }
 
-    public void setDevice(List<Device> device) {
+    public void setDevice(List<GatwayDevice> device) {
         Device = device;
     }
 
@@ -192,6 +200,10 @@ public class QueryOptions implements Serializable {
                 ", timestamp=" + timestamp +
                 ", AuthId='" + AuthId + '\'' +
                 ", Data='" + Data + '\'' +
+                ", yellow=" + yellow +
+                ", white=" + white +
+                ", open=" + open +
+                ", SenderId='" + SenderId + '\'' +
                 ", SmartUid='" + SmartUid + '\'' +
                 '}';
     }

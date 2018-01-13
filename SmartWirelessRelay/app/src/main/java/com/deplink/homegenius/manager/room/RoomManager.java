@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.util.CharSetUtil;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.ParseUtil;
@@ -91,9 +91,9 @@ public class RoomManager {
         currentSelectedRoom = null;
     }
 
-    public boolean updateGetway(Device getwayDevice) {
+    public boolean updateGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新网关=start");
-        List<Device> getways = new ArrayList<>();
+        List<GatwayDevice> getways = new ArrayList<>();
         getways.add(getwayDevice);
         currentSelectedRoom.setmGetwayDevices(getways);
         boolean saveResult = currentSelectedRoom.save();
@@ -167,7 +167,6 @@ public class RoomManager {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-
                 if (response.code() == 400) {
                     //Bad Request
                 } else if (response.code() == 200) {
@@ -175,7 +174,6 @@ public class RoomManager {
                         Log.i(TAG, "" + response.body());
                         ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list = ParseUtil.jsonToArrayList(response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
                         Room temp;
-
                         for (int i = 0; i < list.size(); i++) {
                             Log.i(TAG, "roomname=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
                             Log.i(TAG, "roomtype=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
@@ -200,7 +198,6 @@ public class RoomManager {
                         for (int i = 0; i < mRoomListenerList.size(); i++) {
                             mRoomListenerList.get(i).responseQueryResultHttps(rooms);
                         }
-
                     }
                 } else {
                     if (response.errorBody() != null) {
@@ -212,14 +209,12 @@ public class RoomManager {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
             }
         });
     }
-
     /**
      * 添加房间
      */
@@ -264,14 +259,12 @@ public class RoomManager {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
             }
         });
     }
-
     /**
      * 删除房间
      */
@@ -293,14 +286,12 @@ public class RoomManager {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
             }
         });
     }
-
     /**
      * 删除房间
      */
@@ -346,16 +337,17 @@ public class RoomManager {
      * 更新房间的排列顺序
      * 拖动排序的表格布局中，如果拖动了就要使用这个方法，重新为gridview按照设备的序号排列一下
      */
-    public void updateRoomsOrdinalNumber() {
+    public void updateRoomsOrdinalNumber(final List<Room>mRooms) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < mRooms.size(); i++) {
-                    updateRoomNameHttp(mRooms.get(i).getUid(), mRooms.get(i).getRoomName(), i);
                     mRooms.get(i).setRoomOrdinalNumber(i);
                     //如果对象是持久化的，执行save操作就相当于更新这条数据，如：
                     //如果一个对象是没有持久化的，执行save操作相当于新增一条数据
                     mRooms.get(i).save();
+                    Log.i(TAG,"房间"+mRooms.get(i).getRoomName()+"sortnum="+i);
+                    updateRoomNameHttp(mRooms.get(i).getUid(), mRooms.get(i).getRoomName(), i);
                 }
             }
         });
@@ -478,14 +470,14 @@ public class RoomManager {
      * @param roomName
      * @return
      */
-    public boolean addRoom(String roomType, String roomName, String roomUid, Device gewayDevice) {
+    public boolean addRoom(String roomType, String roomName, String roomUid, GatwayDevice gewayDevice) {
         tempAddRoom = new Room();
         tempAddRoom.setRoomName(roomName);
         tempAddRoom.setRoomType(roomType);
         tempAddRoom.setUid(roomUid);
         tempAddRoom.setRoomOrdinalNumber(mRooms.size() + 1);
         if (gewayDevice != null) {
-            List<Device> devices = new ArrayList<>();
+            List<GatwayDevice> devices = new ArrayList<>();
             devices.add(gewayDevice);
             tempAddRoom.setmGetwayDevices(devices);
         }

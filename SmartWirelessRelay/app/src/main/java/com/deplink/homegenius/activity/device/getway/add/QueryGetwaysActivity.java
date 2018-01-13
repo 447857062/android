@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.manager.connect.local.udp.UdpManager;
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
@@ -92,14 +92,14 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
         }
     }
 
-    private List<Device> mDevices;
+    private List<GatwayDevice> mDevices;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_CHECK_GETWAY_OK:
-                    Device device = new Device();
+                    GatwayDevice device = new GatwayDevice();
                     device.setIpAddress((String) msg.obj);
                     mDevices.add(device);
                     Toast.makeText(QueryGetwaysActivity.this, "检查到IP为:" + msg.obj + "的网关", Toast.LENGTH_SHORT).show();

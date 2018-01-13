@@ -280,10 +280,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
 
     }
 
-    @Override
-    public void responseSetWifirelayResult(int result) {
 
-    }
 
     @Override
     public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {

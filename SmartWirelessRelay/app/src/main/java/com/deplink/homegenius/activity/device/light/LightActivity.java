@@ -14,13 +14,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.QueryOptions;
-import com.google.gson.Gson;
-
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.light.SmartLightListener;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.google.gson.Gson;
+
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class LightActivity extends Activity implements View.OnClickListener, SmartLightListener {
     private static final String TAG = "LightActivity";

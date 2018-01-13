@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class Device extends DataSupport implements Serializable{
+public class GatwayDevice extends DataSupport implements Serializable{
     @Column(unique = true,nullable = false)
     private String Uid;
     private String Status;
@@ -22,6 +22,15 @@ public class Device extends DataSupport implements Serializable{
     private String Ver;
     private String name;
     private String bindLocal;
+    private String topic;
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
 
     public String getBindLocal() {
         return bindLocal;
@@ -110,19 +119,4 @@ public class Device extends DataSupport implements Serializable{
         this.roomList = roomList;
     }
 
-    @Override
-    public String toString() {
-        return "Device{" +
-                "Uid='" + Uid + '\'' +
-                ", Status='" + Status + '\'' +
-                ", Type='" + Type + '\'' +
-                ", Mac='" + Mac + '\'' +
-                ", Org='" + Org + '\'' +
-                ", Ver='" + Ver + '\'' +
-                ", name='" + name + '\'' +
-                ", bindLocal='" + bindLocal + '\'' +
-                ", roomList=" + roomList +
-                ", ipAddress='" + ipAddress + '\'' +
-                '}';
-    }
 }

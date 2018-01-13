@@ -56,8 +56,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         imageview_scan_device = findViewById(R.id.imageview_scan_device);
         image_back = findViewById(R.id.image_back);
     }
-
-
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
@@ -185,9 +183,6 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LOCK);
                         startActivity(intent);
                     } else if (qrCodeResult.length()==12) {//网关,路由器
-                      /*  intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
-                        GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
-                        startActivity(intent);*/
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
                         startActivity(intent);
@@ -196,11 +191,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LIGHT);
                         startActivity(intent);
                     } else {
-                       /* if (qrCodeResult.length() == 12) {//路由器
-                            intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
-                            intent.putExtra("routerSN", qrCodeResult);
-                            startActivity(intent);
-                        }*/
+
                     }
                     break;
                 case REQUEST_ADD_INFRAED_UNIVERSAL_RC:
@@ -211,17 +202,11 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     break;
                 case REQUEST_ADD_ROUTER:
                     //添加路由器
-                   /* intent = new Intent(AddDeviceQRcodeActivity.this, AddRouterActivity.class);
-                    intent.putExtra("routerSN", qrCodeResult);
-                    startActivity(intent);*/
                     intent.putExtra("currentAddDevice", qrCodeResult);
                     intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
                     startActivity(intent);
                     break;
                 case REQUEST_ADD_GETWAY:
-                   /* intent = new Intent(this, AddGetwaySettingOptionsActivity.class);
-                    GetwayManager.getInstance().setCurrentAddDevice(qrCodeResult);
-                    startActivity(intent);*/
                     intent.putExtra("currentAddDevice", qrCodeResult);
                     intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
                     startActivity(intent);

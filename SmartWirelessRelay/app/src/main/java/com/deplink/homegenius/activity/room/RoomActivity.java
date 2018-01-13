@@ -75,7 +75,7 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
     @Override
     protected void onPause() {
         super.onPause();
-        mRoomManager.updateRoomsOrdinalNumber();
+        mRoomManager.updateRoomsOrdinalNumber(mRooms);
     }
 
     private void initDatas() {

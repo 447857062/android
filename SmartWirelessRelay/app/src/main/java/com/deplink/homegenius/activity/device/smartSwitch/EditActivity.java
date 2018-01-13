@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
@@ -54,7 +54,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     private RelativeLayout layout_getway_list;
     private ListView listview_select_getway;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device> mGetways;
+    private List<GatwayDevice> mGetways;
     private TextView textview_select_getway_name;
     private TextView textview_edit;
     private ImageView imageview_getway_arror_right;
@@ -125,7 +125,6 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         if (!isOnActivityResult) {
             isOnActivityResult = false;
             if (mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().size() == 1) {
-
                 textview_select_room_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().get(0).getRoomName());
             } else {
                 textview_select_room_name.setText("全部");
@@ -247,10 +246,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
 
     }
 
-    @Override
-    public void responseSetWifirelayResult(int result) {
 
-    }
 
     @Override
     public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {

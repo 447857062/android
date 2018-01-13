@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
@@ -59,7 +59,6 @@ import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.HomeGenius;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
@@ -85,7 +84,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     /**
      * 上面半部分列表的数据
      */
-    private List<Device> datasTop;
+    private List<GatwayDevice> datasTop;
     /**
      * 下面半部分列表的数据
      */
@@ -111,7 +110,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
-    private HomeGenius homeGenius;
     private boolean isUserLogin;
     private GetwayManager mGetwayManager;
     @Override
@@ -138,9 +136,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isUserLogin) {
             mDeviceManager.queryDeviceListHttp();
-            homeGenius = new HomeGenius();
-            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-            homeGenius.bindApp(uuid, uuid);
         }
         datasTop.clear();
         datasBottom.clear();
@@ -200,6 +195,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             startActivity(new Intent(DevicesActivity.this, SmartLockActivity.class));
                             break;
                         case "IRMOTE_V2":
+                        case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DevicesActivity.this, RemoteControlActivity.class));
                             break;
@@ -471,7 +467,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 saveSmartDeviceToSqlite(devices, i);
             }
         }
-        List<Device> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
+        List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
         for (int i = 0; i < devices.size(); i++) {
             boolean addToDb = true;
             if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
@@ -491,7 +487,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
     private void saveGetwayDeviceToSqlite(List<Deviceprops> devices, int i) {
-        Device dev = new Device();
+        GatwayDevice dev = new GatwayDevice();
         String deviceType = devices.get(i).getDevice_type();
         dev.setType(deviceType);
         if (deviceType.equalsIgnoreCase("LKSWG")) {
@@ -516,51 +512,69 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         SmartDev dev = new SmartDev();
         String deviceType = devices.get(i).getDevice_type();
         dev.setType(deviceType);
+        String deviceName = devices.get(i).getDevice_name();
+
         if (deviceType.equalsIgnoreCase("SMART_LOCK")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
             dev.setType(deviceType);
+            dev.setName(deviceName);
         } else if (deviceType.equalsIgnoreCase("IRMOTE_V2")) {
-            dev.setType(deviceType);
             deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
         } else if (deviceType.equalsIgnoreCase("SmartWallSwitch1")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
             dev.setType(deviceType);
+            dev.setName(deviceName);
             dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY);
         } else if (deviceType.equalsIgnoreCase("SmartWallSwitch2")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
             dev.setType(deviceType);
+            dev.setName(deviceName);
             dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY);
         } else if (deviceType.equalsIgnoreCase("SmartWallSwitch3")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
             dev.setType(deviceType);
+            dev.setName(deviceName);
             dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY);
         } else if (deviceType.equalsIgnoreCase("SmartWallSwitch4")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
             dev.setType(deviceType);
+            dev.setName(deviceName);
             dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
         } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
             dev.setType(deviceType);
+            dev.setName(deviceName);
         } else if (deviceType.equalsIgnoreCase("LKRT")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
             dev.setType(deviceType);
             Router router = new Router();
-            Log.i(TAG, "获取绑定的设备");
+            Log.i(TAG, "获取绑定的设备"+ manager.getDeviceList().size());
             //获取devicekey
             for (int j = 0; j < manager.getDeviceList().size(); j++) {
-                if (manager.getDeviceList().get(j).getDeviceSN().equals(dev.getSn())) {
+                Log.i(TAG, "获取绑定的设备"+  manager.getDeviceList().get(j).getDeviceSN());
+                if (manager.getDeviceList().get(j).getDeviceSN().equals(devices.get(i).getSn())) {
                     Log.i(TAG, "赋值device key:" + manager.getDeviceList().get(j).getDeviceKey());
                     router.setRouterDeviceKey(manager.getDeviceList().get(j).getDeviceKey());
                 }
             }
+            if(deviceName==null || deviceName.equals("")){
+                dev.setName("路由器");
+            }else{
+                dev.setName(deviceName);
+            }
             router.setSmartDev(dev);
             router.save();
             dev.setRouter(router);
+        } else if (deviceType.equalsIgnoreCase("LKSWG")) {
+            if(deviceName==null || deviceName.equals("")){
+                dev.setName("中继器");
+            }
         }
         dev.setUid(devices.get(i).getUid());
         dev.setOrg(devices.get(i).getOrg_code());
-        String deviceName = devices.get(i).getDevice_name();
-        dev.setName(deviceName);
+        dev.setVer(devices.get(i).getVersion());
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
         Log.i(TAG, "保存设备:" + room.toString());
@@ -578,7 +592,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_UPDATE_DEVS:
-                    List<Device> tempDevice = new ArrayList<>();
+                    List<GatwayDevice> tempDevice = new ArrayList<>();
                     List<SmartDev> tempSmartDevice = new ArrayList<>();
                     Gson gson = new Gson();
                     DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
@@ -594,6 +608,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         for (int j = 0; j < datasTop.size(); j++) {
                             if (datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())) {
                                 datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
+                                datasTop.get(j).saveFast();
                             }
                         }
                     }
@@ -667,6 +682,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             device.setVer(datasBottom.get(j).getVer());
                             mDeviceManager.bindSmartDevList(device);
                         }
+                        mDeviceAdapter.setTopList(datasTop);
+                        mDeviceAdapter.setBottomList(datasBottom);
+                        mDeviceAdapter.notifyDataSetChanged();
                     }
                     Log.i(TAG, "设备列表=" + str);
                     break;

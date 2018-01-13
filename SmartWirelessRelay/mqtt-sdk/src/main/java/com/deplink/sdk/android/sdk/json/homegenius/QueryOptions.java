@@ -20,7 +20,15 @@ public class QueryOptions implements Serializable {
     private int  yellow;
     private int  white;
     private int  open;
-    private String  SenderId;
+    private String SenderId;
+
+    public String getSenderId() {
+        return SenderId;
+    }
+
+    public void setSenderId(String senderId) {
+        SenderId = senderId;
+    }
 
     public int getOpen() {
         return open;
@@ -79,7 +87,6 @@ public class QueryOptions implements Serializable {
     public void setAuthId(String authId) {
         AuthId = authId;
     }
-
 
 
     public void setResult(String result) {
@@ -156,34 +163,4 @@ public class QueryOptions implements Serializable {
         Time = time;
     }
 
-
-    public String getSenderId() {
-        return SenderId;
-    }
-
-    public void setSenderId(String senderId) {
-        SenderId = senderId;
-    }
-
-    @Override
-    public String toString() {
-        return "QueryOptions{" +
-                "OP='" + OP + '\'' +
-                ", Method='" + Method + '\'' +
-                ", Command='" + Command + '\'' +
-                ", UserID='" + UserID + '\'' +
-                ", ManagePwd='" + ManagePwd + '\'' +
-                ", AuthPwd='" + AuthPwd + '\'' +
-                ", Time='" + Time + '\'' +
-                ", Result='" + Result + '\'' +
-                ", timestamp=" + timestamp +
-                ", AuthId='" + AuthId + '\'' +
-                ", Data='" + Data + '\'' +
-                ", yellow=" + yellow +
-                ", white=" + white +
-                ", open=" + open +
-                ", SenderId='" + SenderId + '\'' +
-                ", SmartUid='" + SmartUid + '\'' +
-                '}';
-    }
 }

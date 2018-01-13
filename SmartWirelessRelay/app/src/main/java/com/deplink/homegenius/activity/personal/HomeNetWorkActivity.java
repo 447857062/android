@@ -16,7 +16,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.getway.adapter.HomeNetWorkAdapter;
 import com.deplink.homegenius.activity.device.router.RouterMainActivity;
@@ -30,7 +30,7 @@ public class HomeNetWorkActivity extends Activity implements View.OnClickListene
     private TextView textview_title;
     private FrameLayout image_back;
     private ListView listviewNetworkDevices;
-    private List<Device> mGatwayDevices;
+    private List<GatwayDevice> mGatwayDevices;
     private HomeNetWorkAdapter mAdapter;
     private GetwayManager getwayManager;
     private List<SmartDev> mRouterDevice;

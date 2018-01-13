@@ -22,7 +22,7 @@ public interface DeviceListener {
      *返回wifi列表
      */
     void responseWifiListResult(List<SSIDList>wifiList);
-    void responseSetWifirelayResult(int result);
+
     void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse);
     void responseDeleteDeviceHttpResult(DeviceOperationResponse result);
     void responseAlertDeviceHttpResult(DeviceOperationResponse result);

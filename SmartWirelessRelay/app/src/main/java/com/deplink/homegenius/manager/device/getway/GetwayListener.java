@@ -11,4 +11,5 @@ public interface GetwayListener {
      */
     void responseResult(String result);
     void responseDeleteDeviceHttpResult(DeviceOperationResponse result);
+    void responseSetWifirelayResult(int result);
 }

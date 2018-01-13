@@ -146,9 +146,6 @@
             android:name="com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.deplink.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.deplink.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity"
             android:screenOrientation="portrait" />
         <activity

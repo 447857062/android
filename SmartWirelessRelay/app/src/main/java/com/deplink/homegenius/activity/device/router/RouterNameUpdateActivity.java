@@ -79,8 +79,10 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
         } else {
             deviceName = mRouterManager.getCurrentSelectedRouter().getName();
         }
-        edittext_router_name.setText(deviceName);
-        edittext_router_name.setSelection(deviceName.length());
+        if(deviceName!=null){
+            edittext_router_name.setText(deviceName);
+            edittext_router_name.setSelection(deviceName.length());
+        }
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(RouterNameUpdateActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -206,10 +208,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
 
     }
 
-    @Override
-    public void responseSetWifirelayResult(int result) {
 
-    }
 
     @Override
     public void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse) {

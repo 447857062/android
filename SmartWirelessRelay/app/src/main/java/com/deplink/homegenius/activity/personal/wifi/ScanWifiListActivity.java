@@ -1,7 +1,6 @@
 package com.deplink.homegenius.activity.personal.wifi;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,10 +13,11 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
-import com.deplink.homegenius.activity.device.getway.add.AddGetwaySettingOptionsActivity;
 import com.deplink.homegenius.activity.personal.wifi.adapter.WifiListAdapter;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.getway.GetwayListener;
+import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
@@ -32,7 +32,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 /**
  * 配置wifi网关
  */
-public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener, View.OnClickListener {
+public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener, View.OnClickListener,GetwayListener {
     private static final String TAG = "ScanWifiListActivity";
     private DeviceManager mDeviceManager;
     private ListView listview_wifi_list;
@@ -42,6 +42,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private TextView textview_edit;
     private TextView textview_reload_wifilist;
     private boolean isStartFromExperience;
+    private GetwayManager mGetwayManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +105,6 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
             ssidList.setQuality("77");
             ssidList.setCRYTP("WPA2PSK");
             lists.add(ssidList);
-            mDatas.addAll(lists);
             mWifiListAdapter.notifyDataSetChanged();
         }else{
             mDeviceManager.queryWifiList();
@@ -121,6 +121,8 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         textview_edit.setText("跳过");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this, this);
+        mGetwayManager=GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this,this);
         mDatas = new ArrayList<>();
         mWifiListAdapter = new WifiListAdapter(this, mDatas);
         wifiRelayDialog = new WifiRelayInputDialog(this);
@@ -177,6 +179,11 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     }
 
     @Override
+    public void responseResult(String result) {
+
+    }
+
+    @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
 
     }
@@ -221,13 +228,13 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         }else{
             if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
                 setCmd.setApCliWPAPSK("");
-                mDeviceManager.setWifiRelay(setCmd);
+                mGetwayManager.setWifiRelay(setCmd);
             } else {
                 wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked(String password) {
                         setCmd.setApCliWPAPSK(password);
-                        mDeviceManager.setWifiRelay(setCmd);
+                        mGetwayManager.setWifiRelay(setCmd);
                     }
                 });
                 wifiRelayDialog.show();
@@ -248,7 +255,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
                 queryWifiRelayList();
                 break;
             case R.id.textview_edit:
-                startActivity(new Intent(this, AddGetwaySettingOptionsActivity.class));
+
                 break;
         }
     }

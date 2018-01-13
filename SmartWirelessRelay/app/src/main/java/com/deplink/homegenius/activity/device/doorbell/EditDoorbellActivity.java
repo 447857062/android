@@ -3,13 +3,14 @@ package com.deplink.homegenius.activity.device.doorbell;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+
 public class EditDoorbellActivity extends Activity implements View.OnClickListener{
-    private Button button_delete_device;
+    private TextView button_delete_device;
     private DeleteDeviceDialog deleteDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

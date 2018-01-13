@@ -65,7 +65,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
     private DeviceManager mDeviceManager;
-
+    private String inputDeviceName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +79,49 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         textview_title.setText("智能网关");
         textview_edit.setText("完成");
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        connectLostDialog = new MakeSureDialog(GetwayDeviceActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(GetwayDeviceActivity.this, LoginActivity.class));
+            }
+        });
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, final String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+            }
+        };
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
             edittext_input_devie_name.setSelection(5);
@@ -99,49 +142,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             } else {
                 textview_select_room_name.setText("全部");
             }
-            DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-            manager = DeplinkSDK.getSDKManager();
-            connectLostDialog = new MakeSureDialog(GetwayDeviceActivity.this);
-            connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
-                @Override
-                public void onSureBtnClicked() {
-                    startActivity(new Intent(GetwayDeviceActivity.this, LoginActivity.class));
-                }
-            });
-            ec = new EventCallback() {
-                @Override
-                public void onSuccess(SDKAction action) {
-                }
-
-                @Override
-                public void onBindSuccess(SDKAction action, String devicekey) {
-
-                }
-
-                @Override
-                public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-
-                }
-
-                @Override
-                public void deviceOpSuccess(String op, final String deviceKey) {
-                    super.deviceOpSuccess(op, deviceKey);
-                }
-
-                @Override
-                public void connectionLost(Throwable throwable) {
-                    super.connectionLost(throwable);
-                    isUserLogin = false;
-                    Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                    connectLostDialog.show();
-                    connectLostDialog.setTitleText("账号异地登录");
-                    connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
-                }
-
-                @Override
-                public void onFailure(SDKAction action, Throwable throwable) {
-                }
-            };
         }
         deleteDialog = new DeleteDeviceDialog(this);
     }
@@ -168,8 +168,8 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        manager.addEventCallback(ec);
         if (!isStartFromExperience) {
-            manager.addEventCallback(ec);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         }
     }
@@ -179,7 +179,9 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         super.onPause();
         manager.removeEventCallback(ec);
     }
-    private String inputDeviceName;
+
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -217,7 +219,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                         Intent intent = new Intent(this, AddDeviceActivity.class);
                         intent.putExtra("addDeviceSelectRoom", true);
                         startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
-
                     }
                 }
                 break;
@@ -228,31 +229,37 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 if (isStartFromExperience) {
 
                 } else {
-                    if(isUserLogin){
-                         inputDeviceName = edittext_input_devie_name.getText().toString();
+                    if (isUserLogin) {
+                        inputDeviceName = edittext_input_devie_name.getText().toString();
                         if (!inputDeviceName.equals(currentSelectDeviceName)) {
-                            String deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
-                            mDeviceManager.alertDeviceHttp(deviceUid,null,inputDeviceName,null);
-                            action="alertname";
+                            String deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
+                            mDeviceManager.alertDeviceHttp(deviceUid, null, inputDeviceName, null);
+                            action = "alertname";
                         }
-                    }else{
-                        ToastSingleShow.showText(this,"未登录,登录后才能操作");
+                    } else {
+                        ToastSingleShow.showText(this, "未登录,登录后才能操作");
                     }
                 }
-                this.finish();
                 break;
         }
     }
 
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
+    private static final int MSG_ALERT_DEVICENAME_RESULT = 101;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
+                    Log.i(TAG, "删除getway设备uid " + mGetwayManager.getCurrentSelectGetwayDevice().getUid());
                     mGetwayManager.deleteDBGetwayDevice(mGetwayManager.getCurrentSelectGetwayDevice().getUid());
                     Toast.makeText(GetwayDeviceActivity.this, "删除设备成功", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(GetwayDeviceActivity.this, DevicesActivity.class));
+                    break;
+                case MSG_ALERT_DEVICENAME_RESULT:
+                    Log.i(TAG, "修改设备名称 handler msg");
+                    mGetwayManager.updateGetwayDeviceName(inputDeviceName);
                     startActivity(new Intent(GetwayDeviceActivity.this, DevicesActivity.class));
                     break;
             }
@@ -271,7 +278,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 room = RoomManager.getInstance().findRoom(roomName, true);
                 deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
                 mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
-                action="alertroom";
+                action = "alertroom";
             }
             textview_select_room_name.setText(roomName);
         }
@@ -320,23 +327,29 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
         if (result.getStatus() != null && result.getStatus().equals("ok")) {
-            if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+            if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                 mGetwayManager.deleteGetwayDevice();
-            }else{
+            } else {
                 mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
             }
 
         }
     }
-    private  String action;
+
+    private String action;
+
     @Override
     public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-        if(action.equalsIgnoreCase("alertroom")){
+        Log.i(TAG, "修改设备属性:" + result.toString());
+        if (action.equalsIgnoreCase("alertroom")) {
             mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
-        }else if(action.equalsIgnoreCase("alertname")){
-            mGetwayManager.updateGetwayDeviceName(inputDeviceName);
+        } else if (action.equalsIgnoreCase("alertname")) {
+            Message msg = Message.obtain();
+            msg.what = MSG_ALERT_DEVICENAME_RESULT;
+            mHandler.sendMessage(msg);
+
         }
-        action="";
+        action = "";
     }
 
     @Override

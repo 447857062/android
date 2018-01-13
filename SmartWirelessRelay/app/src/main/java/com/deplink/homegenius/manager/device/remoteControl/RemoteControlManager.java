@@ -7,7 +7,7 @@ import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.RemoteControlOpResult;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.AppConstant;
@@ -129,8 +129,7 @@ public class RemoteControlManager implements LocalConnecteListener {
     public List<SmartDev> findRemotecontrolDevice() {
         Log.i(TAG, "查找绑定的物理遥控器,uid=" + mSelectRemoteControlDevice.getRemotecontrolUid());
         Log.i(TAG, "查找绑定的物理遥控器,uid=" + mSelectRemoteControlDevice.getUid());
-        List<SmartDev> newsList = DataSupport.where("Uid = ?", mSelectRemoteControlDevice.getRemotecontrolUid()).find(SmartDev.class);
-        return newsList;
+        return DataSupport.where("Uid = ?", mSelectRemoteControlDevice.getRemotecontrolUid()).find(SmartDev.class);
     }
     public static synchronized RemoteControlManager getInstance() {
         if (instance == null) {
@@ -293,7 +292,7 @@ public class RemoteControlManager implements LocalConnecteListener {
         return smartDevs.size() > 0;
     }
 
-    public boolean updateSmartDeviceGetway(Device getwayDevice) {
+    public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
         mSelectRemoteControlDevice.setGetwayDevice(getwayDevice);
         boolean saveResult = mSelectRemoteControlDevice.save();

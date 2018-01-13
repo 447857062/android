@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import com.deplink.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
+import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceManager;
@@ -160,9 +161,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 mAuthoriseDialog.show();
                 break;
             case R.id.image_back:
-                Intent intentBack=new Intent(this, DevicesActivity.class);
-                intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intentBack);
+                if(isStartFromExperience){
+                    Intent intentBack=new Intent(this, ExperienceDevicesActivity.class);
+                    intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intentBack);
+                }else{
+                    Intent intentBack=new Intent(this, DevicesActivity.class);
+                    intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intentBack);
+                }
+
                 break;
             case R.id.imageview_unlock:
                 if ((System.currentTimeMillis() - currentTime) / 1000 > 10) {

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 
 import java.util.List;
 
@@ -20,10 +20,10 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 public class GetwayListDevicesAdapter extends BaseAdapter {
     private static final String TAG="GetwayAdapter";
     private Context mContext;
-    private List<Device> mDev;
-    private List<Device> mBinedDevs;
+    private List<GatwayDevice> mDev;
+    private List<GatwayDevice> mBinedDevs;
 
-    public GetwayListDevicesAdapter(Context mContext, List<Device> dev, List<Device> bindDevs) {
+    public GetwayListDevicesAdapter(Context mContext, List<GatwayDevice> dev, List<GatwayDevice> bindDevs) {
         this.mContext = mContext;
         this.mBinedDevs = bindDevs;
         this.mDev = dev;

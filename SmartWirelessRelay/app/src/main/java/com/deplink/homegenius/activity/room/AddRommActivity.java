@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
@@ -49,7 +49,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
     private RelativeLayout layout_getway_list;
     private TextView textview_getway_name;
     private GetwaySelectListAdapter selectGetwayAdapter;
-    private List<Device> mGetways;
+    private List<GatwayDevice> mGetways;
     private ListView listview_select_getway;
     private ImageView imageview_getway_arror_right;
 
@@ -152,7 +152,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
 
         }
     };
-    private Device currentSelectGetway;
+    private GatwayDevice currentSelectGetway;
     private String userName;
 
     @Override

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.deplink.homegenius.Protocol.json.device.getway.Device;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 
 
@@ -45,7 +45,7 @@ public class Room extends DataSupport implements Serializable{
     /**
      * 网关设备（中继器）和房间也有一个多对多的关系
      */
-    private List<Device>mGetwayDevices=new ArrayList<>();
+    private List<GatwayDevice>mGetwayDevices=new ArrayList<>();
     public String getRoomType() {
         return roomType;
     }
@@ -54,11 +54,11 @@ public class Room extends DataSupport implements Serializable{
         this.roomType = roomType;
     }
 
-    public List<Device> getmGetwayDevices() {
+    public List<GatwayDevice> getmGetwayDevices() {
         return mGetwayDevices;
     }
 
-    public void setmGetwayDevices(List<Device> mGetwayDevices) {
+    public void setmGetwayDevices(List<GatwayDevice> mGetwayDevices) {
         this.mGetwayDevices = mGetwayDevices;
     }
 

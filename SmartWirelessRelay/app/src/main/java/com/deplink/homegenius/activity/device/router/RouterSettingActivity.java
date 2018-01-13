@@ -501,10 +501,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     }
 
-    @Override
-    public void responseSetWifirelayResult(int result) {
 
-    }
 
     @Override
     public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
