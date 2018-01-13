@@ -454,9 +454,12 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
             if (deviceTypeHttp.equalsIgnoreCase("LKSGW")) {
                 //TODO 扫网关
                 //如果有可用的网关
+                deviceName="中继器";
                 if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
                     mGetwayManager.bindDevice(addDeviceUid);
                 }else{
+                    mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid);
+                    mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom,addDeviceUid);
                     //提示连接
                     mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
                         @Override
@@ -468,8 +471,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                     mConfigGetwayDialog.setCancelBtnClickListener(new ConfigGetwayDialog.onCancelBtnClickListener() {
                         @Override
                         public void onCancelClick() {
-                            mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid);
-                            mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom,addDeviceUid);
                             mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
                         }
                     });
@@ -477,8 +478,10 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 }
 
             } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
+                deviceName="路由器";
                 SmartDev currentAddRouter = new SmartDev();
-                //路由器
+                //
+                currentAddRouter.setName(deviceName);
                 currentAddRouter.setUid(addDeviceUid);
                 currentAddRouter.setType(DeviceTypeConstant.TYPE.TYPE_ROUTER);
                 for (int i = 0; i < manager.getDeviceList().size(); i++) {
@@ -527,7 +530,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 return true;
             }
         }
-
         return false;
     }
 
@@ -652,7 +654,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                         }
                         device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
                         Log.i(TAG, "deviceType=" + deviceType + "device=" + (device != null));
-                        Log.i(TAG, "绑定智能设备");
                         device.setName(deviceName);
                         DialogThreeBounce.showLoading(this);
                         msg = Message.obtain();
@@ -668,7 +669,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
-
                             mDeviceManager.addDeviceHttp(deviceAddBody);
                         } else {
                             DeviceAddBody deviceAddBody = new DeviceAddBody();
@@ -710,7 +710,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
                             mDeviceManager.addDeviceHttp(deviceAddBody);
-
                         }
                         break;
                     case "IRMOTE_V2":
@@ -921,8 +920,6 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
                 break;
         }
     }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

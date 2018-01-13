@@ -22,6 +22,7 @@ import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevic
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
@@ -110,10 +111,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             ec = new EventCallback() {
                 @Override
                 public void onSuccess(SDKAction action) {
-                    switch (action) {
-                        default:
-                            break;
-                    }
                 }
 
                 @Override
@@ -237,14 +234,11 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                             String deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
                             mDeviceManager.alertDeviceHttp(deviceUid,null,inputDeviceName,null);
                             action="alertname";
-
                         }
                     }else{
                         ToastSingleShow.showText(this,"未登录,登录后才能操作");
                     }
-
                 }
-
                 this.finish();
                 break;
         }
@@ -326,7 +320,12 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
         if (result.getStatus() != null && result.getStatus().equals("ok")) {
-            mGetwayManager.deleteGetwayDevice();
+            if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                mGetwayManager.deleteGetwayDevice();
+            }else{
+                mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+            }
+
         }
     }
     private  String action;
