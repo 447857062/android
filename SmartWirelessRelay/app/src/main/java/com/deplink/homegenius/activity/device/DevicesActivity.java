@@ -21,6 +21,7 @@ import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.Device;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
+import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
 import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
@@ -44,6 +45,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
@@ -72,7 +74,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener {
+public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener,GetwayListener {
     private static final String TAG = "DevicesActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -111,7 +113,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private MakeSureDialog connectLostDialog;
     private HomeGenius homeGenius;
     private boolean isUserLogin;
-
+    private GetwayManager mGetwayManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +126,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     @Override
     protected void onResume() {
         super.onResume();
+        manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_device.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -152,6 +155,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
+    }
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mDeviceManager.removeDeviceListener(this);
@@ -166,6 +174,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         mRoomManager.initRoomManager(this, null);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(DevicesActivity.this);
+        mGetwayManager=GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this,this);
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
@@ -422,6 +432,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     }
 
     @Override
+    public void responseResult(String result) {
+
+    }
+
+    @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
 
     }
@@ -554,7 +569,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
     }
-
     private static final int MSG_UPDATE_DEVS = 0x01;
     private static final int MSG_GET_DEVS_HTTPS = 0x02;
     private Handler mHandler = new Handler() {
@@ -584,11 +598,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                         }
                     }
                     //网关设备下发列表
-                       /* for (int j = 0; j < datasTop.size(); j++) {
-                            if (datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())) {
-                                datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
+                    for(int j=0;j<datasTop.size();j++){
+                        boolean addGatway=true;
+                        for(int i=0;i<tempDevice.size();i++){
+                            if(tempDevice.get(i).getUid().equalsIgnoreCase(datasTop.get(j).getUid())){
+                                addGatway=false;
                             }
-                        }*/
+                        }
+                        if(addGatway){
+                            mGetwayManager.bindDevice(datasTop.get(j).getUid());
+                        }
+                    }
+
 
                     //智能设备更新状态
                     for (int i = 0; i < tempSmartDevice.size(); i++) {
@@ -596,6 +617,55 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                             if (datasBottom.get(j).getUid().equals(tempSmartDevice.get(i).getUid())) {
                                 datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
                             }
+                        }
+                    }
+                    //智能设备下发列表
+                    for(int j=0;j<datasBottom.size();j++){
+                        boolean addSmartdev=true;
+                        for(int i=0;i<tempSmartDevice.size();i++){
+                            if(tempSmartDevice.get(i).getUid().equalsIgnoreCase(datasBottom.get(j).getUid())
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)){
+                                addSmartdev=false;
+                            }
+                        }
+                        if(addSmartdev){
+                            Log.i(TAG,"下发远程添加了本地没有添加的智能设备"+datasBottom.get(j).getName());
+                            QrcodeSmartDevice device=new QrcodeSmartDevice();
+                            device.setAd(datasBottom.get(j).getUid());
+                            Log.i(TAG,"下发远程添加了本地没有添加的智能设备 type="+datasBottom.get(j).getType());
+                            switch (datasBottom.get(j).getType()){
+                                case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                                    device.setTp("YWLIGHTCONTROL");
+                                    break;
+                                case DeviceTypeConstant.TYPE.TYPE_LOCK:
+                                    device.setTp("SMART_LOCK");
+                                    break;
+                                case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
+                                case "IRMOTE_V2":
+                                    device.setTp("IRMOTE_V2");
+                                    break;
+                                case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+                                    if(datasBottom.get(j).getSubType()!=null){
+                                        switch (datasBottom.get(j).getSubType()){
+                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
+                                                device.setTp("SmartWallSwitch1");
+                                                break;
+                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
+                                                device.setTp("SmartWallSwitch2");
+                                                break;
+                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
+                                                device.setTp("SmartWallSwitch3");
+                                                break;
+                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
+                                                device.setTp("SmartWallSwitch4");
+                                                break;
+                                        }
+                                    }
+                                    break;
+                            }
+                            device.setOrg(datasBottom.get(j).getOrg());
+                            device.setVer(datasBottom.get(j).getVer());
+                            mDeviceManager.bindSmartDevList(device);
                         }
                     }
                     Log.i(TAG, "设备列表=" + str);

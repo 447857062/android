@@ -217,7 +217,7 @@ public class GetwayManager implements LocalConnecteListener {
     /**
      * 绑定网关，中继器
      */
-    public void bindDevice(String uuid) {
+    public void bindDevice(String deviceUid) {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
@@ -226,7 +226,7 @@ public class GetwayManager implements LocalConnecteListener {
         //设备赋值
         Device dev = new Device();
         //调试  uid 77685180654101946200316696479888
-        dev.setUid(uuid);
+        dev.setUid(deviceUid);
       /*  dev.setMac(device.getAd());
         dev.setType(device.getTp());*/
         devs.add(dev);

@@ -82,7 +82,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private MakeSureDialog connectLostDialog;
     private boolean isLogin;
     private RoomManager mRoomManager;
-
+    private String selectGetwayName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +91,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
-    private String selectGetwayName;
-
     private void initDatas() {
         deleteDialog = new DeleteDeviceDialog(this);
         mDeviceManager = DeviceManager.getInstance();
@@ -218,6 +215,9 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 isOnActivityResult = false;
                 textview_select_getway_name.setText("未设置网关");
             }
+            String deviceName=mDeviceManager.getCurrentSelectSmartDevice().getName();
+            edittext_input_devie_name.setText(deviceName);
+            edittext_input_devie_name.setSelection(deviceName.length());
         } else {
             if (!isOnActivityResult) {
                 textview_select_room_name.setText("全部");
@@ -226,7 +226,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             edittext_input_devie_name.setText("我家的遥控器");
             edittext_input_devie_name.setSelection(6);
         }
-
 
     }
 

@@ -1,6 +1,5 @@
 package com.deplink.homegenius.activity.homepage;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -82,7 +81,7 @@ import retrofit2.Response;
 /**
  * 智能家居主页
  */
-public class SmartHomeMainActivity extends Activity implements View.OnClickListener,RoomListener {
+public class SmartHomeMainActivity extends Activity implements View.OnClickListener, RoomListener {
     private static final String TAG = "SmartHomeMainActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -118,11 +117,94 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private NonScrollableListView layout_roomselect_changed_ype;
     private ScrollView scrollview_root;
     private boolean isLogin;
+    private String cityCode = null;
+    private static final int MSG_GET_ROOM = 100;
+    private static final int MSG_GET_WEATHER_PM25 = 101;
+    private static final int MSG_SHOW_PM25_TEXT = 102;
+    private static final int MSG_SHOW_WEATHER_TEXT = 103;
+    private static final int MSG_INIT_LOCATIONSERVICE = 104;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_GET_ROOM:
+                    List<Room> result = (List<Room>) msg.obj;
+                    mRoomList.clear();
+                    mRoomList.addAll(result);
+                    setRoomNormalLayout();
+                    Log.i(TAG, "mRoomList.size=" + mRoomList.size());
+                    mAdapter.notifyDataSetChanged();
+                    mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
+                    break;
+                case MSG_GET_WEATHER_PM25:
+                    Log.i(TAG, "city.substring(city.length()-1,city.length())=" + city.substring(city.length() - 1, city.length()));
+                    if (city.substring(city.length() - 1, city.length()).equals("市")) {
+                        city = city.substring(0, city.length() - 1);
+                    }
+                    if (province.substring(province.length() - 1, province.length()).equals("省")) {
+                        province = province.substring(0, province.length() - 1);
+                    }
+                    Log.i(TAG, "city=" + city);
+                    textview_city.setText(city + "/" + district);
+                    try {
+                        cityCode = ParseUtil.getCityCodeFromCityName(SmartHomeMainActivity.this, province, city);
+                        Log.i(TAG, "cityCode=" + cityCode);
+                        initWaetherData();
+                        sendRequestWithHttpClient(city);
+                    } catch (XmlPullParserException | IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case MSG_SHOW_PM25_TEXT:
+                    parseJSONObjectOrJSONArray((String) msg.obj);
+                    break;
+                case MSG_SHOW_WEATHER_TEXT:
+                    JSONObject object = (JSONObject) msg.obj;
+                    try {
+                        String tempture = object.getString("temp1");
+                        tempture = tempture.split("℃")[0];
+                        Log.i(TAG, "tempture=" + tempture);
+                        textview_tempature.setText(tempture);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case MSG_INIT_LOCATIONSERVICE:
+                    mLocationClient = new LocationClient(getApplicationContext());
+                    //声明LocationClient类
+                    mLocationClient.registerLocationListener(myListener);
+                    //注册监听函数
+                    LocationClientOption option = new LocationClientOption();
+                    option.setIsNeedAddress(true);
+                    //可选，是否需要地址信息，默认为不需要，即参数为false
+                    //如果开发者需要获得当前点的地址信息，此处必须为true
+                    mLocationClient.setLocOption(option);
+                    //mLocationClient为第二步初始化过的LocationClient对象
+                    //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
+                    //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
+                    mLocationClient.start();
+                    break;
+            }
+        }
+    };
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG, "onServiceConnected");
+
+        }
+    };
+
     @Override
-    public void responseQueryResultHttps( List<Room> result) {
-       Message msg=Message.obtain();
-        msg.what=MSG_GET_ROOM;
-        msg.obj=result;
+    public void responseQueryResultHttps(List<Room> result) {
+        Message msg = Message.obtain();
+        msg.what = MSG_GET_ROOM;
+        msg.obj = result;
         mHandler.sendMessage(msg);
     }
 
@@ -141,6 +223,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     }
 
+    private String province;
+    private String city;
+    private String district;
+
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -149,54 +235,19 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
             // String addr = location.getAddrStr();    //获取详细地址信息
             // String country = location.getCountry();    //获取国家
-            String province = location.getProvince();    //获取省份
-            String city = location.getCity();    //获取城市
-            String district = location.getDistrict();    //获取区县
+            province = location.getProvince();    //获取省份
+            city = location.getCity();    //获取城市
+            district = location.getDistrict();    //获取区县
             // String street = location.getStreet();    //获取街道信息
-            Log.i(TAG, "city=" + city);
-            Log.i(TAG, "province=" + province);
+            Log.i(TAG, "city=" + city + "province=" + province);
             if (city != null && province != null) {
-                Log.i(TAG, "city.substring(city.length()-1,city.length())=" + city.substring(city.length() - 1, city.length()));
-                if (city.substring(city.length() - 1, city.length()).equals("市")) {
-                    city = city.substring(0, city.length() - 1);
-                }
-                if (province.substring(province.length() - 1, province.length()).equals("省")) {
-                    province = province.substring(0, province.length() - 1);
-                }
-                Log.i(TAG, "city=" + city);
-                textview_city.setText(city + "/" + district);
-                try {
-                    cityCode = ParseUtil.getCityCodeFromCityName(SmartHomeMainActivity.this,province, city);
-                    Log.i(TAG, "cityCode=" + cityCode);
-                    initWaetherData();
-                    sendRequestWithHttpClient(city);
-                } catch (XmlPullParserException | IOException e) {
-                    e.printStackTrace();
-                }
+                Message msg = Message.obtain();
+                msg.what = MSG_GET_WEATHER_PM25;
+                mHandler.sendMessage(msg);
             }
-
         }
     }
 
-
-    private static final int MSG_GET_ROOM=100;
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case MSG_GET_ROOM:
-                    List<Room>result= (List<Room>) msg.obj;
-                    mRoomList.clear();
-                    mRoomList.addAll(result);
-                    setRoomNormalLayout();
-                    Log.i(TAG,"mRoomList.size="+mRoomList.size());
-                    mAdapter.notifyDataSetChanged();
-                    mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,26 +256,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initViews();
         initDatas();
         initEvents();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mLocationClient = new LocationClient(getApplicationContext());
-                //声明LocationClient类
-                mLocationClient.registerLocationListener(myListener);
-                //注册监听函数
-                LocationClientOption option = new LocationClientOption();
-                option.setIsNeedAddress(true);
-                //可选，是否需要地址信息，默认为不需要，即参数为false
-                //如果开发者需要获得当前点的地址信息，此处必须为true
-                mLocationClient.setLocOption(option);
-                //mLocationClient为第二步初始化过的LocationClient对象
-                //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
-                //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
-                mLocationClient.start();
-            }
-        });
     }
 
+    /**
+     * 获取pm2.5
+     *
+     * @param city
+     */
     private void sendRequestWithHttpClient(final String city) {
         new Thread(new Runnable() {
             @Override
@@ -245,12 +283,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         response.append(line);
                     }
                     Log.i("TAG", response.toString());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            parseJSONObjectOrJSONArray(response.toString());
-                        }
-                    });
+                    Message msg = Message.obtain();
+                    msg.what = MSG_SHOW_PM25_TEXT;
+                    msg.obj = response.toString();
+                    mHandler.sendMessage(msg);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -265,7 +302,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             textview_pm25.setText("" + pm25lists.get(0).getPm2_5());
         }
     }
-    String cityCode = null;
+
+
     public void initWaetherData() {
         new Thread(new Runnable() {
             @Override
@@ -282,8 +320,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                                 JSONObject weatherObject = jsonObject
                                         .getJSONObject("weatherinfo");
                                 Message message = new Message();
+                                message.what = MSG_SHOW_WEATHER_TEXT;
                                 message.obj = weatherObject;
-                                handler.sendMessage(message);
+                                mHandler.sendMessage(message);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -300,28 +339,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }).start();
     }
 
-    @SuppressLint("HandlerLeak")
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            JSONObject object = (JSONObject) msg.obj;
-            try {
-                String tempture = object.getString("temp1");
-                tempture = tempture.split("℃")[0];
-                Log.i(TAG, "tempture=" + tempture);
-                textview_tempature.setText(tempture);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        isLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -331,13 +352,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         imageview_devices.setImageResource(R.drawable.nocheckthedevice);
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
-        if(isLogin){
-            mRoomList.clear();
-            mRoomList.addAll(mRoomManager.queryRooms());
-            mAdapter.notifyDataSetChanged();
-            setRoomNormalLayout();
-        }
-
+        mRoomList.clear();
+        mRoomList.addAll(mRoomManager.queryRooms());
+        mAdapter.notifyDataSetChanged();
+        setRoomNormalLayout();
         layout_roomselect_changed_ype.setAdapter(mRoomSelectTypeChangedAdapter);
         layout_roomselect_changed_ype.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -347,7 +365,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
         layout_roomselect_normal.smoothScrollTo(0, 0);
     }
@@ -378,24 +395,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         manager.onDestroy();
     }
 
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.i(TAG, "onServiceConnected");
-
-        }
-    };
 
     private void initDatas() {
         Intent bindIntent = new Intent(this, LocalConnectService.class);
         startService(bindIntent);
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this,this);
+        mRoomManager.initRoomManager(this, this);
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
         mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);
         mExperienceCenterDeviceList = new ArrayList<>();
@@ -417,10 +423,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 switch (action) {
                     case LOGIN:
                         manager.connectMQTT(SmartHomeMainActivity.this);
-                        Log.i(TAG, "LOGIN success uuid="+manager.getUserInfo().getUuid());
+                        Log.i(TAG, "LOGIN success uuid=" + manager.getUserInfo().getUuid());
                         Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
-
-                        Log.i(TAG, "LOGIN success uuid read="+Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID));
                         break;
                     case CONNECTED:
                         Log.i(TAG, "CONNECTED mqtt");
@@ -428,11 +432,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
-
-                        mRoomList.clear();
-                        mRoomList.addAll(mRoomManager.queryRooms());
-                        mAdapter.notifyDataSetChanged();
-                        setRoomNormalLayout();
                         break;
                 }
             }
@@ -459,7 +458,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-
             }
         };
         String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
@@ -506,6 +504,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         });
         listview_experience_center.setAdapter(mExperienceCenterListAdapter);
+        Message msg = Message.obtain();
+        msg.what = MSG_INIT_LOCATIONSERVICE;
+        mHandler.sendMessage(msg);
+
     }
 
     private void initViews() {
@@ -533,10 +535,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         layout_roomselect_changed_ype = findViewById(R.id.layout_roomselect_changed_ype);
         scrollview_root = findViewById(R.id.scrollview_root);
     }
+
     @Override
     protected void onPause() {
         super.onPause();
     }
+
     /**
      * 再按一次退出应用
      */
