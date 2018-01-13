@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.bean.TopicPair;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.json.homegenius.QueryOptions;
 import com.deplink.sdk.android.sdk.mqtt.MQTTController;
 import com.google.gson.Gson;
@@ -34,10 +33,7 @@ public class HomeGenius  {
         queryCmd.setSenderId(userUuid);
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);
-        //exclusive.setSub("");
-//        Log.i(TAG,"exclusive.getSub()="+ exclusive.getSub());
-      //  MQTTController.getSingleton().publish(/*exclusive.getSub()*/"device/a7282842d44cc3f68521fa5e12b72b34/sub", text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
-        MQTTController.getSingleton().publish(/*exclusive.getSub()*/"device/44ebba9138a4b2b8c3f391f587148ff0/sub", text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
+        MQTTController.getSingleton().publish("device/44ebba9138a4b2b8c3f391f587148ff0/sub", text, new MqttActionHandler(""));
     }
     private class MqttActionHandler implements IMqttActionListener {
         private String action;
@@ -46,13 +42,13 @@ public class HomeGenius  {
         }
         @Override
         public void onSuccess(IMqttToken iMqttToken) {
-            Log.d(DeplinkSDK.SDK_TAG, "--->Mqtt onSuccess: " + iMqttToken.toString());
+            Log.i(DeplinkSDK.SDK_TAG, "--->Mqtt onSuccess: " + iMqttToken.toString());
             notifySuccess(action);
         }
         @Override
         public void onFailure(IMqttToken iMqttToken, Throwable throwable) {
             throwable.printStackTrace();
-            Log.d(DeplinkSDK.SDK_TAG, "--->Mqtt failure: " + throwable.getMessage());
+            Log.i(DeplinkSDK.SDK_TAG, "--->Mqtt failure: " + throwable.getMessage());
             String error = "操作失败";
             notifyFailure(action, error);
         }
