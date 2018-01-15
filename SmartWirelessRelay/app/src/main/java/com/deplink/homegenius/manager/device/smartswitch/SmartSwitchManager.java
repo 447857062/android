@@ -13,6 +13,8 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.google.gson.Gson;
@@ -50,7 +52,8 @@ public class SmartSwitchManager implements LocalConnecteListener{
         return currentSelectSmartDevice;
     }
     private List<SmartSwitchListener> mSmartSwitchListenerList;
-
+    private RemoteConnectManager mRemoteConnectManager;
+    private HomeGenius mHomeGenius;
     public void addSmartSwitchListener(SmartSwitchListener listener) {
         if (listener != null && !mSmartSwitchListenerList.contains(listener)) {
             this.mSmartSwitchListenerList.add(listener);
@@ -82,6 +85,14 @@ public class SmartSwitchManager implements LocalConnecteListener{
             String uuid= Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             mLocalConnectmanager.InitLocalConnectManager(context, uuid);
         }
+        if (mRemoteConnectManager == null) {
+            mRemoteConnectManager = RemoteConnectManager.getInstance();
+            mRemoteConnectManager.InitRemoteConnectManager(mContext);
+        }
+
+        if (mHomeGenius == null) {
+            mHomeGenius = new HomeGenius();
+        }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         if(cachedThreadPool==null){
@@ -103,39 +114,62 @@ public class SmartSwitchManager implements LocalConnecteListener{
      *
      */
     public void setSwitchCommand(String cmd) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("SmartWallSwitch");
-        queryCmd.setCommand(cmd);
-        queryCmd.setSmartUid(currentSelectSmartDevice.getUid());
-        Log.i(TAG, "设置开关smartUid=" + currentSelectSmartDevice.getUid());
-        queryCmd.setTimestamp();
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSetCmdData(text.getBytes(), currentSelectSmartDevice.getUid());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("SmartWallSwitch");
+            queryCmd.setCommand(cmd);
+            queryCmd.setSmartUid(currentSelectSmartDevice.getMac());
+            Log.i(TAG, "设置开关smartUid=" + currentSelectSmartDevice.getUid());
+            queryCmd.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSetCmdData(text.getBytes(), currentSelectSmartDevice.getUid());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else{
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG,"device.getTopic()="+device.getTopic());
+                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                    mHomeGenius.setSwitchCommand(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
+                }
             }
-        });
+        }
     }
     public void querySwitchStatus(String cmd) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("SmartWallSwitch");
-        queryCmd.setCommand(cmd);
-        queryCmd.setSmartUid(currentSelectSmartDevice.getUid());
-        queryCmd.setTimestamp();
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSetCmdData(text.getBytes(), currentSelectSmartDevice.getUid());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("SmartWallSwitch");
+            queryCmd.setCommand(cmd);
+            queryCmd.setSmartUid(currentSelectSmartDevice.getMac());
+            queryCmd.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSetCmdData(text.getBytes(), currentSelectSmartDevice.getUid());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else{
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG,"device.getTopic()="+device.getTopic());
+                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                    mHomeGenius.querySwitchStatus(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
+                }
             }
-        });
+        }
+
     }
     public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
@@ -177,6 +211,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
             smartDev.setUid(uid);
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
+            smartDev.setMac(device.getAd());
             smartDev.setType(DeviceTypeConstant.TYPE.TYPE_SWITCH);
             smartDev.setName(device.getName());
             smartDev.setSubType(currentAddSwitchSubType);

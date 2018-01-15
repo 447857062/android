@@ -14,6 +14,8 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.google.gson.Gson;
@@ -41,7 +43,8 @@ public class SmartLightManager implements LocalConnecteListener {
      */
     private static SmartLightManager instance;
     private SmartDev currentSelectLight;
-
+    private RemoteConnectManager mRemoteConnectManager;
+    private HomeGenius mHomeGenius;
     private SmartLightManager() {
 
     }
@@ -58,6 +61,7 @@ public class SmartLightManager implements LocalConnecteListener {
         if (instance == null) {
             instance = new SmartLightManager();
         }
+
         return instance;
     }
 
@@ -73,6 +77,13 @@ public class SmartLightManager implements LocalConnecteListener {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             mLocalConnectmanager.InitLocalConnectManager(context, uuid);
+        }
+        if(mRemoteConnectManager==null){
+            mRemoteConnectManager=RemoteConnectManager.getInstance();
+            mRemoteConnectManager.InitRemoteConnectManager(mContext);
+        }
+        if(mHomeGenius==null){
+            mHomeGenius=new HomeGenius();
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -99,70 +110,107 @@ public class SmartLightManager implements LocalConnecteListener {
     }
 
     public void setSmartLightSwitch(String cmd) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("YWLIGHTCONTROL");
-        queryCmd.setSmartUid(currentSelectLight.getUid());
-        queryCmd.setCommand(cmd);
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("YWLIGHTCONTROL");
+            queryCmd.setSmartUid(currentSelectLight.getMac());
+            queryCmd.setCommand(cmd);
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
 
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else{
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG,"device.getTopic()="+device.getTopic());
+                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                    mHomeGenius.setSmartLightSwitch(currentSelectLight,device.getTopic(),uuid,cmd);
+                }
             }
-        });
+        }
+
     }
 
     public void setSmartLightParamas(String cmd, int yellow, int white) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("YWLIGHTCONTROL");
-        queryCmd.setSmartUid(currentSelectLight.getUid());
-        queryCmd.setCommand(cmd);
-        queryCmd.setYellow(yellow);
-        queryCmd.setWhite(white);
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("YWLIGHTCONTROL");
+            queryCmd.setSmartUid(currentSelectLight.getMac());
+            queryCmd.setCommand(cmd);
+            queryCmd.setYellow(yellow);
+            queryCmd.setWhite(white);
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
 
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else{
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG,"device.getTopic()="+device.getTopic());
+                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                    mHomeGenius.setSmartLightParamas(currentSelectLight,device.getTopic(),uuid,cmd,yellow,white);
+                }
             }
-        });
+        }
+
 
     }
 
     public void queryLightStatus() {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("YWLIGHTCONTROL");
-        queryCmd.setCommand("query");
-        queryCmd.setSmartUid(currentSelectLight.getUid());
-        queryCmd.setTimestamp();
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        if(mLocalConnectmanager.isLocalconnectAvailable()){
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("YWLIGHTCONTROL");
+            queryCmd.setCommand("query");
+            queryCmd.setSmartUid(currentSelectLight.getMac());
+            queryCmd.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        }else{
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG,"device.getTopic()="+device.getTopic());
+                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                    mHomeGenius.queryLightStatus(currentSelectLight,device.getTopic(),uuid);
+                }
             }
-        });
+        }
+
     }
 
-    public boolean addDBSwitchDevice(QrcodeSmartDevice device) {
+    public boolean addDBSwitchDevice(QrcodeSmartDevice device,String addDeviceUid) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
         if (smartDev == null) {
             smartDev = new SmartDev();
-            smartDev.setUid(device.getAd());
+            smartDev.setUid(addDeviceUid);
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
+            smartDev.setMac(device.getAd());
             smartDev.setType(DeviceTypeConstant.TYPE.TYPE_LIGHT);
             smartDev.setName(device.getName());
             boolean addResult = smartDev.save();

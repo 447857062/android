@@ -36,6 +36,18 @@ public class SmartDev extends DataSupport implements Serializable {
     private boolean switch_three_open;
     private boolean switch_four_open;
     private Router router;
+    /**
+     * 查询智能设备使用
+     */
+    private String SmartUid;
+
+    public String getSmartUid() {
+        return SmartUid;
+    }
+
+    public void setSmartUid(String smartUid) {
+        SmartUid = smartUid;
+    }
 
     public String getMac() {
         return Mac;
@@ -237,8 +249,22 @@ public class SmartDev extends DataSupport implements Serializable {
                 ", Status='" + Status + '\'' +
                 ", Org='" + Org + '\'' +
                 ", Ver='" + Ver + '\'' +
+                ", sn='" + sn + '\'' +
+                ", Mac='" + Mac + '\'' +
                 ", name='" + name + '\'' +
-                ", room=" + rooms.size() +
+                ", bindLocal='" + bindLocal + '\'' +
+                ", getwayDevice=" + getwayDevice +
+                ", switch_one_open=" + switch_one_open +
+                ", switch_two_open=" + switch_two_open +
+                ", switch_three_open=" + switch_three_open +
+                ", switch_four_open=" + switch_four_open +
+                ", router=" + router +
+                ", SmartUid='" + SmartUid + '\'' +
+                ", rooms=" + rooms +
+                ", remotecontrolUid='" + remotecontrolUid + '\'' +
+                ", lockPassword='" + lockPassword + '\'' +
+                ", remerberPassword=" + remerberPassword +
+                ", alarmInfo=" + alarmInfo +
                 '}';
     }
 }

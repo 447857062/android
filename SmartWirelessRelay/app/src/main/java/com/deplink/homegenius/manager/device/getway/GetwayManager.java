@@ -55,31 +55,32 @@ public class GetwayManager implements LocalConnecteListener {
     private LocalConnectmanager mLocalConnectmanager;
     private RemoteConnectManager mRemoteConnectManager;
     private GatwayDevice currentSelectGetwayDevice;
-    private GatwayDevice currentAddGetwayDevice;
     private ExecutorService cachedThreadPool;
     private HomeGenius mHomeGenius;
+
     public String getCurrentAddDevice() {
         Log.i(TAG, "获取当前添加设备：" + currentAddDevice);
         return currentAddDevice;
     }
+
     public void deleteDeviceHttp() {
-        String uid=currentSelectGetwayDevice.getUid();
-        Log.i(TAG,"删除设备uid="+uid);
-        String userName= Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(userName.equals("")){
-            ToastSingleShow.showText(mContext,"用户未登录");
+        String uid = currentSelectGetwayDevice.getUid();
+        Log.i(TAG, "删除设备uid=" + uid);
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
-        Deviceprops device=new Deviceprops();
-        if(uid!=null){
+        Deviceprops device = new Deviceprops();
+        if (uid != null) {
             device.setUid(uid);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName,uid, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.code()==200){
+                if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
                     for (int i = 0; i < mGetwayListenerList.size(); i++) {
                         mGetwayListenerList.get(i).responseDeleteDeviceHttpResult(response.body());
@@ -89,10 +90,11 @@ public class GetwayManager implements LocalConnecteListener {
 
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
-                Log.i(TAG, "" +t.getMessage());
+                Log.i(TAG, "" + t.getMessage());
             }
         });
     }
+
     public void setCurrentAddDevice(String currentAddDevice) {
         this.currentAddDevice = currentAddDevice;
     }
@@ -111,11 +113,12 @@ public class GetwayManager implements LocalConnecteListener {
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
         }
-        if(mRemoteConnectManager==null){
-            mRemoteConnectManager= RemoteConnectManager.getInstance();
+        if (mRemoteConnectManager == null) {
+            mRemoteConnectManager = RemoteConnectManager.getInstance();
+            mRemoteConnectManager.InitRemoteConnectManager(mContext);
         }
-        if(mHomeGenius==null){
-            mHomeGenius=new HomeGenius();
+        if (mHomeGenius == null) {
+            mHomeGenius = new HomeGenius();
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
@@ -124,7 +127,6 @@ public class GetwayManager implements LocalConnecteListener {
         }
         addGetwayListener(listener);
     }
-
     private List<GetwayListener> mGetwayListenerList;
 
     public void addGetwayListener(GetwayListener listener) {
@@ -132,27 +134,18 @@ public class GetwayManager implements LocalConnecteListener {
             this.mGetwayListenerList.add(listener);
         }
     }
+
     public void removeGetwayListener(GetwayListener listener) {
         if (listener != null && mGetwayListenerList.contains(listener)) {
             this.mGetwayListenerList.remove(listener);
         }
     }
-
-    /**
-     * 删除数据库中的一个网关设备
-     */
-    public int deleteDBGetwayDevice(String uid) {
-        int affectcolumn = DataSupport.deleteAll(GatwayDevice.class, "Uid=?", uid);
-        Log.i(TAG, "删除一个网关设备，删除影响的行数=" + affectcolumn);
-        return affectcolumn;
-    }
-
     /**
      * 中继连接
      */
     public void setWifiRelay(AP_CLIENT paramas) {
         Log.i(TAG, "setWifiRelay");
-        if(mLocalConnectmanager.isLocalconnectAvailable()){
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
             WifiRelaySet setCmd = new WifiRelaySet();
             setCmd.setTimestamp();
             Proto proto = new Proto();
@@ -167,24 +160,58 @@ public class GetwayManager implements LocalConnecteListener {
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        }else if(mRemoteConnectManager.isRemoteConnectAvailable()){
-            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-            GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
-            Log.i(TAG,"device.getTopic()="+device.getTopic());
-            if(device.getTopic()!=null && !device.getTopic().equals("")){
-                mHomeGenius.setWifiRelay(device.getTopic(),uuid,paramas);
+        } else {
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.setWifiRelay(device.getTopic(), uuid, paramas);
+                }
+
+            } else {
+                ToastSingleShow.showText(mContext, "本地网关不可用,远程网关也不可用");
             }
         }
     }
-
-    public List<GatwayDevice> getAllGetwayDevice() {
-        List<GatwayDevice> list = DataSupport.findAll(GatwayDevice.class, true);
-        if (list.size() > 0) {
-            Log.i(TAG, "查询到的网关设备个数=" + list.size() + list.get(0).getUid());
+    /**
+     * 绑定网关，中继器
+     */
+    public void bindDevice(String deviceUid) {
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("DevList");
+            queryCmd.setTimestamp();
+            List<GatwayDevice> devs = new ArrayList<>();
+            //设备赋值
+            GatwayDevice dev = new GatwayDevice();
+            dev.setUid(deviceUid);
+            devs.add(dev);
+            queryCmd.setDevice(devs);
+            Gson gson = new Gson();
+            Log.i(TAG, "绑定网关:" + queryCmd.toString());
+            String text = gson.toJson(queryCmd);
+            packet.packSendDevsData(text.getBytes());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        } else {
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.bindGetwayDevice(device.getTopic(), uuid, deviceUid);
+                }else{
+                    ToastSingleShow.showText(mContext, "本地网关不可用,远程网关也不可用,");
+                }
+            }
         }
-        return list;
     }
-
 
     public GatwayDevice getCurrentSelectGetwayDevice() {
         return currentSelectGetwayDevice;
@@ -195,30 +222,44 @@ public class GetwayManager implements LocalConnecteListener {
     }
 
     public void deleteGetwayDevice() {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("DELETE");
-        queryCmd.setMethod("DevList");
-        queryCmd.setTimestamp();
-        List<GatwayDevice> devs = new ArrayList<>();
-        //设备赋值
-        GatwayDevice dev = new GatwayDevice();
-        dev.setUid(currentSelectGetwayDevice.getUid());
-        devs.add(dev);
-        queryCmd.setDevice(devs);
-        Gson gson = new Gson();
-        String text = gson.toJson(queryCmd);
-        packet.packSendSmartDevsData(text.getBytes());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("DELETE");
+            queryCmd.setMethod("DevList");
+            queryCmd.setTimestamp();
+            List<GatwayDevice> devs = new ArrayList<>();
+            //设备赋值
+            GatwayDevice dev = new GatwayDevice();
+            dev.setUid(currentSelectGetwayDevice.getMac());
+            devs.add(dev);
+            queryCmd.setDevice(devs);
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packSendSmartDevsData(text.getBytes());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        } else {
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.deleteGetwayDevice(currentSelectGetwayDevice, device.getTopic(), uuid);
+                }
+
             }
-        });
+        }
+
     }
 
-    public boolean addDBGetwayDevice(String deviceName,String uid,String topic) {
+    //数据库操作函数
+    public boolean addDBGetwayDevice(String deviceName, String uid, String topic) {
         //查询设备
-        currentAddGetwayDevice = new GatwayDevice();
+        GatwayDevice currentAddGetwayDevice = new GatwayDevice();
         currentAddGetwayDevice.setType(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
         currentAddGetwayDevice.setUid(uid);
         currentAddGetwayDevice.setName(deviceName);
@@ -229,6 +270,23 @@ public class GetwayManager implements LocalConnecteListener {
             Log.i(TAG, "数据库中已存在相同网关设备，不必要添加");
         }
         return addResult;
+    }
+
+    /**
+     * 删除数据库中的一个网关设备
+     */
+    public int deleteDBGetwayDevice(String uid) {
+        int affectcolumn = DataSupport.deleteAll(GatwayDevice.class, "Uid=?", uid);
+        Log.i(TAG, "删除一个网关设备，删除影响的行数=" + affectcolumn);
+        return affectcolumn;
+    }
+
+    public List<GatwayDevice> getAllGetwayDevice() {
+        List<GatwayDevice> list = DataSupport.findAll(GatwayDevice.class, true);
+        if (list.size() > 0) {
+            Log.i(TAG, "查询到的网关设备个数=" + list.size() + list.get(0).getUid());
+        }
+        return list;
     }
 
     /**
@@ -258,35 +316,6 @@ public class GetwayManager implements LocalConnecteListener {
         Log.i(TAG, "更新网关名称" + result);
     }
 
-    /**
-     * 绑定网关，中继器
-     */
-    public void bindDevice(String deviceUid) {
-        QueryOptions queryCmd = new QueryOptions();
-        queryCmd.setOP("SET");
-        queryCmd.setMethod("DevList");
-        queryCmd.setTimestamp();
-        List<GatwayDevice> devs = new ArrayList<>();
-        //设备赋值
-        GatwayDevice dev = new GatwayDevice();
-        //调试  uid 77685180654101946200316696479888
-        dev.setUid(deviceUid);
-      /*  dev.setMac(device.getAd());
-        dev.setType(device.getTp());*/
-        devs.add(dev);
-        queryCmd.setDevice(devs);
-        Gson gson = new Gson();
-        Log.i(TAG,"绑定网关:"+queryCmd.toString());
-        String text = gson.toJson(queryCmd);
-        packet.packSendDevsData(text.getBytes());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
-            }
-        });
-    }
-
     public void deleteGetwayDeviceInWhatRoom(final Room room, final String deviceUid) {
         //保存所在的房间
         //查询设备
@@ -303,6 +332,9 @@ public class GetwayManager implements LocalConnecteListener {
         boolean saveResult = getwayDevice.save();
         Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
     }
+    //数据库操作函数-------------------------------------------------------end
+
+
 
 
     @Override

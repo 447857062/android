@@ -27,7 +27,10 @@ public class QueryOptions implements Serializable {
     private int  white;
     private int  open;
     private String SenderId;
-
+    /**
+     * 查询智能设备使用
+     */
+    private String SmartUid;
     public String getSenderId() {
         return SenderId;
     }
@@ -68,10 +71,7 @@ public class QueryOptions implements Serializable {
         Data = data;
     }
 
-    /**
-     * 查询智能设备使用
-     */
-    private String SmartUid;
+
 
 
     public String getResult() {

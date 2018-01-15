@@ -156,7 +156,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                                         SetLockPwdActivity.this.finish();
                                     }
                                 },3000);
-                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null);
+                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null,true);
                             }
                             etPwdOne.setText("");
                             etPwdTwo.setText("");

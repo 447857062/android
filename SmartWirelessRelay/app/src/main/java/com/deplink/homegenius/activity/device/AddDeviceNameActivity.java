@@ -494,7 +494,7 @@ public class AddDeviceNameActivity extends Activity implements DeviceListener, V
 
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_LIGHT:
-                        mSmartLightManager.addDBSwitchDevice(device);
+                        mSmartLightManager.addDBSwitchDevice(device,addDeviceUid);
                         mSmartLightManager.updateSmartDeviceRoomAndName(currentSelectedRoom, addDeviceUid, deviceName);
                         break;
                 }

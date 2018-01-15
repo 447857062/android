@@ -2,6 +2,7 @@ package com.deplink.homegenius.activity.device.smartlock;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,15 +17,23 @@ import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import com.deplink.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.smartlock.AuthoriseDialog;
 import com.deplink.homegenius.view.dialog.smartlock.LockdeviceClearRecordDialog;
 import com.deplink.homegenius.view.dialog.smartlock.PasswordNotsaveDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -48,7 +57,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private boolean saveManagetPasswordExperience;
     private ImageView image_back;
     private LockdeviceClearRecordDialog clearRecordDialog;
-
+    private boolean isLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +82,56 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
         saveManagetPasswordExperience = true;
         clearRecordDialog = new LockdeviceClearRecordDialog(this);
+        connectLostDialog = new MakeSureDialog(SmartLockActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(SmartLockActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isLogin=false;
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        manager.addEventCallback(ec);
         if (isStartFromExperience) {
 
         } else {
@@ -92,7 +149,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         } else {
             mSmartLockManager.removeSmartLockListener(this);
         }
-
+        manager.removeEventCallback(ec);
     }
 
 
@@ -189,13 +246,23 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         Log.i(TAG, "saveManagetPassword=" + saveManagetPassword + "savedManagePassword=" + savedManagePassword);
                         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                             if (saveManagetPassword && !savedManagePassword.equals("")) {
-                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null);
+                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null,true);
                             } else {
                                 Intent intentSetLockPwd = new Intent(SmartLockActivity.this, SetLockPwdActivity.class);
                                 startActivity(intentSetLockPwd);
                             }
                         } else {
-                            ToastSingleShow.showText(SmartLockActivity.this, "未找到可用网关");
+                            if(isLogin){
+                                if (saveManagetPassword && !savedManagePassword.equals("")) {
+                                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null,false);
+                                } else {
+                                    Intent intentSetLockPwd = new Intent(SmartLockActivity.this, SetLockPwdActivity.class);
+                                    startActivity(intentSetLockPwd);
+                                }
+                            }else{
+                                ToastSingleShow.showText(SmartLockActivity.this, "未找到可用网关,未登录");
+                            }
+
                         }
                     }
 
@@ -282,16 +349,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
             switch (authType) {
                 case SmartLockConstant.AUTH_TYPE_ONCE:
-                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null,true);
                     break;
                 case SmartLockConstant.AUTH_TYPE_PERPETUAL:
-                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null,true);
                     break;
                 case SmartLockConstant.AUTH_TYPE_TIME_LIMIT:
                     long hour = Long.valueOf(limitTime);
                     limitTime = String.valueOf(hour * 60 * 1000);
                     Log.i(TAG, "hour=" + hour + "limittime=" + limitTime);
-                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, limitTime);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, limitTime,true);
                     break;
             }
         }

@@ -3,6 +3,7 @@ package com.deplink.homegenius.activity.device.smartlock.lockhistory;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,20 +15,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.device.lock.LockHistorys;
+import com.deplink.homegenius.Protocol.json.device.lock.Record;
+import com.deplink.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.device.lock.LockHistorys;
-import com.deplink.homegenius.Protocol.json.device.lock.Record;
-import com.deplink.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity;
-import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
-import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 
 /**
  * 开锁记录界面
@@ -44,6 +53,10 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private TextView textview_empty_record;
     private FrameLayout image_back;
     private ImageView imageview_no_lockhostory;
+    private boolean isLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +86,49 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
         mRecordList = new ArrayList<>();
         recordAdapter = new LockHistoryAdapter(this, mRecordList);
+        connectLostDialog = new MakeSureDialog(LockHistoryActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(LockHistoryActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isLogin=false;
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
     }
 
     private void initViews() {
@@ -89,6 +145,8 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        manager.addEventCallback(ec);
         if (isStartFromExperience) {
             mRecordList.clear();
             Record temp = new Record();
@@ -117,9 +175,19 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 Message msg = Message.obtain();
                 msg.what = MSG_GET_HISRECORD;
                 mHandler.sendMessageDelayed(msg, 3000);
-                mSmartLockManager.queryLockHistory();
+                mSmartLockManager.queryLockHistory(true);
             } else {
-                Toast.makeText(this, "未找到可用网关", Toast.LENGTH_SHORT).show();
+                if(isLogin){
+                    DialogThreeBounce.setmContext(this);
+                    DialogThreeBounce.showLoading(this);
+                    Message msg = Message.obtain();
+                    msg.what = MSG_GET_HISRECORD;
+                    mHandler.sendMessageDelayed(msg, 3000);
+                    mSmartLockManager.queryLockHistory(false);
+                }else{
+                    Toast.makeText(this, "未登录,并且本地网关也不可用", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         }

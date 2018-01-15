@@ -1,6 +1,8 @@
 package com.deplink.homegenius.activity.personal.wifi;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,15 +15,23 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.wifi.adapter.WifiListAdapter;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +53,10 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private TextView textview_reload_wifilist;
     private boolean isStartFromExperience;
     private GetwayManager mGetwayManager;
+    private boolean isLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +84,15 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        manager.addEventCallback(ec);
         queryWifiRelayList();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
     }
 
     private void queryWifiRelayList() {
@@ -130,6 +152,49 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         if (!isShowSkipOption) {
             textview_edit.setVisibility(View.GONE);
         }
+        connectLostDialog = new MakeSureDialog(ScanWifiListActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(ScanWifiListActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isLogin=false;
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
     }
 
     @Override
@@ -228,7 +293,10 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         }else{
             if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
                 setCmd.setApCliWPAPSK("");
-                mGetwayManager.setWifiRelay(setCmd);
+
+                    mGetwayManager.setWifiRelay(setCmd);
+
+
             } else {
                 wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
                     @Override
