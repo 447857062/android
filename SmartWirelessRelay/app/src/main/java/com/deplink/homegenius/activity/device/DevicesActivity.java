@@ -71,7 +71,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class DevicesActivity extends Activity implements View.OnClickListener,GetwayListener {
+public class DevicesActivity extends Activity implements View.OnClickListener, GetwayListener {
     private static final String TAG = "DevicesActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -111,6 +111,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
     private MakeSureDialog connectLostDialog;
     private boolean isUserLogin;
     private GetwayManager mGetwayManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,6 +156,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
         manager.removeEventCallback(ec);
         mDeviceManager.removeDeviceListener(mDeviceListener);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -170,8 +172,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
         mRoomManager.initRoomManager(this, null);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(DevicesActivity.this);
-        mGetwayManager=GetwayManager.getInstance();
-        mGetwayManager.InitGetwayManager(this,this);
+        mGetwayManager = GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this, this);
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
@@ -271,7 +273,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
             @Override
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
-                Log.i(TAG,"设备列表界面收到回调的mqtt消息="+result);
+                Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
             }
 
             @Override
@@ -282,6 +284,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
             }
+
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
@@ -292,7 +295,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
             }
         };
-        mDeviceListener=new DeviceListener() {
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseQueryResult(String result) {
                 super.responseQueryResult(result);
@@ -454,23 +457,26 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
 
     }
+
     @Override
     public void responseResult(String result) {
 
     }
+
     @Override
     public void responseSetWifirelayResult(int result) {
 
     }
+
     private void saveGetwayDeviceToSqlite(List<Deviceprops> devices, int i) {
         GatwayDevice dev = new GatwayDevice();
         String deviceType = devices.get(i).getDevice_type();
         dev.setType(deviceType);
         String deviceName = devices.get(i).getDevice_name();
         if (deviceType.equalsIgnoreCase("LKSWG")) {
-            if(deviceName==null || deviceName.equals("")){
+            if (deviceName == null || deviceName.equals("")) {
                 dev.setName("中继器");
-            }else{
+            } else {
                 dev.setName(deviceName);
             }
             deviceType = DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY;
@@ -479,7 +485,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
         dev.setUid(devices.get(i).getUid());
         dev.setOrg(devices.get(i).getOrg_code());
         dev.setVer(devices.get(i).getVersion());
-        dev.setTopic("device/"+devices.get(i).getUid()+"/sub");
+        dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
         rooms.add(room);
@@ -530,18 +536,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
             deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
             dev.setType(deviceType);
             Router router = new Router();
-            Log.i(TAG, "获取绑定的设备"+ manager.getDeviceList().size());
+            Log.i(TAG, "获取绑定的设备" + manager.getDeviceList().size());
             //获取devicekey
             for (int j = 0; j < manager.getDeviceList().size(); j++) {
-                Log.i(TAG, "获取绑定的设备"+  manager.getDeviceList().get(j).getDeviceSN());
+                Log.i(TAG, "获取绑定的设备" + manager.getDeviceList().get(j).getDeviceSN());
                 if (manager.getDeviceList().get(j).getDeviceSN().equals(devices.get(i).getSn())) {
                     Log.i(TAG, "赋值device key:" + manager.getDeviceList().get(j).getDeviceKey());
                     router.setRouterDeviceKey(manager.getDeviceList().get(j).getDeviceKey());
                 }
             }
-            if(deviceName==null || deviceName.equals("")){
+            if (deviceName == null || deviceName.equals("")) {
                 dev.setName("路由器");
-            }else{
+            } else {
                 dev.setName(deviceName);
             }
             router.setSmartDev(dev);
@@ -560,6 +566,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
     }
+
     private static final int MSG_UPDATE_DEVS = 0x01;
     private static final int MSG_GET_DEVS_HTTPS = 0x02;
     private Handler mHandler = new Handler() {
@@ -576,7 +583,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
                     if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
                         tempSmartDevice.addAll(aDeviceList.getSmartDev());
                     }
-                    Log.i(TAG,"tempSmartDevice.size"+tempSmartDevice.size());
+                    Log.i(TAG, "tempSmartDevice.size" + tempSmartDevice.size());
                     //存储设备列表
                     if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
                         tempDevice.addAll(aDeviceList.getDevice());
@@ -584,53 +591,60 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
                     //网关设备更新状态
                     for (int i = 0; i < tempDevice.size(); i++) {
                         for (int j = 0; j < datasTop.size(); j++) {
-                            if (datasTop.get(j).getUid().equals(tempDevice.get(i).getUid())) {
+                            if (datasTop.get(j).getUid().equalsIgnoreCase(tempDevice.get(i).getUid())) {
                                 datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
+                                Log.i(TAG, "更新网关设备的状态:" + tempDevice.get(i).getStatus());
                                 datasTop.get(j).saveFast();
                             }
                         }
                     }
                     //网关设备下发列表
-                    for(int j=0;j<datasTop.size();j++){
-                        boolean addGatway=true;
-                        for(int i=0;i<tempDevice.size();i++){
-                            if(tempDevice.get(i).getUid().equalsIgnoreCase(datasTop.get(j).getUid())){
-                                addGatway=false;
+                    for (int j = 0; j < datasTop.size(); j++) {
+                        boolean addGatway = true;
+                        for (int i = 0; i < tempDevice.size(); i++) {
+                            if (tempDevice.get(i).getUid().equalsIgnoreCase(datasTop.get(j).getUid())) {
+                                addGatway = false;
                             }
                         }
-                        if(addGatway){
+                        if (addGatway) {
                             mGetwayManager.bindDevice(datasTop.get(j).getUid());
                         }
                     }
                     //智能设备更新状态
                     for (int i = 0; i < tempSmartDevice.size(); i++) {
                         for (int j = 0; j < datasBottom.size(); j++) {
-                            if (datasBottom.get(j).getMac().equals(tempSmartDevice.get(i).getSmartUid())) {
+                            Log.i(TAG, "更新智能设备状态, 本地数据库中设备的mac地址:" + datasBottom.get(j).getMac() +
+                                    "接收到的本地接口返回的智能设备的mac地址:" + tempSmartDevice.get(i).getSmartUid()
+                            );
+                            if (datasBottom.get(j).getMac() != null &&
+                                    datasBottom.get(j).getMac().equalsIgnoreCase(tempSmartDevice.get(i).getSmartUid())
+                                    ) {
                                 datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
+                                datasBottom.get(j).saveFast();
                             }
                         }
                     }
 
                     //智能设备下发列表
-                    Log.i(TAG,"datasBottom.size="+datasBottom);
-                    for(int j=0;j<datasBottom.size();j++){
-                        boolean addSmartdev=true;
-                        for(int i=0;i<tempSmartDevice.size();i++){
-                            Log.i(TAG,"tempSmartDevice.get(i).getSmartUid()="+tempSmartDevice.get(i).getSmartUid()+
-                                    "datasBottom.get(j).getMac()="+datasBottom.get(j).getMac()
+                    Log.i(TAG, "datasBottom.size=" + datasBottom);
+                    for (int j = 0; j < datasBottom.size(); j++) {
+                        boolean addSmartdev = true;
+                        for (int i = 0; i < tempSmartDevice.size(); i++) {
+                            Log.i(TAG, "tempSmartDevice.get(i).getSmartUid()=" + tempSmartDevice.get(i).getSmartUid() +
+                                    "datasBottom.get(j).getMac()=" + datasBottom.get(j).getMac()
                             );
-                            if(tempSmartDevice.get(i).getSmartUid().equalsIgnoreCase(datasBottom.get(j).getMac())
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)){
+                            if (tempSmartDevice.get(i).getSmartUid().equalsIgnoreCase(datasBottom.get(j).getMac())
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)) {
 
-                                addSmartdev=false;
+                                addSmartdev = false;
                             }
                         }
-                        if(addSmartdev){
-                            Log.i(TAG,"下发远程添加了本地没有添加的智能设备"+datasBottom.get(j).getName());
-                            QrcodeSmartDevice device=new QrcodeSmartDevice();
+                        if (addSmartdev) {
+                            Log.i(TAG, "下发远程添加了本地没有添加的智能设备" + datasBottom.get(j).getName());
+                            QrcodeSmartDevice device = new QrcodeSmartDevice();
                             device.setAd(datasBottom.get(j).getMac());
-                            Log.i(TAG,"下发远程添加了本地没有添加的智能设备 type="+datasBottom.get(j).getType());
-                            switch (datasBottom.get(j).getType()){
+                            Log.i(TAG, "下发远程添加了本地没有添加的智能设备 type=" + datasBottom.get(j).getType());
+                            switch (datasBottom.get(j).getType()) {
                                 case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                                     device.setTp("YWLIGHTCONTROL");
                                     break;
@@ -642,8 +656,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener,Ge
                                     device.setTp("IRMOTE_V2");
                                     break;
                                 case DeviceTypeConstant.TYPE.TYPE_SWITCH:
-                                    if(datasBottom.get(j).getSubType()!=null){
-                                        switch (datasBottom.get(j).getSubType()){
+                                    if (datasBottom.get(j).getSubType() != null) {
+                                        switch (datasBottom.get(j).getSubType()) {
                                             case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
                                                 device.setTp("SmartWallSwitch1");
                                                 break;

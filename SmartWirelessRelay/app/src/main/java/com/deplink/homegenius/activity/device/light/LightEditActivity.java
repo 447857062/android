@@ -24,6 +24,7 @@ import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
@@ -33,10 +34,15 @@ import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -66,6 +72,12 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
     private SmartLightManager mSmartLightManager;
     private DeviceManager mDeviceManager;
     private DeviceListener mDeviceListener;
+    private GatwayDevice selectedGatway;
+    private String action;
+    private String deviceUid;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +91,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
     protected void onResume() {
         super.onResume();
         mDeviceManager.addDeviceListener(mDeviceListener);
+        manager.addEventCallback(ec);
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
@@ -114,6 +127,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
     protected void onPause() {
         super.onPause();
         mDeviceManager.removeDeviceListener(mDeviceListener);
+        manager.removeEventCallback(ec);
     }
 
     private String lightName;
@@ -153,13 +167,54 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
                 if(!isStartFromExperience){
-                    boolean result = mSmartLightManager.updateSmartDeviceGetway(mGetways.get(position));
-                    if (!result) {
-                        Toast.makeText(LightEditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
-                    }
+                    action="alertgetway";
+                    selectedGatway=mGetways.get(position);
+                    deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
+                    mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+
                 }
             }
         });
+        connectLostDialog = new MakeSureDialog(LightEditActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(LightEditActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isLogin=false;
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
         mDeviceListener=new DeviceListener() {
             @Override
             public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
@@ -170,6 +225,29 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                     DialogThreeBounce.hideLoading();
                     mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
                 }
+            }
+
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                switch (action){
+                    case "alertroom":
+                        mSmartLightManager.updateSmartDeviceRoom(changeRoom, deviceUid);
+                        break;
+                    case "alertname":
+                      boolean saveNameresult= mSmartLightManager.updateSmartDeviceName(mSmartLightManager.getCurrentSelectLight().getUid(),lightName);
+                        if (!saveNameresult) {
+                            Toast.makeText(LightEditActivity.this, "更新智能设备名称失败", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case "alertgetway":
+                        boolean saveTbResult = mSmartLightManager.updateSmartDeviceGetway(selectedGatway);
+                        if (!saveTbResult) {
+                            Toast.makeText(LightEditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                action="";
             }
 
             @Override
@@ -209,6 +287,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
     }
     private boolean isOnActivityResult;
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
+    private Room changeRoom;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -217,9 +296,11 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
             String roomName = data.getStringExtra("roomName");
             Log.i(TAG, "roomName=" + roomName);
             if (!isStartFromExperience) {
-                Room room = RoomManager.getInstance().findRoom(roomName, true);
-                String deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
-                mSmartLightManager.updateSmartDeviceRoom(room, deviceUid);
+                action="alertname";
+                deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
+                 changeRoom = RoomManager.getInstance().findRoom(roomName, true);
+                mDeviceManager.alertDeviceHttp(deviceUid, changeRoom.getUid(), null, null);
+
             }
             textview_select_room_name.setText(roomName);
         }
@@ -250,7 +331,23 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                onBackPressed();
+                if(isLogin){
+                    String lightnameChange=edittext_input_devie_name.getText().toString();
+                    if(lightName.equals("")){
+                        ToastSingleShow.showText(this,"请输入设备名称");
+                        return;
+                    }
+                    if(lightnameChange.equals(lightName)){
+                        onBackPressed();
+                    }else{
+                        action="alertname";
+                        lightName=lightnameChange;
+                        deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
+                        mDeviceManager.alertDeviceHttp(deviceUid, null, lightName, null);
+                    }
+                }else{
+                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                }
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);

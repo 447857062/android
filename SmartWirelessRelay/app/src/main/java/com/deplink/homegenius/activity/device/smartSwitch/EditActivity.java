@@ -19,16 +19,24 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -65,6 +73,10 @@ public class EditActivity extends Activity implements View.OnClickListener {
     private String deviceUid;
     private Room room;
     private DeviceListener mDeviceListener;
+    private boolean isLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +94,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
         textview_edit.setOnClickListener(this);
     }
 
-
+    private GatwayDevice selectedGatway;
     private void initDatas() {
         textview_edit.setText("完成");
         switchType = getIntent().getStringExtra("switchType");
@@ -102,12 +114,53 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                boolean result = mSmartSwitchManager.updateSmartDeviceGetway(mGetways.get(position));
-                if (!result) {
-                    Toast.makeText(EditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
-                }
+                action="alertgetway";
+                selectedGatway=mGetways.get(position);
+                deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+
             }
         });
+        connectLostDialog = new MakeSureDialog(EditActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(EditActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isLogin=false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
         mDeviceListener=new DeviceListener() {
             @Override
             public void responseBindDeviceResult(String result) {
@@ -152,6 +205,11 @@ public class EditActivity extends Activity implements View.OnClickListener {
                     if (saveResult) {
                         onBackPressed();
                     }
+                }else if(action.equals("alertgetway")){
+                    boolean saveDbResult = mSmartSwitchManager.updateSmartDeviceGetway(selectedGatway);
+                    if (!saveDbResult) {
+                        Toast.makeText(EditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 action = "";
             }
@@ -161,6 +219,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         deviceName = mSmartSwitchManager.getCurrentSelectSmartDevice().getName();
         if (deviceName != null && deviceName.length() > 0) {
             if (deviceName.length() > 10) {
@@ -178,12 +237,14 @@ public class EditActivity extends Activity implements View.OnClickListener {
             }
         }
         mDeviceManager.addDeviceListener(mDeviceListener);
+        manager.addEventCallback(ec);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mDeviceManager.removeDeviceListener(mDeviceListener);
+        manager.removeEventCallback(ec);
     }
 
     private void initViews() {
@@ -232,7 +293,11 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 action = "alertname";
                 deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
                 deviceName = edittext_add_device_input_name.getText().toString();
-                mDeviceManager.alertDeviceHttp(deviceUid, null, deviceName, null);
+                if(isLogin){
+                    mDeviceManager.alertDeviceHttp(deviceUid, null, deviceName, null);
+                }else{
+                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                }
 
                 break;
             case R.id.layout_getway_select:
@@ -243,7 +308,6 @@ public class EditActivity extends Activity implements View.OnClickListener {
                     layout_getway_list.setVisibility(View.VISIBLE);
                     imageview_getway_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
-
                 break;
             case R.id.layout_room_select:
                 Intent intent = new Intent(this, AddDeviceActivity.class);

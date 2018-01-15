@@ -64,6 +64,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_getway;
     private ImageView imageview_getway_arror_right;
     private DeviceListener mDeviceListener;
+    private GatwayDevice selectedGatway;
+    private String action;
+    private String deviceUid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,10 +111,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                boolean result = mSmartLockManager.updateSmartDeviceGetway(mGetways.get(position));
-                if (!result) {
-                    Toast.makeText(EditSmartLockActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
-                }
+                action="alertgetway";
+                selectedGatway=mGetways.get(position);
+                deviceUid = mSmartLockManager.getCurrentSelectLock().getUid();
+                mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
             }
         });
         mDeviceListener=new DeviceListener() {
@@ -144,6 +147,26 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                     mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
                 }
             }
+
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                switch (action){
+                    case "alertroom":
+                        mSmartLockManager.updateSmartDeviceInWhatRoom(changeRoom, deviceUid);
+                        break;
+                    case "alertname":
+
+                        break;
+                    case "alertgetway":
+                        boolean savegetwayResult = mSmartLockManager.updateSmartDeviceGetway(selectedGatway);
+                        if (!savegetwayResult) {
+                            Toast.makeText(EditSmartLockActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                action="";
+            }
         };
     }
 
@@ -165,7 +188,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     }
 
     private boolean isOnActivityResult;
-
+    private Room changeRoom;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -174,9 +197,11 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
             String roomName = data.getStringExtra("roomName");
             Log.i(TAG, "roomName=" + roomName);
             if (!isStartFromExperience) {
-                Room room = RoomManager.getInstance().findRoom(roomName, true);
-                String deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
-                mSmartLockManager.updateSmartDeviceInWhatRoom(room, deviceUid);
+                action="alertroom";
+                changeRoom = RoomManager.getInstance().findRoom(roomName, true);
+                 deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
+                mDeviceManager.alertDeviceHttp(deviceUid, changeRoom.getUid(), null, null);
+
             }
             textview_select_room_name.setText(roomName);
         }

@@ -151,7 +151,6 @@ public class SmartLightManager implements LocalConnecteListener {
             Gson gson = new Gson();
             String text = gson.toJson(queryCmd);
             packet.packSetCmdData(text.getBytes(), currentSelectLight.getUid());
-
             cachedThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -168,8 +167,6 @@ public class SmartLightManager implements LocalConnecteListener {
                 }
             }
         }
-
-
     }
 
     public void queryLightStatus() {
@@ -249,6 +246,14 @@ public class SmartLightManager implements LocalConnecteListener {
         smartDev.setName(deviceName);
         boolean saveResult = smartDev.save();
         Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+    }
+    public boolean updateSmartDeviceName( String deviceUid, String deviceName) {
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        smartDev.setName(deviceName);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+        return  saveResult;
     }
 
     /**

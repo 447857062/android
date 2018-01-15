@@ -13,23 +13,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.RemoteControlSelectListAdapter;
+import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
-import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.edittext.ClearEditText;
 
 public class EditRemoteDevicesActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "EditDoorbeelActivity";
@@ -106,7 +105,7 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
 
         deleteDialog = new DeleteDeviceDialog(this);
         mRemoteControls = new ArrayList<>();
-        mRemoteControls.addAll(RemoteControlManager.getInstance().queryAllRemotecontrol());
+        mRemoteControls.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
         selectRemotecontrolAdapter = new RemoteControlSelectListAdapter(this, mRemoteControls);
         listview_select_remotecontrol.setAdapter(selectRemotecontrolAdapter);
         listview_select_remotecontrol.setOnItemClickListener(new AdapterView.OnItemClickListener() {

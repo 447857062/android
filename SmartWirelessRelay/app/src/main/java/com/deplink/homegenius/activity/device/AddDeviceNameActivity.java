@@ -213,7 +213,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
-        mRemoteControls.addAll(RemoteControlManager.getInstance().queryAllRemotecontrol());
+        mRemoteControls.addAll(RemoteControlManager.getInstance().findAllRemotecontrolDevice());
         selectRemotecontrolAdapter = new RemoteControlSelectListAdapter(this, mRemoteControls);
         listview_select_remotecontrol.setAdapter(selectRemotecontrolAdapter);
         listview_select_remotecontrol.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -277,7 +277,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
             }
         };
         mDeviceListener=new DeviceListener() {
-
             @Override
             public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
                 super.responseAddDeviceHttpResult(responseBody);
@@ -359,7 +358,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                                 mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
                                 mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
                                 break;
-                            case "IRMOTE_V2":
+                            case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                                 mDeviceManager.addDBSmartDevice(device, addDeviceUid, currentSelectGetway);
                                 mDeviceManager.updateSmartDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
                                 break;
@@ -382,9 +381,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                     }
                 }
             }
-
-
-
             @Override
             public void responseBindDeviceResult(String result) {
                 super.responseBindDeviceResult(result);
@@ -433,9 +429,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
             }
         }
     }
-
-
-
     private static final int MSG_ADD_DEVICE_RESULT = 100;
     private static final int MSG_FINISH_ACTIVITY = 101;
     private static final int MSG_UPDATE_ROOM_FAIL = 102;
@@ -491,15 +484,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
-    private boolean isDeviceAddSuccess(DeviceList aDeviceList, QrcodeSmartDevice tempDevice) {
-        for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
-            if (aDeviceList.getDevice().get(i).getUid().equals(tempDevice.getSn())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean isGetwayDeviceAddSuccess(DeviceList aDeviceList, String tempDeviceSn) {
         for (int i = 0; i < aDeviceList.getDevice().size(); i++) {
             if (aDeviceList.getDevice().get(i).getUid().equals(tempDeviceSn)) {
@@ -593,8 +577,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setVersion(device.getVer());
                             mDeviceManager.addDeviceHttp(deviceAddBody);
                         }
-
-
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                         if (deviceName.equals("")) {
@@ -706,6 +688,8 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                         addDevice.setUid(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL + deviceName);
                         addDevice.setName(deviceName);
                         addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
+                        addDevice.setMac(currentSelectRemotecontrol.getMac());
+                        Log.i(TAG, "currentSelectedRoom:"+(currentSelectedRoom!=null));
                         boolean addresult = RemoteControlManager.getInstance().addDeviceDbLocal(addDevice, currentSelectedRoom);
                         if (addresult) {
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
@@ -742,6 +726,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                         tvDevice.setUid(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL + deviceName);
                         tvDevice.setName(deviceName);
                         tvDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
+                        tvDevice.setMac(currentSelectRemotecontrol.getMac());
                         boolean addTvresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvDevice, currentSelectedRoom);
                         if (addTvresult) {
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
@@ -777,6 +762,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                         tvBoxDevice.setUid(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL + deviceName);
                         tvBoxDevice.setName(deviceName);
                         tvBoxDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
+                        tvBoxDevice.setMac(currentSelectRemotecontrol.getMac());
                         boolean addTvBoxresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvBoxDevice, currentSelectedRoom);
                         if (addTvBoxresult) {
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {

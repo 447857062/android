@@ -90,7 +90,8 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
+    private GatwayDevice selectedGatway;
+    private String action;
     private void initDatas() {
         deleteDialog = new DeleteDeviceDialog(this);
         mDeviceManager = DeviceManager.getInstance();
@@ -118,10 +119,11 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                boolean result = mRemoteControlManager.updateSmartDeviceGetway(mGetways.get(position));
-                if (!result) {
-                    ToastSingleShow.showText(RemoteControlActivity.this, "更新智能设备所属网关失败");
-                }
+                action="alertgetway";
+                selectedGatway=mGetways.get(position);
+                deviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+                mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+
             }
         });
         if (isStartFromExperience) {
@@ -185,7 +187,26 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             @Override
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
-                mRemoteControlManager.updateSmartDeviceInWhatRoom(room, deviceUid);
+                switch (action){
+                    case "alertroom":
+                        mRemoteControlManager.updateSmartDeviceInWhatRoom(room, deviceUid);
+                        break;
+                    case "alertname":
+                        boolean saveNameresult= mRemoteControlManager.saveCurrentSelectDeviceName(deviceName);
+                        if (!saveNameresult) {
+                            Toast.makeText(RemoteControlActivity.this, "更新智能设备名称失败", Toast.LENGTH_SHORT).show();
+                        }else{
+                            startActivity(new Intent(RemoteControlActivity.this, DevicesActivity.class));
+                        }
+                        break;
+                    case "alertgetway":
+                        boolean saveGetwayResult = mRemoteControlManager.updateSmartDeviceGetway(selectedGatway);
+                        if (!saveGetwayResult) {
+                            ToastSingleShow.showText(RemoteControlActivity.this, "更新智能设备所属网关失败");
+                        }
+                        break;
+                }
+                action="";
             }
 
             @Override
@@ -286,10 +307,20 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-                if (!edittext_input_devie_name.getText().toString().equals(deviceName)) {
-                    mRemoteControlManager.saveCurrentSelectDeviceName(edittext_input_devie_name.getText().toString());
+                action="alertname";
+                String changeDeviceName=edittext_input_devie_name.getText().toString();
+                if(changeDeviceName.equals("")){
+                    ToastSingleShow.showText(this,"请输入设备而名称");
+                    return;
                 }
-                startActivity(new Intent(this, DevicesActivity.class));
+                if (!changeDeviceName.equals(deviceName)) {
+                    mRemoteControlManager.saveCurrentSelectDeviceName(changeDeviceName);
+                }
+                if(isLogin){
+                    deviceName=changeDeviceName;
+                    mDeviceManager.alertDeviceHttp(deviceUid, changeDeviceName, null,null);
+                }
+
                 break;
             case R.id.image_back:
                 onBackPressed();
@@ -343,6 +374,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             Log.i(TAG, "roomName=" + roomName);
             if (!isStartFromExperience) {
                 if (isLogin) {
+                    action="alertroom";
                     room = RoomManager.getInstance().findRoom(roomName, true);
                     deviceUid = DeviceManager.getInstance().getCurrentSelectSmartDevice().getUid();
                     mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);

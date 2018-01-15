@@ -9,13 +9,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
 
 /**
  */
@@ -153,6 +153,7 @@ public class DeviceListAdapter extends BaseAdapter {
         //智能网关
         if (position < TopCount) {
             String statu = listTop.get(position).getStatus();
+            Log.i(TAG,"设备列表适配器网关状态="+statu);
             if (statu != null) {
                 switch (statu){
                     case "on":
@@ -172,10 +173,8 @@ public class DeviceListAdapter extends BaseAdapter {
         } else {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
-
-
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
-            Log.i(TAG,"deviceStatu="+deviceStatu);
+            Log.i(TAG,"devicetype="+deviceType+"devicename="+deviceName+"deviceStatu="+deviceStatu);
             if (deviceStatu != null) {
                 switch (deviceStatu){
                     case "on":

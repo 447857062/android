@@ -119,18 +119,10 @@ public class RemoteControlManager implements LocalConnecteListener {
     }
 
     public List<SmartDev> findAllRemotecontrolDevice() {
-        List<SmartDev> newsList = DataSupport.where("Type = ?", "IRMOTE_V2").find(SmartDev.class);
+        List<SmartDev> newsList = DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL).find(SmartDev.class);
         Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
         return newsList;
     }
-
-    public List<SmartDev> queryAllRemotecontrol() {
-        List<SmartDev> smartDevs = new ArrayList<>();
-        smartDevs.addAll(DataSupport.where("Type= ? ", "IRMOTE_V2").find(SmartDev.class));
-        Log.i(TAG, "遥控器列表大小=" + smartDevs.size());
-        return smartDevs;
-    }
-
     /**
      * 找到遥控器挂载在哪个物理遥控器下面
      *
