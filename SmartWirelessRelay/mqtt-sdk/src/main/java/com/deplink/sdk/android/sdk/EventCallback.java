@@ -21,7 +21,9 @@ public abstract class EventCallback {
      * 获取图片成功
      * @param action
      */
-    public abstract void onGetImageSuccess(SDKAction action,Bitmap bm);
+    public  void onGetImageSuccess(SDKAction action,Bitmap bm){
+
+    }
 
     /**
      * 请求失败
@@ -72,19 +74,10 @@ public abstract class EventCallback {
     public void notifyDeviceUpgrade(String deviceKey) {
 
     }
-
     /**
-     * 扫描中发现设备
-     * @param device
+     * 设备升级通知
      */
-    public void scanFindDevice(Object device) {
-
-    }
-
-    /**
-     * 扫描结束
-     */
-    public void scanComplete() {
+    public void notifyHomeGeniusResponse(String result) {
 
     }
 }

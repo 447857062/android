@@ -42,20 +42,17 @@ import retrofit2.Response;
 public class MQTTController implements MqttListener {
     private static final String TAG = "MQTTController";
     private volatile static MQTTController singleton;
-
     private ConnectionMonitor monitor = new ConnectionMonitor();
-
     private NetBroadCast broadCast = null;
     private Context mContext = null;
     private MqttConfig mConfig = null;
     private Connection mConnection = null;
     private SDKCoordinator mSDKCoordinator = null;
-    LinkedHashMap<String, MqttListener> mTopicListeners = new LinkedHashMap<String, MqttListener>();
+    LinkedHashMap<String, MqttListener> mTopicListeners = new LinkedHashMap<>();
 
     private MQTTController() {
 
     }
-
     public void init(Context context, MqttConfig config, SDKCoordinator coordinator) {
         if (config == null || context == null || coordinator == null) {
             throw new NullPointerException("Invalid params");
@@ -135,7 +132,6 @@ public class MQTTController implements MqttListener {
         if (null == mConnection) return;
         try {
             mTopicListeners.remove(topic);
-
             Connections.getInstance().getConnection(mConnection.handle()).getClient()
                     .unsubscribe(topic);
         } catch (MqttException e) {
@@ -151,11 +147,9 @@ public class MQTTController implements MqttListener {
     public void publish(String topic, String message) {
         if (null == mConnection) return;
         int qos = ActivityConstants.defaultQos;
-        boolean retained = false;
         String[] args = new String[2];
         args[0] = message;
         args[1] = topic;
-
         try {
             Connections.getInstance().getConnection(mConnection.handle()).getClient().publish(topic, message.getBytes(), qos, false, null, new ActionListener(MqttAction.PUBLISH, mConnection.handle(), this, topic));
         } catch (MqttException e) {
@@ -190,7 +184,6 @@ public class MQTTController implements MqttListener {
      * @param config
      */
     private void connectAction(Context context, MqttConfig config) {
-        boolean cleanSession = true;
         String uri;
         String clientId = config.getClientid();
         List<String> servers = config.getServers();
@@ -214,44 +207,31 @@ public class MQTTController implements MqttListener {
             uri = "tcp://" + server;
         }
         MqttClientAndroidService client;
-
         //创建一个client对象，此时还没有进行MQTT连接
         client = Connections.getInstance().createClient(context, uri, clientId);
 
         // create a client handle
         String clientHandle = uri + clientId;
-
-        int qos = 1;
-        Boolean retained = true;
-
         int timeout = 30;
         int keepAlive = 10;
-
         mConnection = new Connection(clientHandle, clientId, host, port, context, client);
-
         Connections.getInstance().addConnection(mConnection);
         // connect client
-
         String[] actionArgs = new String[1];
         actionArgs[0] = clientId;
         mConnection.changeConnectionStatus(Connection.ConnectionStatus.CONNECTING);
-
         //设置MQTT的高级选项
         MqttConnectOptions conOpt = new MqttConnectOptions();
-
         //设置清理会话
         conOpt.setCleanSession(true);
         //设置连接超时时间
         conOpt.setConnectionTimeout(timeout);
         //设置保持活力的时间
         conOpt.setKeepAliveInterval(keepAlive);
-
         //设置用户名
         conOpt.setUserName(username);
-
         //设置用户密码
         conOpt.setPassword(password.toCharArray());
-
         //设置ssl socket
         if (uri.startsWith("ssl")) {
             String ca = "-----BEGIN CERTIFICATE-----\n" +
@@ -339,7 +319,6 @@ public class MQTTController implements MqttListener {
         Log.i(DeplinkSDK.SDK_TAG, "onSuccess----action:" + cation);
         switch (cation) {
             case CONNECT:
-
                 mSDKCoordinator.MQTTConnected();
                 break;
             case DISCONNECT:
@@ -364,13 +343,10 @@ public class MQTTController implements MqttListener {
             case DISCONNECT:
                 break;
             case SUBSCRIBE://订阅用户通道失败
-                //System.out.println("onSuccess--------------action:" + cation);
                 break;
             case PUBLISH:
-                //System.out.println("onSuccess--------------action:" + cation);
                 break;
             case RECONNECT:
-                //System.out.println("onSuccess------恢复连接失败--------action:" + cation);
                 mSDKCoordinator.MQTTReconnectionFailed();
                 break;
         }
@@ -388,14 +364,12 @@ public class MQTTController implements MqttListener {
     public void deliveryComplete(IMqttDeliveryToken token) {
 
     }
-
     /**
      * 网络切换时立即检查是否需要重连
      */
     class NetBroadCast extends BroadcastReceiver {
         public final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
         private boolean isInit = false;
-
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION.equals(intent.getAction())) {
@@ -491,7 +465,6 @@ public class MQTTController implements MqttListener {
             NetworkInfo.State mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
             available = (wifiState == NetworkInfo.State.CONNECTED || mobileState == NetworkInfo.State.CONNECTED);
         }
-
         return available;
     }
 

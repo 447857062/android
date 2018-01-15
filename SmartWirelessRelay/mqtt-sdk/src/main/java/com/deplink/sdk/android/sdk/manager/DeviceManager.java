@@ -63,7 +63,6 @@ public class DeviceManager implements MqttListener {
         String userTopic = mSDKCoordinator.getUserSession().getTopic_sub().get(0);
         Log.i(TAG,"userTopic="+userTopic);
         MQTTController.getSingleton().subscribe(userTopic, this);
-       // MQTTController.getSingleton().subscribe("device/a7282842d44cc3f68521fa5e12b72b34/sub", this);
         mSDKCoordinator.notifySuccess(SDKAction.CONNECTED);
     }
 
@@ -217,11 +216,11 @@ public class DeviceManager implements MqttListener {
             } else if ("IMAGE".equalsIgnoreCase(op) && "UPGRADE".equalsIgnoreCase(method)) {
                 msgFormat = XML_FMT_IMAGE_UPGRADE;
             }
+            processMqttMsg(message);
             if (msgFormat == null) {
                 return;
             }
             //parse by type
-
             switch (msgFormat) {
                 case XML_FMT_IMAGE_UPGRADE:
                     DeviceImageUpgrade upgrade = gson.fromJson(xmlStr, DeviceImageUpgrade.class);
@@ -251,11 +250,13 @@ public class DeviceManager implements MqttListener {
 
             return;
         }
+
         //设备状态改变
         RouterDevice device = (RouterDevice) mDeviceTopics.get(topic);
         if (device == null) {
             return;
         }
+
         int update = device.processMqttMsg(topic, message);
         if (update != BaseDevice.MSG_DUMMY) {
             synchronized (mDeviceMap) {
@@ -264,6 +265,12 @@ public class DeviceManager implements MqttListener {
             Log.i(TAG, "notifyDeviceDataUpdate update=" + update);
             mSDKCoordinator.notifyDeviceDataUpdate(device.getDeviceKey(), update);
         }
+    }
+
+    private void processMqttMsg(MqttMessage message) {
+        String jsonString = new String(message.getPayload());
+        Log.i(TAG,"处理智能家居的设备消息:"+jsonString);
+        mSDKCoordinator.notifyHomeGeniusResult(jsonString);
     }
 
     @Override

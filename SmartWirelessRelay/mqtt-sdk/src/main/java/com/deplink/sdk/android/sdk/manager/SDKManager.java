@@ -41,8 +41,6 @@ public class SDKManager {
         mUserManager = new UserManager(mSDKCoordinator);
         mDeviceManager = new DeviceManager(mSDKCoordinator);
     }
-
-
     /**
      * 添加回调事件
      *
@@ -252,8 +250,6 @@ public class SDKManager {
     }
 
     private class Coordinator implements SDKCoordinator {
-
-
         @Override
         public void afterLogin() {
             mDeviceManager.getDeviceBinding();
@@ -294,7 +290,6 @@ public class SDKManager {
 
         @Override
         public void MQTTConnectionLost(Throwable cause) {
-//            if (cause == null) return;
             RestfulTools.getSingleton().session(new Callback<UserSession>() {
                 @Override
                 public void onResponse(Call<UserSession> call, Response<UserSession> response) {
@@ -360,15 +355,6 @@ public class SDKManager {
                 callback.onFailure(action, new Throwable(errMsg));
             }
         }
-
-        @Override
-        public void notifyFailure(SDKAction action, Throwable exception) {
-            for (EventCallback callback : eventCallbackList) {
-                if (callback == null) continue;
-                callback.onFailure(action, exception);
-            }
-        }
-
         @Override
         public void notifyDeviceDataUpdate(String deviceKey, int msgType) {
             for (EventCallback callback : eventCallbackList) {
@@ -399,6 +385,14 @@ public class SDKManager {
             for (EventCallback callback : eventCallbackList) {
                 if (callback == null) continue;
                 callback.deviceOpFailure(op, deviceKey, exception);
+            }
+        }
+
+        @Override
+        public void notifyHomeGeniusResult(String result) {
+            for (EventCallback callback : eventCallbackList) {
+                if (callback == null) continue;
+                callback.notifyHomeGeniusResponse(result);
             }
         }
 

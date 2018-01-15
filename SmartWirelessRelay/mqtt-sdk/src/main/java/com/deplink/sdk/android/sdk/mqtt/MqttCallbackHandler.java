@@ -51,7 +51,6 @@ public class MqttCallbackHandler implements MqttCallback {
   @Override
   public void connectionLost( Throwable cause) {
     if (cause != null) {
-
       Connection c = Connections.getInstance().getConnection(clientHandle);
       c.addAction("Connection Lost");
       c.changeConnectionStatus(Connection.ConnectionStatus.DISCONNECTED);
@@ -67,7 +66,6 @@ public class MqttCallbackHandler implements MqttCallback {
     this.mqttListener.messageArrived(topic,message);
     //Get connect object associated with this object
     Connection c = Connections.getInstance().getConnection(clientHandle);
-
     //create arguments to format message arrived notifcation string
     String[] args = new String[2];
     args[0] = new String(message.getPayload());
@@ -75,10 +73,8 @@ public class MqttCallbackHandler implements MqttCallback {
     Log.i(TAG,"message arrived ="+args[0]);
     //get the string from strings.xml and format
     String messageString = context.getString(R.string.messageRecieved, (Object[]) args);
-
     //update client history
     c.addAction(messageString);
-
   }
 
   /**

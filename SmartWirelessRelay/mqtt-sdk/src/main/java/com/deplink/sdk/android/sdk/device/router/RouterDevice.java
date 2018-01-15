@@ -106,7 +106,6 @@ public class RouterDevice extends BaseDevice {
      * 设备下行速率(bps)
      */
     private float downrate;
-
     private SDKCoordinator mSDKCoordinator = null;
     private Lan lan;
     private Qos qos;
@@ -122,7 +121,7 @@ public class RouterDevice extends BaseDevice {
     @Override
     public int processMqttMsg(String topic, MqttMessage message) {
         String jsonString = new String(message.getPayload());
-        Log.d(DeplinkSDK.SDK_TAG, "--->mqtt msg: " + jsonString);
+        Log.i(DeplinkSDK.SDK_TAG, "--->mqtt msg: " + jsonString);
         return parseDeviceReport(jsonString);
     }
     private int parseDeviceReport(String xmlStr) {
