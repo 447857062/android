@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -358,10 +357,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
                 }
 
-                @Override
-                public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-
-                }
 
                 @Override
                 public void deviceOpSuccess(String op, final String deviceKey) {

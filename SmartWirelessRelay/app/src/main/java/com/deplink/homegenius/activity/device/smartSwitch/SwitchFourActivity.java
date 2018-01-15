@@ -11,20 +11,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.OpResult;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
-import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchListener;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
-import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
-
-import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class SwitchFourActivity extends Activity implements View.OnClickListener, SmartSwitchListener,DeviceListener {
+public class SwitchFourActivity extends Activity implements View.OnClickListener, SmartSwitchListener {
     private static final String TAG = "SwitchFourActivity";
     private FrameLayout image_back;
     private TextView textview_title;
@@ -69,6 +63,12 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         setSwitchImageviewBackground();
         mSmartSwitchManager.querySwitchStatus("query");
         mDeviceManager.readDeviceInfoHttp(mDeviceManager.getCurrentSelectSmartDevice().getUid());
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     private void setSwitchImageviewBackground() {
@@ -110,7 +110,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
         mSmartSwitchManager.InitSmartSwitchManager(this);
         mSmartSwitchManager.addSmartSwitchListener(this);
         mDeviceManager=DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this,this);
+        mDeviceManager.InitDeviceManager(this);
     }
 
     private void initViews() {
@@ -265,45 +265,9 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
 
     }
 
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
 
 
 
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
 
-    }
 
-    @Override
-    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-
-    }
-
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-
-    }
-
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
-        Log.i(TAG,"读设备属性="+result);
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-
-    }
 }

@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
@@ -25,14 +23,11 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-
-import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class RouterNameUpdateActivity extends Activity implements View.OnClickListener, DeviceListener {
+public class RouterNameUpdateActivity extends Activity implements View.OnClickListener {
     private ClearEditText edittext_router_name;
     private RouterManager mRouterManager;
     private TextView textview_title;
@@ -44,7 +39,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
-
+    private DeviceListener mDeviceListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +53,14 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
+        mDeviceManager.addDeviceListener(mDeviceListener);
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
 
@@ -73,7 +70,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
+        mDeviceManager.InitDeviceManager(this);
         if (DeviceManager.getInstance().isStartFromExperience()) {
             deviceName = "体验路由器";
         } else {
@@ -105,10 +102,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
@@ -128,6 +122,21 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                int saveResult = mRouterManager.updateRouterName(routerName);
+                if (saveResult > 0) {
+                    mRouterManager.getCurrentSelectedRouter().setName(routerName);
+                    RouterNameUpdateActivity.this.finish();
+                } else {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_UPDATE_NAME_FAIL;
+                    mHandler.sendMessage(msg);
+                }
             }
         };
     }
@@ -192,54 +201,4 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
             }
         }
     };
-
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
-
-
-
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse) {
-
-    }
-
-    @Override
-    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-
-    }
-
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-        int saveResult = mRouterManager.updateRouterName(routerName);
-        if (saveResult > 0) {
-            mRouterManager.getCurrentSelectedRouter().setName(routerName);
-            RouterNameUpdateActivity.this.finish();
-        } else {
-            Message msg = Message.obtain();
-            msg.what = MSG_UPDATE_NAME_FAIL;
-            mHandler.sendMessage(msg);
-        }
-    }
-
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
-
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-
-    }
 }

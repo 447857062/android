@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
@@ -44,7 +42,6 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.ErrorResponse;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
@@ -60,7 +57,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RouterSettingActivity extends Activity implements View.OnClickListener, DeviceListener {
+public class RouterSettingActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RouterSettingActivity";
     private FrameLayout image_back;
     private RelativeLayout layout_router_name_out;
@@ -84,7 +81,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_update_out;
     private RelativeLayout layout_QOS_setting_out;
     private DeviceManager mDeviceManager;
-
+    private DeviceListener mDeviceListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,11 +90,12 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mDeviceManager.isStartFromExperience()) {
+        isStartFromExperience=mDeviceManager.isStartFromExperience();
+        if (!isStartFromExperience) {
             textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
             if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")) {
                 layout_lan_setting_out.setVisibility(View.GONE);
@@ -112,6 +110,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 textview_room_select_2.setText("全部");
             }
             manager.addEventCallback(ec);
+            mDeviceManager.addDeviceListener(mDeviceListener);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             getCurrentSelectedDevice();
         } else {
@@ -141,7 +140,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
+        mDeviceManager.InitDeviceManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new MakeSureDialog(RouterSettingActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -164,10 +163,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
@@ -191,6 +187,36 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                if (action.equals("alertroom")) {
+                    String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
+                    boolean saveResult = mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName);
+                    if (saveResult) {
+                        textview_room_select_2.setText(roomName);
+                    } else {
+                        Message msg = Message.obtain();
+                        msg.what = MSG_UPDATE_ROOM_FAIL;
+                        mHandler.sendMessage(msg);
+                        action="";
+                    }
+                } else if (action.equalsIgnoreCase("alertname")) {
+
+                }
+            }
+
+            @Override
+            public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseDeleteDeviceHttpResult(result);
+                int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid());
+                DataSupport.deleteAll(Router.class, "routerDeviceKey = ?", mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
+                Log.i(TAG, "删除路由器设备=" + affectColumn);
+                ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定成功");
+                RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
             }
         };
     }
@@ -483,65 +509,10 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        manager.removeEventCallback(ec);
-    }
-
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
-
-
-
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
-
-    }
-
-    @Override
-    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-        int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid());
-        DataSupport.deleteAll(Router.class, "routerDeviceKey = ?", mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
-        Log.i(TAG, "删除路由器设备=" + affectColumn);
-        ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定成功");
-        RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
-    }
-
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-        if (action.equals("alertroom")) {
-            String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
-            boolean saveResult = mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName);
-            if (saveResult) {
-                textview_room_select_2.setText(roomName);
-            } else {
-                Message msg = Message.obtain();
-                msg.what = MSG_UPDATE_ROOM_FAIL;
-                mHandler.sendMessage(msg);
-                action="";
-            }
-        } else if (action.equalsIgnoreCase("alertname")) {
-
+        if(!isStartFromExperience){
+            mDeviceManager.removeDeviceListener(mDeviceListener);
+            manager.removeEventCallback(ec);
         }
-    }
-
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
-
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
 
     }
 }

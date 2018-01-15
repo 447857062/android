@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.room;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -90,9 +89,7 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
             public void onBindSuccess(SDKAction action, String devicekey) {
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-            }
+
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {

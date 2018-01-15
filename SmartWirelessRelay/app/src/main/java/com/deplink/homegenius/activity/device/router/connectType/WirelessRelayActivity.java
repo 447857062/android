@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router.connectType;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -121,10 +120,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

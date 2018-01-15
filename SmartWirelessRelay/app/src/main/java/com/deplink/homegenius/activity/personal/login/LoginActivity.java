@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -90,10 +89,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

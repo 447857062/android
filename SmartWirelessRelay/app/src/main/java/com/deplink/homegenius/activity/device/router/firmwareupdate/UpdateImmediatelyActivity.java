@@ -99,10 +99,7 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

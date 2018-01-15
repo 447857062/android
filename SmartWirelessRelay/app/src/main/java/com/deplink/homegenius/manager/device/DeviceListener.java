@@ -9,23 +9,39 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/11/9.
  */
-public interface DeviceListener {
+public abstract class DeviceListener {
     /**
      *返回智能锁查询结果
      */
-    void responseQueryResult(String result);
+    public  void responseQueryResult(String result){
+
+    };
     /**
      *返回绑定结果
      */
-    void responseBindDeviceResult(String result);
+    public  void responseBindDeviceResult(String result){
+
+    };
     /**
      *返回wifi列表
      */
-    void responseWifiListResult(List<SSIDList>wifiList);
+    public  void responseWifiListResult(List<SSIDList>wifiList){
 
-    void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse);
-    void responseDeleteDeviceHttpResult(DeviceOperationResponse result);
-    void responseAlertDeviceHttpResult(DeviceOperationResponse result);
-    void responseGetDeviceInfoHttpResult(String result);
-    void responseQueryHttpResult(List<Deviceprops>devices);
+    };
+
+    public  void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse){
+
+    };
+    public  void responseDeleteDeviceHttpResult(DeviceOperationResponse result){
+
+    };
+    public  void responseAlertDeviceHttpResult(DeviceOperationResponse result){
+
+    };
+    public  void responseGetDeviceInfoHttpResult(String result){
+
+    };
+    public  void responseQueryHttpResult(List<Deviceprops>devices){
+
+    };
 }

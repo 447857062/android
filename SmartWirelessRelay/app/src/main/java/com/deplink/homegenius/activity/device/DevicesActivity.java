@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +18,6 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
@@ -73,7 +71,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class DevicesActivity extends Activity implements View.OnClickListener, DeviceListener,GetwayListener {
+public class DevicesActivity extends Activity implements View.OnClickListener,GetwayListener {
     private static final String TAG = "DevicesActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -109,6 +107,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     private ScrollView layout_empty_view_scroll;
     private SDKManager manager;
     private EventCallback ec;
+    private DeviceListener mDeviceListener;
     private MakeSureDialog connectLostDialog;
     private boolean isUserLogin;
     private GetwayManager mGetwayManager;
@@ -125,6 +124,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
+        mDeviceManager.addDeviceListener(mDeviceListener);
         textview_home.setTextColor(getResources().getColor(android.R.color.darker_gray));
         textview_device.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -153,18 +153,19 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
+        mDeviceManager.removeDeviceListener(mDeviceListener);
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDeviceManager.removeDeviceListener(this);
+
     }
 
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
         mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
+        mDeviceManager.InitDeviceManager(this);
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager(this, null);
         mRouterManager = RouterManager.getInstance();
@@ -268,8 +269,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             }
 
             @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Log.i(TAG,"设备列表界面收到回调的mqtt消息="+result);
             }
 
             @Override
@@ -280,7 +282,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
             }
-
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
@@ -289,6 +290,59 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseQueryResult(String result) {
+                super.responseQueryResult(result);
+                Log.i(TAG, "responseQueryResult:" + result);
+                if (result.contains("DevList")) {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_UPDATE_DEVS;
+                    msg.obj = result;
+                    mHandler.sendMessage(msg);
+                }
+            }
+
+            @Override
+            public void responseQueryHttpResult(List<Deviceprops> devices) {
+                super.responseQueryHttpResult(devices);
+                //保存设备列表
+                List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
+                for (int i = 0; i < devices.size(); i++) {
+                    boolean addToDb = true;
+                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                        addToDb = false;
+                    } else {
+                        for (int j = 0; j < dbSmartDev.size(); j++) {
+                            if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                addToDb = false;
+                            }
+                        }
+                    }
+                    if (addToDb) {
+                        Log.i(TAG, "http查询到智能设备,保存下来:");
+                        saveSmartDeviceToSqlite(devices, i);
+                    }
+                }
+                List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
+                for (int i = 0; i < devices.size(); i++) {
+                    boolean addToDb = true;
+                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                        for (int j = 0; j < dbGetwayDev.size(); j++) {
+                            if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                addToDb = false;
+                            }
+                        }
+                    } else {
+                        addToDb = false;
+                    }
+                    if (addToDb) {
+                        saveGetwayDeviceToSqlite(devices, i);
+                    }
+                }
+                mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);
             }
         };
     }
@@ -397,95 +451,17 @@ public class DevicesActivity extends Activity implements View.OnClickListener, D
 
 
     @Override
-    public void responseQueryResult(String result) {
-        Log.i(TAG, "responseQueryResult:" + result);
-        if (result.contains("DevList")) {
-            Message msg = Message.obtain();
-            msg.what = MSG_UPDATE_DEVS;
-            msg.obj = result;
-            mHandler.sendMessage(msg);
-        }
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
+    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
 
     }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
-
-    @Override
-    public void responseSetWifirelayResult(int result) {
-
-    }
-
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse) {
-
-    }
-
     @Override
     public void responseResult(String result) {
 
     }
-
     @Override
-    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+    public void responseSetWifirelayResult(int result) {
 
     }
-
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-
-    }
-
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
-
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-        //保存设备列表
-        List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
-        for (int i = 0; i < devices.size(); i++) {
-            boolean addToDb = true;
-            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
-                addToDb = false;
-            } else {
-                for (int j = 0; j < dbSmartDev.size(); j++) {
-                    if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
-                        addToDb = false;
-                    }
-                }
-            }
-            if (addToDb) {
-                Log.i(TAG, "http查询到智能设备,保存下来:");
-                saveSmartDeviceToSqlite(devices, i);
-            }
-        }
-        List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
-        for (int i = 0; i < devices.size(); i++) {
-            boolean addToDb = true;
-            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
-                for (int j = 0; j < dbGetwayDev.size(); j++) {
-                    if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
-                        addToDb = false;
-                    }
-                }
-            } else {
-                addToDb = false;
-            }
-            if (addToDb) {
-                saveGetwayDeviceToSqlite(devices, i);
-            }
-        }
-        mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);
-    }
-
     private void saveGetwayDeviceToSqlite(List<Deviceprops> devices, int i) {
         GatwayDevice dev = new GatwayDevice();
         String deviceType = devices.get(i).getDevice_type();

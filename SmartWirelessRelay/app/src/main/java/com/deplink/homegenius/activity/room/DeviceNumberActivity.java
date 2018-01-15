@@ -12,37 +12,36 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
+import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
+import com.deplink.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
 import com.deplink.homegenius.activity.device.remoteControl.topBox.TvBoxMainActivity;
+import com.deplink.homegenius.activity.device.remoteControl.tv.TvMainActivity;
+import com.deplink.homegenius.activity.device.router.RouterMainActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchFourActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchOneActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchThreeActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
+import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.RoomConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.activity.device.remoteControl.realRemoteControl.RemoteControlActivity;
-import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
-import com.deplink.homegenius.activity.device.remoteControl.tv.TvMainActivity;
-import com.deplink.homegenius.activity.device.router.RouterMainActivity;
-import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.light.SmartLightManager;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
-import com.deplink.homegenius.manager.device.router.RouterManager;
-import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
-import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 
 /**
  * 查看智能设备列表的界面
@@ -96,7 +95,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mDeviceManager=DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this,null);
+        mDeviceManager.InitDeviceManager(this);
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,null);
         currentRoom=mRoomManager.getCurrentSelectedRoom();

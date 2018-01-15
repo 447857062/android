@@ -325,7 +325,7 @@ public class DeviceManager implements LocalConnecteListener {
     /**
      * 初始化本地连接管理器
      */
-    public void InitDeviceManager(Context context, DeviceListener listener) {
+    public void InitDeviceManager(Context context) {
         this.mContext = context;
         this.mDeviceListenerList = new ArrayList<>();
         this.allSmartDevices = new ArrayList<>();
@@ -344,7 +344,6 @@ public class DeviceManager implements LocalConnecteListener {
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         cachedThreadPool = Executors.newCachedThreadPool();
-        addDeviceListener(listener);
         //耗时操作新建线程处理
         //数据库查询操作
         mSmartDevList = new ArrayList<>();

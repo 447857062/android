@@ -1,7 +1,6 @@
 package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.util.NetUtil;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.StringValidatorUtil;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -32,9 +34,6 @@ import java.util.HashMap;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.util.NetUtil;
-import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.util.StringValidatorUtil;
 
 public class RegistActivity extends Activity implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "RegistActivity";
@@ -202,10 +201,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

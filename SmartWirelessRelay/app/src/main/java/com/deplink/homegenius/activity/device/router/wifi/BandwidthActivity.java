@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router.wifi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +10,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -18,11 +22,6 @@ import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
-import com.deplink.homegenius.view.toast.ToastSingleShow;
 
 public class BandwidthActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "BandwidthActivity";
@@ -75,10 +74,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener 
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

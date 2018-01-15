@@ -124,10 +124,7 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {

@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.personal.wifi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +29,6 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 /**
  * 配置wifi网关
  */
-public class ScanWifiListActivity extends Activity implements DeviceListener, AdapterView.OnItemClickListener, View.OnClickListener,GetwayListener {
+public class ScanWifiListActivity extends Activity implements  AdapterView.OnItemClickListener, View.OnClickListener,GetwayListener {
     private static final String TAG = "ScanWifiListActivity";
     private DeviceManager mDeviceManager;
     private ListView listview_wifi_list;
@@ -57,6 +55,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private DeviceListener mDeviceListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +85,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         manager.addEventCallback(ec);
+        mDeviceManager.addDeviceListener(mDeviceListener);
         queryWifiRelayList();
     }
 
@@ -93,6 +93,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
+        mDeviceManager.removeDeviceListener(mDeviceListener);
     }
 
     private void queryWifiRelayList() {
@@ -142,7 +143,7 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
         textview_title.setText("配置WiFi网关");
         textview_edit.setText("跳过");
         mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
+        mDeviceManager.InitDeviceManager(this);
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,this);
         mDatas = new ArrayList<>();
@@ -171,9 +172,6 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
             public void onBindSuccess(SDKAction action, String devicekey) {
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
@@ -195,18 +193,17 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
             }
         };
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseWifiListResult(List<SSIDList> wifiList) {
+                super.responseWifiListResult(wifiList);
+                Message msg = Message.obtain();
+                msg.what = MSG_GET_WIFILIST;
+                msg.obj = wifiList;
+                mHandler.sendMessage(msg);
+            }
+        };
     }
-
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-
-    }
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -224,24 +221,14 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
     };
     private static final int MSG_GET_WIFILIST = 1;
 
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-        Message msg = Message.obtain();
-        msg.what = MSG_GET_WIFILIST;
-        msg.obj = wifiList;
-        mHandler.sendMessage(msg);
 
-    }
 
     @Override
     public void responseSetWifirelayResult(int result) {
         Log.i(TAG, "responseSetWifirelayResult=" + result);
     }
 
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
 
-    }
 
     @Override
     public void responseResult(String result) {
@@ -253,20 +240,9 @@ public class ScanWifiListActivity extends Activity implements DeviceListener, Ad
 
     }
 
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
 
-    }
 
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
 
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-
-    }
 
     private WifiRelayInputDialog wifiRelayDialog;
 

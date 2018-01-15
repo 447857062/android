@@ -3,7 +3,6 @@ package com.deplink.homegenius.activity.device.router.wifi;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -27,10 +30,6 @@ import com.deplink.sdk.android.sdk.json.Wifi_2G;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.router.RouterManager;
 
 public class AlertWifiPasswordActivity extends Activity implements View.OnClickListener {
     private TextView textview_edit;
@@ -88,10 +87,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

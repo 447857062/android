@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router.connectType;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -14,7 +13,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.activity.device.router.wifi.WifiSetting24;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.StringValidatorUtil;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -33,12 +36,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.NetUtil;
-import com.deplink.homegenius.util.StringValidatorUtil;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -101,10 +98,7 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {

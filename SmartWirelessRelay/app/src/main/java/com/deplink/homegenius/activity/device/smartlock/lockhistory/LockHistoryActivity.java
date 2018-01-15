@@ -105,9 +105,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             public void onBindSuccess(SDKAction action, String devicekey) {
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
-            }
+
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {

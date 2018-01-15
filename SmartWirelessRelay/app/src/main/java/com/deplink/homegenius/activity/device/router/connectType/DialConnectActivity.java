@@ -88,10 +88,7 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {

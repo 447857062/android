@@ -68,10 +68,7 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

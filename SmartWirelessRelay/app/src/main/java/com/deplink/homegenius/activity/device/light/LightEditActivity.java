@@ -20,7 +20,6 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
@@ -38,7 +37,6 @@ import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -48,7 +46,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class LightEditActivity extends Activity implements View.OnClickListener,DeviceListener{
+public class LightEditActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "LightEditActivity";
     private TextView textview_title;
     private TextView textview_edit;
@@ -67,6 +65,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
     private ImageView imageview_getway_arror_right;
     private SmartLightManager mSmartLightManager;
     private DeviceManager mDeviceManager;
+    private DeviceListener mDeviceListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +78,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
+        mDeviceManager.addDeviceListener(mDeviceListener);
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
@@ -109,6 +109,13 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
             }
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDeviceManager.removeDeviceListener(mDeviceListener);
+    }
+
     private String lightName;
     private void initEvents() {
         image_back.setOnClickListener(this);
@@ -128,7 +135,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
             edittext_input_devie_name.setText("我家的智能灯");
             edittext_input_devie_name.setSelection(6);
         } else {
-            mDeviceManager.InitDeviceManager(this, this);
+            mDeviceManager.InitDeviceManager(this);
             mSmartLightManager.InitSmartLightManager(this);
         }
         textview_title.setText("智能灯泡");
@@ -153,6 +160,37 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
                 }
             }
         });
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseDeleteDeviceHttpResult(result);
+                if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                    mDeviceManager.deleteSmartDevice();
+                }else{
+                    DialogThreeBounce.hideLoading();
+                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+                }
+            }
+
+            @Override
+            public void responseBindDeviceResult(String result) {
+                super.responseBindDeviceResult(result);
+                Gson gson = new Gson();
+                boolean deleteSuccess = true;
+                DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
+                for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
+                    if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
+                        deleteSuccess = false;
+                    }
+                }
+                DialogThreeBounce.hideLoading();
+                if (deleteSuccess) {
+                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+                } else {
+                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
+                }
+            }
+        };
     }
 
     private void initViews() {
@@ -252,66 +290,5 @@ public class LightEditActivity extends Activity implements View.OnClickListener,
 
                 break;
         }
-    }
-
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-        Gson gson = new Gson();
-        boolean deleteSuccess = true;
-        DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-        for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
-            if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
-                deleteSuccess = false;
-            }
-        }
-        DialogThreeBounce.hideLoading();
-        if (deleteSuccess) {
-            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-        } else {
-            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
-        }
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
-
-
-
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
-
-    }
-
-    @Override
-    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-        if(LocalConnectmanager.getInstance().isLocalconnectAvailable()){
-            mDeviceManager.deleteSmartDevice();
-        }else{
-            DialogThreeBounce.hideLoading();
-            mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-        }
-
-    }
-
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-
-    }
-
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
-
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-
     }
 }

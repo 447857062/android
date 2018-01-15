@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
@@ -30,7 +29,6 @@ import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class EditActivity extends Activity implements View.OnClickListener, DeviceListener {
+public class EditActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "EditDoorbeelActivity";
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private FrameLayout image_back;
@@ -66,6 +64,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
     private String action;
     private String deviceUid;
     private Room room;
+    private DeviceListener mDeviceListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +91,7 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
         deleteDialog = new DeleteDeviceDialog(this);
         mSmartSwitchManager = SmartSwitchManager.getInstance();
         mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this, this);
+        mDeviceManager.InitDeviceManager(this);
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
@@ -109,6 +108,54 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
                 }
             }
         });
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseBindDeviceResult(String result) {
+                super.responseBindDeviceResult(result);
+                Gson gson = new Gson();
+                boolean deleteSuccess = true;
+                DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
+                for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
+                    if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
+                        deleteSuccess = false;
+                    }
+                }
+                DialogThreeBounce.hideLoading();
+                if (deleteSuccess) {
+                    int deleteResult = mSmartSwitchManager.deleteDBSmartDevice(mSmartSwitchManager.getCurrentSelectSmartDevice().getUid());
+                    if (deleteResult > 0) {
+                        startActivity(new Intent(EditActivity.this, DevicesActivity.class));
+                    } else {
+                        ToastSingleShow.showText(EditActivity.this, "删除开关设备失败");
+                    }
+                } else {
+                    ToastSingleShow.showText(EditActivity.this, "删除开关设备失败");
+                }
+            }
+
+            @Override
+            public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseDeleteDeviceHttpResult(result);
+                if (result.getStatus() != null && result.getStatus().equals("ok")) {
+                    mDeviceManager.deleteSmartDevice();
+                }
+            }
+
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                if (action.equals("alertroom")) {
+                    mSmartSwitchManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
+                } else if (action.equals("alertname")) {
+                    boolean saveResult = mSmartSwitchManager.updateSmartDeviceName(deviceUid, deviceName);
+                    if (saveResult) {
+                        onBackPressed();
+                    }
+                }
+                action = "";
+            }
+        };
     }
 
     @Override
@@ -130,7 +177,13 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
                 textview_select_room_name.setText("全部");
             }
         }
+        mDeviceManager.addDeviceListener(mDeviceListener);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDeviceManager.removeDeviceListener(mDeviceListener);
     }
 
     private void initViews() {
@@ -211,76 +264,5 @@ public class EditActivity extends Activity implements View.OnClickListener, Devi
                 break;
 
         }
-    }
-
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-        Gson gson = new Gson();
-        boolean deleteSuccess = true;
-        DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-        for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
-            if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
-                deleteSuccess = false;
-            }
-        }
-        DialogThreeBounce.hideLoading();
-        if (deleteSuccess) {
-            int deleteResult = mSmartSwitchManager.deleteDBSmartDevice(mSmartSwitchManager.getCurrentSelectSmartDevice().getUid());
-            if (deleteResult > 0) {
-                startActivity(new Intent(EditActivity.this, DevicesActivity.class));
-            } else {
-                ToastSingleShow.showText(EditActivity.this, "删除开关设备失败");
-            }
-        } else {
-            ToastSingleShow.showText(EditActivity.this, "删除开关设备失败");
-        }
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
-
-
-
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse responseBody) {
-
-    }
-
-    @Override
-    public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-        if (result.getStatus() != null && result.getStatus().equals("ok")) {
-            mDeviceManager.deleteSmartDevice();
-        }
-    }
-
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-        deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
-        if (action.equals("alertroom")) {
-            mSmartSwitchManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
-        } else if (action.equals("alertname")) {
-            boolean saveResult = mSmartSwitchManager.updateSmartDeviceName(deviceUid, deviceName);
-            if (saveResult) {
-                onBackPressed();
-            }
-        }
-        action = "";
-    }
-
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
-
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-
     }
 }

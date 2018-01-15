@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.getway;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
-import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
@@ -37,7 +35,6 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
-import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
@@ -45,7 +42,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class GetwayDeviceActivity extends Activity implements View.OnClickListener, GetwayListener, DeviceListener {
+public class GetwayDeviceActivity extends Activity implements View.OnClickListener, GetwayListener {
     private static final String TAG = "GetwayDeviceActivity";
     private TextView button_delete_device;
     private GetwayManager mGetwayManager;
@@ -66,6 +63,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private MakeSureDialog connectLostDialog;
     private DeviceManager mDeviceManager;
     private String inputDeviceName;
+    private DeviceListener mDeviceListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,10 +96,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, final String deviceKey) {
@@ -122,6 +117,21 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             public void onFailure(SDKAction action, Throwable throwable) {
             }
         };
+        mDeviceListener=new DeviceListener() {
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                Log.i(TAG, "修改设备属性:" + result.toString());
+                if (action.equalsIgnoreCase("alertroom")) {
+                    mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
+                } else if (action.equalsIgnoreCase("alertname")) {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_ALERT_DEVICENAME_RESULT;
+                    mHandler.sendMessage(msg);
+                }
+                action = "";
+            }
+        };
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
             edittext_input_devie_name.setSelection(5);
@@ -131,7 +141,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             mGetwayManager = GetwayManager.getInstance();
             mGetwayManager.InitGetwayManager(this, this);
             mDeviceManager = DeviceManager.getInstance();
-            mDeviceManager.InitDeviceManager(this, this);
+            mDeviceManager.InitDeviceManager(this);
             currentSelectDeviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
             edittext_input_devie_name.setText(currentSelectDeviceName);
             edittext_input_devie_name.setSelection(currentSelectDeviceName.length());
@@ -169,6 +179,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
+        mDeviceManager.addDeviceListener(mDeviceListener);
         if (!isStartFromExperience) {
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         }
@@ -177,6 +188,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     @Override
     protected void onPause() {
         super.onPause();
+        mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
 
@@ -299,30 +311,13 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void responseQueryResult(String result) {
-
-    }
-
-    @Override
-    public void responseBindDeviceResult(String result) {
-
-    }
-
-    @Override
-    public void responseWifiListResult(List<SSIDList> wifiList) {
-
-    }
 
     @Override
     public void responseSetWifirelayResult(int result) {
 
     }
 
-    @Override
-    public void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse) {
 
-    }
 
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
@@ -338,27 +333,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
     private String action;
 
-    @Override
-    public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-        Log.i(TAG, "修改设备属性:" + result.toString());
-        if (action.equalsIgnoreCase("alertroom")) {
-            mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
-        } else if (action.equalsIgnoreCase("alertname")) {
-            Message msg = Message.obtain();
-            msg.what = MSG_ALERT_DEVICENAME_RESULT;
-            mHandler.sendMessage(msg);
 
-        }
-        action = "";
-    }
 
-    @Override
-    public void responseGetDeviceInfoHttpResult(String result) {
 
-    }
-
-    @Override
-    public void responseQueryHttpResult(List<Deviceprops> devices) {
-
-    }
 }

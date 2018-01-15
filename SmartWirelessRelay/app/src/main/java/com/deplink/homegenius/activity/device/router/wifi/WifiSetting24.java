@@ -3,7 +3,6 @@ package com.deplink.homegenius.activity.device.router.wifi;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +13,14 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
+import com.deplink.homegenius.util.NetUtil;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -26,15 +33,6 @@ import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 import com.deplink.sdk.android.sdk.rest.RouterResponse;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.router.RouterManager;
-import com.deplink.homegenius.util.NetUtil;
-import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,10 +111,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {

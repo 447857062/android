@@ -87,10 +87,7 @@ public class DynamicsActivity extends Activity implements View.OnClickListener{
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {

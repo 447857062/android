@@ -168,10 +168,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
 
             }
 
-            @Override
-            public void onGetImageSuccess(SDKAction action, Bitmap bm) {
 
-            }
 
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
