@@ -109,18 +109,18 @@ public class RestfulToolsHomeGeniusString {
         }
         return call;
     }
-  /*  public Call<String> addDevice(String username, DeviceAddBody deviceAddBody, Callback<String> cll) {
+    public Call<String> getLockUseId(String username,String deviceUid, Callback<String> cll) {
         if (null == username) {
             if (cll != null) {
                 cll.onFailure(null, new Throwable(errMsg));
             }
             return null;
         }
-        Log.i(TAG, "addDevice:" + username);
-        Call<String> call = apiService.addDevice(username, deviceAddBody.toString(), RestfulTools.getSingleton().getToken());
+        Log.i(TAG, "getLockUseId:" + username);
+        Call<String> call = apiService.getLockUseId(username,deviceUid, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
         return call;
-    }*/
+    }
 }

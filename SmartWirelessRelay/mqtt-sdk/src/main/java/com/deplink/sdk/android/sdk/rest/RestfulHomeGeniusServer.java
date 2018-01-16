@@ -6,6 +6,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -28,6 +29,9 @@ public interface RestfulHomeGeniusServer {
     //读绑定设备信息
     @GET("/user/{user_name}/devices")
     Call<String> getDeviceInfo(@Path("user_name") String user_name, @Header("token") String token);
+    //读绑定设备信息
+    @GET("/user/{user_name}/smartlock/{device_uid}")
+    Call<String> getLockUseId(@Path("user_name") String user_name,@Path("device_uid") String device_uid, @Header("token") String token);
   //添加设备
     @PUT("/user/{user_name}/devices")
     Call<JsonObject> addDevice(@Path("user_name") String user_name, @Body DeviceAddBody deviceAddBody, @Header("token") String token);
@@ -53,5 +57,8 @@ public interface RestfulHomeGeniusServer {
     //更新房间名称
     @PUT("/user/{user_name}/rooms")
     Call<DeviceOperationResponse> updateRoomName(@Path("user_name") String user_name, @Body RoomUpdateName roomUpdateName, @Header("token") String token);
+    //更新房间名称
+    @PUT("/user/{user_name}/smartlock/{device_uid}")
+    Call<DeviceOperationResponse> setLockUserIdName(@Path("user_name") String user_name, @Path("device_uid") String device_uid, @Body LockUserId userIdBody, @Header("token") String token);
 
 }

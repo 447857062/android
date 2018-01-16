@@ -9,6 +9,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 import com.google.gson.JsonObject;
 
@@ -156,6 +157,20 @@ public class RestfulToolsHomeGenius {
         }
         Log.i(TAG, "updateRoomName:" + username);
         Call<DeviceOperationResponse> call = apiService.updateRoomName(username, roomUpdateName, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> setLockUserIdName(String username, String device_uid, LockUserId userIdBody, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "setLockUserIdName:" + username);
+        Call<DeviceOperationResponse> call = apiService.setLockUserIdName(username, device_uid,userIdBody, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
