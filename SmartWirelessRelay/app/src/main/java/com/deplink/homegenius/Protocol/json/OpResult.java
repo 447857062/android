@@ -15,6 +15,25 @@ public class OpResult  implements Serializable{
     private String Command;
     private long timestamp_echo;
     private String SwitchStatus;
+    private int RecondNum;
+    private int LockStatus;
+
+    public int getRecondNum() {
+        return RecondNum;
+    }
+
+    public void setRecondNum(int recondNum) {
+        RecondNum = recondNum;
+    }
+
+    public int getLockStatus() {
+        return LockStatus;
+    }
+
+    public void setLockStatus(int lockStatus) {
+        LockStatus = lockStatus;
+    }
+
     private List<com.deplink.homegenius.Protocol.json.device.lock.SSIDList> SSIDList;
 
     public List<com.deplink.homegenius.Protocol.json.device.lock.SSIDList> getSSIDList() {

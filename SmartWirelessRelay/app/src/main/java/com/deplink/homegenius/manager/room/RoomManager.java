@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -175,11 +174,23 @@ public class RoomManager {
                         ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list = ParseUtil.jsonToArrayList(response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
                         Room temp;
                         for (int i = 0; i < list.size(); i++) {
-                            Log.i(TAG, "roomname=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
-                            Log.i(TAG, "roomtype=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
+                            Log.i(TAG, "roomname=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_name()
+                                    + "roomtype=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_type()
+                            )));
                             temp = new Room();
                             boolean addToDb = true;
+                            mRooms = DataSupport.findAll(Room.class);
                             for (int j = 0; j < mRooms.size(); j++) {
+                                  Log.i(TAG,"http查询到的房间="+list.get(i).getRoom_name()+
+                                          "本地数据库中的房间:"+mRooms.get(j).getRoomName()+"本地数据库中的房间uid:"+(mRooms.get(j).getUid()==null));
+                                if (list.get(i).getRoom_type().equalsIgnoreCase(mRooms.get(j).getRoomType())) {
+                                    if (mRooms.get(j).getUid() == null || mRooms.get(j).getUid().equals("")) {
+                                        mRooms.get(j).setUid(list.get(i).getUid());
+                                        mRooms.get(j).setRoomOrdinalNumber(list.get(i).getSort_num());
+                                        mRooms.get(j).setRoomName(list.get(i).getRoom_name());
+                                        mRooms.get(j).saveFast();
+                                    }
+                                }
                                 if (list.get(i).getUid().equalsIgnoreCase(mRooms.get(j).getUid())) {
                                     addToDb = false;
                                 }
@@ -209,12 +220,14 @@ public class RoomManager {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
             }
         });
     }
+
     /**
      * 添加房间
      */
@@ -259,12 +272,14 @@ public class RoomManager {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
             }
         });
     }
+
     /**
      * 删除房间
      */
@@ -286,19 +301,20 @@ public class RoomManager {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
             }
         });
     }
+
     /**
      * 删除房间
      */
     public void updateRoomNameHttp(String roomUid, String roomName, int sort_num) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         RoomUpdateName roomUpdateName = new RoomUpdateName();
@@ -337,7 +353,7 @@ public class RoomManager {
      * 更新房间的排列顺序
      * 拖动排序的表格布局中，如果拖动了就要使用这个方法，重新为gridview按照设备的序号排列一下
      */
-    public void updateRoomsOrdinalNumber(final List<Room>mRooms) {
+    public void updateRoomsOrdinalNumber(final List<Room> mRooms) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -346,12 +362,13 @@ public class RoomManager {
                     //如果对象是持久化的，执行save操作就相当于更新这条数据，如：
                     //如果一个对象是没有持久化的，执行save操作相当于新增一条数据
                     mRooms.get(i).save();
-                    Log.i(TAG,"房间"+mRooms.get(i).getRoomName()+"sortnum="+i);
+                    Log.i(TAG, "房间" + mRooms.get(i).getRoomName() + "sortnum=" + i);
                     updateRoomNameHttp(mRooms.get(i).getUid(), mRooms.get(i).getRoomName(), i);
                 }
             }
         });
     }
+
     /**
      * 初始化本地连接管理器
      */
@@ -372,9 +389,7 @@ public class RoomManager {
      * 查询数据库获取房间列表
      */
     public List<Room> queryRooms() {
-        mRooms = DataSupport.findAll(Room.class, true);
-        sortRooms();
-        return mRooms;
+        return getDatabaseRooms();
     }
 
     public void updateRooms() {
@@ -428,8 +443,6 @@ public class RoomManager {
         return room;
     }
 
-    private Observable mObservable;
-
     /**
      * 根据房间名称
      * 删除房间
@@ -449,6 +462,34 @@ public class RoomManager {
     }
 
     /**
+     * 查询数据库获取房间列表
+     */
+    public List<Room> getDatabaseRooms() {
+        mRooms = DataSupport.findAll(Room.class, true);
+        if (mRooms.size() == 0) {
+            Room temp = new Room();
+            temp.setRoomName("客厅");
+            temp.setRoomOrdinalNumber(0);
+            temp.setRoomType("客厅");
+            temp.save();
+            mRooms.add(temp);
+            temp = new Room();
+            temp.setRoomName("卧室");
+            temp.setRoomType("卧室");
+            temp.setRoomOrdinalNumber(1);
+            temp.save();
+            mRooms.add(temp);
+            temp = new Room();
+            temp.setRoomName("厨房");
+            temp.setRoomType("厨房");
+            temp.setRoomOrdinalNumber(2);
+            temp.save();
+            mRooms.add(temp);
+        }
+        return sortRooms();
+    }
+
+    /**
      * 按照房间排序删除房间
      * 序号是唯一的，不为空
      */
@@ -459,7 +500,6 @@ public class RoomManager {
         Log.i(TAG, "按照房间排序删除房间=" + optionResult);
         return optionResult;
     }
-
 
     private Room tempAddRoom;
 

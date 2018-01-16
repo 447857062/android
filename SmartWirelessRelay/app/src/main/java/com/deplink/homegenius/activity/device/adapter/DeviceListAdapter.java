@@ -29,7 +29,6 @@ public class DeviceListAdapter extends BaseAdapter {
      * 头部列表数据的大小
      */
     private int TopCount = 0;
-
     public DeviceListAdapter(Context mContext, List<GatwayDevice> list,
                              List<SmartDev> datasOther) {
         this.mContext = mContext;
@@ -51,7 +50,6 @@ public class DeviceListAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        Log.i(TAG, "头部列表=" + listTop.size());
     }
 
     /**
@@ -114,7 +112,6 @@ public class DeviceListAdapter extends BaseAdapter {
      **/
     @Override
     public int getItemViewType(int position) {
-
         if (position < TopCount)
             return TOP_ITEM;
         else

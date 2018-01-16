@@ -144,14 +144,12 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         mDeviceManager = DeviceManager.getInstance();
         mSmartLightManager =SmartLightManager.getInstance();
-
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("我家的智能灯");
             edittext_input_devie_name.setSelection(6);
-        } else {
-            mDeviceManager.InitDeviceManager(this);
-            mSmartLightManager.InitSmartLightManager(this);
         }
+        mDeviceManager.InitDeviceManager(this);
+        mSmartLightManager.InitSmartLightManager(this);
         textview_title.setText("智能灯泡");
         textview_edit.setText("完成");
         deleteDialog = new DeleteDeviceDialog(this);
@@ -159,7 +157,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
-
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -331,23 +328,28 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                if(isLogin){
-                    String lightnameChange=edittext_input_devie_name.getText().toString();
-                    if(lightName.equals("")){
-                        ToastSingleShow.showText(this,"请输入设备名称");
-                        return;
-                    }
-                    if(lightnameChange.equals(lightName)){
-                        onBackPressed();
-                    }else{
-                        action="alertname";
-                        lightName=lightnameChange;
-                        deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
-                        mDeviceManager.alertDeviceHttp(deviceUid, null, lightName, null);
-                    }
+                if(isStartFromExperience){
+                    onBackPressed();
                 }else{
-                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                    if(isLogin){
+                        String lightnameChange=edittext_input_devie_name.getText().toString();
+                        if(lightName.equals("")){
+                            ToastSingleShow.showText(this,"请输入设备名称");
+                            return;
+                        }
+                        if(lightnameChange.equals(lightName)){
+                            onBackPressed();
+                        }else{
+                            action="alertname";
+                            lightName=lightnameChange;
+                            deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
+                            mDeviceManager.alertDeviceHttp(deviceUid, null, lightName, null);
+                        }
+                    }else{
+                        ToastSingleShow.showText(this,"未登录,登录后操作");
+                    }
                 }
+
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
@@ -367,8 +369,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                             }else{
                                 ToastSingleShow.showText(LightEditActivity.this,"用户未登录");
                             }
-
-
                         } else {
                             startActivity(new Intent(LightEditActivity.this, ExperienceDevicesActivity.class));
                         }

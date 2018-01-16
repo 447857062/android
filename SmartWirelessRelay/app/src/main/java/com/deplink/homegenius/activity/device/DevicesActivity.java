@@ -146,8 +146,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         mDeviceAdapter.setBottomList(datasBottom);
         mDeviceAdapter.notifyDataSetChanged();
         listview_devies.setEmptyView(layout_empty_view_scroll);
-
-
     }
 
     @Override
@@ -156,13 +154,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         manager.removeEventCallback(ec);
         mDeviceManager.removeDeviceListener(mDeviceListener);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
@@ -184,13 +175,13 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 position -= 1;
+                mDeviceManager.setStartFromExperience(false);
                 if (datasTop.size() < (position + 1)) {
                     //智能设备
                     String deviceType = datasBottom.get(position - datasTop.size()).getType();
                     String deviceSubType = datasBottom.get(position - datasTop.size()).getSubType();
                     Log.i(TAG, "智能设备类型=" + deviceType);
                     mDeviceManager.setCurrentSelectSmartDevice(datasBottom.get(position - datasTop.size()));
-                    mDeviceManager.setStartFromExperience(false);
                     switch (deviceType) {
                         case DeviceTypeConstant.TYPE.TYPE_LOCK:
                             //设置当前选中的门锁设备
@@ -266,8 +257,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
             @Override
             public void onBindSuccess(SDKAction action, String devicekey) {
-
-
             }
 
             @Override
@@ -313,6 +302,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     mHandler.sendMessage(msg);
                 }
             }
+
             @Override
             public void responseQueryHttpResult(List<Deviceprops> devices) {
                 super.responseQueryHttpResult(devices);
@@ -390,8 +380,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             }
         });
     }
-
-
     private void initViews() {
         layout_home_page = findViewById(R.id.layout_home_page);
         layout_devices = findViewById(R.id.layout_devices);
@@ -411,6 +399,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         textview_mine = findViewById(R.id.textview_mine);
         textview_room_name = findViewById(R.id.textview_room_name);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -476,10 +465,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         String deviceType = devices.get(i).getDevice_type();
         dev.setType(deviceType);
         String deviceName = devices.get(i).getDevice_name();
-        if (deviceType.equalsIgnoreCase("LKSWG")) {
+        if (deviceType.equalsIgnoreCase("LKSWG") || deviceType.equalsIgnoreCase("LKSGW")) {
             if (deviceName == null || deviceName.equals("")) {
                 dev.setName("中继器");
             } else {
+               deviceName=deviceName.replace("/路由器","");
                 dev.setName(deviceName);
             }
             deviceType = DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY;
@@ -494,8 +484,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         rooms.add(room);
         dev.setRoomList(rooms);
         boolean success = dev.save();
-        Log.i(TAG, "保存设备:" + success);
+        Log.i(TAG, "保存设备:" + success + "deviceName=" + deviceName);
     }
+
     private void saveSmartDeviceToSqlite(List<Deviceprops> devices, int i) {
         SmartDev dev = new SmartDev();
         String deviceType = devices.get(i).getDevice_type();
@@ -561,9 +552,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setMac(devices.get(i).getMac().toLowerCase());
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
-        Log.i(TAG, "保存设备:" + room.toString());
-        rooms.add(room);
-        dev.setRooms(rooms);
+        if(room!=null){
+            Log.i(TAG, "保存设备:" + room.toString());
+            rooms.add(room);
+            dev.setRooms(rooms);
+        }
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
     }
@@ -594,7 +587,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                         for (int j = 0; j < datasTop.size(); j++) {
                             if (datasTop.get(j).getUid().equalsIgnoreCase(tempDevice.get(i).getUid())) {
                                 datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
-                                Log.i(TAG, "更新网关设备的状态:" + tempDevice.get(i).getStatus());
                                 datasTop.get(j).saveFast();
                             }
                         }
@@ -614,9 +606,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     //智能设备更新状态
                     for (int i = 0; i < tempSmartDevice.size(); i++) {
                         for (int j = 0; j < datasBottom.size(); j++) {
-                            Log.i(TAG, "更新智能设备状态, 本地数据库中设备的mac地址:" + datasBottom.get(j).getMac() +
-                                    "接收到的本地接口返回的智能设备的mac地址:" + tempSmartDevice.get(i).getSmartUid()
-                            );
                             if (datasBottom.get(j).getMac() != null &&
                                     datasBottom.get(j).getMac().equalsIgnoreCase(tempSmartDevice.get(i).getSmartUid())
                                     ) {
@@ -625,18 +614,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                             }
                         }
                     }
-
                     //智能设备下发列表
-                    Log.i(TAG, "datasBottom.size=" + datasBottom);
                     for (int j = 0; j < datasBottom.size(); j++) {
                         boolean addSmartdev = true;
                         for (int i = 0; i < tempSmartDevice.size(); i++) {
-                            Log.i(TAG, "tempSmartDevice.get(i).getSmartUid()=" + tempSmartDevice.get(i).getSmartUid() +
-                                    "datasBottom.get(j).getMac()=" + datasBottom.get(j).getMac()
-                            );
                             if (tempSmartDevice.get(i).getSmartUid().equalsIgnoreCase(datasBottom.get(j).getMac())
                                     || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)) {
-
                                 addSmartdev = false;
                             }
                         }

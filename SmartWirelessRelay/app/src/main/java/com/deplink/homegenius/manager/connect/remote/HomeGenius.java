@@ -8,7 +8,6 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.Protocol.json.wifi.Proto;
-import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.mqtt.MQTTController;
 import com.google.gson.Gson;
@@ -38,7 +37,9 @@ public class HomeGenius {
 
     public void setWifiRelay(String topic, String userUuid, AP_CLIENT paramas) {
         Log.i(TAG, "setWifiRelay");
-        WifiRelaySet setCmd = new WifiRelaySet();
+        QueryOptions setCmd = new QueryOptions();
+        setCmd.setOP("WAN");
+        setCmd.setMethod("SET");
         setCmd.setTimestamp();
         Proto proto = new Proto();
         proto.setAP_CLIENT(paramas);
@@ -47,7 +48,6 @@ public class HomeGenius {
         Gson gson = new Gson();
         String text = gson.toJson(setCmd);
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
-
     }
 
     public void bindSmartDevList(String topic, String userUuid, QrcodeSmartDevice smartDevice) {
@@ -137,7 +137,18 @@ public class HomeGenius {
         queryCmd.setUserID("1001");
         queryCmd.setSenderId(userUuid);
         queryCmd.setSmartUid(currentSelectLock.getMac());
-        Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getUid());
+        queryCmd.setTimestamp();
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
+    }
+    public void queryLockStatu(SmartDev currentSelectLock, String topic, String userUuid) {
+        com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
+        queryCmd.setOP("SET");
+        queryCmd.setMethod("SMART_LOCK");
+        queryCmd.setCommand("query");
+        queryCmd.setSenderId(userUuid);
+        queryCmd.setSmartUid(currentSelectLock.getMac());
         queryCmd.setTimestamp();
         Gson gson = new Gson();
         String text = gson.toJson(queryCmd);

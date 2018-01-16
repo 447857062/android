@@ -3,7 +3,6 @@ package com.deplink.homegenius.activity.device.smartlock.lockhistory;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,6 +20,7 @@ import com.deplink.homegenius.activity.device.smartlock.userid.UpdateSmartLockUs
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.Perfence;
@@ -57,6 +57,10 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private DeviceManager mDeviceManager;
+    private int Query_Num;
+    private int Total;
+    private ArrayList<String> mRecordListId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,9 +73,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isStartFromExperience) {
-            mSmartLockManager.removeSmartLockListener(this);
-        }
+        mSmartLockManager.removeSmartLockListener(this);
     }
 
     private void initEvents() {
@@ -83,7 +85,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private void initData() {
         textview_title.setText("开锁记录");
         textview_edit.setText("修改ID名称");
-        isStartFromExperience = getIntent().getBooleanExtra("isStartFromExperience", false);
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         mRecordList = new ArrayList<>();
         recordAdapter = new LockHistoryAdapter(this, mRecordList);
         connectLostDialog = new MakeSureDialog(LockHistoryActivity.this);
@@ -106,7 +110,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             }
 
 
-
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
@@ -121,7 +124,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                isLogin=false;
+                isLogin = false;
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
@@ -143,7 +146,11 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     @Override
     protected void onResume() {
         super.onResume();
+        mSmartLockManager = SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this);
+        mSmartLockManager.addSmartLockListener(this);
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         manager.addEventCallback(ec);
         if (isStartFromExperience) {
             mRecordList.clear();
@@ -164,30 +171,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             temp.setUserID("004");
             mRecordList.add(temp);
         } else {
-            mSmartLockManager = SmartLockManager.getInstance();
-            mSmartLockManager.InitSmartLockManager(this);
-            mSmartLockManager.addSmartLockListener(this);
-            if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-                DialogThreeBounce.setmContext(this);
-                DialogThreeBounce.showLoading(this);
-                Message msg = Message.obtain();
-                msg.what = MSG_GET_HISRECORD;
-                mHandler.sendMessageDelayed(msg, 3000);
-                mSmartLockManager.queryLockHistory(true);
-            } else {
-                if(isLogin){
-                    DialogThreeBounce.setmContext(this);
-                    DialogThreeBounce.showLoading(this);
-                    Message msg = Message.obtain();
-                    msg.what = MSG_GET_HISRECORD;
-                    mHandler.sendMessageDelayed(msg, 3000);
-                    mSmartLockManager.queryLockHistory(false);
-                }else{
-                    Toast.makeText(this, "未登录,并且本地网关也不可用", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
+            mSmartLockManager.queryLockStatu();
         }
 
     }
@@ -233,7 +217,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     }
                     break;
                 case MSG_GET_HISRECORD:
-                    if(mRecordList.size()==0){
+                    if (mRecordList.size() == 0) {
                         imageview_no_lockhostory.setVisibility(View.VISIBLE);
                         textview_empty_record.setVisibility(View.VISIBLE);
                     }
@@ -242,6 +226,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             }
         }
     };
+
     @Override
     public void responseQueryResult(String result) {
         Message msg = Message.obtain();
@@ -264,7 +249,31 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
 
     }
 
-    private ArrayList<String> mRecordListId;
+    @Override
+    public void responseLockStatu(int RecondNum, int LockStatus) {
+        //TODO
+        if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+            DialogThreeBounce.setmContext(this);
+            DialogThreeBounce.showLoading(this);
+            Message msg = Message.obtain();
+            msg.what = MSG_GET_HISRECORD;
+            mHandler.sendMessageDelayed(msg, 3000);
+            mSmartLockManager.queryLockHistory(true, Query_Num, Total);
+        } else {
+            if (isLogin) {
+                DialogThreeBounce.setmContext(this);
+                DialogThreeBounce.showLoading(this);
+                Message msg = Message.obtain();
+                msg.what = MSG_GET_HISRECORD;
+                mHandler.sendMessageDelayed(msg, 3000);
+                mSmartLockManager.queryLockHistory(false, Query_Num, Total);
+            } else {
+                Toast.makeText(this, "未登录,并且本地网关也不可用", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -272,7 +281,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             case R.id.image_back:
                 onBackPressed();
                 break;
-
             case R.id.textview_edit:
                 if (isStartFromExperience) {
                     Intent intent = new Intent(LockHistoryActivity.this, UpdateSmartLockUserIdActivity.class);

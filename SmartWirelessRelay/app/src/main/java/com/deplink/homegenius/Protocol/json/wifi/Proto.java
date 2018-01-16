@@ -13,5 +13,4 @@ public class Proto implements Serializable{
     public void setAP_CLIENT(AP_CLIENT AP_CLIENT) {
         this.AP_CLIENT = AP_CLIENT;
     }
-
 }

@@ -135,16 +135,16 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 action = "";
             }
         };
+        mGetwayManager = GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this, this);
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
             edittext_input_devie_name.setSelection(5);
             edittext_input_devie_name.clearFocus();
             textview_select_room_name.setText("全部");
         } else {
-            mGetwayManager = GetwayManager.getInstance();
-            mGetwayManager.InitGetwayManager(this, this);
-            mDeviceManager = DeviceManager.getInstance();
-            mDeviceManager.InitDeviceManager(this);
             currentSelectDeviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
             edittext_input_devie_name.setText(currentSelectDeviceName);
             edittext_input_devie_name.setSelection(currentSelectDeviceName.length());
@@ -238,7 +238,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.textview_edit:
                 if (isStartFromExperience) {
-
+                    startActivity(new Intent(this,ExperienceDevicesActivity.class));
                 } else {
                     if (isUserLogin) {
                         inputDeviceName = edittext_input_devie_name.getText().toString();

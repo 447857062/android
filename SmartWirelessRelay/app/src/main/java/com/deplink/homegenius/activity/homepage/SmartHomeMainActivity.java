@@ -29,9 +29,9 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.deplink.homegenius.Protocol.json.Pm25Info;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.ExperienceCenterDevice;
+import com.deplink.homegenius.Protocol.json.http.weather.HeWeather6;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
@@ -48,7 +48,6 @@ import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectService;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
-import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.scrollview.NonScrollableListView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -57,18 +56,9 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,25 +136,19 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     }
                     Log.i(TAG, "city=" + city);
                     textview_city.setText(city + "/" + district);
-                    try {
-                        cityCode = ParseUtil.getCityCodeFromCityName(SmartHomeMainActivity.this, province, city);
-                        Log.i(TAG, "cityCode=" + cityCode);
-                        initWaetherData();
-                        sendRequestWithHttpClient(city);
-                    } catch (XmlPullParserException | IOException e) {
-                        e.printStackTrace();
-                    }
+                    initWaetherData();
+                    sendRequestWithHttpClient(city);
+
                     break;
                 case MSG_SHOW_PM25_TEXT:
-                    parseJSONObjectOrJSONArray((String) msg.obj);
+                    textview_pm25.setText("" + msg.obj);
                     break;
                 case MSG_SHOW_WEATHER_TEXT:
-                    JSONObject object = (JSONObject) msg.obj;
+                    String temp = (String) msg.obj;
                     try {
-                        String tempture = object.getString("temp1");
-                        tempture = tempture.split("℃")[0];
-                        Log.i(TAG, "tempture=" + tempture);
-                        textview_tempature.setText(tempture);
+                        temp = temp.split("℃")[0];
+                        Log.i(TAG, "tempture=" + temp);
+                        textview_tempature.setText(temp);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -256,7 +240,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
     /**
      * 获取pm2.5
      *
@@ -266,43 +249,29 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection;
-                try {
-                    URL url = new URL("http://www.pm25.in/api/querys/pm2_5.json?city=" + city +
-                            "&token=5j1znBVAsnSf5xQyNQyq&stations=no");
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(5000);
-                    connection.setReadTimeout(5000);
-                    InputStream in = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    final StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
+                RestfulToolsWeather.getSingleton().getWeatherPm25(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.code() == 200) {
+                            JsonObject jsonObjectGson = response.body();
+                            Log.i(TAG, "jsonObjectGson=" + jsonObjectGson.toString());
+                            Gson gson = new Gson();
+                            HeWeather6 weatherObject = gson.fromJson(jsonObjectGson.toString(), HeWeather6.class);
+                            Message message = new Message();
+                            message.what = MSG_SHOW_PM25_TEXT;
+                            message.obj = weatherObject.getInfoList().get(0).getAir_now_city().getPm25();
+                            mHandler.sendMessage(message);
+                        }
                     }
-                    Log.i("TAG", response.toString());
-                    Message msg = Message.obtain();
-                    msg.what = MSG_SHOW_PM25_TEXT;
-                    msg.obj = response.toString();
-                    mHandler.sendMessage(msg);
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    }
+                }, city);
+
             }
         }).start();
     }
-
-    //解析JSON数据
-    private void parseJSONObjectOrJSONArray(String jsonData) {
-        if (!jsonData.contains("error")) {
-            ArrayList<Pm25Info> pm25lists = ParseUtil.jsonToArrayList(jsonData, Pm25Info.class);
-            textview_pm25.setText("" + pm25lists.get(0).getPm2_5());
-        }
-    }
-
-
     public void initWaetherData() {
         new Thread(new Runnable() {
             @Override
@@ -313,26 +282,20 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         if (response.code() == 200) {
                             JsonObject jsonObjectGson = response.body();
-                            Log.i(TAG, "cityCode=" + jsonObjectGson.toString());
-                            try {
-                                JSONObject jsonObject = new JSONObject(jsonObjectGson.toString());
-                                JSONObject weatherObject = jsonObject
-                                        .getJSONObject("weatherinfo");
-                                Message message = new Message();
-                                message.what = MSG_SHOW_WEATHER_TEXT;
-                                message.obj = weatherObject;
-                                mHandler.sendMessage(message);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            Log.i(TAG, "jsonObjectGson=" + jsonObjectGson.toString());
+                            Gson gson = new Gson();
+                            HeWeather6 weatherObject = gson.fromJson(jsonObjectGson.toString(), HeWeather6.class);
+                            Message message = new Message();
+                            message.what = MSG_SHOW_WEATHER_TEXT;
+                            message.obj = weatherObject.getInfoList().get(0).getNow().getTmp();
+                            mHandler.sendMessage(message);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
                     }
-                }, cityCode);
+                }, city);
 
             }
         }).start();

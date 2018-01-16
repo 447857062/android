@@ -26,6 +26,7 @@ import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -207,7 +208,10 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                     msg.what = MSG_GET_WIFILIST;
                     msg.obj = wifiListResult.getSSIDList();
                     mHandler.sendMessage(msg);
+                }else if(wifiListResult.getOP().equalsIgnoreCase("REPORT")&& wifiListResult.getMethod().equalsIgnoreCase("WIFI")){
+                    mHandler.sendEmptyMessage(MSG_GET_WIFILIST_SET_RESULT);
                 }
+
             }
         };
         mDeviceListener = new DeviceListener() {
@@ -222,6 +226,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
         };
     }
     private static final int MSG_GET_WIFILIST = 1;
+    private static final int MSG_GET_WIFILIST_SET_RESULT = 2;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -232,6 +237,9 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                     mDatas.addAll((Collection<? extends SSIDList>) msg.obj);
                     mWifiListAdapter.notifyDataSetChanged();
                     break;
+                case MSG_GET_WIFILIST_SET_RESULT:
+                    ToastSingleShow.showText(ScanWifiListActivity.this,"设置wifi中继成功");
+                    break;
             }
 
         }
@@ -240,6 +248,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
     @Override
     public void responseSetWifirelayResult(int result) {
         Log.i(TAG, "responseSetWifirelayResult=" + result);
+        mHandler.sendEmptyMessage(MSG_GET_WIFILIST_SET_RESULT);
     }
 
 

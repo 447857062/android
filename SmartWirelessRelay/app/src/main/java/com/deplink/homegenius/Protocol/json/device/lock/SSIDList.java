@@ -29,8 +29,6 @@ public class SSIDList implements Serializable {
         Channel = channel;
     }
 
-
-
     public String getMAC() {
         return MAC;
     }

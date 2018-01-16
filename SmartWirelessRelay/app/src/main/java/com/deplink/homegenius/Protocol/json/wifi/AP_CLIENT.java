@@ -11,8 +11,6 @@ public class AP_CLIENT implements Serializable {
     private String ApCliAuthMode;
     private String ApCliEncrypType;
     private String channel;
-
-
     public String getApCliSsid() {
         return ApCliSsid;
     }

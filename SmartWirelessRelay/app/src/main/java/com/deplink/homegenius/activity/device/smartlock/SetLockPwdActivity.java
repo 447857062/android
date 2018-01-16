@@ -203,6 +203,12 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     @Override
     public void responseBind(String result) {
     }
+
+    @Override
+    public void responseLockStatu(int RecondNum, int LockStatus) {
+
+    }
+
     private int currentImageLevel;
     @Override
     protected void onResume() {

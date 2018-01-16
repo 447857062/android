@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.json.QueryOptions;
-import com.deplink.homegenius.Protocol.json.RemoteControlOpResult;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
@@ -371,9 +370,9 @@ public class RemoteControlManager implements LocalConnecteListener {
 
     @Override
     public void OnGetSetresult(String setResult) {
-        RemoteControlOpResult result = gson.fromJson(setResult, RemoteControlOpResult.class);
+        QueryOptions result = gson.fromJson(setResult, QueryOptions.class);
         Log.i(TAG, TAG + ":获取设置结果setResult=" + setResult);
-        if (result != null) {
+        if (result != null && result.getOP().equalsIgnoreCase("REPORT")) {
             if (setResult.contains("Study")) {
                 for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
                     mRemoteControlListenerList.get(i).responseQueryResult(setResult);

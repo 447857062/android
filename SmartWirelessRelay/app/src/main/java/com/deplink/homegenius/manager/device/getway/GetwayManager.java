@@ -10,7 +10,6 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.Protocol.json.wifi.Proto;
-import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
@@ -146,7 +145,9 @@ public class GetwayManager implements LocalConnecteListener {
     public void setWifiRelay(AP_CLIENT paramas) {
         Log.i(TAG, "setWifiRelay");
         if (mLocalConnectmanager.isLocalconnectAvailable()) {
-            WifiRelaySet setCmd = new WifiRelaySet();
+            QueryOptions setCmd = new QueryOptions();
+            setCmd.setOP("WAN");
+            setCmd.setMethod("SET");
             setCmd.setTimestamp();
             Proto proto = new Proto();
             proto.setAP_CLIENT(paramas);
@@ -253,7 +254,6 @@ public class GetwayManager implements LocalConnecteListener {
 
             }
         }
-
     }
 
     //数据库操作函数

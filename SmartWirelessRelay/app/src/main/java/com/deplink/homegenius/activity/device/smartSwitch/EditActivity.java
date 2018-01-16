@@ -220,7 +220,12 @@ public class EditActivity extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        deviceName = mSmartSwitchManager.getCurrentSelectSmartDevice().getName();
+        isStartFromExperience=mDeviceManager.isStartFromExperience();
+        if(isStartFromExperience){
+            deviceName ="智能开关";
+        }else{
+            deviceName = mSmartSwitchManager.getCurrentSelectSmartDevice().getName();
+        }
         if (deviceName != null && deviceName.length() > 0) {
             if (deviceName.length() > 10) {
                 deviceName = deviceName.substring(0, 10);
@@ -230,10 +235,14 @@ public class EditActivity extends Activity implements View.OnClickListener {
         }
         if (!isOnActivityResult) {
             isOnActivityResult = false;
-            if (mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().size() == 1) {
-                textview_select_room_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().get(0).getRoomName());
-            } else {
+            if(isStartFromExperience){
                 textview_select_room_name.setText("全部");
+            }else{
+                if (mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().size() == 1) {
+                    textview_select_room_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().get(0).getRoomName());
+                } else {
+                    textview_select_room_name.setText("全部");
+                }
             }
         }
         mDeviceManager.addDeviceListener(mDeviceListener);
@@ -290,14 +299,19 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                action = "alertname";
-                deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
-                deviceName = edittext_add_device_input_name.getText().toString();
-                if(isLogin){
-                    mDeviceManager.alertDeviceHttp(deviceUid, null, deviceName, null);
+                if(isStartFromExperience){
+                    onBackPressed();
                 }else{
-                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                    action = "alertname";
+                    deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                    deviceName = edittext_add_device_input_name.getText().toString();
+                    if(isLogin){
+                        mDeviceManager.alertDeviceHttp(deviceUid, null, deviceName, null);
+                    }else{
+                        ToastSingleShow.showText(this,"未登录,登录后操作");
+                    }
                 }
+
 
                 break;
             case R.id.layout_getway_select:

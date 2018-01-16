@@ -21,6 +21,7 @@ import com.deplink.homegenius.activity.device.router.RouterMainActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchOneActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
+import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 
@@ -156,7 +157,9 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
-                onBackPressed();
+                Intent intent=new Intent(this, PersonalCenterActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 break;
         }
     }
