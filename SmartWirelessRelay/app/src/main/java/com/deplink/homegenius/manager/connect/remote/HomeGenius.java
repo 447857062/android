@@ -54,7 +54,6 @@ public class HomeGenius {
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
         queryCmd.setMethod("DevList");
-        queryCmd.setSmartUid(smartDevice.getAd());
         queryCmd.setTimestamp();
         List<SmartDev> devs = new ArrayList<>();
         //设备赋值
@@ -63,6 +62,7 @@ public class HomeGenius {
         Log.i(TAG, "bindSmartDevList type=" + smartDevice.getTp());
         dev.setType(smartDevice.getTp());
         dev.setVer(smartDevice.getVer());
+        dev.setSmartUid(smartDevice.getAd());
         //设备列表添加一个设备
         devs.add(dev);
         queryCmd.setSmartDev(devs);
@@ -181,9 +181,7 @@ public class HomeGenius {
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
     }
 
-    /**
-     *
-     */
+
     public void setSwitchCommand(SmartDev currentSelectSmartDevice, String topic, String userUuid, String cmd) {
         com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
         queryCmd.setOP("SET");
@@ -197,7 +195,16 @@ public class HomeGenius {
         String text = gson.toJson(queryCmd);
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
     }
-
+    public void queryWifiList(String topic, String userUuid) {
+        com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
+        queryCmd.setOP("QUERY");
+        queryCmd.setMethod("WIFIRELAY");
+        queryCmd.setTimestamp();
+        queryCmd.setSenderId(userUuid);
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
+    }
     public void querySwitchStatus(SmartDev currentSelectSmartDevice, String topic, String userUuid, String cmd) {
         com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
         queryCmd.setOP("SET");
@@ -284,18 +291,6 @@ public class HomeGenius {
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
     }
 
-    private void notifySuccess(String action) {
-       /* if (mSDKCoordinator != null) {
-            mSDKCoordinator.notifyDeviceOpSuccess(action, deviceKey);
-        }*/
-    }
-
-    private void notifyFailure(String action, String error) {
-       /* if (mSDKCoordinator != null) {
-            mSDKCoordinator.notifyDeviceOpFailure(action, deviceKey, new Throwable(error));
-        }*/
-    }
-
     private class MqttActionHandler implements IMqttActionListener {
         private String action;
 
@@ -306,7 +301,6 @@ public class HomeGenius {
         @Override
         public void onSuccess(IMqttToken iMqttToken) {
             Log.i(DeplinkSDK.SDK_TAG, "--->Mqtt onSuccess: " + iMqttToken.toString());
-            notifySuccess(action);
         }
 
         @Override
@@ -314,7 +308,6 @@ public class HomeGenius {
             throwable.printStackTrace();
             Log.i(DeplinkSDK.SDK_TAG, "--->Mqtt failure: " + throwable.getMessage());
             String error = "操作失败";
-            notifyFailure(action, error);
         }
     }
 }

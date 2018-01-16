@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.device.lock.SSIDList;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
@@ -30,6 +31,7 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +42,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 /**
  * 配置wifi网关
  */
-public class ScanWifiListActivity extends Activity implements  AdapterView.OnItemClickListener, View.OnClickListener,GetwayListener {
+public class ScanWifiListActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener, GetwayListener {
     private static final String TAG = "ScanWifiListActivity";
     private DeviceManager mDeviceManager;
     private ListView listview_wifi_list;
@@ -56,6 +58,7 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
     private DeviceListener mDeviceListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,7 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
         initDatas();
         initEvents();
     }
+
     private void initEvents() {
         listview_wifi_list.setOnItemClickListener(this);
         image_back.setOnClickListener(this);
@@ -101,35 +105,35 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG,"mDatas.size()="+mDatas.size());
+                Log.i(TAG, "mDatas.size()=" + mDatas.size());
                 DialogThreeBounce.hideLoading();
 
             }
         }, 3000);
         mDatas.clear();
-        if(isStartFromExperience){
+        if (isStartFromExperience) {
             mDatas.clear();
-            List<SSIDList>lists=new ArrayList<>();
-            SSIDList ssidList=new SSIDList();
+            List<SSIDList> lists = new ArrayList<>();
+            SSIDList ssidList = new SSIDList();
             ssidList.setSSID("wifi列表1");
             ssidList.setQuality("77");
             ssidList.setEncryption("WPA2PSK");
             ssidList.setCRYTP("WPA2PSK");
             lists.add(ssidList);
-             ssidList=new SSIDList();
+            ssidList = new SSIDList();
             ssidList.setEncryption("WPA2PSK");
             ssidList.setSSID("wifi列表2");
             ssidList.setQuality("77");
             ssidList.setCRYTP("WPA2PSK");
             lists.add(ssidList);
-             ssidList=new SSIDList();
+            ssidList = new SSIDList();
             ssidList.setSSID("wifi列表3");
             ssidList.setEncryption("WPA2PSK");
             ssidList.setQuality("77");
             ssidList.setCRYTP("WPA2PSK");
             lists.add(ssidList);
             mWifiListAdapter.notifyDataSetChanged();
-        }else{
+        } else {
             mDeviceManager.queryWifiList();
         }
 
@@ -144,8 +148,8 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
         textview_edit.setText("跳过");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
-        mGetwayManager=GetwayManager.getInstance();
-        mGetwayManager.InitGetwayManager(this,this);
+        mGetwayManager = GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this, this);
         mDatas = new ArrayList<>();
         mWifiListAdapter = new WifiListAdapter(this, mDatas);
         wifiRelayDialog = new WifiRelayInputDialog(this);
@@ -187,13 +191,26 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                isLogin=false;
+                isLogin = false;
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
             }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Gson gson = new Gson();
+                OpResult wifiListResult = gson.fromJson(result, OpResult.class);
+                if (wifiListResult.getOP().equalsIgnoreCase("REPORT") && wifiListResult.getMethod().equalsIgnoreCase("WIFIRELAY")) {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_GET_WIFILIST;
+                    msg.obj = wifiListResult.getSSIDList();
+                    mHandler.sendMessage(msg);
+                }
+            }
         };
-        mDeviceListener=new DeviceListener() {
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseWifiListResult(List<SSIDList> wifiList) {
                 super.responseWifiListResult(wifiList);
@@ -204,6 +221,7 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
             }
         };
     }
+    private static final int MSG_GET_WIFILIST = 1;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -213,21 +231,16 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
                     mDatas.clear();
                     mDatas.addAll((Collection<? extends SSIDList>) msg.obj);
                     mWifiListAdapter.notifyDataSetChanged();
-
                     break;
             }
 
         }
     };
-    private static final int MSG_GET_WIFILIST = 1;
-
-
 
     @Override
     public void responseSetWifirelayResult(int result) {
         Log.i(TAG, "responseSetWifirelayResult=" + result);
     }
-
 
 
     @Override
@@ -239,11 +252,6 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
 
     }
-
-
-
-
-
     private WifiRelayInputDialog wifiRelayDialog;
 
     @Override
@@ -258,7 +266,7 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
         String setChannel = mDatas.get(position).getChannel();
         setCmd.setChannel(setChannel);
         //没有密码直接连接
-        if(isStartFromExperience){
+        if (isStartFromExperience) {
             wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
                 @Override
                 public void onSureBtnClicked(String password) {
@@ -266,13 +274,10 @@ public class ScanWifiListActivity extends Activity implements  AdapterView.OnIte
             });
             wifiRelayDialog.show();
             wifiRelayDialog.setTitleText(setApCliSsid);
-        }else{
+        } else {
             if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
                 setCmd.setApCliWPAPSK("");
-
-                    mGetwayManager.setWifiRelay(setCmd);
-
-
+                mGetwayManager.setWifiRelay(setCmd);
             } else {
                 wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
                     @Override

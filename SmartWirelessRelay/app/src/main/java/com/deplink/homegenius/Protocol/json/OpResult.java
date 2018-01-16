@@ -1,6 +1,7 @@
 package com.deplink.homegenius.Protocol.json;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -14,6 +15,15 @@ public class OpResult  implements Serializable{
     private String Command;
     private long timestamp_echo;
     private String SwitchStatus;
+    private List<com.deplink.homegenius.Protocol.json.device.lock.SSIDList> SSIDList;
+
+    public List<com.deplink.homegenius.Protocol.json.device.lock.SSIDList> getSSIDList() {
+        return SSIDList;
+    }
+
+    public void setSSIDList(List<com.deplink.homegenius.Protocol.json.device.lock.SSIDList> SSIDList) {
+        this.SSIDList = SSIDList;
+    }
 
     public String getSwitchStatus() {
         return SwitchStatus;
@@ -80,6 +90,8 @@ public class OpResult  implements Serializable{
                 ", SmartUid='" + SmartUid + '\'' +
                 ", Command='" + Command + '\'' +
                 ", timestamp_echo=" + timestamp_echo +
+                ", SwitchStatus='" + SwitchStatus + '\'' +
+                ", SSIDList=" + SSIDList +
                 '}';
     }
 }

@@ -81,7 +81,11 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private RoomManager mRoomManager;
     private String selectGetwayName;
     private DeviceListener mDeviceListener;
-
+    private DeleteDeviceDialog deleteDialog;
+    private String deviceUid;
+    private Room room;
+    private GatwayDevice selectedGatway;
+    private String action;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +94,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-    private GatwayDevice selectedGatway;
-    private String action;
     private void initDatas() {
         deleteDialog = new DeleteDeviceDialog(this);
         mDeviceManager = DeviceManager.getInstance();
@@ -132,6 +134,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             mDeviceManager.InitDeviceManager(this);
 
         }
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
             @Override
@@ -301,8 +304,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
     }
 
-    private DeleteDeviceDialog deleteDialog;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -320,7 +321,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                     deviceName=changeDeviceName;
                     mDeviceManager.alertDeviceHttp(deviceUid, changeDeviceName, null,null);
                 }
-
                 break;
             case R.id.image_back:
                 onBackPressed();
@@ -362,8 +362,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private String deviceUid;
-    private Room room;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -391,10 +390,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     //设置结果:{ "OP": "REPORT", "Method": "Study", "Result": "err" }
     @Override
     public void responseQueryResult(String result) {
-        Log.i(TAG, "responseQueryResult :" + result);
-        Message msg = Message.obtain();
-        msg.obj = result;
-        mHandler.sendMessage(msg);
     }
 
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;

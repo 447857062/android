@@ -274,6 +274,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
                 Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
+                if (result.contains("DevList")) {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_UPDATE_DEVS;
+                    msg.obj = result;
+                    mHandler.sendMessage(msg);
+                }
             }
 
             @Override
@@ -307,7 +313,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     mHandler.sendMessage(msg);
                 }
             }
-
             @Override
             public void responseQueryHttpResult(List<Deviceprops> devices) {
                 super.responseQueryHttpResult(devices);
@@ -405,9 +410,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         textview_room = findViewById(R.id.textview_room);
         textview_mine = findViewById(R.id.textview_mine);
         textview_room_name = findViewById(R.id.textview_room_name);
-
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -493,8 +496,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
     }
-
-
     private void saveSmartDeviceToSqlite(List<Deviceprops> devices, int i) {
         SmartDev dev = new SmartDev();
         String deviceType = devices.get(i).getDevice_type();
@@ -557,7 +558,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setUid(devices.get(i).getUid());
         dev.setOrg(devices.get(i).getOrg_code());
         dev.setVer(devices.get(i).getVersion());
-        dev.setMac(devices.get(i).getMac());
+        dev.setMac(devices.get(i).getMac().toLowerCase());
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
         Log.i(TAG, "保存设备:" + room.toString());

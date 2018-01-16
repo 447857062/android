@@ -561,7 +561,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setGw_uid(currentSelectGetway.getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -571,7 +571,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setDevice_name(deviceName);
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -595,7 +595,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setGw_uid(currentSelectGetway.getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -624,7 +624,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setDevice_name(deviceName);
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -635,7 +635,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setDevice_name(deviceName);
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -653,7 +653,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setDevice_name(deviceName);
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -664,7 +664,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setDevice_name(deviceName);
                             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
                             deviceAddBody.setDevice_type(device.getTp());
-                            deviceAddBody.setMac(device.getAd());
+                            deviceAddBody.setMac(device.getAd().toLowerCase());
                             deviceAddBody.setSn(device.getSn());
                             deviceAddBody.setOrg_code(device.getOrg());
                             deviceAddBody.setVersion(device.getVer());
@@ -726,7 +726,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                         tvDevice.setUid(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL + deviceName);
                         tvDevice.setName(deviceName);
                         tvDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
-                        tvDevice.setMac(currentSelectRemotecontrol.getMac());
+                        tvDevice.setMac(currentSelectRemotecontrol.getMac().toLowerCase());
                         boolean addTvresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvDevice, currentSelectedRoom);
                         if (addTvresult) {
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
@@ -762,7 +762,7 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                         tvBoxDevice.setUid(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL + deviceName);
                         tvBoxDevice.setName(deviceName);
                         tvBoxDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
-                        tvBoxDevice.setMac(currentSelectRemotecontrol.getMac());
+                        tvBoxDevice.setMac(currentSelectRemotecontrol.getMac().toLowerCase());
                         boolean addTvBoxresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvBoxDevice, currentSelectedRoom);
                         if (addTvBoxresult) {
                             configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {

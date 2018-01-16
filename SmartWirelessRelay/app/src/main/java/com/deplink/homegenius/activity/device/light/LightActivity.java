@@ -14,9 +14,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.QueryOptions;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.light.SmartLightListener;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -42,7 +50,10 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     private TextView textview_switch_tips;
     private RelativeLayout layout_lightcolor_control;
     private RelativeLayout layout_brightness_control;
-
+    private SDKManager manager;
+    private EventCallback ec;
+    private boolean isUserLogin;
+    private MakeSureDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +129,58 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
         textview_edit.setText("编辑");
         mSmartLightManager = SmartLightManager.getInstance();
         mSmartLightManager.InitSmartLightManager(this);
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        connectLostDialog = new MakeSureDialog(LightActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(LightActivity.this, LoginActivity.class));
+            }
+        });
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Gson gson = new Gson();
+                QueryOptions resultObj = gson.fromJson(result, QueryOptions.class);
+                if(resultObj.getOP().equalsIgnoreCase("REPORT")&&resultObj.getMethod().equalsIgnoreCase("YWLIGHTCONTROL")){
+                    Message msg = Message.obtain();
+                    msg.obj = resultObj;
+                    msg.what = MSG_GET_LIGHT_RESULT;
+                    mHandler.sendMessage(msg);
+                }
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, final String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+            }
+        };
     }
 
     private void initViews() {
@@ -152,6 +215,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     protected void onResume() {
         super.onResume();
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        manager.addEventCallback(ec);
         if (isStartFromExperience) {
             layout_lightcolor_control.setVisibility(View.GONE);
             layout_brightness_control.setVisibility(View.GONE);
@@ -165,6 +229,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     @Override
     protected void onPause() {
         super.onPause();
+        manager.removeEventCallback(ec);
         if (isStartFromExperience) {
 
         } else {

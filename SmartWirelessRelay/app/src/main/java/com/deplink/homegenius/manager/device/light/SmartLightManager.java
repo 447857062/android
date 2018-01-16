@@ -196,9 +196,7 @@ public class SmartLightManager implements LocalConnecteListener {
                 }
             }
         }
-
     }
-
     public boolean addDBSwitchDevice(QrcodeSmartDevice device,String addDeviceUid) {
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
@@ -207,7 +205,7 @@ public class SmartLightManager implements LocalConnecteListener {
             smartDev.setUid(addDeviceUid);
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
-            smartDev.setMac(device.getAd());
+            smartDev.setMac(device.getAd().toLowerCase());
             smartDev.setType(DeviceTypeConstant.TYPE.TYPE_LIGHT);
             smartDev.setName(device.getName());
             boolean addResult = smartDev.save();

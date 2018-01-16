@@ -64,6 +64,10 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private DeviceManager mDeviceManager;
     private String inputDeviceName;
     private DeviceListener mDeviceListener;
+    private String deviceUid;
+    private Room room;
+    private String action;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +101,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             }
 
 
-
             @Override
             public void deviceOpSuccess(String op, final String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
@@ -117,7 +120,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             public void onFailure(SDKAction action, Throwable throwable) {
             }
         };
-        mDeviceListener=new DeviceListener() {
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
@@ -180,9 +183,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         super.onResume();
         manager.addEventCallback(ec);
         mDeviceManager.addDeviceListener(mDeviceListener);
-        if (!isStartFromExperience) {
-            isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        }
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
     }
 
     @Override
@@ -191,8 +192,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
-
-
 
     @Override
     public void onClick(View v) {
@@ -277,8 +276,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             }
         }
     };
-    private String deviceUid;
-    private Room room;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -311,13 +309,10 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         }
     }
 
-
     @Override
     public void responseSetWifirelayResult(int result) {
 
     }
-
-
 
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
@@ -330,10 +325,5 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
         }
     }
-
-    private String action;
-
-
-
 
 }

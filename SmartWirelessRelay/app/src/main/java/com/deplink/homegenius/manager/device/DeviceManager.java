@@ -3,13 +3,12 @@ package com.deplink.homegenius.manager.device;
 import android.content.Context;
 import android.util.Log;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
-import com.deplink.homegenius.Protocol.json.device.lock.QueryWifiList;
-import com.deplink.homegenius.Protocol.json.device.lock.QueryWifiListResult;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
@@ -357,17 +356,31 @@ public class DeviceManager implements LocalConnecteListener {
      */
     public void queryWifiList() {
         Log.i(TAG, "queryWifiList");
-        QueryWifiList query = new QueryWifiList();
-        query.setTimestamp();
-        Gson gson = new Gson();
-        String text = gson.toJson(query);
-        packet.packQueryWifiListData(text.getBytes());
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocalConnectmanager.getOut(packet.data);
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            QueryOptions query = new QueryOptions();
+            query.setOP("QUERY");
+            query.setMethod("WIFIRELAY");
+            query.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(query);
+            packet.packQueryWifiListData(text.getBytes());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        } else {
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.queryWifiList(device.getTopic(), uuid);
+                }
+
             }
-        });
+        }
     }
 
 
@@ -430,7 +443,7 @@ public class DeviceManager implements LocalConnecteListener {
             smartDev.setType(device.getTp());
             smartDev.setGetwayDevice(getwayDevice);
             smartDev.setName(device.getName());
-            smartDev.setMac(device.getAd());
+            smartDev.setMac(device.getAd().toLowerCase());
             boolean addResult = smartDev.save();
             Log.i(TAG, "向数据库中添加一条智能设备数据=" + addResult);
             return addResult;
@@ -720,13 +733,14 @@ public class DeviceManager implements LocalConnecteListener {
         }
     }
 
-
     @Override
     public void getWifiList(String result) {
         Gson gson = new Gson();
-        QueryWifiListResult wifiList = gson.fromJson(result, QueryWifiListResult.class);
-        for (int i = 0; i < mDeviceListenerList.size(); i++) {
-            mDeviceListenerList.get(i).responseWifiListResult(wifiList.getSSIDList());
+        OpResult wifiList = gson.fromJson(result, OpResult.class);
+        if(wifiList.getOP().equalsIgnoreCase("REPORT")&& wifiList.getMethod().equalsIgnoreCase("WIFIRELAY")){
+            for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                mDeviceListenerList.get(i).responseWifiListResult(wifiList.getSSIDList());
+            }
         }
     }
 
