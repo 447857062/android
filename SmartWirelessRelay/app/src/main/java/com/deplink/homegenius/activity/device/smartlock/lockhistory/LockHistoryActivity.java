@@ -251,14 +251,13 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
 
     @Override
     public void responseLockStatu(int RecondNum, int LockStatus) {
-        //TODO
         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
             DialogThreeBounce.setmContext(this);
             DialogThreeBounce.showLoading(this);
             Message msg = Message.obtain();
             msg.what = MSG_GET_HISRECORD;
             mHandler.sendMessageDelayed(msg, 3000);
-            mSmartLockManager.queryLockHistory(true, Query_Num, Total);
+            mSmartLockManager.queryLockHistory(true, RecondNum);
         } else {
             if (isLogin) {
                 DialogThreeBounce.setmContext(this);
@@ -266,7 +265,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 Message msg = Message.obtain();
                 msg.what = MSG_GET_HISRECORD;
                 mHandler.sendMessageDelayed(msg, 3000);
-                mSmartLockManager.queryLockHistory(false, Query_Num, Total);
+                mSmartLockManager.queryLockHistory(false, RecondNum);
             } else {
                 Toast.makeText(this, "未登录,并且本地网关也不可用", Toast.LENGTH_SHORT).show();
             }

@@ -154,11 +154,9 @@ public class RoomManager {
     public void queryRoomListHttp() {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (!NetUtil.isNetAvailable(mContext)) {
-            ToastSingleShow.showText(mContext, "网络连接不正常");
             return;
         }
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         RestfulToolsHomeGeniusString.getSingleton(mContext).getRoomInfo(userName, new Callback<String>() {
@@ -174,15 +172,10 @@ public class RoomManager {
                         ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list = ParseUtil.jsonToArrayList(response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
                         Room temp;
                         for (int i = 0; i < list.size(); i++) {
-                            Log.i(TAG, "roomname=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_name()
-                                    + "roomtype=" + CharSetUtil.decodeUnicode(list.get(i).getRoom_type()
-                            )));
                             temp = new Room();
                             boolean addToDb = true;
                             mRooms = DataSupport.findAll(Room.class);
                             for (int j = 0; j < mRooms.size(); j++) {
-                                  Log.i(TAG,"http查询到的房间="+list.get(i).getRoom_name()+
-                                          "本地数据库中的房间:"+mRooms.get(j).getRoomName()+"本地数据库中的房间uid:"+(mRooms.get(j).getUid()==null));
                                 if (list.get(i).getRoom_type().equalsIgnoreCase(mRooms.get(j).getRoomType())) {
                                     if (mRooms.get(j).getUid() == null || mRooms.get(j).getUid().equals("")) {
                                         mRooms.get(j).setUid(list.get(i).getUid());

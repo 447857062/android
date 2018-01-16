@@ -67,7 +67,6 @@ public class GetwayManager implements LocalConnecteListener {
         Log.i(TAG, "删除设备uid=" + uid);
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         Deviceprops device = new Deviceprops();
@@ -126,6 +125,7 @@ public class GetwayManager implements LocalConnecteListener {
         }
         addGetwayListener(listener);
     }
+
     private List<GetwayListener> mGetwayListenerList;
 
     public void addGetwayListener(GetwayListener listener) {
@@ -139,6 +139,7 @@ public class GetwayManager implements LocalConnecteListener {
             this.mGetwayListenerList.remove(listener);
         }
     }
+
     /**
      * 中继连接
      */
@@ -175,6 +176,7 @@ public class GetwayManager implements LocalConnecteListener {
             }
         }
     }
+
     /**
      * 绑定网关，中继器
      */
@@ -201,14 +203,12 @@ public class GetwayManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 if (device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.bindGetwayDevice(device.getTopic(), uuid, deviceUid);
-                }else{
-                    ToastSingleShow.showText(mContext, "本地网关不可用,远程网关也不可用,");
                 }
             }
         }
@@ -333,8 +333,6 @@ public class GetwayManager implements LocalConnecteListener {
         Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
     }
     //数据库操作函数-------------------------------------------------------end
-
-
 
 
     @Override

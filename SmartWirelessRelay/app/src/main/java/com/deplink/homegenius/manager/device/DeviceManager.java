@@ -138,7 +138,6 @@ public class DeviceManager implements LocalConnecteListener {
     public void queryDeviceListHttp() {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         RestfulToolsHomeGeniusString.getSingleton(mContext).getDeviceInfo(userName, new Callback<String>() {
@@ -167,7 +166,6 @@ public class DeviceManager implements LocalConnecteListener {
     public void addDeviceHttp(DeviceAddBody device) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         Log.i(TAG, device.toString());
@@ -216,7 +214,6 @@ public class DeviceManager implements LocalConnecteListener {
         String uid = currentSelectSmartDevice.getUid();
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         Deviceprops device = new Deviceprops();
@@ -249,7 +246,6 @@ public class DeviceManager implements LocalConnecteListener {
     public void alertDeviceHttp(String uid, String room_uid, String device_name, String gw_uid) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         Deviceprops device = new Deviceprops();
@@ -297,7 +293,6 @@ public class DeviceManager implements LocalConnecteListener {
     public void readDeviceInfoHttp(String uid) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         RestfulToolsHomeGeniusString.getSingleton(mContext).readDeviceInfo(userName, uid, new Callback<String>() {

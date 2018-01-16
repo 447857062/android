@@ -267,7 +267,7 @@ public class SmartLockManager implements LocalConnecteListener {
     /**
      * 查询开锁记录
      */
-    public void queryLockHistory(boolean isLocal,int queryNumber,int Total) {
+    public void queryLockHistory(boolean isLocal,int queryNumber) {
         if (isLocal) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("QUERY");
@@ -275,7 +275,6 @@ public class SmartLockManager implements LocalConnecteListener {
             queryCmd.setCommand("HisRecord");
             queryCmd.setUserID("1001");
             queryCmd.setQuery_Num(queryNumber);
-            queryCmd.setTotal(Total);
             queryCmd.setSmartUid(currentSelectLock.getMac());
             Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getMac());
             queryCmd.setTimestamp();
@@ -293,7 +292,7 @@ public class SmartLockManager implements LocalConnecteListener {
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
             Log.i(TAG, "device.getTopic()=" + device.getTopic());
             if (device.getTopic() != null && !device.getTopic().equals("")) {
-                mHomeGenius.queryLockHistory(currentSelectLock, device.getTopic(), uuid);
+                mHomeGenius.queryLockHistory(currentSelectLock, device.getTopic(), uuid,queryNumber);
             }
         }
     }

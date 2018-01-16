@@ -129,12 +129,13 @@ public class HomeGenius {
     /**
      * 查询开锁记录
      */
-    public void queryLockHistory(SmartDev currentSelectLock, String topic, String userUuid) {
+    public void queryLockHistory(SmartDev currentSelectLock, String topic, String userUuid,int queryNumber) {
         com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
         queryCmd.setOP("QUERY");
         queryCmd.setMethod("SmartLock");
         queryCmd.setCommand("HisRecord");
         queryCmd.setUserID("1001");
+        queryCmd.setQuery_Num(queryNumber);
         queryCmd.setSenderId(userUuid);
         queryCmd.setSmartUid(currentSelectLock.getMac());
         queryCmd.setTimestamp();
