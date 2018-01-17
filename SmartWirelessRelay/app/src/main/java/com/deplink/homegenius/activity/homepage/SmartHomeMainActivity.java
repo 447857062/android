@@ -329,6 +329,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         });
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
         layout_roomselect_normal.smoothScrollTo(0, 0);
+        if(isLogin){
+            mRoomManager.updateRooms();
+        }
     }
 
     private void setRoomNormalLayout() {
@@ -394,6 +397,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
+                        mRoomManager.updateRooms();
                         break;
                 }
             }

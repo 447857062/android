@@ -117,6 +117,7 @@ public class HomeGenius {
         List<GatwayDevice> devs = new ArrayList<>();
         //设备赋值
         GatwayDevice dev = new GatwayDevice();
+        dev.setUid(deviceUid);
         devs.add(dev);
         queryCmd.setDevice(devs);
         queryCmd.setSenderId(userUuid);
@@ -129,12 +130,12 @@ public class HomeGenius {
     /**
      * 查询开锁记录
      */
-    public void queryLockHistory(SmartDev currentSelectLock, String topic, String userUuid,int queryNumber) {
+    public void queryLockHistory(SmartDev currentSelectLock, String topic, String userUuid,int queryNumber,String userId) {
         com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
         queryCmd.setOP("QUERY");
         queryCmd.setMethod("SmartLock");
         queryCmd.setCommand("HisRecord");
-        queryCmd.setUserID("1001");
+        queryCmd.setUserID(userId);
         queryCmd.setQuery_Num(queryNumber);
         queryCmd.setSenderId(userUuid);
         queryCmd.setSmartUid(currentSelectLock.getMac());
@@ -175,6 +176,7 @@ public class HomeGenius {
         queryCmd.setMethod("SmartLock");
         queryCmd.setSmartUid(currentSelectLock.getMac());
         queryCmd.setCommand(cmd);
+        queryCmd.setTimestamp();
         if (authPwd != null) {
             queryCmd.setAuthPwd(authPwd);
         } else {

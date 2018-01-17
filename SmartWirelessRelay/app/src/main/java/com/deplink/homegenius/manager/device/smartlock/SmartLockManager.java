@@ -10,6 +10,8 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
+import com.deplink.homegenius.Protocol.json.device.lock.Record;
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.AppConstant;
@@ -84,7 +86,6 @@ public class SmartLockManager implements LocalConnecteListener {
         Log.i(TAG, "当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size());
         return currentSelectLock;
     }
-
     public void setCurrentSelectLock(SmartDev currentSelectLock) {
         Log.i(TAG, "设置当前选中的门锁所在房间列表大小=" + currentSelectLock.getRooms().size() + "currentSelectLock=" + currentSelectLock.getName());
         this.currentSelectLock = currentSelectLock;
@@ -96,8 +97,6 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         return instance;
     }
-
-
     /**
      * 初始化本地连接管理器
      */
@@ -183,6 +182,14 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
                 if (response.code() == 200) {
                     Log.i(TAG, "response body=" + response.body());
+                    //{"selfid":"1000","alluser":[{"userid":1000,"username":"13691876442"}]}
+                    if(response.body().contains("selfid")){
+                        Gson gson=new Gson();
+                        UserIdInfo info= gson.fromJson(response.body(),UserIdInfo.class);
+                        for (int i = 0; i < mSmartLockListenerList.size(); i++) {
+                            mSmartLockListenerList.get(i).responseUserIdInfo(info);
+                        }
+                    }
                 }
             }
 
@@ -266,19 +273,19 @@ public class SmartLockManager implements LocalConnecteListener {
 
     public boolean clearAlarmRecord() {
         currentSelectLock.setAlarmInfo(null);
+        DataSupport.deleteAll(Record.class);
         return currentSelectLock.save();
     }
-
     /**
      * 查询开锁记录
      */
-    public void queryLockHistory(boolean isLocal, int queryNumber) {
+    public void queryLockHistory(boolean isLocal, int queryNumber,String userId) {
         if (isLocal) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("QUERY");
             queryCmd.setMethod("SmartLock");
             queryCmd.setCommand("HisRecord");
-            queryCmd.setUserID("1001");
+            queryCmd.setUserID(userId);
             queryCmd.setQuery_Num(queryNumber);
             queryCmd.setSmartUid(currentSelectLock.getMac());
             Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getMac()+"queryNumber="+queryNumber);
@@ -297,7 +304,7 @@ public class SmartLockManager implements LocalConnecteListener {
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
             Log.i(TAG, "device.getTopic()=" + device.getTopic());
             if (device.getTopic() != null && !device.getTopic().equals("")) {
-                mHomeGenius.queryLockHistory(currentSelectLock, device.getTopic(), uuid, queryNumber);
+                mHomeGenius.queryLockHistory(currentSelectLock, device.getTopic(), uuid, queryNumber, userId);
             }
         }
     }
@@ -352,6 +359,7 @@ public class SmartLockManager implements LocalConnecteListener {
             queryCmd.setMethod("SmartLock");
             queryCmd.setSmartUid(currentSelectLock.getMac());
             queryCmd.setCommand(cmd);
+            queryCmd.setTimestamp();
             if (authPwd != null) {
                 queryCmd.setAuthPwd(authPwd);
             } else {
@@ -408,7 +416,8 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         OpResult type = gson.fromJson(result, OpResult.class);
         Log.i(TAG,"门锁管理器查询结果返回:"+result);
-        if (type != null && type.getOP().equalsIgnoreCase("REPORT") && type.getMethod().equalsIgnoreCase("SMART_LOCK")) {
+        if (type != null && type.getOP().equalsIgnoreCase("REPORT") &&
+                (type.getMethod().equalsIgnoreCase("SMART_LOCK")|| type.getMethod().equalsIgnoreCase("SmartLock"))) {
             switch (type.getCommand()) {
                 case SmartLockConstant.CMD.QUERY:
                     for (int i = 0; i < mSmartLockListenerList.size(); i++) {
@@ -434,16 +443,16 @@ public class SmartLockManager implements LocalConnecteListener {
                 case SmartLockConstant.CMD.OPEN:
                     switch (type.getResult()) {
                         case SmartLockConstant.OPENLOCK.TIMEOUT:
-                            setResult = "超时";
+                            setResult = "开锁超时";
                             break;
                         case SmartLockConstant.OPENLOCK.SUCCESS:
-                            setResult = "成功";
+                            setResult = "开锁成功";
                             break;
                         case SmartLockConstant.OPENLOCK.PASSWORDERROR:
                             setResult = "密码错误";
                             break;
                         case SmartLockConstant.OPENLOCK.FAIL:
-                            setResult = "失败";
+                            setResult = "开锁失败";
                             break;
                     }
                     break;
@@ -452,19 +461,19 @@ public class SmartLockManager implements LocalConnecteListener {
                 case SmartLockConstant.CMD.TIMELIMIT:
                     switch (type.getResult()) {
                         case SmartLockConstant.AUTH.TIMEOUT:
-                            setResult = "超时";
+                            setResult = "录入超时";
                             break;
                         case SmartLockConstant.AUTH.SUCCESS:
-                            setResult = "成功";
+                            setResult = "录入成功";
                             break;
                         case SmartLockConstant.AUTH.PASSWORDERROR:
                             setResult = "密码错误";
                             break;
                         case SmartLockConstant.AUTH.FAIL:
-                            setResult = "失败";
+                            setResult = "录入失败";
                             break;
                         case SmartLockConstant.AUTH.FORBADE:
-                            setResult = "禁止";
+                            setResult = "禁止操作";
                             break;
                     }
                     break;

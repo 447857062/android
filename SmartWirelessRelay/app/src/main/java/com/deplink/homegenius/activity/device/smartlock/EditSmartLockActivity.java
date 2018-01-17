@@ -221,6 +221,18 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
             }
         };
+        if(getIntent().getBooleanExtra("isupdateroom",false)){
+            isOnActivityResult = true;
+            String roomName = getIntent().getStringExtra("roomName");
+            Log.i(TAG, "roomName=" + roomName);
+            if (!isStartFromExperience) {
+                action = "alertroom";
+                changeRoom = RoomManager.getInstance().findRoom(roomName, true);
+                deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
+                mDeviceManager.alertDeviceHttp(deviceUid, changeRoom.getUid(), null, null);
+            }
+            textview_select_room_name.setText(roomName);
+        }
     }
 
     private void initViews() {
@@ -238,25 +250,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            isOnActivityResult = true;
-            String roomName = data.getStringExtra("roomName");
-            Log.i(TAG, "roomName=" + roomName);
-            if (!isStartFromExperience) {
-                action = "alertroom";
-                changeRoom = RoomManager.getInstance().findRoom(roomName, true);
-                deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
-                mDeviceManager.alertDeviceHttp(deviceUid, changeRoom.getUid(), null, null);
-
-            }
-            textview_select_room_name.setText(roomName);
-        }
-    }
-
-    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
 
     @Override
     public void onClick(View v) {
@@ -276,8 +269,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
                 intent.putExtra("addDeviceSelectRoom", true);
-                intent.putExtra("isStartFromExperience", isStartFromExperience);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
+                startActivity(intent);
                 mSmartLockManager.setEditSmartLock(true);
                 break;
             case R.id.button_delete_device:

@@ -126,4 +126,5 @@ public class AppConstant {
      */
     public static final int LOCAL_SERVER_SOCKET_TIMEOUT = 5000;
     public static  String PERFENCE_BIND_APP_UUID = "PERFENCE_BIND_APP_UUID";
+    public static  String PERFENCE_LOCK_SELF_USERID = "SELF_USERID";
 }

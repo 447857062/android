@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.OpResult;
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdPairs;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import com.deplink.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
@@ -35,6 +37,10 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -121,16 +127,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         case SmartLockConstant.CMD.OPEN:
                             switch (result.getResult()) {
                                 case SmartLockConstant.OPENLOCK.TIMEOUT:
-                                    setResult = "超时";
+                                    setResult = "开锁超时";
                                     break;
                                 case SmartLockConstant.OPENLOCK.SUCCESS:
-                                    setResult = "成功";
+                                    setResult = "开锁成功";
                                     break;
                                 case SmartLockConstant.OPENLOCK.PASSWORDERROR:
                                     setResult = "密码错误";
                                     break;
                                 case SmartLockConstant.OPENLOCK.FAIL:
-                                    setResult = "失败";
+                                    setResult = "开锁失败";
                                     break;
                             }
                             break;
@@ -139,24 +145,26 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         case SmartLockConstant.CMD.TIMELIMIT:
                             switch (result.getResult()) {
                                 case SmartLockConstant.AUTH.TIMEOUT:
-                                    setResult = "超时";
+                                    setResult = "录入超时";
                                     break;
                                 case SmartLockConstant.AUTH.SUCCESS:
-                                    setResult = "成功";
+                                    setResult = "录入成功";
                                     break;
                                 case SmartLockConstant.AUTH.PASSWORDERROR:
                                     setResult = "密码错误";
                                     break;
                                 case SmartLockConstant.AUTH.FAIL:
-                                    setResult = "失败";
+                                    setResult = "录入失败";
                                     break;
                                 case SmartLockConstant.AUTH.FORBADE:
-                                    setResult = "禁止";
+                                    setResult = "禁止操作";
                                     break;
                             }
                             break;
+
                     }
                 }
+
                 Message msg = Message.obtain();
                 msg.what = MSG_SHOW_TOAST;
                 msg.obj = setResult;
@@ -175,24 +183,18 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         };
     }
 
+    private String selfUserId;
+
     @Override
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         manager.addEventCallback(ec);
         isStartFromExperience = mDeviceManager.isStartFromExperience();
-        if (isStartFromExperience) {
-
-        } else {
-            mSmartLockManager.addSmartLockListener(this);
-            mSmartLockManager.queryLockStatu();
-            Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid());
-        }
+        mSmartLockManager.addSmartLockListener(this);
+        Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid());
+        selfUserId = Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
         mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
-       /* LockUserId userIdBody = new LockUserId();
-        userIdBody.setUserid("1000");
-        userIdBody.setUsername("kelijun");
-        mSmartLockManager.setLockUidNameHttp(mSmartLockManager.getCurrentSelectLock().getUid(), userIdBody);*/
     }
 
     @Override
@@ -297,7 +299,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         Log.i(TAG, "saveManagetPassword=" + saveManagetPassword + "savedManagePassword=" + savedManagePassword);
                         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                             if (saveManagetPassword && !savedManagePassword.equals("")) {
-                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null, true);
+                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, selfUserId, savedManagePassword, null, null, true);
                             } else {
                                 Intent intentSetLockPwd = new Intent(SmartLockActivity.this, SetLockPwdActivity.class);
                                 startActivity(intentSetLockPwd);
@@ -305,7 +307,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                         } else {
                             if (isLogin) {
                                 if (saveManagetPassword && !savedManagePassword.equals("")) {
-                                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", savedManagePassword, null, null, false);
+                                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, selfUserId, savedManagePassword, null, null, false);
                                 } else {
                                     Intent intentSetLockPwd = new Intent(SmartLockActivity.this, SetLockPwdActivity.class);
                                     startActivity(intentSetLockPwd);
@@ -321,9 +323,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 clearRecordDialog.setSureBtnClickListener(new LockdeviceClearRecordDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                        if (isStartFromExperience) {
-
-                        } else {
+                        if (!isStartFromExperience) {
                             mSmartLockManager.clearAlarmRecord();
                         }
 
@@ -362,6 +362,24 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         Log.i(TAG, "返回锁的状态 RecondNum:" + RecondNum + ",LockStatus:" + LockStatus);
     }
 
+    @Override
+    public void responseUserIdInfo(UserIdInfo userIdInfo) {
+        List<UserIdPairs> mUserIdPairs = userIdInfo.getAlluser();
+        for (int i = 0; i < mUserIdPairs.size(); i++) {
+            UserIdPairs tempUserIdPair = DataSupport.where("userid = ?", mUserIdPairs.get(i).getUserid()).findFirst(UserIdPairs.class);
+            if (tempUserIdPair != null) {
+                tempUserIdPair.setUsername(userIdInfo.getAlluser().get(i).getUsername());
+                tempUserIdPair.saveFast();
+            } else {
+                UserIdPairs addUserIdPair = new UserIdPairs();
+                addUserIdPair.setUserid(userIdInfo.getAlluser().get(i).getUserid());
+                addUserIdPair.setUsername(userIdInfo.getAlluser().get(i).getUsername());
+                addUserIdPair.saveFast();
+            }
+        }
+        Perfence.setPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID, userIdInfo.getSelfid());
+    }
+
     private static final int MSG_SHOW_TOAST = 1;
     private static final int MSG_SHOW_NOTSAVE_PASSWORD_DIALOG = 2;
     private Handler mHandler = new Handler() {
@@ -397,16 +415,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         } else {
             switch (authType) {
                 case SmartLockConstant.AUTH_TYPE_ONCE:
-                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null, true);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_ONCE, selfUserId, mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null, true);
                     break;
                 case SmartLockConstant.AUTH_TYPE_PERPETUAL:
-                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null, true);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, selfUserId, mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, null, true);
                     break;
                 case SmartLockConstant.AUTH_TYPE_TIME_LIMIT:
                     long hour = Long.valueOf(limitTime);
                     limitTime = String.valueOf(hour * 60 * 1000);
                     Log.i(TAG, "hour=" + hour + "limittime=" + limitTime);
-                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, "003", mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, limitTime, true);
+                    mSmartLockManager.setSmartLockParmars(SmartLockConstant.AUTH_TYPE_PERPETUAL, selfUserId, mSmartLockManager.getCurrentSelectLock().getLockPassword(), password, limitTime, true);
                     break;
             }
         }

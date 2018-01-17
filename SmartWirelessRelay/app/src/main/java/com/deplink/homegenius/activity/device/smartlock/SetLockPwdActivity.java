@@ -15,10 +15,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.keyboard.KeyboardUtil;
 
 import java.util.ArrayList;
@@ -156,7 +159,8 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                                         SetLockPwdActivity.this.finish();
                                     }
                                 },3000);
-                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null,true);
+                                String userId= Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
+                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, userId, strReapt, null, null,true);
                             }
                             etPwdOne.setText("");
                             etPwdTwo.setText("");
@@ -206,6 +210,11 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     @Override
     public void responseLockStatu(int RecondNum, int LockStatus) {
+
+    }
+
+    @Override
+    public void responseUserIdInfo(UserIdInfo userIdInfo) {
 
     }
 

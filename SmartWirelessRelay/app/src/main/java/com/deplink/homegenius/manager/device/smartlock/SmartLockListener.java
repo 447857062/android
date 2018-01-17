@@ -1,5 +1,7 @@
 package com.deplink.homegenius.manager.device.smartlock;
 
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
+
 /**
  * Created by Administrator on 2017/11/9.
  */
@@ -17,4 +19,5 @@ public interface SmartLockListener {
      */
     void responseBind(String result);
     void responseLockStatu(int RecondNum,int LockStatus);
+    void responseUserIdInfo(UserIdInfo userIdInfo);
 }

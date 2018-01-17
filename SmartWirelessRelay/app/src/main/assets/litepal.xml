@@ -28,17 +28,16 @@
         <mapping class="com.deplink.homegenius.Protocol.json.Room"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.lock.SmartLock"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info"></mapping>
-
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.TvboxLearnStatu"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu"></mapping>
-
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.TvboxKeyCode"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.TvKeyCode"></mapping>
-
         <mapping class="com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionInitKeyValue"></mapping>
         <mapping class="com.deplink.homegenius.Protocol.json.device.router.Router"></mapping>
+        <mapping class="com.deplink.homegenius.Protocol.json.device.lock.Record"></mapping>
+        <mapping class="com.deplink.homegenius.Protocol.json.device.lock.UserIdPairs"></mapping>
     </list>
 
     <!--

@@ -49,7 +49,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this,null);
+        mRoomManager.initRoomManager(this, null);
         addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (addDeviceSelectRoom) {
@@ -87,9 +87,10 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                             SmartLockManager.getInstance().setEditSmartLock(false);
                             Intent intentSeleteedRoom = new Intent();
                             intentSeleteedRoom.setClass(AddDeviceActivity.this, EditSmartLockActivity.class);
+                            intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                            intentSeleteedRoom.putExtra("isupdateroom", true);
                             startActivity(intentSeleteedRoom);
-                            finish();
                         } else {
                             if (addDeviceSelectRoom) {
                                 Intent intentSeleteedRoom = new Intent();

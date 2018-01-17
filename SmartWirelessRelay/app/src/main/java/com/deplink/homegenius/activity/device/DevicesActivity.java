@@ -601,6 +601,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                             }
                         }
                         if (addGatway) {
+                            Log.i(TAG,"下发网关设备 uid:"+datasTop.get(j).getUid());
                             mGetwayManager.bindDevice(datasTop.get(j).getUid());
                         }
                     }
