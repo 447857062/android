@@ -15,15 +15,15 @@ public class OpResult  implements Serializable{
     private String Command;
     private long timestamp_echo;
     private String SwitchStatus;
-    private int RecondNum;
+    private int RecordNum;
     private int LockStatus;
 
-    public int getRecondNum() {
-        return RecondNum;
+    public int getRecordNum() {
+        return RecordNum;
     }
 
-    public void setRecondNum(int recondNum) {
-        RecondNum = recondNum;
+    public void setRecordNum(int recordNum) {
+        RecordNum = recordNum;
     }
 
     public int getLockStatus() {

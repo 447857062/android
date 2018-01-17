@@ -178,35 +178,52 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
         } else {
             textview_select_room_name.setText("全部");
         }
-        edittext_add_device_input_name.setHint("（最多10个字）");
+        edittext_add_device_input_name.setHint("最多10个字");
         switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_LOCK:
-
                 textview_title.setText("智能门锁");
+                edittext_add_device_input_name.setText("智能门锁");
+                edittext_add_device_input_name.setSelection(4);
                 break;
             case "IRMOTE_V2":
                 textview_title.setText("智能遥控");
+                edittext_add_device_input_name.setText("智能遥控");
+                edittext_add_device_input_name.setSelection(4);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                 textview_title.setText("智能空调遥控器");
+                edittext_add_device_input_name.setText("智能空调遥控器");
+                edittext_add_device_input_name.setSelection(6);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                 textview_title.setText("智能电视遥控器");
+                edittext_add_device_input_name.setText("智能电视遥控器");
+                edittext_add_device_input_name.setSelection(6);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 textview_title.setText("智能机顶盒遥控");
+                edittext_add_device_input_name.setText("智能机顶盒遥控");
+                edittext_add_device_input_name.setSelection(6);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 textview_title.setText("智能开关");
+                edittext_add_device_input_name.setText("智能开关");
+                edittext_add_device_input_name.setSelection(4);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_MENLING:
                 textview_title.setText("智能门铃");
+                edittext_add_device_input_name.setText("智能门铃");
+                edittext_add_device_input_name.setSelection(4);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                 textview_title.setText("智能灯泡");
+                edittext_add_device_input_name.setText("智能灯泡");
+                edittext_add_device_input_name.setSelection(4);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                 textview_title.setText("智能网关/路由器");
+                edittext_add_device_input_name.setText("智能网关/路由器");
+                edittext_add_device_input_name.setSelection(8);
                 break;
         }
         mRemoteControls = new ArrayList<>();
@@ -305,7 +322,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                                 @Override
                                 public void onSureBtnClicked() {
                                     //TODO 拿到mac地址后提示用户连接这个wifi,这里跳转到wifi连接去
-
                                 }
                             });
                             mConfigGetwayDialog.setCancelBtnClickListener(new ConfigGetwayDialog.onCancelBtnClickListener() {
@@ -375,9 +391,10 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                             mDeviceManager.bindSmartDevList(device);
                         } else {
-                            ToastSingleShow.showText(AddDeviceNameActivity.this, "本地网关不可用");
+                            deviceIntent=new Intent(AddDeviceNameActivity.this, DevicesActivity.class);
+                            deviceIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(deviceIntent);
                         }
-
                     }
                 }
             }
@@ -436,17 +453,19 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
     private static final int MSG_HIDE_DIALOG = 104;
     private static final int MSG_BIND_DEVICE_RESPONSE = 105;
     public static final int MSG_ADD_ROUTER_SUCCESS = 106;
+    private Intent deviceIntent;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_ADD_DEVICE_RESULT:
-                    boolean success = (boolean) msg.obj;
                     mHandler.sendEmptyMessageDelayed(MSG_FINISH_ACTIVITY, 1500);
                     break;
                 case MSG_FINISH_ACTIVITY:
-                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                    deviceIntent=new Intent(AddDeviceNameActivity.this, DevicesActivity.class);
+                    deviceIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(deviceIntent);
                     break;
                 case MSG_UPDATE_ROOM_FAIL:
                     Toast.makeText(AddDeviceNameActivity.this, "更新智能门铃所在房间失败", Toast.LENGTH_SHORT).show();
@@ -490,7 +509,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                 return true;
             }
         }
-
         return false;
     }
 
@@ -670,8 +688,6 @@ public class AddDeviceNameActivity extends Activity implements  View.OnClickList
                             deviceAddBody.setVersion(device.getVer());
                             mDeviceManager.addDeviceHttp(deviceAddBody);
                         }
-                        //TODO 服务没有用调试打开
-                        // mDeviceManager.addDBSmartDevice(device, currentSelectGetway);
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                         if (deviceName.equals("")) {

@@ -122,6 +122,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private MakeSureWithInputDialog connetWifiDialog;
     private ImageView iamgeview_no_connected_device;
     private ImageView iamgeview_no_blacklist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,15 +147,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     blacklist.setDeviceMac(mac);
                     blacklist.setDeviceName(name);
                     control.setBLACKLIST(blacklist);
-                    try {
-                        routerDevice.setDeviceControl(control);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    routerDevice.setDeviceControl(control);
                 }
             });
             dialog.show();
-            dialog.setTitleText("确定将设备(" + mConnectedDevices.get(position).getDeviceName() + ")拉入黑名单");
+            String devicename=mConnectedDevices.get(position).getDeviceName().trim();
+            dialog.setTitleText("确定将设备\""+devicename+"\"拉入黑名单");
         }
     };
 
@@ -174,8 +172,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.i(TAG, "routerDevice=" + (routerDevice != null)+"isUserLogin="+isUserLogin);
-            if(!isUserLogin){
+            Log.i(TAG, "routerDevice=" + (routerDevice != null) + "isUserLogin=" + isUserLogin);
+            if (!isUserLogin) {
                 textview_cpu_use.setText("--");
                 textview_memory_use.setText("--");
                 textview_upload_speed.setText("--");
@@ -183,7 +181,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 layout_no_connected_device.setVisibility(View.VISIBLE);
                 iamgeview_no_connected_device.setBackgroundResource(R.drawable.router);
                 iamgeview_no_blacklist.setBackgroundResource(R.drawable.router);
-            }else{
+            } else {
                 iamgeview_no_connected_device.setBackgroundResource(R.drawable.connectthedevice);
                 iamgeview_no_blacklist.setBackgroundResource(R.drawable.blacklist);
             }
@@ -191,6 +189,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -289,9 +288,9 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     }
 
     private void showQueryingDialog() {
-        if(isStartFromExperience){
+        if (isStartFromExperience) {
             mHandler.post(hideLoadingCallback);
-        }else{
+        } else {
             DialogThreeBounce.showLoading(this);
             mHandler.postDelayed(hideLoadingCallback, 1500);
         }
@@ -301,7 +300,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private Runnable hideLoadingCallback = new Runnable() {
         @Override
         public void run() {
-            if(isStartFromExperience){
+            if (isStartFromExperience) {
                 if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
                     layout_no_connected_device.setVisibility(View.VISIBLE);
                     textview_show_query_device_result.setVisibility(View.VISIBLE);
@@ -313,7 +312,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
                     textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
                 }
-            }else{
+            } else {
                 DialogThreeBounce.hideLoading();
             }
 
@@ -332,7 +331,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         mRouterManager = RouterManager.getInstance();
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
-        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (isStartFromExperience) {
 
         } else {
@@ -356,7 +355,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 public void onBindSuccess(SDKAction action, String devicekey) {
 
                 }
-
 
                 @Override
                 public void deviceOpSuccess(String op, final String deviceKey) {
@@ -459,11 +457,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         textview_memory_use.setText(mem);
         String cpu = routerDevice.getPerformance().getDevice().getCPU();
         textview_cpu_use.setText(cpu);
-
         textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
-
         textview_download_speend.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getDownRate()));
-
     }
 
     private void initEvents() {
@@ -493,8 +488,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 deleteItem.setTitleSize(14);
                 // set item title font color
                 deleteItem.setTitleColor(Color.WHITE);
-                // set a icon
-                // add to menu
                 menu.addMenuItem(deleteItem);
             }
         };
@@ -517,21 +510,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                 blacklist.setDeviceMac(mac);
                                 blacklist.setDeviceName(name);
                                 control.setBLACKLIST(blacklist);
-                                try {
-                                    if (isStartFromExperience) {
-
-                                    } else {
-                                        routerDevice.setDeviceControl(control);
-                                    }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                if (!isStartFromExperience) {
+                                    routerDevice.setDeviceControl(control);
                                 }
                             }
                         });
                         dialog.show();
-                        dialog.setTitleText("确定将设备(" + mConnectedDevices.get(position).getDeviceName() + ")拉入黑名单");
-
+                        dialog.setMsg("确定将设备\"" + mConnectedDevices.get(position).getDeviceName() + "\"拉入黑名单");
                         break;
                 }
                 return false;

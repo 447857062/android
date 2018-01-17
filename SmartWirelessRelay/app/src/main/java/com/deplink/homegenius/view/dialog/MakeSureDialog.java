@@ -11,10 +11,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.deplink.homegenius.util.Perfence;
+
 import java.lang.ref.WeakReference;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.util.Perfence;
 
 /**
  * Created by Administrator on 2017/7/25.
@@ -32,7 +33,7 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
     WeakReference<Activity> activityWeakRef;
     public MakeSureDialog(Context context) {
         super(context, R.style.MakeSureDialog);
-        activityWeakRef = new WeakReference<Activity>((Activity) context);
+        activityWeakRef = new WeakReference<>((Activity) context);
         mContext = context;
     }
 
@@ -42,8 +43,6 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
         WindowManager.LayoutParams p = new WindowManager.LayoutParams();
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int screenWidth = dm.widthPixels;
-        int screenHeigh = dm.heightPixels;
         p.width = (int) Perfence.dp2px(mContext,283);
         p.height = (int) Perfence.dp2px(mContext,185);
         View view = LayoutInflater.from(mContext).inflate(R.layout.makesure_dialog, null);
@@ -52,16 +51,14 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
         initView();
         //初始化界面控件的事件
         initEvent();
-
-
     }
 
 
     private void initView() {
-        btn_sure = (Button) findViewById(R.id.btn_sure);
-        btn_cancel = (Button) findViewById(R.id.btn_cancel);
-        textview_unbind_device_type = (TextView) findViewById(R.id.textview_unbind_device_type);
-        textivew_msg = (TextView) findViewById(R.id.textivew_msg);
+        btn_sure = findViewById(R.id.btn_sure);
+        btn_cancel = findViewById(R.id.btn_cancel);
+        textview_unbind_device_type = findViewById(R.id.textview_unbind_device_type);
+        textivew_msg = findViewById(R.id.textivew_msg);
 
 
     }
@@ -114,7 +111,6 @@ public class MakeSureDialog extends Dialog implements View.OnClickListener {
             super.show();
         }
     }
-
     public void setSureBtnClickListener(onSureBtnClickListener mOnSureBtnClickListener) {
 
         this.mOnSureBtnClickListener = mOnSureBtnClickListener;

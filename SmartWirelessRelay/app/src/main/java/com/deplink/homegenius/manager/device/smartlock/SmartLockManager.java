@@ -146,6 +146,7 @@ public class SmartLockManager implements LocalConnecteListener {
     public void releaswSmartManager() {
         mLocalConnectmanager.removeLocalConnectListener(this);
     }
+
     //数据库操作函数
     public void updateSmartDeviceName(final String deviceName) {
         cachedThreadPool.execute(new Runnable() {
@@ -168,12 +169,12 @@ public class SmartLockManager implements LocalConnecteListener {
         if (userName.equals("")) {
             return;
         }
-        RestfulToolsHomeGeniusString.getSingleton(mContext).getLockUseId(userName,deviceUid, new Callback<String>() {
+        RestfulToolsHomeGeniusString.getSingleton(mContext).getLockUseId(userName, deviceUid, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.errorBody()!=null){
+                if (response.errorBody() != null) {
                     try {
                         Log.i(TAG, "" + response.errorBody().string());
                     } catch (IOException e) {
@@ -181,7 +182,7 @@ public class SmartLockManager implements LocalConnecteListener {
                     }
                 }
                 if (response.code() == 200) {
-                    Log.i(TAG,"response body="+response.body());
+                    Log.i(TAG, "response body=" + response.body());
                 }
             }
 
@@ -191,6 +192,7 @@ public class SmartLockManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 查询设备列表
      */
@@ -199,12 +201,12 @@ public class SmartLockManager implements LocalConnecteListener {
         if (userName.equals("")) {
             return;
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).setLockUserIdName(userName,deviceUid,userIdBody, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton(mContext).setLockUserIdName(userName, deviceUid, userIdBody, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
-                if(response.errorBody()!=null){
+                if (response.errorBody() != null) {
                     try {
                         Log.i(TAG, "" + response.errorBody().string());
                     } catch (IOException e) {
@@ -212,7 +214,7 @@ public class SmartLockManager implements LocalConnecteListener {
                     }
                 }
                 if (response.code() == 200) {
-                    Log.i(TAG,"response body="+response.body().toString());
+                    Log.i(TAG, "response body=" + response.body().toString());
                 }
             }
 
@@ -222,6 +224,7 @@ public class SmartLockManager implements LocalConnecteListener {
             }
         });
     }
+
     /**
      * 更新设备所在房间
      */
@@ -251,6 +254,7 @@ public class SmartLockManager implements LocalConnecteListener {
         return saveResult;
     }
     //数据库操作函数-----------------------------------------------------------end
+
     /**
      * 报警记录设备上报，没有查询接口，所以保存在数据库中，需要去数据库获取
      *
@@ -264,10 +268,11 @@ public class SmartLockManager implements LocalConnecteListener {
         currentSelectLock.setAlarmInfo(null);
         return currentSelectLock.save();
     }
+
     /**
      * 查询开锁记录
      */
-    public void queryLockHistory(boolean isLocal,int queryNumber) {
+    public void queryLockHistory(boolean isLocal, int queryNumber) {
         if (isLocal) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("QUERY");
@@ -276,7 +281,7 @@ public class SmartLockManager implements LocalConnecteListener {
             queryCmd.setUserID("1001");
             queryCmd.setQuery_Num(queryNumber);
             queryCmd.setSmartUid(currentSelectLock.getMac());
-            Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getMac());
+            Log.i(TAG, "查询开锁记录设备smartUid=" + currentSelectLock.getMac()+"queryNumber="+queryNumber);
             queryCmd.setTimestamp();
             Gson gson = new Gson();
             String text = gson.toJson(queryCmd);
@@ -292,10 +297,11 @@ public class SmartLockManager implements LocalConnecteListener {
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
             Log.i(TAG, "device.getTopic()=" + device.getTopic());
             if (device.getTopic() != null && !device.getTopic().equals("")) {
-                mHomeGenius.queryLockHistory(currentSelectLock, device.getTopic(), uuid,queryNumber);
+                mHomeGenius.queryLockHistory(currentSelectLock, device.getTopic(), uuid, queryNumber);
             }
         }
     }
+
     public void queryLockStatu() {
         Log.i(TAG, "查询锁设备状态");
         if (mLocalConnectmanager.isLocalconnectAvailable()) {
@@ -315,7 +321,7 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
@@ -323,7 +329,6 @@ public class SmartLockManager implements LocalConnecteListener {
                     mHomeGenius.queryLockStatu(currentSelectLock, device.getTopic(), uuid);
                 }
             }
-
         }
     }
 
@@ -401,6 +406,17 @@ public class SmartLockManager implements LocalConnecteListener {
                 mSmartLockListenerList.get(i).responseQueryResult(result);
             }
         }
+        OpResult type = gson.fromJson(result, OpResult.class);
+        Log.i(TAG,"门锁管理器查询结果返回:"+result);
+        if (type != null && type.getOP().equalsIgnoreCase("REPORT") && type.getMethod().equalsIgnoreCase("SMART_LOCK")) {
+            switch (type.getCommand()) {
+                case SmartLockConstant.CMD.QUERY:
+                    for (int i = 0; i < mSmartLockListenerList.size(); i++) {
+                        mSmartLockListenerList.get(i).responseLockStatu(type.getRecordNum(), type.getLockStatus());
+                    }
+                    break;
+            }
+        }
     }
 
     /**
@@ -414,10 +430,9 @@ public class SmartLockManager implements LocalConnecteListener {
         Gson gson = new Gson();
         OpResult type = gson.fromJson(setResult, OpResult.class);
         if (type != null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
-            OpResult result = gson.fromJson(setResult, OpResult.class);
-            switch (result.getCommand()) {
+            switch (type.getCommand()) {
                 case SmartLockConstant.CMD.OPEN:
-                    switch (result.getResult()) {
+                    switch (type.getResult()) {
                         case SmartLockConstant.OPENLOCK.TIMEOUT:
                             setResult = "超时";
                             break;
@@ -435,7 +450,7 @@ public class SmartLockManager implements LocalConnecteListener {
                 case SmartLockConstant.CMD.ONCE:
                 case SmartLockConstant.CMD.PERMANENT:
                 case SmartLockConstant.CMD.TIMELIMIT:
-                    switch (result.getResult()) {
+                    switch (type.getResult()) {
                         case SmartLockConstant.AUTH.TIMEOUT:
                             setResult = "超时";
                             break;
@@ -453,19 +468,11 @@ public class SmartLockManager implements LocalConnecteListener {
                             break;
                     }
                     break;
-                case SmartLockConstant.CMD.QUERY:
 
-                    break;
             }
             Log.i(TAG, "设置结果=" + setResult);
-            if(result.getCommand().equalsIgnoreCase(SmartLockConstant.CMD.QUERY)){
-                for (int i = 0; i < mSmartLockListenerList.size(); i++) {
-                    mSmartLockListenerList.get(i).responseLockStatu(result.getRecondNum(),result.getLockStatus());
-                }
-            }else{
-                for (int i = 0; i < mSmartLockListenerList.size(); i++) {
-                    mSmartLockListenerList.get(i).responseSetResult(setResult);
-                }
+            for (int i = 0; i < mSmartLockListenerList.size(); i++) {
+                mSmartLockListenerList.get(i).responseSetResult(setResult);
             }
 
         }
@@ -504,7 +511,6 @@ public class SmartLockManager implements LocalConnecteListener {
         }
         currentSelectLock.save();
     }
-
 
 
 }

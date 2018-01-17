@@ -172,6 +172,8 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             mRecordList.add(temp);
         } else {
             mSmartLockManager.queryLockStatu();
+            DialogThreeBounce.setmContext(this);
+            DialogThreeBounce.showLoading(this);
         }
 
     }
@@ -252,8 +254,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     @Override
     public void responseLockStatu(int RecondNum, int LockStatus) {
         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-            DialogThreeBounce.setmContext(this);
-            DialogThreeBounce.showLoading(this);
             Message msg = Message.obtain();
             msg.what = MSG_GET_HISRECORD;
             mHandler.sendMessageDelayed(msg, 3000);

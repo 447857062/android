@@ -81,6 +81,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +122,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                if(!isStartFromExperience){
+                if (!isStartFromExperience) {
                     action = "alertgetway";
                     selectedGatway = mGetways.get(position);
                     deviceUid = mSmartLockManager.getCurrentSelectLock().getUid();
@@ -135,10 +136,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 super.responseDeleteDeviceHttpResult(result);
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.deleteSmartDevice();
-                } else {
-                    DialogThreeBounce.hideLoading();
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
                 }
+                DialogThreeBounce.hideLoading();
+                mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+
             }
 
             @Override
@@ -261,9 +262,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-                if(isStartFromExperience){
-                    startActivity(new Intent(this,SmartLockActivity.class));
-                }else{
+                if (isStartFromExperience) {
+                    startActivity(new Intent(this, SmartLockActivity.class));
+                } else {
                     String devciename = edittext_input_devie_name.getText().toString();
                     mSmartLockManager.updateSmartDeviceName(devciename);
                     Intent intentBack = new Intent(this, SmartLockActivity.class);
@@ -316,7 +317,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        isStartFromExperience=mDeviceManager.isStartFromExperience();
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isStartFromExperience) {
 
@@ -357,7 +358,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
-
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
     private Handler mHandler = new Handler() {
@@ -368,7 +368,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
                     mDeviceManager.deleteDBSmartDevice(mDeviceManager.getCurrentSelectSmartDevice().getUid());
                     Toast.makeText(EditSmartLockActivity.this, "删除设备成功", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(EditSmartLockActivity.this, DevicesActivity.class));
+                    Intent intent = new Intent(EditSmartLockActivity.this, DevicesActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     break;
                 case MSG_HANDLE_DELETE_DEVICE_FAILED:
                     Toast.makeText(EditSmartLockActivity.this, "删除设备失败", Toast.LENGTH_SHORT).show();

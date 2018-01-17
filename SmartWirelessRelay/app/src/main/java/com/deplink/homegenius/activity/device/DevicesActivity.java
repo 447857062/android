@@ -481,6 +481,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
+        Log.i(TAG,"添加中继器房间是:"+room.toString());
         rooms.add(room);
         dev.setRoomList(rooms);
         boolean success = dev.save();

@@ -188,11 +188,11 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
             mSmartLockManager.queryLockStatu();
             Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid());
         }
-       /* mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
-        LockUserId userIdBody = new LockUserId();
-        userIdBody.setUserid();
+        mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
+       /* LockUserId userIdBody = new LockUserId();
+        userIdBody.setUserid("1000");
         userIdBody.setUsername("kelijun");
-        mSmartLockManager.setLockUidNameHttp(mSmartLockManager.getCurrentSelectLock().getUid(), userIdBody)*/
+        mSmartLockManager.setLockUidNameHttp(mSmartLockManager.getCurrentSelectLock().getUid(), userIdBody);*/
     }
 
     @Override

@@ -9,23 +9,28 @@
         android:id="@+id/textview_unbind_device_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="@dimen/layout_room_content_margin_top"
         android:textColor="@color/huise"
         android:textSize="@dimen/layout_top_bar_item_text_size" />
 
     <TextView
         android:id="@+id/textivew_msg"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="left"
+        android:textColor="@color/room_type_text"
+        android:textSize="@dimen/text_size_small"
         android:layout_below="@+id/textview_unbind_device_type"
-        android:gravity="center_vertical|center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_item_content_height" />
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_below="@+id/textivew_msg"
-        android:layout_marginTop="@dimen/wifirelay_connect_button_margintop"
         android:layout_width="match_parent"
         android:layout_height="@dimen/router_wifirelay_connectdialogs_button_height"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right">
 
