@@ -153,8 +153,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
-            android:src="@drawable/checkbox_style_imagelevel" />
-
-
+            android:src="@drawable/checkbox_style_lock_imagelevel" />
     </RelativeLayout>
 </RelativeLayout>

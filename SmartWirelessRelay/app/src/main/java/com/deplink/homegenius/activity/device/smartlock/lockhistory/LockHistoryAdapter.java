@@ -1,6 +1,7 @@
 package com.deplink.homegenius.activity.device.smartlock.lockhistory;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class LockHistoryAdapter extends BaseAdapter{
         String selfUserId=Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
         UserIdPairs userIdPairs=  DataSupport.where("userid = ?", selfUserId).findFirst(UserIdPairs.class);
         String userName=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        Log.i(TAG,""+mDatas.get(position).getUserID());
         if(mDatas.get(position).getUserID().equals(selfUserId)
                 && userIdPairs!=null
                 && !userIdPairs.getUsername().equalsIgnoreCase(userName)

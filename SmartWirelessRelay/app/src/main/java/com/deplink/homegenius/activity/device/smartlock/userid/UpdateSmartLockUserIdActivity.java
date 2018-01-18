@@ -59,13 +59,6 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
         } else {
             userName=  Perfence.getPerfence(Perfence.PERFENCE_PHONE);
             mIds = getIntent().getStringArrayListExtra("recordlistid");
-           /* for(int i=0;i<mIds.size();i++){
-               UserIdPairs userIdPairs= DataSupport.where("userid = ?", mIds.get(i)).findFirst(UserIdPairs.class);
-                if(userIdPairs!=null && !userIdPairs.getUsername().equalsIgnoreCase(userName)){
-                    mIds.remove(i);
-                    mIds.add(userIdPairs.getUsername());
-                }
-            }*/
         }
         Log.i(TAG,"isStartFromExperience="+isStartFromExperience);
         Log.i(TAG,"mIds="+mIds.size());
@@ -91,7 +84,6 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
             case R.id.image_back:
                 onBackPressed();
                 break;
-
             case R.id.textview_edit:
                 if(!Perfence.getPerfence(selfUserId).equalsIgnoreCase(selfUserId)){
                     LockUserId userIdBody = new LockUserId();
@@ -101,8 +93,6 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
                     UpdateSmartLockUserIdActivity.this.finish();
                 }
                 break;
-
-
         }
     }
 }

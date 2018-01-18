@@ -187,7 +187,7 @@ public class HomeGenius {
         if (limitedTime != null) {
             queryCmd.setTime(limitedTime);
         } else {
-            queryCmd.setTime("0");
+            queryCmd.setTime("30");
         }
         queryCmd.setSenderId(userUuid);
         Gson gson = new Gson();

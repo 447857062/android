@@ -78,6 +78,13 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private boolean isLogin;
+    private String lightName;
+    private boolean isStartFromExperience;
+    private String selectGetwayName;
+    private boolean isOnActivityResult;
+    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
+    private Room changeRoom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +93,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
         initDatas();
         initEvents();
     }
-    private boolean isLogin;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -103,7 +110,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                 edittext_input_devie_name.setText(lightName);
                 edittext_input_devie_name.setSelection(lightName.length());
             }
-
             if (!isOnActivityResult) {
                 isOnActivityResult=false;
                 if (mSmartLightManager.getCurrentSelectLight().getRooms().size() == 1) {
@@ -111,7 +117,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                 } else {
                     textview_select_room_name.setText("全部");
                 }
-
                 SmartDev smartDev = DataSupport.where("Uid=?",mSmartLightManager.getCurrentSelectLight().getUid()).findFirst(SmartDev.class, true);
                 GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {
@@ -130,7 +135,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
         manager.removeEventCallback(ec);
     }
 
-    private String lightName;
+
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
@@ -138,8 +143,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
         layout_select_room.setOnClickListener(this);
         layout_getway.setOnClickListener(this);
     }
-    private boolean isStartFromExperience;
-    private String selectGetwayName;
+
     private void initDatas() {
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
         mDeviceManager = DeviceManager.getInstance();
@@ -236,6 +240,9 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                         if (!saveNameresult) {
                             Toast.makeText(LightEditActivity.this, "更新智能设备名称失败", Toast.LENGTH_SHORT).show();
                         }
+                        Intent intent=new Intent(LightEditActivity.this,LightActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                         break;
                     case "alertgetway":
                         boolean saveTbResult = mSmartLightManager.updateSmartDeviceGetway(selectedGatway);
@@ -282,9 +289,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
         listview_select_getway = findViewById(R.id.listview_select_getway);
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
-    private boolean isOnActivityResult;
-    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
-    private Room changeRoom;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -302,6 +307,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
             textview_select_room_name.setText(roomName);
         }
     }
+
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
     private Handler mHandler = new Handler() {
@@ -346,7 +352,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                             mDeviceManager.alertDeviceHttp(deviceUid, null, lightName, null);
                         }
                     }else{
-                        ToastSingleShow.showText(this,"未登录,登录后操作");
+                       LightEditActivity.this.finish();
                     }
                 }
 
@@ -384,7 +390,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener{
                     layout_getway_list.setVisibility(View.VISIBLE);
                     imageview_getway_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
-
                 break;
         }
     }

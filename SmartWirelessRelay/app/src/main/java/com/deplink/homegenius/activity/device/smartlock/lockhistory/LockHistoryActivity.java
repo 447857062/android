@@ -97,6 +97,12 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         List<Record> records = DataSupport.findAll(Record.class);
         mRecordList.addAll(records);
         sortRecords(mRecordList);
+        mRecordListId = new ArrayList<>();
+        for (int i = 0; i < mRecordList.size(); i++) {
+            if (!mRecordListId.contains(mRecordList.get(i).getUserID())) {
+                mRecordListId.add(mRecordList.get(i).getUserID());
+            }
+        }
         recordAdapter = new LockHistoryAdapter(this, mRecordList);
         connectLostDialog = new MakeSureDialog(LockHistoryActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
@@ -182,6 +188,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         } else {
             mSmartLockManager.queryLockStatu();
             DialogThreeBounce.showLoading(this);
+            mHandler.sendEmptyMessageDelayed(MSG_GET_HISRECORD,2000);
         }
     }
 
@@ -242,7 +249,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     DialogThreeBounce.hideLoading();
                     break;
                 case MSG_RETURN_ERROR:
-                    try {
                         new AlertDialog
                                 .Builder(LockHistoryActivity.this)
                                 .setTitle("错误")
@@ -250,9 +256,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                                 .setIcon(android.R.drawable.ic_menu_agenda)
                                 .setMessage(str)
                                 .show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+
                     break;
                 case MSG_GET_HISRECORD:
                     if (mRecordList.size() == 0) {
@@ -321,7 +325,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
             Message msg = Message.obtain();
             msg.what = MSG_GET_HISRECORD;
-            mHandler.sendMessageDelayed(msg, 3000);
+            mHandler.sendMessageDelayed(msg, 2000);
             if (mRecordList.size() == 0) {
                 mSmartLockManager.queryLockHistory(true, RecondNum,userId);
             } else {
@@ -332,7 +336,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
 
                 Message msg = Message.obtain();
                 msg.what = MSG_GET_HISRECORD;
-                mHandler.sendMessageDelayed(msg, 3000);
+                mHandler.sendMessageDelayed(msg, 2000);
                 if (mRecordList.size() == 0) {
                     mSmartLockManager.queryLockHistory(false, RecondNum,userId);
                 } else {

@@ -349,11 +349,12 @@ public class SmartLockManager implements LocalConnecteListener {
      * @param authPwd      授权密码
      * @param limitedTime  授权时限
      */
-    public void setSmartLockParmars(String cmd, String userId, String managePasswd, String authPwd, String limitedTime, boolean isLocalOption) {
+    public void setSmartLockParmars(String cmd, String userId, String managePasswd, String authPwd, String limitedTime) {
         Log.i(TAG, "设置智能锁操作 cmd=" + cmd + "userId=" + userId + "本地操作=" + mLocalConnectmanager.isLocalconnectAvailable() +
                 "远程操作=" + mRemoteConnectManager.isRemoteConnectAvailable()
+                +"managePasswd="+managePasswd
         );
-        if (isLocalOption) {
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("SET");
             queryCmd.setMethod("SmartLock");
@@ -363,14 +364,14 @@ public class SmartLockManager implements LocalConnecteListener {
             if (authPwd != null) {
                 queryCmd.setAuthPwd(authPwd);
             } else {
-                queryCmd.setAuthPwd("0");
+                queryCmd.setAuthPwd("30");
             }
             queryCmd.setUserID(userId);
             queryCmd.setManagePwd(managePasswd);
             if (limitedTime != null) {
                 queryCmd.setTime(limitedTime);
             } else {
-                queryCmd.setTime("0");
+                queryCmd.setTime("30");
             }
             Gson gson = new Gson();
             String text = gson.toJson(queryCmd);
@@ -383,11 +384,13 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
             });
         } else {
-            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-            GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-            Log.i(TAG, "device.getTopic()=" + device.getTopic());
-            if (device.getTopic() != null && !device.getTopic().equals("")) {
-                mHomeGenius.setSmartLockParmars(currentSelectLock, device.getTopic(), uuid, cmd, userId, managePasswd, authPwd, limitedTime);
+            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.setSmartLockParmars(currentSelectLock, device.getTopic(), uuid, cmd, userId, managePasswd, authPwd, limitedTime);
+                }
             }
         }
     }

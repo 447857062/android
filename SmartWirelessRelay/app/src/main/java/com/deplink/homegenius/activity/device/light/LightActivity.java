@@ -54,6 +54,8 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     private EventCallback ec;
     private boolean isUserLogin;
     private MakeSureDialog connectLostDialog;
+    private boolean isOnResume;
+    private boolean isStartFromExperience;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +83,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                     float alpha = (float) (lightColorProgress / 200.0);
                     Log.i(TAG, "alpha=" + alpha);
                     button_switch_light.setAlpha(alpha);
-                } else {
-                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
                 }
-
             }
 
             @Override
@@ -94,6 +93,10 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if(!isStartFromExperience){
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
+
 
             }
         });
@@ -106,10 +109,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                     float alpha = (float) (lightBrightnessProgress / 200.0);
                     Log.i(TAG, "alpha=" + alpha);
                     imageview_switch_bg.setAlpha(alpha);
-                } else {
-                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
                 }
-
             }
 
             @Override
@@ -119,7 +119,9 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                if(!isStartFromExperience){
+                    mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
+                }
             }
         });
     }
@@ -153,7 +155,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                 super.notifyHomeGeniusResponse(result);
                 Gson gson = new Gson();
                 QueryOptions resultObj = gson.fromJson(result, QueryOptions.class);
-                if(resultObj.getOP().equalsIgnoreCase("REPORT")&&resultObj.getMethod().equalsIgnoreCase("YWLIGHTCONTROL")){
+                if (resultObj.getOP().equalsIgnoreCase("REPORT") && resultObj.getMethod().equalsIgnoreCase("YWLIGHTCONTROL")) {
                     Message msg = Message.obtain();
                     msg.obj = resultObj;
                     msg.what = MSG_GET_LIGHT_RESULT;
@@ -208,12 +210,12 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
         mSmartLightManager.releaswSmartManager();
     }
 
-    private boolean isOnResume;
-    private boolean isStartFromExperience;
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         manager.addEventCallback(ec);
         if (isStartFromExperience) {
@@ -230,11 +232,9 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
-        if (isStartFromExperience) {
 
-        } else {
-            mSmartLightManager.removeSmartLightListener(this);
-        }
+        mSmartLightManager.removeSmartLightListener(this);
+
 
     }
 
@@ -357,7 +357,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                         if (isOnResume) {
                             progressBarLightYellow.setProgress(resultObj.getYellow() / 2);
                         }
-
                     }
                     if (resultObj.getWhite() != 0) {
                         float alpha = (float) (resultObj.getWhite() / 200.0);

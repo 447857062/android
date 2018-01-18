@@ -46,11 +46,11 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.frame_setting:
-                onBackPressed();
-                break;
             case R.id.image_setting:
                 doorbeelMenuDialog.show();
+                break;
+            case R.id.image_back:
+                onBackPressed();
                 break;
 
         }
