@@ -249,20 +249,16 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         deviceName = edittext_input_devie_name.getText().toString();
         if (!isStartFromExperience) {
             if (!isOnActivityResult) {
-                if (mRemoteControlManager.getmSelectRemoteControlDevice().getRooms() == null) {
+                SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
+                if (smartDev.getRooms() == null) {
                     textview_select_room_name.setText("全部");
                 } else {
-                    for (int i = 0; i < mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size(); i++) {
-                        Log.i(TAG, mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
-                    }
-                    if (mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size() == 1) {
-                        textview_select_room_name.setText(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
+                    if (smartDev.getRooms().size() == 1) {
+                        textview_select_room_name.setText(smartDev.getRooms().get(0).getRoomName());
                     } else {
                         textview_select_room_name.setText("全部");
                     }
                 }
-
-                SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
                 GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {
                     textview_select_getway_name.setText("未设置网关");
@@ -317,6 +313,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                         mRemoteControlManager.saveCurrentSelectDeviceName(changeDeviceName);
                     }
                     if (isLogin) {
+                        deviceUid=DeviceManager.getInstance().getCurrentSelectSmartDevice().getUid();
                         deviceName = changeDeviceName;
                         mDeviceManager.alertDeviceHttp(deviceUid, changeDeviceName, null, null);
                     }

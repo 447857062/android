@@ -109,6 +109,7 @@ public class RemoteControlManager implements LocalConnecteListener {
     }
 
     public SmartDev getmSelectRemoteControlDevice() {
+        Log.i(TAG,"mSelectRemoteControlDevice="+(mSelectRemoteControlDevice!=null));
         return mSelectRemoteControlDevice;
     }
 
@@ -119,7 +120,7 @@ public class RemoteControlManager implements LocalConnecteListener {
 
     public List<SmartDev> findAllRemotecontrolDevice() {
         List<SmartDev> newsList = DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL).find(SmartDev.class);
-        Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
+        Log.i(TAG, "查找所有的物理遥控器设备,设备个数=" + newsList.size());
         return newsList;
     }
     /**
@@ -238,6 +239,33 @@ public class RemoteControlManager implements LocalConnecteListener {
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 if (device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.study(mSelectRemoteControlDevice, device.getTopic(), uuid);
+                }
+            }
+        }
+    }
+    public void stopStudy() {
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            QueryOptions cmd = new QueryOptions();
+            cmd.setOP("SET");
+            cmd.setMethod("IrmoteV2");
+            cmd.setTimestamp();
+            cmd.setSmartUid(mSelectRemoteControlDevice.getMac());
+            cmd.setCommand("Quit");
+            String text = gson.toJson(cmd);
+            packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getMac());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        } else {
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.stopStudy(mSelectRemoteControlDevice, device.getTopic(), uuid);
                 }
             }
         }

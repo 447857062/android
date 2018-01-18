@@ -16,6 +16,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.wifi.ScanWifiListActivity;
@@ -238,7 +239,12 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.textview_edit:
                 if (isStartFromExperience) {
-                    startActivity(new Intent(this,ExperienceDevicesActivity.class));
+                    if(mDeviceManager.isStartFromHomePage()){
+                        startActivity(new Intent(this,SmartHomeMainActivity.class));
+                    }else{
+                        startActivity(new Intent(this,ExperienceDevicesActivity.class));
+                    }
+
                 } else {
                     if (isUserLogin) {
                         inputDeviceName = edittext_input_devie_name.getText().toString();

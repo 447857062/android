@@ -57,9 +57,9 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
     @Override
     protected void onPause() {
         super.onPause();
+        mRemoteControlManager.stopStudy();
         mRemoteControlManager.removeRemoteControlListener(this);
     }
-
     private void initEvents() {
         button_cancel.setOnClickListener(this);
     }

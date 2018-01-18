@@ -45,8 +45,17 @@ public class SmartLightManager implements LocalConnecteListener {
     private SmartDev currentSelectLight;
     private RemoteConnectManager mRemoteConnectManager;
     private HomeGenius mHomeGenius;
+    public boolean isEditSmartLight;
     private SmartLightManager() {
 
+    }
+
+    public boolean isEditSmartLight() {
+        return isEditSmartLight;
+    }
+
+    public void setEditSmartLight(boolean editSmartLight) {
+        isEditSmartLight = editSmartLight;
     }
 
     public SmartDev getCurrentSelectLight() {

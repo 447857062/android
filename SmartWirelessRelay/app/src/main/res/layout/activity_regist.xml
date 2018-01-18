@@ -43,6 +43,7 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="请输入手机号"
+                android:textSize="@dimen/text_size_smallest"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white_alpha60" />
         </RelativeLayout>
@@ -88,6 +89,7 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="请输入验证码"
+                android:textSize="@dimen/text_size_smallest"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white_alpha60" />
 
@@ -122,7 +124,7 @@
         android:layout_below="@+id/layout_verification_code_outer"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
-        android:layout_marginTop="@dimen/password_layout_margin_account_top">
+        android:layout_marginTop="5dp">
 
         <RelativeLayout
             android:id="@+id/layout_input_password_inner"
@@ -148,6 +150,7 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="请设置密码"
+                android:textSize="@dimen/text_size_smallest"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white_alpha60" />
             <FrameLayout
@@ -172,7 +175,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/layout_input_password_inner"
-            android:layout_marginTop="@dimen/line_margintop_input"
             android:background="@color/white_alpha60" />
     </RelativeLayout>
 

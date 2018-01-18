@@ -250,21 +250,20 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
 
-
+   private  Intent intentBack ;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
+                 intentBack = new Intent(this, SmartLockActivity.class);
+                intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 if (isStartFromExperience) {
-                    startActivity(new Intent(this, SmartLockActivity.class));
+                    startActivity(intentBack);
                 } else {
                     String devciename = edittext_input_devie_name.getText().toString();
                     mSmartLockManager.updateSmartDeviceName(devciename);
-                    Intent intentBack = new Intent(this, SmartLockActivity.class);
-                    intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intentBack);
                 }
-
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
@@ -277,7 +276,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-
                         if (!isStartFromExperience) {
                             if (isLogin) {
                                 DialogThreeBounce.showLoading(EditSmartLockActivity.this);
@@ -330,7 +328,6 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 } else {
                     textview_select_room_name.setText("全部");
                 }
-
                 SmartDev smartDev = DataSupport.where("Uid=?", mSmartLockManager.getCurrentSelectLock().getUid()).findFirst(SmartDev.class, true);
                 GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {

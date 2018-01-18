@@ -64,8 +64,18 @@ public class DeviceManager implements LocalConnecteListener {
     private List<SmartDev> mSmartDevList;
     private SmartDev currentSelectSmartDevice;
     private boolean isStartFromExperience;
+    private boolean isStartFromHomePage;
+    private boolean isExperCenterStartFromHomePage;
     private RemoteConnectManager mRemoteConnectManager;
     private HomeGenius mHomeGenius;
+
+    public boolean isExperCenterStartFromHomePage() {
+        return isExperCenterStartFromHomePage;
+    }
+
+    public void setExperCenterStartFromHomePage(boolean experCenterStartFromHomePage) {
+        isExperCenterStartFromHomePage = experCenterStartFromHomePage;
+    }
 
     public boolean isStartFromExperience() {
         return isStartFromExperience;
@@ -73,6 +83,14 @@ public class DeviceManager implements LocalConnecteListener {
 
     public void setStartFromExperience(boolean startFromExperience) {
         isStartFromExperience = startFromExperience;
+    }
+
+    public boolean isStartFromHomePage() {
+        return isStartFromHomePage;
+    }
+
+    public void setStartFromHomePage(boolean startFromHomePage) {
+        isStartFromHomePage = startFromHomePage;
     }
 
     public static synchronized DeviceManager getInstance() {

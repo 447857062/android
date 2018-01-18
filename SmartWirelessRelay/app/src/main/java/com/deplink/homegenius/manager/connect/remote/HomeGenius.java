@@ -244,6 +244,18 @@ public class HomeGenius {
         String text = gson.toJson(cmd);
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
     }
+    public void stopStudy(SmartDev mSelectRemoteControlDevice, String topic, String userUuid) {
+        com.deplink.homegenius.Protocol.json.QueryOptions cmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
+        cmd.setOP("SET");
+        cmd.setMethod("IrmoteV2");
+        cmd.setTimestamp();
+        cmd.setSenderId(userUuid);
+        cmd.setSmartUid(mSelectRemoteControlDevice.getMac());
+        cmd.setCommand("Quit");
+        Gson gson = new Gson();
+        String text = gson.toJson(cmd);
+        MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
+    }
 
     public void sendData(SmartDev mSelectRemoteControlDevice, String topic, String userUuid, String data) {
         //TODO 当前选中的遥控器和当前选中的物理遥控器混乱

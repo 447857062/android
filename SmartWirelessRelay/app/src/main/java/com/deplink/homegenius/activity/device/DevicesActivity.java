@@ -310,7 +310,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
                 for (int i = 0; i < devices.size(); i++) {
                     boolean addToDb = true;
-                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")
+                            ) {
                         addToDb = false;
                     } else {
                         for (int j = 0; j < dbSmartDev.size(); j++) {
@@ -621,7 +622,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                         boolean addSmartdev = true;
                         for (int i = 0; i < tempSmartDevice.size(); i++) {
                             if (tempSmartDevice.get(i).getSmartUid().equalsIgnoreCase(datasBottom.get(j).getMac())
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)) {
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL)
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL
+                            )) {
                                 addSmartdev = false;
                             }
                         }

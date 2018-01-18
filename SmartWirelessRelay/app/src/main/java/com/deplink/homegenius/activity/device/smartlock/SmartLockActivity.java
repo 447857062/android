@@ -18,6 +18,7 @@ import com.deplink.homegenius.Protocol.json.device.lock.UserIdPairs;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.smartlock.alarmhistory.AlarmHistoryActivity;
 import com.deplink.homegenius.activity.device.smartlock.lockhistory.LockHistoryActivity;
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
@@ -69,6 +70,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
     private DeviceManager mDeviceManager;
+    private long currentTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,9 +189,11 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         isStartFromExperience = mDeviceManager.isStartFromExperience();
         mSmartLockManager.addSmartLockListener(this);
         manager.addEventCallback(ec);
-        Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid());
         selfUserId = Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
-        mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
+        if(!isStartFromExperience){
+            Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid());
+            mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
+        }
     }
 
     @Override
@@ -220,7 +224,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         image_back = findViewById(R.id.image_back);
     }
 
-    private long currentTime;
+
 
     @Override
     public void onClick(View v) {
@@ -262,7 +266,11 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
             case R.id.image_back:
                 Intent intentBack;
                 if (isStartFromExperience) {
-                    intentBack = new Intent(this, ExperienceDevicesActivity.class);
+                    if(mDeviceManager.isStartFromHomePage()){
+                        intentBack = new Intent(this, SmartHomeMainActivity.class);
+                    }else{
+                        intentBack = new Intent(this, ExperienceDevicesActivity.class);
+                    }
                     intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intentBack);
                 } else {
@@ -273,7 +281,6 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.imageview_unlock:
                 if ((System.currentTimeMillis() - currentTime) / 1000 > 10) {
-                    Log.i(TAG, "解锁操作，延时10秒");
                     currentTime = System.currentTimeMillis();
                     if (isStartFromExperience) {
                         if (saveManagetPasswordExperience) {

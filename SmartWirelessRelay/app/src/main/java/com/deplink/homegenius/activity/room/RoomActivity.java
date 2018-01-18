@@ -75,7 +75,9 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
     @Override
     protected void onPause() {
         super.onPause();
-        mRoomManager.updateRoomsOrdinalNumber(mRooms);
+        if(isRoomOrdinalNumberChanged){
+            mRoomManager.updateRoomsOrdinalNumber(mRooms);
+        }
     }
 
     private void initDatas() {
@@ -100,7 +102,7 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
         mDragGridView.setAdapter(mRoomsAdapter);
         mRoomManager.updateRooms();
     }
-
+    private boolean isRoomOrdinalNumberChanged;
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
         layout_home_page.setOnClickListener(this);
@@ -112,6 +114,7 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
 
             @Override
             public void onChange(int from, int to) {
+                isRoomOrdinalNumberChanged=true;
                 Room temp = mRooms.get(from);
                 //这里的处理需要注意下
                 if (from < to) {

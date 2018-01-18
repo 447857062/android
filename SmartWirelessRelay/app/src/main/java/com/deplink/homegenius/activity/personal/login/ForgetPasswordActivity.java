@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
@@ -62,7 +62,6 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
     private String simCountryCode = "86";
     private TextView buton_get_verification_code;
     private EventHandler eh;
-    private String oldPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +84,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
     }
 
     private void initDatas() {
-        textview_title.setText("找回密码");
-        oldPassword=Perfence.getPerfence(Perfence.USER_PASSWORD);
+        textview_title.setText("重置密码");
         SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
         eh = new EventHandler() {
             @Override
@@ -95,16 +93,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     switch (event) {
                         case SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE:
-                            if(oldPassword.equals("")){
-                                mhandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ToastSingleShow.showText(ForgetPasswordActivity.this,"用户未注册");
-                                    }
-                                });
-                                return;
-                            }
-                            manager.loginedAlertPassword(oldPassword, newPassword);
+                            manager.resetPassword(username, newPassword,verifycode);
                             break;
                         case SMSSDK.EVENT_GET_VERIFICATION_CODE:
                             break;
@@ -155,10 +144,13 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
             @Override
             public void onSuccess(SDKAction action) {
                 switch (action) {
-                    case ALERTPASSWORD:
+                    case RESET_PASSWORD:
                         Perfence.setPerfence(Perfence.USER_PASSWORD, newPassword);
                         manager.login(Perfence.getPerfence(Perfence.PERFENCE_PHONE), newPassword);
-                        ToastSingleShow.showText(ForgetPasswordActivity.this, "更改密码成功");
+                        ToastSingleShow.showText(ForgetPasswordActivity.this, "重置密码成功");
+                        break;
+                    case LOGIN:
+                        startActivity(new Intent(ForgetPasswordActivity.this, SmartHomeMainActivity.class));
                         break;
                 }
             }

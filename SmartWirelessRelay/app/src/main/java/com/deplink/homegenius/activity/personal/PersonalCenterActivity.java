@@ -23,6 +23,7 @@ import com.deplink.homegenius.activity.personal.usrinfo.UserinfoActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.ConfirmDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
@@ -254,6 +255,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 startActivity(new Intent(PersonalCenterActivity.this, HomeNetWorkActivity.class));
                 break;
             case R.id.layout_experience_center:
+                DeviceManager.getInstance().setExperCenterStartFromHomePage(false);
                 startActivity(new Intent(this, ExperienceDevicesActivity.class));
                 break;
             case R.id.layout_home_page:

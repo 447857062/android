@@ -436,6 +436,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             DeviceManager.getInstance().setStartFromExperience(true);
+            DeviceManager.getInstance().setStartFromHomePage(true);
             switch (mExperienceCenterDeviceList.get(position).getDeviceName()) {
                 case "智能门锁":
                     Intent intent = new Intent(SmartHomeMainActivity.this, SmartLockActivity.class);
@@ -531,6 +532,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
                 break;
             case R.id.layout_experience_center_top:
+                DeviceManager.getInstance().setExperCenterStartFromHomePage(true);
                 startActivity(new Intent(this, ExperienceDevicesActivity.class));
                 break;
             case R.id.imageview_setting:
