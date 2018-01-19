@@ -34,10 +34,7 @@ public class RestfulToolsString {
         Retrofit.Builder builder;
 
         builder = new Retrofit.Builder().baseUrl("http://lkwifi.cn")
-                .addConverterFactory(StringConvertFactory.create())
-        ;
-
-
+                .addConverterFactory(StringConvertFactory.create());
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().cookieJar(new CookieJar() {
             @Override
             public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
@@ -50,13 +47,9 @@ public class RestfulToolsString {
                 SharedPreferences sp = mContext.getSharedPreferences("user", Context.MODE_PRIVATE);
                 String token = sp.getString("token", null);
                 if (token != null) {
-
                     Cookie cookie = Cookie.parse(url, token);
-
                     cookies.add(cookie);
                 }
-
-
                 return cookies;
             }
         });
@@ -69,21 +62,16 @@ public class RestfulToolsString {
             clientBuilder.addInterceptor(interceptor);
         }
         OkHttpClient okClient = clientBuilder.build();
-
         builder.client(okClient);
         Retrofit retrofit = builder.build();
-
         apiService = retrofit.create(RestfulRouterServer.class);
     }
-
     public static RestfulToolsString getSingleton(Context context) {
         mContext = context;
         if (singleton == null) {
             synchronized (RestfulToolsString.class) {
                 if (singleton == null) {
-
                     singleton = new RestfulToolsString();
-
                 }
             }
         }
@@ -91,7 +79,6 @@ public class RestfulToolsString {
     }
 
     public Call<String> WirelessRelayScan(Callback<String> cll) {
-
         Call<String> call = apiService.WirelessRelayScanString("http://lkwifi.cn" + RestfulToolsRouter.getSingleton(mContext).getLink() + "/admin/home/wan", "wifiscan"/*,"notrestart"*/);
         if (cll != null) {
             call.enqueue(cll);

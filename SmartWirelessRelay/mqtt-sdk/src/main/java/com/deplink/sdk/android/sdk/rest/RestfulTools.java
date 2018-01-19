@@ -106,7 +106,6 @@ public class RestfulTools {
     public String getToken() {
         return token;
     }
-
     public Call<UserSession> session(Callback<UserSession> cll) {
         if (null == username) {
             if (cll != null) {

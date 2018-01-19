@@ -6,6 +6,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
 import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
@@ -25,6 +26,9 @@ import retrofit2.http.Path;
  */
 
 public interface RestfulHomeGeniusServer {
+    //修改用户个人信息
+    @PUT("/user/{user_name}/profile")
+    Call<DeviceOperationResponse> alertUserInfo(@Path("user_name") String user_name, @Body UserInfoAlertBody body, @Header("token") String token);
     //获取房间信息
     @GET("/user/{user_name}/rooms")
     Call<String> getRoomInfo(@Path("user_name") String user_name, @Header("token") String token);
@@ -53,6 +57,9 @@ public interface RestfulHomeGeniusServer {
     //查询虚拟设备
     @GET("/user/{user_name}/irdevices")
     Call<String> readVirtualDevices(@Path("user_name") String user_name, @Header("token") String token);
+    //读用户个人信息
+    @GET("/user/{user_name}/profile")
+    Call<String> readUserInfo(@Path("user_name") String user_name, @Header("token") String token);
     //删除设备
     @DELETE("/user/{user_name}/devices/{uid}")
     Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);

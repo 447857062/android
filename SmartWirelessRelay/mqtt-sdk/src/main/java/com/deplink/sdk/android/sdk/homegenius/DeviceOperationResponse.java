@@ -19,8 +19,44 @@ public class DeviceOperationResponse {
     private int errcode;
     private int sort_num;
     private String device_type;
+    private String device_name;
+    private String irmote_uid;
+    private String irmote_mac;
+    private String key_codes;
     private String topic;
     private Channels channels;
+
+    public String getDevice_name() {
+        return device_name;
+    }
+
+    public void setDevice_name(String device_name) {
+        this.device_name = device_name;
+    }
+
+    public String getIrmote_uid() {
+        return irmote_uid;
+    }
+
+    public void setIrmote_uid(String irmote_uid) {
+        this.irmote_uid = irmote_uid;
+    }
+
+    public String getIrmote_mac() {
+        return irmote_mac;
+    }
+
+    public void setIrmote_mac(String irmote_mac) {
+        this.irmote_mac = irmote_mac;
+    }
+
+    public String getKey_codes() {
+        return key_codes;
+    }
+
+    public void setKey_codes(String key_codes) {
+        this.key_codes = key_codes;
+    }
 
     public int getSort_num() {
         return sort_num;
@@ -104,6 +140,10 @@ public class DeviceOperationResponse {
                 ", errcode=" + errcode +
                 ", sort_num=" + sort_num +
                 ", device_type='" + device_type + '\'' +
+                ", device_name='" + device_name + '\'' +
+                ", irmote_uid='" + irmote_uid + '\'' +
+                ", irmote_mac='" + irmote_mac + '\'' +
+                ", key_codes='" + key_codes + '\'' +
                 ", topic='" + topic + '\'' +
                 ", channels=" + channels +
                 '}';

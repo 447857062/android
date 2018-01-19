@@ -1,7 +1,6 @@
 package com.deplink.sdk.android.sdk.rest;
 
 
-import android.content.Context;
 import android.util.Log;
 
 import com.deplink.sdk.android.sdk.homegenius.DeviceAddBody;
@@ -9,6 +8,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
 import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
@@ -27,7 +27,6 @@ public class RestfulToolsHomeGenius {
     private static final String TAG = "RestfulToolsHomeGenius";
     private volatile static RestfulToolsHomeGenius singleton;
     private volatile static RestfulHomeGeniusServer apiService;
-    private static Context mContext;
     private static final String baseUrl = "https://api.deplink.net";
     private String errMsg = "请先登录";
 
@@ -64,8 +63,7 @@ public class RestfulToolsHomeGenius {
         apiService = retrofit.create(RestfulHomeGeniusServer.class);
     }
 
-    public static RestfulToolsHomeGenius getSingleton(Context context) {
-        mContext = context;
+    public static RestfulToolsHomeGenius getSingleton() {
         if (singleton == null) {
             synchronized (RestfulToolsHomeGenius.class) {
                 if (singleton == null) {
@@ -157,6 +155,20 @@ public class RestfulToolsHomeGenius {
         }
         Log.i(TAG, "alertDevice:" + username);
         Call<DeviceOperationResponse> call = apiService.alertVirtualDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> alertUserInfo(String username, UserInfoAlertBody body, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "alertUserInfo:" + username);
+        Call<DeviceOperationResponse> call = apiService.alertUserInfo(username, body, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }

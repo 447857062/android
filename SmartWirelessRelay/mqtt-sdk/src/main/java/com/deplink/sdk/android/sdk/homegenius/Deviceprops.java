@@ -21,6 +21,24 @@ public class Deviceprops {
     private String is_super;
     private String room_uid;
     private String room_name;
+    private String sign_seed;
+    private String signature;
+
+    public String getSign_seed() {
+        return sign_seed;
+    }
+
+    public void setSign_seed(String sign_seed) {
+        this.sign_seed = sign_seed;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     public String getUid() {
         return uid;
@@ -124,6 +142,8 @@ public class Deviceprops {
                 ", is_super='" + is_super + '\'' +
                 ", room_uid='" + room_uid + '\'' +
                 ", room_name='" + room_name + '\'' +
+                ", sign_seed='" + sign_seed + '\'' +
+                ", signature='" + signature + '\'' +
                 '}';
     }
 }

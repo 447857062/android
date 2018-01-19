@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.bean.UserSession;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 
 /**
  * Created by billy on 2016/8/8.
@@ -20,6 +21,8 @@ public interface SDKCoordinator {
     void MQTTReconnectionFailed();
     void MQTTConnected();
     void notifySuccess(SDKAction action);
+    void homeGeniusGetUserInfo(String info);
+    void alertUserInfo(DeviceOperationResponse info);
     void notifyGetImageSuccess(SDKAction action, Bitmap bm);
     void notifyBindSuccess(SDKAction action,String deviceKey);
     void notifyFailure(SDKAction action, String errMsg);

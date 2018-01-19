@@ -2,7 +2,6 @@ package com.deplink.sdk.android.sdk.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.util.Log;
 
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -12,6 +11,8 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.bean.UserSession;
 import com.deplink.sdk.android.sdk.device.router.BaseDevice;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.interfaces.SDKCoordinator;
 import com.deplink.sdk.android.sdk.json.AppUpdateResponse;
 import com.deplink.sdk.android.sdk.mqtt.MQTTController;
@@ -32,10 +33,8 @@ public class SDKManager {
     private static final String TAG = "SDKManager";
     private DeviceManager mDeviceManager = null;
     private SDKCoordinator mSDKCoordinator = null;
-    Handler handler = new Handler();
     private List<EventCallback> eventCallbackList = new ArrayList<>();
     private UserManager mUserManager;
-
     public SDKManager(Context context) {
         mSDKCoordinator = new Coordinator();
         mUserManager = new UserManager(mSDKCoordinator);
@@ -248,6 +247,16 @@ public class SDKManager {
         }
         return null;
     }
+    public void getUserInfo(String username) {
+        if (mUserManager != null) {
+             mUserManager.getUserInfo(username );
+        }
+    }
+    public void alertUserInfo(String username, UserInfoAlertBody body) {
+        if (mUserManager != null) {
+             mUserManager.alertUserInfo(username,body );
+        }
+    }
 
     private class Coordinator implements SDKCoordinator {
         @Override
@@ -328,6 +337,22 @@ public class SDKManager {
             for (EventCallback callback : eventCallbackList) {
                 if (callback == null) continue;
                 callback.onSuccess(action);
+            }
+        }
+
+        @Override
+        public void homeGeniusGetUserInfo(String info) {
+            for (EventCallback callback : eventCallbackList) {
+                if (callback == null) continue;
+                callback.onGetUserInfouccess(info);
+            }
+        }
+
+        @Override
+        public void alertUserInfo(DeviceOperationResponse info) {
+            for (EventCallback callback : eventCallbackList) {
+                if (callback == null) continue;
+                callback.alertUserInfo(info);
             }
         }
 

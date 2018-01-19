@@ -20,7 +20,6 @@ import retrofit2.Retrofit;
 public class RestfulToolsPng {
     private volatile static RestfulToolsPng singleton;
     private volatile static RestfulServer apiService;
-
     private String username;
 
     /**
@@ -58,7 +57,6 @@ public class RestfulToolsPng {
 
         builder.client(okClient);
         Retrofit retrofit = builder.build();
-
         apiService = retrofit.create(RestfulServer.class);
     }
 
