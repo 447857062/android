@@ -109,6 +109,20 @@ public class RestfulToolsHomeGeniusString {
         }
         return call;
     }
+    public Call<String> readVirtualDevices(String username, Callback<String> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "readDeviceInfo:" + username);
+        Call<String> call = apiService.readVirtualDevices(username, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
     public Call<String> getLockUseId(String username,String deviceUid, Callback<String> cll) {
         if (null == username) {
             if (cll != null) {

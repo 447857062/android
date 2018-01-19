@@ -9,6 +9,8 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
 import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 import com.google.gson.JsonObject;
@@ -88,6 +90,20 @@ public class RestfulToolsHomeGenius {
         }
         return call;
     }
+    public Call<DeviceOperationResponse> addVirtualDevice(String username, VirtualDeviceAddBody deviceAddBody, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "addDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.addVirtualDevice(username, deviceAddBody, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
 
     public Call<DeviceOperationResponse> deleteDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
@@ -96,8 +112,22 @@ public class RestfulToolsHomeGenius {
             }
             return null;
         }
-        Log.i(TAG, "addDevice:" + username);
+        Log.i(TAG, "deleteDevice:" + username);
         Call<DeviceOperationResponse> call = apiService.deleteDevice(username, uid, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> deleteVirtualDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "deleteVirtualDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.deleteVirtualDevice(username, uid, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
@@ -113,6 +143,20 @@ public class RestfulToolsHomeGenius {
         }
         Log.i(TAG, "alertDevice:" + username);
         Call<DeviceOperationResponse> call = apiService.alertDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> alertVirtualDevice(String username, VirtualDeviceAlertBody deviceprops, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "alertDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.alertVirtualDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }

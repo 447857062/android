@@ -44,13 +44,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddRemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener {
+public class RemoteControlQuickLearnActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "addRCActivity";
     private RelativeLayout layout_device_response;
     private Button button_test;
     private Button button_ng;
     private Button button_ok;
     private RemoteControlManager mRemoteControlManager;
+    private RemoteControlListener mRemoteControlListener;
     private TextView textview_title;
     private TextView textview_test_press_4;
     private TextView textview_test_press_2;
@@ -59,6 +60,9 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     private ImageView imageview_left;
     private ImageView imageview_right;
     private TextView textview_key_name;
+    private String bandName;
+    private String type;
+    private String currentSelectDeviceUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,6 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         initDatas();
         initEvents();
     }
-
     private static final int MSG_SHOW_GET_KT_CODE = 100;
     private static final int MSG_SEND_CODE = 101;
     private static final int MSG_SHOW_GET_TV_CODE = 102;
@@ -251,6 +254,7 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
+        mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         isSendFirst = true;
         Log.i(TAG, "onResume type=" + type);
         switch (type) {
@@ -313,6 +317,12 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
+    }
+
     private void initEvents() {
         button_ng.setOnClickListener(this);
         button_ok.setOnClickListener(this);
@@ -346,19 +356,25 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         imageview_left = findViewById(R.id.imageview_left);
         textview_key_name = findViewById(R.id.textview_key_name);
     }
-
-    private String bandName;
-    private String type;
-    private String currentSelectDeviceUid;
-
     private void initDatas() {
         textview_title.setText("快速学习");
         bandName = getIntent().getStringExtra("bandname");
         type = getIntent().getStringExtra("type");
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, this);
+        mRemoteControlManager.InitRemoteControlManager(this);
         currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
         testCodes = new ArrayList<>();
+        mRemoteControlListener=new RemoteControlListener() {
+            @Override
+            public void responseQueryResult(String result) {
+                super.responseQueryResult(result);
+                Log.i(TAG, "测试按键=" + result);
+                //接收到发送红外按键的回应
+                if (!iscanceled) {
+                    currentTestCodeIndex++;
+                }
+            }
+        };
     }
 
     private int currentButtonStage = 1;
@@ -449,17 +465,17 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
                                     if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
                                         mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
-                                        Intent intent = new Intent(AddRemoteControlActivity.this, DevicesActivity.class);
+                                        Intent intent = new Intent(RemoteControlQuickLearnActivity.this, DevicesActivity.class);
                                         startActivity(intent);
                                     }else{
-                                        Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                        Intent intent = new Intent(RemoteControlQuickLearnActivity.this, AddDeviceNameActivity.class);
                                         intent.putExtra("DeviceType", "智能空调");
                                         startActivity(intent);
                                     }
 
                                 } else {
-                                    ToastSingleShow.showText(AddRemoteControlActivity.this, "空调遥控器按键已学习");
-                                    Intent intent = new Intent(AddRemoteControlActivity.this, AirRemoteControlMianActivity.class);
+                                    ToastSingleShow.showText(RemoteControlQuickLearnActivity.this, "空调遥控器按键已学习");
+                                    Intent intent = new Intent(RemoteControlQuickLearnActivity.this, AirRemoteControlMianActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
@@ -482,17 +498,17 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
                                     if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
                                         mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
-                                        Intent intent = new Intent(AddRemoteControlActivity.this, DevicesActivity.class);
+                                        Intent intent = new Intent(RemoteControlQuickLearnActivity.this, DevicesActivity.class);
                                         startActivity(intent);
                                     }else{
-                                        Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                                        Intent intent = new Intent(RemoteControlQuickLearnActivity.this, AddDeviceNameActivity.class);
                                         intent.putExtra("DeviceType", "智能机顶盒遥控");
                                         startActivity(intent);
                                     }
 
                                 } else {
-                                    ToastSingleShow.showText(AddRemoteControlActivity.this, "电视机顶盒遥控器按键已学习");
-                                    Intent intent = new Intent(AddRemoteControlActivity.this, TvBoxMainActivity.class);
+                                    ToastSingleShow.showText(RemoteControlQuickLearnActivity.this, "电视机顶盒遥控器按键已学习");
+                                    Intent intent = new Intent(RemoteControlQuickLearnActivity.this, TvBoxMainActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
@@ -801,17 +817,17 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
         if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
             if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
                 mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
-                Intent intent = new Intent(AddRemoteControlActivity.this, DevicesActivity.class);
+                Intent intent = new Intent(RemoteControlQuickLearnActivity.this, DevicesActivity.class);
                 startActivity(intent);
             }else{
-                Intent intent = new Intent(AddRemoteControlActivity.this, AddDeviceNameActivity.class);
+                Intent intent = new Intent(RemoteControlQuickLearnActivity.this, AddDeviceNameActivity.class);
                 intent.putExtra("DeviceType", "智能电视");
                 startActivity(intent);
             }
 
         } else {
-            ToastSingleShow.showText(AddRemoteControlActivity.this, "电视遥控器按键已学习");
-            Intent intent = new Intent(AddRemoteControlActivity.this, TvMainActivity.class);
+            ToastSingleShow.showText(RemoteControlQuickLearnActivity.this, "电视遥控器按键已学习");
+            Intent intent = new Intent(RemoteControlQuickLearnActivity.this, TvMainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
@@ -1149,12 +1165,5 @@ public class AddRemoteControlActivity extends Activity implements View.OnClickLi
 
     private boolean iscanceled;
 
-    @Override
-    public void responseQueryResult(String result) {
-        Log.i(TAG, "测试按键=" + result);
-        //接收到发送红外按键的回应
-        if (!iscanceled) {
-            currentTestCodeIndex++;
-        }
-    }
+
 }

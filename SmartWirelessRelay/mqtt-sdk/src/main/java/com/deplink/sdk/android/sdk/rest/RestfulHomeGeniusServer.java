@@ -6,6 +6,8 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
 import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
 import com.google.gson.JsonObject;
 
@@ -35,19 +37,28 @@ public interface RestfulHomeGeniusServer {
   //添加设备
     @PUT("/user/{user_name}/devices")
     Call<JsonObject> addDevice(@Path("user_name") String user_name, @Body DeviceAddBody deviceAddBody, @Header("token") String token);
+  //添加虚拟设备
+    @POST("/user/{user_name}/irdevices")
+    Call<DeviceOperationResponse> addVirtualDevice(@Path("user_name") String user_name, @Body VirtualDeviceAddBody deviceAddBody, @Header("token") String token);
 
-    //添加设备
-   /* @PUT("/user/{user_name}/devices")
-    Call<String> addDevice(@Path("user_name") String user_name, @Body String deviceAddBody, @Header("token") String token);*/
     //修改设备属性
     @PUT("/user/{user_name}/deviceprops")
     Call<DeviceOperationResponse> alertDevice(@Path("user_name") String user_name, @Body Deviceprops deviceprops, @Header("token") String token);
+    //修改虚拟设备属性
+    @PUT("/user/{user_name}/irdevices")
+    Call<DeviceOperationResponse> alertVirtualDevice(@Path("user_name") String user_name, @Body VirtualDeviceAlertBody deviceprops, @Header("token") String token);
     //读设备属性
     @GET("/user/{user_name}/deviceprops/{uid}")
     Call<String> readDeviceInfo(@Path("user_name") String user_name,@Path("uid") String uid, @Header("token") String token);
+    //查询虚拟设备
+    @GET("/user/{user_name}/irdevices")
+    Call<String> readVirtualDevices(@Path("user_name") String user_name, @Header("token") String token);
     //删除设备
     @DELETE("/user/{user_name}/devices/{uid}")
     Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
+    //删除虚拟设备
+    @DELETE("/user/{user_name}/irdevices/{uid}")
+    Call<DeviceOperationResponse> deleteVirtualDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
     //添加房间
     @POST("/user/{user_name}/rooms")
     Call<DeviceOperationResponse> addRoom(@Path("user_name") String user_name, @Body Room room, @Header("token") String token);
