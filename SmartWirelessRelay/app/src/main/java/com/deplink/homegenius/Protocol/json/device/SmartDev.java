@@ -35,11 +35,27 @@ public class SmartDev extends DataSupport implements Serializable {
     private boolean switch_two_open;
     private boolean switch_three_open;
     private boolean switch_four_open;
+    private String key_codes;
     private Router router;
     /**
      * 查询智能设备使用
      */
     private String SmartUid;
+    /**
+     * 数据库中的关联关系必须要初始化好列表
+     */
+    @Column(nullable = false)
+    private List<Room> rooms = new ArrayList<>();
+    /**
+     * 各种类型的遥控器需要指定物理遥控器
+     */
+    private String remotecontrolUid;
+    private String lockPassword = "";
+    private boolean remerberPassword = true;
+    private List<Info> alarmInfo = new ArrayList<>();
+
+
+
 
     public String getSmartUid() {
         return SmartUid;
@@ -80,18 +96,7 @@ public class SmartDev extends DataSupport implements Serializable {
     public void setRouter(Router router) {
         this.router = router;
     }
-    /**
-     * 数据库中的关联关系必须要初始化好列表
-     */
-    @Column(nullable = false)
-    private List<Room> rooms = new ArrayList<>();
-    /**
-     * 各种类型的遥控器需要指定物理遥控器
-     */
-    private String remotecontrolUid;
-    private String lockPassword = "";
-    private boolean remerberPassword = true;
-    private List<Info> alarmInfo = new ArrayList<>();
+
     public boolean isSwitch_one_open() {
         return switch_one_open;
     }
@@ -237,6 +242,14 @@ public class SmartDev extends DataSupport implements Serializable {
 
     public void setVer(String ver) {
         Ver = ver;
+    }
+
+    public String getKey_codes() {
+        return key_codes;
+    }
+
+    public void setKey_codes(String key_codes) {
+        this.key_codes = key_codes;
     }
 
     @Override

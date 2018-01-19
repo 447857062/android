@@ -217,7 +217,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                             tempRecord.saveFast();
                         } else {
                             String findindex = "" + insertIndex;
-                            Record findIndexRecord = DataSupport.where("index = ?", findindex).findFirst(Record.class);
+                            Record findIndexRecord = DataSupport.where("recordIndex = ?", findindex).findFirst(Record.class);
                             findIndexRecord.setTime(aDeviceList.getRecord().get(i).getTime());
                             findIndexRecord.setUserID(aDeviceList.getRecord().get(i).getUserID());
                             findIndexRecord.saveFast();

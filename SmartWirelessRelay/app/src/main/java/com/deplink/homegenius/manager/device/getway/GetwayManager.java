@@ -73,7 +73,7 @@ public class GetwayManager implements LocalConnecteListener {
         if (uid != null) {
             device.setUid(uid);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());

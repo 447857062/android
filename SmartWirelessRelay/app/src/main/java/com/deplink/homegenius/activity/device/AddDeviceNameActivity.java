@@ -264,7 +264,8 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         edittext_add_device_input_name.setHint("最多10个字");
         if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
                 deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
-                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
+                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)||
+                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_MENLING)
                 ) {
             layout_room_select.setVisibility(View.GONE);
         } else {
@@ -928,6 +929,17 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             return;
         }
         deviceAddBody.setDevice_name(deviceName);
+        switch (deviceType){
+            case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
+                deviceType="IREMOTE_V2_AC";
+                break;
+            case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
+                deviceType="IREMOTE_V2_TV";
+                break;
+            case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                deviceType="IREMOTE_V2_STB";
+                break;
+        }
         deviceAddBody.setDevice_type(deviceType);
         deviceAddBody.setIrmote_uid(currentSelectRemotecontrol.getUid());
         deviceAddBody.setIrmote_mac(currentSelectRemotecontrol.getMac());

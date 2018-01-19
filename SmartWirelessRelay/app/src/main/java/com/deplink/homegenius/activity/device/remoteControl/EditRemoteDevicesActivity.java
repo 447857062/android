@@ -70,6 +70,7 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
     private RemoteControlManager mRemoteControlManager;
     private String action;
     private  String changeDevicename;
+    private String deviceUid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +128,8 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
                 textview_select_remotecontrol_name.setText(selectRemotecontrolName);
                 layout_remotecontrol_list.setVisibility(View.GONE);
                 imageview_remotecontrol_arror_right.setImageResource(R.drawable.directionicon);
-                mRemoteControlManager.alertVirtualDevice(null,null,currentSelectRemotecontrol.getUid());
+                deviceUid=mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+                mRemoteControlManager.alertVirtualDevice(deviceUid,null,null,currentSelectRemotecontrol.getUid());
             }
         });
         initMqttCallback();
@@ -262,7 +264,8 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
                         action="alertname";
                          changeDevicename = edittext_add_device_input_name.getText().toString();
                         if (!changeDevicename.equals("")) {
-                            mRemoteControlManager.alertVirtualDevice(changeDevicename,null,null);
+                            deviceUid=mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+                            mRemoteControlManager.alertVirtualDevice(deviceUid,changeDevicename,null,null);
                         }
                     } else {
                         ToastSingleShow.showText(EditRemoteDevicesActivity.this, "未登录,登录后才能删除设备");

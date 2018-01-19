@@ -168,7 +168,7 @@ public class SmartLockManager implements LocalConnecteListener {
         if (userName.equals("")) {
             return;
         }
-        RestfulToolsHomeGeniusString.getSingleton(mContext).getLockUseId(userName, deviceUid, new Callback<String>() {
+        RestfulToolsHomeGeniusString.getSingleton().getLockUseId(userName, deviceUid, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
@@ -208,7 +208,7 @@ public class SmartLockManager implements LocalConnecteListener {
         if (userName.equals("")) {
             return;
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).setLockUserIdName(userName, deviceUid, userIdBody, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().setLockUserIdName(userName, deviceUid, userIdBody, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());

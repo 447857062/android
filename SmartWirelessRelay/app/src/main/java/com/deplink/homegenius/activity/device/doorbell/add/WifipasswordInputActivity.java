@@ -8,19 +8,23 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.util.Wifi;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class WifipasswordInputActivity extends Activity implements View.OnClickListener{
     private FrameLayout image_back;
     private TextView textview_title;
     private Button button_next_step;
+    private TextView textview_wifi_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifipassword_input);
         initViews();
-        initEvents();
         initDatas();
+        initEvents();
+
     }
     private void initEvents() {
         image_back.setOnClickListener(this);
@@ -29,12 +33,19 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
 
     private void initDatas() {
         textview_title.setText("输入WIFI信息");
+       String wifiName= Wifi.getConnectedWifiName(this);
+        if(wifiName!=null&&!wifiName.equals("")){
+            textview_wifi_name.setText(wifiName);
+        }
+
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        button_next_step = (Button) findViewById(R.id.button_next_step);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        button_next_step = findViewById(R.id.button_next_step);
+        textview_wifi_name = findViewById(R.id.textview_wifi_name);
+
     }
 
     @Override

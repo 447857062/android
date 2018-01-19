@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public class Router extends DataSupport implements Serializable {
     private String routerDeviceKey;
+    private String sign_seed;
+    private String signature;
     private SmartDev smartDev;
     private Channels channels;
     public SmartDev getSmartDev() {
@@ -25,6 +27,22 @@ public class Router extends DataSupport implements Serializable {
     }
     public void setRouterDeviceKey(String routerDeviceKey) {
         this.routerDeviceKey = routerDeviceKey;
+    }
+
+    public String getSign_seed() {
+        return sign_seed;
+    }
+
+    public void setSign_seed(String sign_seed) {
+        this.sign_seed = sign_seed;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public Channels getChannels() {

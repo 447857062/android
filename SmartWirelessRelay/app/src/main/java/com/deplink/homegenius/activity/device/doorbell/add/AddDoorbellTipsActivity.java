@@ -33,9 +33,9 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        button_next_step = (Button) findViewById(R.id.button_next_step);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        button_next_step = findViewById(R.id.button_next_step);
     }
 
     @Override

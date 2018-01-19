@@ -49,7 +49,6 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG="DeviceNumberActivity";
     private FrameLayout image_back;
-
     private TextView textview_edit;
     private DeviceListAdapter mDeviceAdapter;
     /**

@@ -202,15 +202,11 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
         layout_brightness_control = findViewById(R.id.layout_brightness_control);
         layout_lightcolor_control = findViewById(R.id.layout_lightcolor_control);
     }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mSmartLightManager.releaswSmartManager();
     }
-
-
 
     @Override
     protected void onResume() {
@@ -318,8 +314,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                         mSmartLightManager.setSmartLightSwitch("open");
                     }
                 }
-
-
                 break;
             case R.id.textview_edit:
                 startActivity(new Intent(this, LightEditActivity.class));
@@ -335,6 +329,16 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
             switch (msg.what) {
                 case MSG_GET_LIGHT_RESULT:
                     QueryOptions resultObj = (QueryOptions) msg.obj;
+                    button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
+                    if (resultObj.getYellow() != 0) {
+                        button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
+                        float alpha = (float) (resultObj.getYellow() / 200.0);
+                        Log.i(TAG, "alpha=" + alpha);
+                        button_switch_light.setAlpha(alpha);
+                        if (isOnResume) {
+                            progressBarLightYellow.setProgress(resultObj.getYellow() / 2);
+                        }
+                    }
                     if (resultObj.getOpen() == 1) {
                         iamgeview_switch.setBackgroundResource(R.drawable.radius110_bg_white_background);
                         imageview_switch_bg.setBackgroundResource(R.drawable.lightglowoutside);
@@ -345,18 +349,9 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                         iamgeview_switch.setBackgroundResource(R.drawable.ovel_110_bg);
                         imageview_switch_bg.setBackgroundResource(R.color.room_type_text);
                         textview_switch_tips.setText("点击开启");
+                        button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
                         layout_lightcolor_control.setVisibility(View.GONE);
                         layout_brightness_control.setVisibility(View.GONE);
-                    }
-                    button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
-                    if (resultObj.getYellow() != 0) {
-                        button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
-                        float alpha = (float) (resultObj.getYellow() / 200.0);
-                        Log.i(TAG, "alpha=" + alpha);
-                        button_switch_light.setAlpha(alpha);
-                        if (isOnResume) {
-                            progressBarLightYellow.setProgress(resultObj.getYellow() / 2);
-                        }
                     }
                     if (resultObj.getWhite() != 0) {
                         float alpha = (float) (resultObj.getWhite() / 200.0);

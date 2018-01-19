@@ -35,15 +35,15 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.homepage_roomchanged_item, null);
-            viewHolder.textview_room_item = (TextView) convertView
+            viewHolder.textview_room_item = convertView
                     .findViewById(R.id.textview_room_item);
-            viewHolder.device_number = (TextView) convertView
+            viewHolder.device_number = convertView
                     .findViewById(R.id.device_number);
-            viewHolder.imageview_room_type = (ImageView) convertView
+            viewHolder.imageview_room_type = convertView
                     .findViewById(R.id.imageview_room_type);
             viewHolder.view_line = convertView
                     .findViewById(R.id.view_line);
-            viewHolder.layout_root = (RelativeLayout) convertView
+            viewHolder.layout_root = convertView
                     .findViewById(R.id.layout_root);
             convertView.setTag(viewHolder);
         } else {

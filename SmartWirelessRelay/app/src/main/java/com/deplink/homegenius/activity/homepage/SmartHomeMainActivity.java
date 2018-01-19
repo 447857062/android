@@ -118,9 +118,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_GET_ROOM:
-                    List<Room> result = (List<Room>) msg.obj;
                     mRoomList.clear();
-                    mRoomList.addAll(result);
+                    mRoomList.addAll(mRoomManager.queryRooms());
                     setRoomNormalLayout();
                     Log.i(TAG, "mRoomList.size=" + mRoomList.size());
                     mAdapter.notifyDataSetChanged();
@@ -138,7 +137,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     textview_city.setText(city + "/" + district);
                     initWaetherData();
                     sendRequestWithHttpClient(city);
-
                     break;
                 case MSG_SHOW_PM25_TEXT:
                     textview_pm25.setText("" + msg.obj);
@@ -154,19 +152,26 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     }
                     break;
                 case MSG_INIT_LOCATIONSERVICE:
-                    mLocationClient = new LocationClient(getApplicationContext());
-                    //声明LocationClient类
-                    mLocationClient.registerLocationListener(myListener);
-                    //注册监听函数
-                    LocationClientOption option = new LocationClientOption();
-                    option.setIsNeedAddress(true);
-                    //可选，是否需要地址信息，默认为不需要，即参数为false
-                    //如果开发者需要获得当前点的地址信息，此处必须为true
-                    mLocationClient.setLocOption(option);
-                    //mLocationClient为第二步初始化过的LocationClient对象
-                    //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
-                    //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
-                    mLocationClient.start();
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            mLocationClient = new LocationClient(getApplicationContext());
+                            //声明LocationClient类
+                            mLocationClient.registerLocationListener(myListener);
+                            //注册监听函数
+                            LocationClientOption option = new LocationClientOption();
+                            option.setIsNeedAddress(true);
+                            //可选，是否需要地址信息，默认为不需要，即参数为false
+                            //如果开发者需要获得当前点的地址信息，此处必须为true
+                            mLocationClient.setLocOption(option);
+                            //mLocationClient为第二步初始化过的LocationClient对象
+                            //需将配置好的LocationClientOption对象，通过setLocOption方法传递给LocationClient对象使用
+                            //更多LocationClientOption的配置，请参照类参考中LocationClientOption类的详细说明
+                            mLocationClient.start();
+                        }
+                    }.start();
+
                     break;
             }
         }
@@ -187,7 +192,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     public void responseQueryResultHttps(List<Room> result) {
         Message msg = Message.obtain();
         msg.what = MSG_GET_ROOM;
-        msg.obj = result;
         mHandler.sendMessage(msg);
     }
 
@@ -240,6 +244,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
+
     /**
      * 获取pm2.5
      *
@@ -263,6 +268,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             mHandler.sendMessage(message);
                         }
                     }
+
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
@@ -272,6 +278,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         }).start();
     }
+
     public void initWaetherData() {
         new Thread(new Runnable() {
             @Override
@@ -291,6 +298,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             mHandler.sendMessage(message);
                         }
                     }
+
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
@@ -301,10 +309,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }).start();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        if (isLogin) {
+            mRoomManager.updateRooms();
+        }
         manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -329,9 +341,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         });
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
         layout_roomselect_normal.smoothScrollTo(0, 0);
-        if(isLogin){
-            mRoomManager.updateRooms();
-        }
+
     }
 
     private void setRoomNormalLayout() {

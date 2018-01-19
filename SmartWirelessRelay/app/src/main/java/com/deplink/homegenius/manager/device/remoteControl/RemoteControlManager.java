@@ -16,11 +16,13 @@ import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -297,7 +299,7 @@ public class RemoteControlManager implements LocalConnecteListener {
         if (uid != null) {
             device.setUid(uid);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteVirtualDevice(userName, uid, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().deleteVirtualDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
@@ -317,14 +319,47 @@ public class RemoteControlManager implements LocalConnecteListener {
         });
     }
     /**
+     * 查询设备列表
+     */
+    public void queryVirtualDeviceList() {
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            return;
+        }
+        RestfulToolsHomeGeniusString.getSingleton().readVirtualDevices(userName, new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if (response.code() == 200) {
+                    ArrayList<DeviceOperationResponse> list = ParseUtil.jsonToArrayList(response.body(), DeviceOperationResponse.class);
+                    for (int i = 0; i < list.size(); i++) {
+                        Log.i(TAG, "device=" + list.get(i).toString());
+                    }
+                    for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                        mRemoteControlListenerList.get(i).responseQueryVirtualDevices(list);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+    /**
      * 修改设备属性
      */
-    public void alertVirtualDevice(String device_name, String key_codes, String iremote_uid) {
+    public void alertVirtualDevice(String uid,String device_name, String key_codes, String iremote_uid) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
             return;
         }
         VirtualDeviceAlertBody device = new VirtualDeviceAlertBody();
+        if(uid!=null){
+            device.setUid(uid);
+        }
         if (device_name != null) {
             device.setDevice_name(device_name);
         }
@@ -335,7 +370,7 @@ public class RemoteControlManager implements LocalConnecteListener {
             device.setIremote_uid(iremote_uid);
         }
         Log.i(TAG, "alert device:" + device.toString());
-        RestfulToolsHomeGenius.getSingleton(mContext).alertVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().alertVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());

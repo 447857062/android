@@ -16,11 +16,19 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.room.adapter.GridViewAdapter;
 import com.deplink.homegenius.application.AppManager;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.gridview.DragGridView;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +56,10 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
     private TextView textview_room;
     private TextView textview_mine;
     private static final int MSG_UPDATE_ROOM = 100;
+    private SDKManager manager;
+    private EventCallback ec;
+    private boolean isUserLogin;
+    private MakeSureDialog connectLostDialog;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -56,7 +68,6 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
                 case MSG_UPDATE_ROOM:
                     mRooms.clear();
                     mRooms.addAll(mRoomManager.queryRooms());
-                    Log.i(TAG, "handler界面显示房间的列表大小" + mRooms.size());
                     mRoomsAdapter.notifyDataSetChanged();
                     break;
             }
@@ -71,18 +82,62 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
         initDatas();
         initEvents();
     }
+    private void initMqttCallback() {
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new MakeSureDialog(RoomActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(RoomActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
 
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+    }
     @Override
     protected void onPause() {
         super.onPause();
-        if(isRoomOrdinalNumberChanged){
-            mRoomManager.updateRoomsOrdinalNumber(mRooms);
+        manager.removeEventCallback(ec);
+        if(isUserLogin){
+            if(isRoomOrdinalNumberChanged){
+                mRoomManager.updateRoomsOrdinalNumber(mRooms);
+            }
         }
     }
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager(this, this);
+        initMqttCallback();
     }
 
     @Override
@@ -101,6 +156,7 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
         //房间适配器
         mDragGridView.setAdapter(mRoomsAdapter);
         mRoomManager.updateRooms();
+        manager.addEventCallback(ec);
     }
     private boolean isRoomOrdinalNumberChanged;
     private void initEvents() {

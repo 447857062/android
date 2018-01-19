@@ -46,6 +46,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
@@ -111,6 +112,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private MakeSureDialog connectLostDialog;
     private boolean isUserLogin;
     private GetwayManager mGetwayManager;
+    private RemoteControlManager mRemoteControlManager;
+    private RemoteControlListener mRemoteControlListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,18 +129,17 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         super.onResume();
         manager.addEventCallback(ec);
         mDeviceManager.addDeviceListener(mDeviceListener);
-        textview_home.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        textview_device.setTextColor(getResources().getColor(R.color.title_blue_bg));
-        textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        textview_mine.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        imageview_home_page.setImageResource(R.drawable.nocheckthehome);
-        imageview_devices.setImageResource(R.drawable.checkthedevice);
-        imageview_rooms.setImageResource(R.drawable.nochecktheroom);
-        imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
+        mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
+        setButtomBarImageResource();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isUserLogin) {
             mDeviceManager.queryDeviceListHttp();
+            mRemoteControlManager.queryVirtualDeviceList();
         }
+        notifyDeviceListView();
+    }
+
+    private void notifyDeviceListView() {
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
@@ -148,23 +150,27 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         listview_devies.setEmptyView(layout_empty_view_scroll);
     }
 
+    private void setButtomBarImageResource() {
+        textview_home.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_device.setTextColor(getResources().getColor(R.color.title_blue_bg));
+        textview_room.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        textview_mine.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        imageview_home_page.setImageResource(R.drawable.nocheckthehome);
+        imageview_devices.setImageResource(R.drawable.checkthedevice);
+        imageview_rooms.setImageResource(R.drawable.nochecktheroom);
+        imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
         mDeviceManager.removeDeviceListener(mDeviceListener);
+        mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
     }
+
     private void initDatas() {
-        mSmartLockManager = SmartLockManager.getInstance();
-        mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
-        mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this);
-        mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, null);
-        mRouterManager = RouterManager.getInstance();
-        mRouterManager.InitRouterManager(DevicesActivity.this);
-        mGetwayManager = GetwayManager.getInstance();
-        mGetwayManager.InitGetwayManager(this, this);
+        initManager();
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
@@ -241,55 +247,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 }
             }
         });
-        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(DevicesActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
-            @Override
-            public void onSureBtnClicked() {
-                startActivity(new Intent(DevicesActivity.this, LoginActivity.class));
-            }
-        });
-        manager = DeplinkSDK.getSDKManager();
-        ec = new EventCallback() {
-            @Override
-            public void onSuccess(SDKAction action) {
-            }
-
-            @Override
-            public void onBindSuccess(SDKAction action, String devicekey) {
-            }
-
-            @Override
-            public void notifyHomeGeniusResponse(String result) {
-                super.notifyHomeGeniusResponse(result);
-                Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
-                if (result.contains("DevList")) {
-                    Message msg = Message.obtain();
-                    msg.what = MSG_UPDATE_DEVS;
-                    msg.obj = result;
-                    mHandler.sendMessage(msg);
-                }
-            }
-
-            @Override
-            public void deviceOpSuccess(String op, String deviceKey) {
-                super.deviceOpSuccess(op, deviceKey);
-            }
-
-            @Override
-            public void onFailure(SDKAction action, Throwable throwable) {
-            }
-
-            @Override
-            public void connectionLost(Throwable throwable) {
-                super.connectionLost(throwable);
-                isUserLogin = false;
-                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                connectLostDialog.show();
-                connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
-            }
-        };
+        initMqttCallback();
         mDeviceListener = new DeviceListener() {
             @Override
             public void responseQueryResult(String result) {
@@ -344,6 +302,83 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);
             }
         };
+        mRemoteControlListener = new RemoteControlListener() {
+            @Override
+            public void responseQueryVirtualDevices(List<DeviceOperationResponse> result) {
+                super.responseQueryVirtualDevices(result);
+                //保存虚拟设备
+                for(int i=0;i<result.size();i++){
+                    saveVirtualDeviceToSqlite(result,i);
+                }
+            }
+        };
+    }
+
+    private void initMqttCallback() {
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new MakeSureDialog(DevicesActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(DevicesActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
+                if (result.contains("DevList")) {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_UPDATE_DEVS;
+                    msg.obj = result;
+                    mHandler.sendMessage(msg);
+                }
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+    }
+
+    private void initManager() {
+        mSmartLockManager = SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(DevicesActivity.this);
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
+        mRoomManager = RoomManager.getInstance();
+        mRoomManager.initRoomManager(this, null);
+        mRouterManager = RouterManager.getInstance();
+        mRouterManager.InitRouterManager(DevicesActivity.this);
+        mGetwayManager = GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this, this);
+        mRemoteControlManager = RemoteControlManager.getInstance();
+        mRemoteControlManager.InitRemoteControlManager(this);
     }
 
     private void initEvents() {
@@ -381,6 +416,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             }
         });
     }
+
     private void initViews() {
         layout_home_page = findViewById(R.id.layout_home_page);
         layout_devices = findViewById(R.id.layout_devices);
@@ -470,7 +506,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             if (deviceName == null || deviceName.equals("")) {
                 dev.setName("中继器");
             } else {
-               deviceName=deviceName.replace("/路由器","");
+                deviceName = deviceName.replace("/路由器", "");
                 dev.setName(deviceName);
             }
             deviceType = DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY;
@@ -482,7 +518,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
-        Log.i(TAG,"添加中继器房间是:"+room.toString());
+        Log.i(TAG, "添加中继器房间是:" + room.toString());
         rooms.add(room);
         dev.setRoomList(rooms);
         boolean success = dev.save();
@@ -554,13 +590,25 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setMac(devices.get(i).getMac().toLowerCase());
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
-        if(room!=null){
+        if (room != null) {
             Log.i(TAG, "保存设备:" + room.toString());
             rooms.add(room);
             dev.setRooms(rooms);
         }
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
+    }
+
+    private void saveVirtualDeviceToSqlite(List<DeviceOperationResponse> devices, int i) {
+        SmartDev dev = new SmartDev();
+        String deviceType = devices.get(i).getDevice_type();
+        dev.setType(deviceType);
+        String deviceName = devices.get(i).getDevice_name();
+        dev.setName(deviceName);
+        dev.setUid( devices.get(i).getUid());
+        dev.setRemotecontrolUid(devices.get(i).getIrmote_uid());
+        dev.setMac(devices.get(i).getMac());
+        dev.setKey_codes(devices.get(i).getKey_codes());
     }
 
     private static final int MSG_UPDATE_DEVS = 0x01;
@@ -602,7 +650,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                             }
                         }
                         if (addGatway) {
-                            Log.i(TAG,"下发网关设备 uid:"+datasTop.get(j).getUid());
+                            Log.i(TAG, "下发网关设备 uid:" + datasTop.get(j).getUid());
                             mGetwayManager.bindDevice(datasTop.get(j).getUid());
                         }
                     }

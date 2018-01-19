@@ -32,7 +32,9 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,6 +65,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private boolean isUserLogin;
     private boolean hasGetUserImage;
     private ConfirmDialog mLogoutDialog;
+    private TextView user_nickname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +97,12 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 setLocalImage(user_head_portrait);
             }
             button_logout.setText("退出登录");
+            String userName=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+            manager.getUserInfo(userName);
         }else{
             button_logout.setText("登录");
         }
+
     }
     private void setLocalImage(CircleImageView user_head_portrait) {
         boolean isSdCardExist = Environment.getExternalStorageState().equals(
@@ -156,6 +162,14 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                     e.printStackTrace();
                 }
 
+            }
+
+            @Override
+            public void onGetUserInfouccess(String info) {
+                super.onGetUserInfouccess(info);
+                Gson gson = new Gson();
+                UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
+                user_nickname.setText(responseInfo.getNickname());
             }
 
             @Override
@@ -222,6 +236,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         layout_personal_center = findViewById(R.id.layout_personal_center);
         button_logout = findViewById(R.id.button_logout);
         user_head_portrait = findViewById(R.id.user_head_portrait);
+        user_nickname = findViewById(R.id.user_nickname);
     }
 
     /**

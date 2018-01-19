@@ -115,7 +115,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             }
             SmartDev smartDev = DataSupport.where("Uid=?", mSmartLightManager.getCurrentSelectLight().getUid()).findFirst(SmartDev.class, true);
             if (!isOnActivityResult) {
-
                 if (mSmartLightManager.getCurrentSelectLight().getRooms().size() == 1) {
                     textview_select_room_name.setText(smartDev.getRooms().get(0).getRoomName());
                 } else {
@@ -138,8 +137,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
-
-
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);

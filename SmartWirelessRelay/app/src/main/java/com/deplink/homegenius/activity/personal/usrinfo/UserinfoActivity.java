@@ -18,11 +18,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.bitmap.BitmapHandler;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.PictureSelectDialog;
+import com.deplink.homegenius.view.dialog.SexSelectDialog;
+import com.deplink.homegenius.view.imageview.CircleImageView;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.homegenius.view.viewselector.TimeSelector;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 import com.zxy.tiny.core.FileKit;
@@ -34,15 +45,6 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
-import com.deplink.homegenius.view.dialog.PictureSelectDialog;
-import com.deplink.homegenius.view.dialog.SexSelectDialog;
-import com.deplink.homegenius.view.imageview.CircleImageView;
-import com.deplink.homegenius.view.toast.ToastSingleShow;
-import com.deplink.homegenius.view.viewselector.TimeSelector;
 
 public class UserinfoActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "UserinfoActivity";
@@ -86,6 +88,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void onSuccess(SDKAction action) {
+
             }
 
             @Override
@@ -98,13 +101,23 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             public void onGetImageSuccess(SDKAction action, final Bitmap bm) {
                 //保存到本地
                 try {
-                    Log.i(TAG,"onGetImageSuccess");
+                    Log.i(TAG, "onGetImageSuccess");
                     user_head_portrait.setImageBitmap(bm);
                     saveToSDCard(bm);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+            }
+
+            @Override
+            public void onGetUserInfouccess(String info) {
+                super.onGetUserInfouccess(info);
+                Gson gson = new Gson();
+                UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
+                textview_show_nicknamke.setText(responseInfo.getNickname());
+                textview_show_sex.setText(responseInfo.getGender());
+                textview_show_birthday.setText(responseInfo.getBirthday());
             }
 
             @Override
@@ -134,21 +147,26 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
     }
+
     private boolean isUserLogin;
     private boolean hasGetUserImage;
+    private String userName;
+
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isUserLogin) {
-             hasGetUserImage = Perfence.getBooleanPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE);
+            hasGetUserImage = Perfence.getBooleanPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE);
             if (!hasGetUserImage) {
                 Perfence.setPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE, true);
                 manager.getImage(Perfence.getPerfence(Perfence.PERFENCE_PHONE));
             } else {
                 setLocalImage(user_head_portrait);
             }
+            userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+            manager.getUserInfo(userName);
         }
     }
 
@@ -176,6 +194,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             ToastSingleShow.showText(this, "sd卡不存在！");
         }
     }
+
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
         textview_show_nicknamke = findViewById(R.id.textview_show_nicknamke);
@@ -212,7 +231,6 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         final Intent galleryIntent = new Intent();
         galleryIntent.setType("image/*");
         galleryIntent.setAction(Intent.ACTION_PICK);
-
         final Intent chooserIntent = Intent.createChooser(galleryIntent, "Choose image");
         startActivityForResult(chooserIntent, 100);
     }
@@ -240,6 +258,9 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onSexSelect(String selectMode) {
                         textview_show_sex.setText(selectMode);
+                        UserInfoAlertBody body = new UserInfoAlertBody();
+                        body.setGender(selectMode);
+                        manager.alertUserInfo(userName, body);
                     }
                 });
                 mSexDialog.show();
@@ -250,20 +271,21 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                 TimeSelector timeSelector = new TimeSelector(this, new TimeSelector.ResultHandler() {
                     @Override
                     public void handle(String time, Calendar selectedCalendar) {
-                        //TODO 如果需要上传到服务器需要添加下面这句
-                        // SelectedTime = selectedCalendar.getTimeInMillis() / 1000;
                         textview_show_birthday.setText(time);
+                        UserInfoAlertBody body = new UserInfoAlertBody();
+                        body.setBirthday(time);
+                        manager.alertUserInfo(userName, body);
                     }
                 }, "1900-11-22");
                 timeSelector.show();
 
                 break;
             case R.id.layout_user_header_image:
-                PictureSelectDialog dialog=new PictureSelectDialog(this);
+                PictureSelectDialog dialog = new PictureSelectDialog(this);
                 dialog.setmOnModeSelectClickListener(new PictureSelectDialog.onModeSelectClickListener() {
                     @Override
                     public void onModeSelect(String action) {
-                        switch (action){
+                        switch (action) {
                             case "picture":
                                 //拍照选择
                                 mHandler.post(new Runnable() {

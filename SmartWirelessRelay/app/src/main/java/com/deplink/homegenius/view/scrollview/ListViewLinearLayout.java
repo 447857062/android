@@ -68,6 +68,9 @@ public class ListViewLinearLayout extends LinearLayout implements View.OnTouchLi
                 y1 = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                if(sv.getChildAt(0)==null){
+                    return false;
+                }
                 y2 = event.getY();
                 int scrollY = v.getScrollY();
                 int height = v.getHeight();

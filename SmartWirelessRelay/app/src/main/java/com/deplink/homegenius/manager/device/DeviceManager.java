@@ -157,7 +157,7 @@ public class DeviceManager implements LocalConnecteListener {
         if (userName.equals("")) {
             return;
         }
-        RestfulToolsHomeGeniusString.getSingleton(mContext).getDeviceInfo(userName, new Callback<String>() {
+        RestfulToolsHomeGeniusString.getSingleton().getDeviceInfo(userName, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
@@ -186,7 +186,7 @@ public class DeviceManager implements LocalConnecteListener {
             return;
         }
         Log.i(TAG, device.toString());
-        RestfulToolsHomeGenius.getSingleton(mContext).addDevice(userName, device, new Callback<JsonObject>() {
+        RestfulToolsHomeGenius.getSingleton().addDevice(userName, device, new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.i(TAG, "" + response.code());
@@ -231,7 +231,7 @@ public class DeviceManager implements LocalConnecteListener {
             return;
         }
         Log.i(TAG, device.toString());
-        RestfulToolsHomeGenius.getSingleton(mContext).addVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().addVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
@@ -272,7 +272,7 @@ public class DeviceManager implements LocalConnecteListener {
         if (uid != null) {
             device.setUid(uid);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
@@ -312,7 +312,7 @@ public class DeviceManager implements LocalConnecteListener {
             device.setDevice_name(device_name);
         }
         Log.i(TAG, "alert device:" + device.toString());
-        RestfulToolsHomeGenius.getSingleton(mContext).alertDevice(userName, device, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().alertDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
@@ -331,7 +331,6 @@ public class DeviceManager implements LocalConnecteListener {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());
@@ -347,7 +346,7 @@ public class DeviceManager implements LocalConnecteListener {
         if (userName.equals("")) {
             return;
         }
-        RestfulToolsHomeGeniusString.getSingleton(mContext).readDeviceInfo(userName, uid, new Callback<String>() {
+        RestfulToolsHomeGeniusString.getSingleton().readDeviceInfo(userName, uid, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i(TAG, "" + response.code());
