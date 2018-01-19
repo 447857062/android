@@ -24,6 +24,7 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.homegenius.DeviceAddBody;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.google.gson.Gson;
@@ -220,6 +221,42 @@ public class DeviceManager implements LocalConnecteListener {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.i(TAG, "" + t.getMessage());
+            }
+        });
+    }
+    public void addVirtualDeviceHttp(VirtualDeviceAddBody device) {
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            return;
+        }
+        Log.i(TAG, device.toString());
+        RestfulToolsHomeGenius.getSingleton(mContext).addVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if (response.errorBody() != null) {
+                    try {
+                        Log.i(TAG, "" + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (response.code() == 200) {
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        mDeviceListenerList.get(i).responseAddVirtualDeviceHttp(
+                                response.body()
+                        );
+                    }
+                } else if (response.code() == 403) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());
             }
         });

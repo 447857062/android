@@ -81,7 +81,48 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private void initDatas() {
         textview_title.setText("智能网关");
         textview_edit.setText("完成");
+        mGetwayManager = GetwayManager.getInstance();
+        mGetwayManager.InitGetwayManager(this, this);
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        initMqtt();
+        mDeviceListener = new DeviceListener() {
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                Log.i(TAG, "修改设备属性:" + result.toString());
+                if (action.equalsIgnoreCase("alertroom")) {
+                    mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
+                } else if (action.equalsIgnoreCase("alertname")) {
+                    Message msg = Message.obtain();
+                    msg.what = MSG_ALERT_DEVICENAME_RESULT;
+                    mHandler.sendMessage(msg);
+                }
+                action = "";
+            }
+        };
+        if (isStartFromExperience) {
+            edittext_input_devie_name.setText("家里的网关");
+            edittext_input_devie_name.setSelection(5);
+            edittext_input_devie_name.clearFocus();
+            textview_select_room_name.setText("全部");
+        } else {
+            currentSelectDeviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
+            edittext_input_devie_name.setText(currentSelectDeviceName);
+            edittext_input_devie_name.setSelection(currentSelectDeviceName.length());
+            edittext_input_devie_name.clearFocus();
+            List<Room> rooms = mGetwayManager.getCurrentSelectGetwayDevice().getRoomList();
+            if (rooms.size() == 1) {
+                textview_select_room_name.setText(rooms.get(0).getRoomName());
+            } else {
+                textview_select_room_name.setText("全部");
+            }
+        }
+        deleteDialog = new DeleteDeviceDialog(this);
+    }
+
+    private void initMqtt() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         connectLostDialog = new MakeSureDialog(GetwayDeviceActivity.this);
@@ -121,43 +162,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             public void onFailure(SDKAction action, Throwable throwable) {
             }
         };
-        mDeviceListener = new DeviceListener() {
-            @Override
-            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
-                super.responseAlertDeviceHttpResult(result);
-                Log.i(TAG, "修改设备属性:" + result.toString());
-                if (action.equalsIgnoreCase("alertroom")) {
-                    mGetwayManager.updateGetwayDeviceInWhatRoom(room, deviceUid);
-                } else if (action.equalsIgnoreCase("alertname")) {
-                    Message msg = Message.obtain();
-                    msg.what = MSG_ALERT_DEVICENAME_RESULT;
-                    mHandler.sendMessage(msg);
-                }
-                action = "";
-            }
-        };
-        mGetwayManager = GetwayManager.getInstance();
-        mGetwayManager.InitGetwayManager(this, this);
-        mDeviceManager = DeviceManager.getInstance();
-        mDeviceManager.InitDeviceManager(this);
-        if (isStartFromExperience) {
-            edittext_input_devie_name.setText("家里的网关");
-            edittext_input_devie_name.setSelection(5);
-            edittext_input_devie_name.clearFocus();
-            textview_select_room_name.setText("全部");
-        } else {
-            currentSelectDeviceName = mGetwayManager.getCurrentSelectGetwayDevice().getName();
-            edittext_input_devie_name.setText(currentSelectDeviceName);
-            edittext_input_devie_name.setSelection(currentSelectDeviceName.length());
-            edittext_input_devie_name.clearFocus();
-            List<Room> rooms = mGetwayManager.getCurrentSelectGetwayDevice().getRoomList();
-            if (rooms.size() == 1) {
-                textview_select_room_name.setText(rooms.get(0).getRoomName());
-            } else {
-                textview_select_room_name.setText("全部");
-            }
-        }
-        deleteDialog = new DeleteDeviceDialog(this);
     }
 
     private void initEvents() {

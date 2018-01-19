@@ -14,12 +14,14 @@ import android.widget.TextView;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionInitKeyValue;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu;
+import com.deplink.homegenius.activity.device.remoteControl.LearnByHandActivity;
 import com.deplink.homegenius.constant.AirKeyNameConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.util.DataExchange;
 import com.deplink.homegenius.view.dialog.KeynotlearnDialog;
+import com.deplink.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 import com.deplink.homegenius.view.dialog.remotecontrol.aircondition.AirconditionModeSelectDialog;
 import com.deplink.homegenius.view.dialog.remotecontrol.aircondition.AirconditionWindDirectionSelectDialog;
 import com.deplink.homegenius.view.dialog.remotecontrol.aircondition.AirconditionWindSpeedSelectDialog;
@@ -27,9 +29,6 @@ import com.deplink.homegenius.view.dialog.remotecontrol.aircondition.Airconditio
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.device.remoteControl.LearnByHandActivity;
-import com.deplink.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
 public class AirRemoteControlMianActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ARCMianActivity";
@@ -82,7 +81,13 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
     private TextView textview_temperature;
     private SeekBar progressBar;
     private int temptureProgress;
-
+    private boolean isStartFromExperience;
+    private int currentMode;
+    private int wind;
+    private int directionHand;
+    private int directionAuto;
+    private int tempature;
+    private int power;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +96,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         initDatas();
         initEvents();
     }
-
-    private boolean isStartFromExperience;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -102,14 +104,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         initImageViewKeyBackground();
         initKeyCodeData();
     }
-
-    private int currentMode;
-    private int wind;
-    private int directionHand;
-    private int directionAuto;
-    private int tempature;
-    private int power;
-
     /**
      * 初始化按键的背景，学习过和未学习的按键背景不一样，点击效果也不一样
      */
@@ -393,7 +387,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         func[5] = (byte) mAirconditionInitKeyValue.getWind();
         func[6] = (byte) mAirconditionInitKeyValue.getMode();
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, null);
+        mRemoteControlManager.InitRemoteControlManager(this);
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         modeDialog = new AirconditionModeSelectDialog(this);
         modeDialog.setmOnModeSelectClickListener(new AirconditionModeSelectDialog.onModeSelectClickListener() {
@@ -439,7 +433,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                             if (key_mode_cold) {
                                 imageview_model.setBackgroundResource(R.drawable.button_aircondition_mode_cold_learned);
                                 if (!isStartFromExperience) {
-
                                     if (code == null) {
                                         return;
                                     }
@@ -448,14 +441,12 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
                                     currentMode = 0x02;
                                     mAirconditionInitKeyValue.setMode(currentMode);
                                     mAirconditionInitKeyValue.save();
-
                                     data = packData();
                                     if (data_key_mode_cold != null) {
                                         mRemoteControlManager.sendData(data_key_mode_cold);
                                     } else {
                                         mRemoteControlManager.sendData(DataExchange.dbBytesToString(data));
                                     }
-
                                 }
 
                             } else {

@@ -75,7 +75,7 @@
                 android:gravity="center_vertical"
                 android:textColorHint="@color/white_alpha60"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_smallest"
+                android:textSize="@dimen/text_size_small"
                 android:hint="请输入手机号" />
         </RelativeLayout>
 
@@ -119,7 +119,7 @@
                 android:background="@null"
                 android:textColorHint="@color/white_alpha60"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_smallest"
+                android:textSize="@dimen/text_size_small"
                 android:gravity="center_vertical"
                 android:hint="请输入密码" />
         </RelativeLayout>

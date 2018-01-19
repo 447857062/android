@@ -22,7 +22,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-import com.deplink.homegenius.activity.device.remoteControl.AddRemoteControlActivity;
+import com.deplink.homegenius.activity.device.remoteControl.RemoteControlQuickLearnActivity;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.listview.sortlistview.CharacterParser;
 import com.deplink.homegenius.view.listview.sortlistview.PinyinComparator;
@@ -128,7 +128,7 @@ public class AddTopBoxActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(AddTopBoxActivity.this,AddRemoteControlActivity.class);
+        Intent intent=new Intent(AddTopBoxActivity.this,RemoteControlQuickLearnActivity.class);
         intent.putExtra("bandname",SourceDateList.get(position).getName());
         intent.putExtra("type","智能机顶盒遥控");
         startActivity(intent);

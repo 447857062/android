@@ -9,18 +9,19 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.deplink.homegenius.manager.device.getway.GetwayManager;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.getway.adapter.HomeNetWorkAdapter;
 import com.deplink.homegenius.activity.device.router.RouterMainActivity;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 /**
  * 家庭网络
@@ -69,25 +70,12 @@ public class HomeNetWorkActivity extends Activity implements View.OnClickListene
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
 
     private void initViews() {
         image_back = findViewById(R.id.image_back);
         textview_title = findViewById(R.id.textview_title);
         listviewNetworkDevices = findViewById(R.id.listview_getway_devices);
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -97,9 +85,9 @@ public class HomeNetWorkActivity extends Activity implements View.OnClickListene
         }
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        DeviceManager.getInstance().setStartFromExperience(false);
         if (mGatwayDevices.size() < (position + 1)) {
             RouterManager.getInstance().setCurrentSelectedRouter(mRouterDevice.get(position - mGatwayDevices.size()));
             startActivity(new Intent(HomeNetWorkActivity.this, RouterMainActivity.class));

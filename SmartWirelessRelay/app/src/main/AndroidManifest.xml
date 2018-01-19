@@ -152,7 +152,7 @@
             android:name="com.deplink.homegenius.activity.device.remoteControl.airContorl.add.AirconditionChooseBandActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.deplink.homegenius.activity.device.remoteControl.AddRemoteControlActivity"
+            android:name="com.deplink.homegenius.activity.device.remoteControl.RemoteControlQuickLearnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity"

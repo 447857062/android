@@ -10,19 +10,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.deplink.homegenius.constant.DeviceTypeConstant;
-import com.deplink.homegenius.constant.TvBoxNameConstant;
-
-import org.litepal.crud.DataSupport;
-
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvboxKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvboxLearnStatu;
 import com.deplink.homegenius.activity.device.remoteControl.LearnByHandActivity;
+import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.constant.TvBoxNameConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.view.dialog.KeynotlearnDialog;
 import com.deplink.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
+
+import org.litepal.crud.DataSupport;
+
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class TvBoxMainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "TvBoxMainActivity";
@@ -336,7 +336,7 @@ public class TvBoxMainActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, null);
+        mRemoteControlManager.InitRemoteControlManager(this);
         textview_title.setText("机顶盒遥控");
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         menu_dialog = new RemoteControlMenuDialog(this, RemoteControlMenuDialog.TYPE_TVBOX);

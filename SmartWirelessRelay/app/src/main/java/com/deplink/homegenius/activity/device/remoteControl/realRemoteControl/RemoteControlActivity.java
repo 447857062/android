@@ -29,7 +29,6 @@ import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
@@ -53,7 +52,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class RemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener, RoomListener {
+public class RemoteControlActivity extends Activity implements View.OnClickListener, RoomListener {
     private static final String TAG = "RemoteControlActivity";
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
@@ -105,7 +104,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         textview_title.setText("万能遥控");
         textview_edit.setText("完成");
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, this);
+        mRemoteControlManager.InitRemoteControlManager(this);
         connectLostDialog = new MakeSureDialog(RemoteControlActivity.this);
         connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
             @Override
@@ -385,12 +384,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     }
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
-
-    //设置结果:{ "OP": "REPORT", "Method": "Study", "Result": "err" }
-    @Override
-    public void responseQueryResult(String result) {
-    }
-
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
     private Handler mHandler = new Handler() {
