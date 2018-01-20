@@ -19,9 +19,9 @@ public class Channels {
 
     @Override
     public String toString() {
-        return "Channels{" +
-                "common=" + common +
-                ", secondary=" + secondary +
+        return "{" +
+                "\"common\":{" + common +
+                "}, \"secondary\":{" + secondary +
                 '}';
     }
 

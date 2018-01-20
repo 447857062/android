@@ -79,8 +79,6 @@ public abstract class BaseDevice {
     public static final int MSG_ONLINE_STATUS = 1000;
 
     public abstract int processMqttMsg(String topic, MqttMessage message);
-    public abstract void getReport();
-
     public String getProductKey() {
         return productKey;
     }
@@ -171,6 +169,26 @@ public abstract class BaseDevice {
 
     public void setUpgradeInfo(DeviceUpgradeInfo info) {
         upgradeInfo = info;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseDevice{" +
+                "productKey='" + productKey + '\'' +
+                ", deviceName='" + deviceName + '\'' +
+                ", deviceSn='" + deviceSn + '\'' +
+                ", deviceKey='" + deviceKey + '\'' +
+                ", type='" + type + '\'' +
+                ", version='" + version + '\'' +
+                ", mac='" + mac + '\'' +
+                ", isOnline=" + isOnline +
+                ", autoUpgrade=" + autoUpgrade +
+                ", common=" + common +
+                ", exclusive=" + exclusive +
+                ", cookies=" + cookies +
+                ", members=" + members +
+                ", upgradeInfo=" + upgradeInfo +
+                '}';
     }
 }
 

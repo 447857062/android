@@ -83,7 +83,6 @@ public class SDKManager {
     public void login(String username, String password) {
         mUserManager.login(username, password);
     }
-
     /**
      * 用户登录后修改密码
      *
@@ -204,7 +203,6 @@ public class SDKManager {
      */
     public BaseDevice getDevice(String deviceKey) {
         if (mDeviceManager != null) {
-
             return mDeviceManager.getDevice(deviceKey);
         }
         Log.i(TAG, "mDeviceManager ==null");
@@ -272,12 +270,12 @@ public class SDKManager {
 
         @Override
         public void afterDeviceBinding() {
-            mDeviceManager.getDeviceBinding();
+          //  mDeviceManager.getDeviceBinding();
         }
 
         @Override
         public void afterDeviceUnbinding() {
-            mDeviceManager.getDeviceBinding();
+          //  mDeviceManager.getDeviceBinding();
         }
 
         @Override

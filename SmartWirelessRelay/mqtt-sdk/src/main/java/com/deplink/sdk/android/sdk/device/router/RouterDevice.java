@@ -6,8 +6,6 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.bean.CommonRes;
 import com.deplink.sdk.android.sdk.bean.DeviceCookieItem;
 import com.deplink.sdk.android.sdk.bean.DeviceCookieRes;
-import com.deplink.sdk.android.sdk.bean.DeviceMemberItem;
-import com.deplink.sdk.android.sdk.bean.DeviceMemberRes;
 import com.deplink.sdk.android.sdk.bean.DeviceProperty;
 import com.deplink.sdk.android.sdk.bean.DeviceUpgradeRes;
 import com.deplink.sdk.android.sdk.interfaces.SDKCoordinator;
@@ -29,7 +27,6 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,14 +67,8 @@ public class RouterDevice extends BaseDevice {
     public static final String OP_SET_WIFI = "setWifi";
     public static final String OP_SET_DEVICE_CONTROL = "setDeviceControl";
     public static final String OP_SET_QOS = "setQos";
-    public static final String OP_BIND = "bind";
-    public static final String OP_CHANGE_NAME = "changeName";
     public static final String OP_CHANGE_AUTO_UPGRADE = "changeAutoUpgrade";
     public static final String OP_CHG_START_UPGRADE = "startUpgrade";
-    public static final String OP_GET_MEMBER = "getMember";
-    public static final String OP_ADD_MEMBER = "addMember";
-    public static final String OP_DEL_MEMBER = "deleteMember";
-    public static final String OP_CHG_MEMBER = "updateMember";
     public static final String OP_LOAD_UPGRADEINFO = "loadUpgradeInfo";
     public static final String OP_LOAD_UPGRADEINFONULL = "loadUpgradeInfoNull";
     //start:开始，download:下载，update:烧写，finish:完成，error:出错）
@@ -168,7 +159,6 @@ public class RouterDevice extends BaseDevice {
             }
         } else if (op.equalsIgnoreCase("DEVICES")) {
             if (method.equalsIgnoreCase("REPORT")) {
-
                 mDevicesOnlineRoot = gson.fromJson(xmlStr, DevicesOnlineRoot.class);
                 Log.i(TAG,"routerdevice DEVICES REPORT mDevicesOnlineRoot"+(mDevicesOnlineRoot!=null)+mDevicesOnlineRoot.toString());
                 mSDKCoordinator.notifyDeviceOpSuccess(RouterDevice.OP_GET_DEVICES, deviceKey);
@@ -278,33 +268,6 @@ public class RouterDevice extends BaseDevice {
         }
         lastDownloadData = downloadBytesMath;
         lastUploadData = uploadBytesMath;
-    }
-
-
-    /**
-     * 修改设备名称
-     *
-     * @param name
-     */
-    public void changeName(final String name) {
-        DeviceProperty item = new DeviceProperty();
-        item.setName(name);
-        RestfulTools.getSingleton().updateDeviceProperty(deviceKey, item, new Callback<CommonRes>() {
-            @Override
-            public void onResponse(Call<CommonRes> call, Response<CommonRes> response) {
-                switch (response.code()) {
-                    case 200:
-                        setName(name);
-                        notifySuccess(OP_CHANGE_NAME);
-                        break;
-                }
-            }
-            @Override
-            public void onFailure(Call<CommonRes> call, Throwable t) {
-                String error = "修改设备名称失败";
-                notifyFailure(OP_CHANGE_NAME, error);
-            }
-        });
     }
     /**
      * 获取升级信息
@@ -445,173 +408,6 @@ public class RouterDevice extends BaseDevice {
     }
 
     /**
-     * 获取成员列表
-     *
-     * @return
-     */
-    public List<DeviceMemberItem> getMembers() {
-        Log.i(TAG, "members.size=" + members.size());
-        return members;
-    }
-    /**
-     * 从服务器加载成员列表
-     */
-    public void loadMembers() {
-        RestfulTools.getSingleton().getDeviceMember(deviceKey, null, new Callback<DeviceMemberRes>() {
-            @Override
-            public void onResponse(Call<DeviceMemberRes> call, Response<DeviceMemberRes> response) {
-                switch (response.code()) {
-                    case 200:
-                        members.clear();
-                        for (DeviceMemberItem item : response.body().getMembers()) {
-                            Log.i(TAG, "response.body().getMembers()=" + response.body().getMembers().size());
-                            members.add(item);
-                            Log.i(TAG, "response.body().getMembers() members.size=" + members.size());
-                        }
-                        notifySuccess(OP_GET_MEMBER);
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DeviceMemberRes> call, Throwable t) {
-                String error = "加载成员失败";
-                notifyFailure(OP_GET_MEMBER, error);
-            }
-        });
-    }
-
-
-    /**
-     * 添加成员
-     *
-     * @param data
-     */
-    public void addMember(final DeviceMemberItem data) {
-        Log.i(TAG, "addMember deviceKey=" + deviceKey);
-        RestfulTools.getSingleton().addDeviceMember(deviceKey, data, new Callback<DeviceMemberRes>() {
-            @Override
-            public void onResponse(Call<DeviceMemberRes> call, Response<DeviceMemberRes> response) {
-                switch (response.code()) {
-                    case 200:
-                        data.setId(response.body().getId());
-                        members.add(data);
-                        notifySuccess(OP_ADD_MEMBER);
-                        break;
-                    case 409:
-                        notifyFailure(OP_ADD_MEMBER, "手机号码已经存在，请勿重复添加");
-                        break;
-                    default:
-                        try {
-                            Log.i(TAG, "response code=" + response.code() + response.errorBody().string());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        notifyFailure(OP_ADD_MEMBER, "添加成员失败");
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DeviceMemberRes> call, Throwable t) {
-                String error = "添加成员失败";
-                notifyFailure(OP_ADD_MEMBER, error);
-            }
-        });
-    }
-    /**
-     * 修改成员信息
-     *
-     * @param data
-     */
-    public void updateMember(final DeviceMemberItem data) {
-        RestfulTools.getSingleton().updateDeviceMember(deviceKey, data, new Callback<CommonRes>() {
-            @Override
-            public void onResponse(Call<CommonRes> call, Response<CommonRes> response) {
-                switch (response.code()) {
-                    case 200:
-                        boolean replace = false;
-                        for (DeviceMemberItem item : members) {
-                            if (item.getId() == data.getId()) {
-                                members.set(members.indexOf(item), data);
-                                replace = true;
-                            }
-                        }
-                        if (!replace) {
-                            members.add(data);
-                        }
-                        notifySuccess(OP_CHG_MEMBER);
-                        break;
-                    default:
-                        try {
-                            String errortext = response.errorBody().string();
-                            notifyFailure(OP_CHG_MEMBER, "修改成员失败" );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        break;
-                }
-            }
-            @Override
-            public void onFailure(Call<CommonRes> call, Throwable t) {
-                String error = "修改成员失败";
-                notifyFailure(OP_CHG_MEMBER, error);
-            }
-        });
-    }
-    /**
-     * 删除成员
-     *
-     * @param id
-     */
-    public void delMember(final Integer id) {
-        RestfulTools.getSingleton().deleteDeviceMember(deviceKey, id, new Callback<CommonRes>() {
-            @Override
-            public void onResponse(Call<CommonRes> call, Response<CommonRes> response) {
-                switch (response.code()) {
-                    case 200:
-                        DeviceMemberItem find = null;
-                        for (DeviceMemberItem item : members) {
-                            if (id == item.getId()) {
-                                find = item;
-                                break;
-                            }
-                        }
-                        if (null != find) {
-                            members.remove(find);
-                        }
-                        notifySuccess(OP_DEL_MEMBER);
-                        break;
-                    default:
-                        if(response.errorBody()!=null){
-                            try {
-                                String msg=response.errorBody().string();
-                                Gson gson=new Gson();
-
-                                CommonRes res=gson.fromJson(msg,CommonRes.class);
-                                Log.i(TAG,"res="+res.toString()+"code="+response.code());
-                                if(res.getMsg().contains("self-delete not allowed")){
-                                    notifyFailure(OP_DEL_MEMBER, "不允许删除自己");
-                                }else{
-                                    notifyFailure(OP_DEL_MEMBER, "删除成员失败");
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CommonRes> call, Throwable t) {
-                String error = "删除成员失败";
-                notifyFailure(OP_DEL_MEMBER, error);
-            }
-        });
-    }
-    /**
      * 要求设备上报
      */
     public void getReport() {
@@ -621,7 +417,7 @@ public class RouterDevice extends BaseDevice {
         textContent.setTimestamp(System.currentTimeMillis() / 1000);
         Gson gson = new Gson();
         String text = gson.toJson(textContent);
-        Log.i(TAG,"exclusive.getSub()="+ exclusive.getSub());
+
         MQTTController.getSingleton().publish(exclusive.getSub(), text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
     }
     /**
@@ -806,5 +602,10 @@ public class RouterDevice extends BaseDevice {
         if (mSDKCoordinator != null) {
             mSDKCoordinator.notifyDeviceOpFailure(action, deviceKey, new Throwable(error));
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

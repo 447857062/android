@@ -434,6 +434,7 @@ public class MqttClientAndroidService extends BroadcastReceiver implements IMqtt
         if(!isConnected()) return null;
         IMqttToken token = new MqttTokenAndroidService(this, userContext, callback, new String[]{topic});
         String activityToken = storeToken(token);
+        Log.i(DeplinkSDK.SDK_TAG,"subscribe:"+topic);
         mqttService.subscribe(clientHandle, topic, qos, null, activityToken);
         return token;
     }

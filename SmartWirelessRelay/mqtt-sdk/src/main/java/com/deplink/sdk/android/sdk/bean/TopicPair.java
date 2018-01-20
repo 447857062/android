@@ -28,9 +28,9 @@ package com.deplink.sdk.android.sdk.bean;
 
     @Override
     public String toString() {
-        return "TopicPair{" +
-                "sub='" + sub + '\'' +
-                ", pub='" + pub + '\'' +
+        return "{" +
+                "\"sub\":" + sub + '\'' +
+                ", \"pub\":'" + pub + '\'' +
                 '}';
     }
 }
