@@ -14,6 +14,7 @@ public class Router extends DataSupport implements Serializable {
     private String signature;
     private SmartDev smartDev;
     private String channels;
+    private String receveChannels;
     public SmartDev getSmartDev() {
         return smartDev;
     }
@@ -42,6 +43,14 @@ public class Router extends DataSupport implements Serializable {
 
     public void setChannels(String channels) {
         this.channels = channels;
+    }
+
+    public String getReceveChannels() {
+        return receveChannels;
+    }
+
+    public void setReceveChannels(String receveChannels) {
+        this.receveChannels = receveChannels;
     }
 
     @Override

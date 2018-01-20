@@ -47,6 +47,7 @@ import com.deplink.sdk.android.sdk.json.DevicesOnlineRoot;
 import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.WHITELIST;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.mqtt.MQTTController;
 import com.deplink.sdk.android.sdk.rest.ConverterFactory.CheckResponse;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 import com.google.gson.Gson;
@@ -160,12 +161,14 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         }
     };
     private String channels;
+    private String receiverChannels;
 
     @Override
     protected void onResume() {
         super.onResume();
         mHomeGenius = new HomeGenius();
         channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        receiverChannels=mRouterManager.getCurrentSelectedRouter().getRouter().getReceveChannels();
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
@@ -188,13 +191,13 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             }
             startTimer();
             if (channels != null) {
-                Log.i(TAG, "通道:" + channels);
+                Log.i(TAG, "通道:"+channels );
+                MQTTController.getSingleton().subscribe(receiverChannels,  manager.getmDeviceManager());
                 try {
                     mHomeGenius.queryDevices(channels);
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
-
             }
         }
     }

@@ -76,6 +76,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private boolean deviceOnline;
     private TextView textview_title;
     private DeleteDeviceDialog deleteDialog;
+    private DeleteDeviceDialog rebootDialog;
     private RelativeLayout layout_lan_setting_out;
     private RelativeLayout layout_update_out;
     private RelativeLayout layout_QOS_setting_out;
@@ -83,6 +84,8 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private DeviceListener mDeviceListener;
     private HomeGenius mHomeGenius;
     private String channels;
+    private boolean isStartFromExperience;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,8 +94,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
-    private boolean isStartFromExperience;
 
     @Override
     protected void onResume() {
@@ -224,6 +225,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         deleteDialog = new DeleteDeviceDialog(this);
+        rebootDialog = new DeleteDeviceDialog(this);
         textview_title = findViewById(R.id.textview_title);
         buttton_delete_router = findViewById(R.id.buttton_delete_router);
         image_back = findViewById(R.id.image_back);
@@ -325,12 +327,9 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 startActivity(new Intent(this, FirmwareUpdateActivity.class));
                 break;
             case R.id.layout_reboot_out:
-                MakeSureDialog rebootRightNow = new MakeSureDialog(this);
-                rebootRightNow.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                rebootDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                        ToastSingleShow.showText(RouterSettingActivity.this, "已重启设备");
-                        //TODO 本地远程重启路由器
                         ToastSingleShow.showText(RouterSettingActivity.this, "已重启设备");
                         if (!NetUtil.isNetAvailable(RouterSettingActivity.this)) {
                             ToastSingleShow.showText(RouterSettingActivity.this, "网络连接已断开");
@@ -343,12 +342,12 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                                 RebootLocal();
                             }
                         }
-
-
                     }
                 });
-                rebootRightNow.show();
-                rebootRightNow.setTitleText("确定立即重启");
+                rebootDialog.show();
+                rebootDialog.setTitleText("重启设备");
+                rebootDialog.setContentText("确定立即重启?");
+
                 break;
             case R.id.buttton_delete_router:
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
