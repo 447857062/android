@@ -130,11 +130,8 @@ public class DeviceManager implements MqttListener {
                                 device.retrieveDeviceCookie();
                                 device.retrieveUpgradeInfo();
                                 device.retrieveDeviceProperty();
-                                Log.i(TAG, "getBinding绑定的设备=" + device.getDeviceKey());
-                                Log.i(TAG, "getBinding绑定的设备=" + device.getDeviceSN());
                                 mDeviceMap.put(device.getDeviceKey(), device);
                             }
-
                             Iterator it = mDeviceTopics.keySet().iterator();
                             List<String> topics = new ArrayList<>();
                             while (it.hasNext()) {

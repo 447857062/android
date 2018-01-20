@@ -182,7 +182,12 @@ public class SDKManager {
         }
         return null;
     }
-
+    public DeviceManager getmDeviceManager() {
+        if (mDeviceManager != null) {
+            return mDeviceManager;
+        }
+        return null;
+    }
     /**
      * 获取App升级信息
      *
@@ -259,7 +264,7 @@ public class SDKManager {
     private class Coordinator implements SDKCoordinator {
         @Override
         public void afterLogin() {
-            mDeviceManager.getDeviceBinding();
+          //  mDeviceManager.getDeviceBinding();
         }
 
         @Override
