@@ -23,6 +23,7 @@ import com.deplink.homegenius.activity.device.router.adapter.BlackListAdapter;
 import com.deplink.homegenius.activity.device.router.adapter.ConnectedDeviceListAdapter;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
@@ -42,10 +43,14 @@ import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.json.BLACKLIST;
 import com.deplink.sdk.android.sdk.json.DeviceControl;
 import com.deplink.sdk.android.sdk.json.DevicesOnline;
+import com.deplink.sdk.android.sdk.json.DevicesOnlineRoot;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.WHITELIST;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.ConverterFactory.CheckResponse;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import org.litepal.crud.DataSupport;
 
@@ -90,7 +95,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private TextView textview_show_query_device_result;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private boolean isUserLogin;
     private boolean deviceOnline = true;
     private boolean isSetBlackList = false;
@@ -147,18 +151,21 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     blacklist.setDeviceMac(mac);
                     blacklist.setDeviceName(name);
                     control.setBLACKLIST(blacklist);
-                    routerDevice.setDeviceControl(control);
+                    mHomeGenius.setDeviceControl(control, channels);
                 }
             });
             dialog.show();
-            String devicename=mConnectedDevices.get(position).getDeviceName().trim();
-            dialog.setTitleText("确定将设备\""+devicename+"\"拉入黑名单");
+            String devicename = mConnectedDevices.get(position).getDeviceName().trim();
+            dialog.setTitleText("确定将设备\"" + devicename + "\"拉入黑名单");
         }
     };
+    private String channels;
 
     @Override
     protected void onResume() {
         super.onResume();
+        mHomeGenius = new HomeGenius();
+        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
@@ -167,12 +174,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             showQueryingDialog();
         } else {
             manager.addEventCallback(ec);
-            try {
-                routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Log.i(TAG, "routerDevice=" + (routerDevice != null) + "isUserLogin=" + isUserLogin);
             if (!isUserLogin) {
                 textview_cpu_use.setText("--");
                 textview_memory_use.setText("--");
@@ -186,15 +187,25 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 iamgeview_no_blacklist.setBackgroundResource(R.drawable.blacklist);
             }
             startTimer();
+            if (channels != null) {
+                Log.i(TAG, "通道:" + channels);
+                try {
+                    mHomeGenius.queryDevices(channels);
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
 
+            }
         }
     }
 
+    private HomeGenius mHomeGenius;
     @Override
     protected void onPause() {
         super.onPause();
         stopTimer();
         manager.removeEventCallback(ec);
+
     }
 
     private void stopTimer() {
@@ -234,7 +245,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private void queryRouterInfo() {
         if (refreshCount > TIME_OUT_WATCHDOG_MAXCOUNT) {
             Log.i(TAG, "设备离线了");
-            routerDevice.setOnline(false);
+            //  routerDevice.setOnline(false);
             mRouterManager.getCurrentSelectedRouter().setStatus("离线");
             ContentValues values = new ContentValues();
             values.put("Status", "离线");
@@ -244,17 +255,19 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             textview_memory_use.setText("--");
             textview_upload_speed.setText("--");
             textview_download_speend.setText("--");
-            if (routerDevice != null) {
-                routerDevice.getReport();//这里只要查询设备有没有上线
-                //下面几个也加上
-                queryDevices();
-            }
+            //if (routerDevice != null) {
+            //  routerDevice.getReport(mRouterManager.getCurrentSelectedRouter().getRouter().getChannels().getSecondary().getSub());//这里只要查询设备有没有上线
+            //下面几个也加上
+            mHomeGenius.getReport(channels);
+            queryDevices();
+            // }
         } else {
-            if (routerDevice != null) {
-                refreshCount++;
-                routerDevice.getReport();//进界面更新
-                queryDevices();
-            }
+            // if (routerDevice != null) {
+            refreshCount++;
+            //  routerDevice.getReport(mRouterManager.getCurrentSelectedRouter().getRouter().getChannels().getSecondary().getSub());
+            mHomeGenius.getReport(channels);//进界面更新
+            queryDevices();
+            //  }
         }
     }
 
@@ -262,17 +275,17 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
      * 查询已挂载到当前路由器的设备
      */
     private void queryDevices() {
-        Log.i(TAG, "routerDevice == null" + (routerDevice == null) + "isUserLogin=" + isUserLogin + "isMqttConnect=" + isMqttConnect);
+        //  Log.i(TAG, "routerDevice == null" + (routerDevice == null) + "isUserLogin=" + isUserLogin + "isMqttConnect=" + isMqttConnect);
         if (NetUtil.isNetAvailable(RouterMainActivity.this)) {
             if (isUserLogin) {
-                if (routerDevice != null) {
-                    if (deviceOnline) {
-                        routerDevice.queryDevices();
-                    } else {
-                        textview_show_query_device_result.setVisibility(View.VISIBLE);
-                        textview_show_query_device_result.setText("设备不在线，无法读取设备信息");
-                    }
+                // if (routerDevice != null) {
+                if (deviceOnline) {
+                    mHomeGenius.queryDevices(channels);
+                } else {
+                    textview_show_query_device_result.setVisibility(View.VISIBLE);
+                    textview_show_query_device_result.setText("设备不在线，无法读取设备信息");
                 }
+                //   }
             } else {
                 textview_show_query_device_result.setVisibility(View.VISIBLE);
                 textview_show_query_device_result.setText("尚未登录，无法读取设备信息");
@@ -345,10 +358,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             ec = new EventCallback() {
                 @Override
                 public void onSuccess(SDKAction action) {
-                    switch (action) {
-                        default:
-                            break;
-                    }
                 }
 
                 @Override
@@ -362,50 +371,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     Log.i(TAG, "deviceOpSuccess op=" + op);
                     switch (op) {
                         case RouterDevice.OP_GET_DEVICES:
-                            try {
-                                DialogThreeBounce.hideLoading();
-                                if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
-                                    mConnectedDevices.clear();
-                                    if (routerDevice != null && routerDevice.getDevicesOnlineRoot() != null) {
-                                        mConnectedDevices.addAll(routerDevice.getDevicesOnlineRoot().getDevicesOnline());
-                                    }
-                                    Log.i(TAG, "设备界面：获取已连接设备列表:" + mConnectedDevices.size());
-                                    if (mConnectedDevices.size() == 0) {
-                                        layout_no_connected_device.setVisibility(View.VISIBLE);
-                                        textview_show_query_device_result.setVisibility(View.VISIBLE);
-                                        textview_show_query_device_result.setText("没有设备连接当前的路由器");
-                                    } else {
-                                        layout_no_connected_device.setVisibility(View.GONE);
-                                        textview_show_query_device_result.setVisibility(View.GONE);
-                                    }
-                                    mAdapter.notifyDataSetChanged();
-                                }
-
-                                if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
-                                    if (routerDevice.getDevicesOnlineRoot().getBLACKLIST().size() == 0) {
-                                        layout_no_blacklist.setVisibility(View.VISIBLE);
-                                        textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
-                                        textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
-                                    } else {
-                                        layout_no_blacklist.setVisibility(View.GONE);
-                                        textview_show_blacklist_device_result.setVisibility(View.GONE);
-                                    }
-                                    mBlackListDatas.clear();
-                                    mBlackListDatas.addAll(routerDevice.getDevicesOnlineRoot().getBLACKLIST());
-                                    mBlackListAdapter.notifyDataSetChanged();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
 
 
                             break;
                         case RouterDevice.OP_GET_REPORT:
-                            mRouterManager.getCurrentSelectedRouter().setStatus("在线");
-                            ContentValues values = new ContentValues();
-                            values.put("Status", "在线");
-                            DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
-                            updatePerformance();
+
 
                             break;
                         case RouterDevice.OP_SUCCESS:
@@ -439,26 +409,160 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
 
                 @Override
                 public void onFailure(SDKAction action, Throwable throwable) {
-                    switch (action) {
-                        case GET_BINDING:
-                            break;
-                    }
+                }
+
+                @Override
+                public void notifyHomeGeniusResponse(String result) {
+                    super.notifyHomeGeniusResponse(result);
+                    parseDeviceReport(result);
                 }
             };
         }
 
     }
 
+    private DevicesOnlineRoot mDevicesOnlineRoot;
+    private PERFORMANCE performance;
+    private long currentReceivedDataTime = 0;
+    /**
+     * 上一次设备上传的流量
+     */
+    private long lastUploadData = 0;
+    /**
+     * 上一次设备下载的流量
+     */
+    private long lastDownloadData = 0;
+    /**
+     * 设备上行速率(bps)
+     */
+    private float uprate;
+    /**
+     * 设备下行速率(bps)
+     */
+    private float downrate;
+
+    private void updateDevice(PERFORMANCE report) {
+        //流量下载
+        String downloadBytes = report.getDevice().getDataTraffic().getRX();
+        if (downloadBytes.length() > 6) {//去掉数据开始的字符：bytes:
+            downloadBytes = downloadBytes.substring(6);
+        } else {
+            downloadBytes = "0";
+        }
+        long downloadBytesMath = Long.parseLong(downloadBytes);
+        Log.i(TAG, downloadBytes + "downloadBytesMath=" + downloadBytesMath);
+        //流量上传
+        String uploadBytes = report.getDevice().getDataTraffic().getTX();
+        if (uploadBytes.length() > 6) {
+            uploadBytes = report.getDevice().getDataTraffic().getTX().substring(6);
+        } else {
+            uploadBytes = "0";
+        }
+        long uploadBytesMath = Long.parseLong(uploadBytes);
+        Log.i(TAG, uploadBytes + "uploadBytesMath=" + uploadBytesMath);
+        /**
+         *两次获取到的数据（PERFORMANCE）的时间差
+         */
+        long timeDif;
+        if (currentReceivedDataTime == 0) {
+            //说明是第一次收到反馈数据,不处理
+            currentReceivedDataTime = System.currentTimeMillis();
+        } else {
+            timeDif = System.currentTimeMillis() - currentReceivedDataTime;
+            currentReceivedDataTime = System.currentTimeMillis();
+            Log.i(TAG, "下载总数=" + (float) (downloadBytesMath - lastDownloadData) / 1024 + "KB");
+            Log.i(TAG, "上传总数=" + (float) (downloadBytesMath - lastDownloadData) / 1024 + "KB");
+            downrate = (float) (Math.abs(downloadBytesMath - lastDownloadData)) / 1024 / ((float) timeDif / 1000);
+            uprate = (float) (Math.abs(uploadBytesMath - lastUploadData)) / 1024 / ((float) timeDif / 1000);
+
+        }
+        lastDownloadData = downloadBytesMath;
+        lastUploadData = uploadBytesMath;
+    }
+
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
+
+        if (op == null) {
+            if (content.getResult().equalsIgnoreCase("OK")) {
+                Log.i(TAG, " mSDKCoordinator.notifyDeviceOpSuccess");
+                if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
+                    if (isSetBlackList) {
+                        ToastSingleShow.showText(RouterMainActivity.this, "加入黑名单成功");
+                    }
+                }
+                if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
+                    if (isRemoveBlackList) {
+                        ToastSingleShow.showText(RouterMainActivity.this, "恢复上网设置成功");
+                    }
+                }
+            }
+        } else if (op.equalsIgnoreCase("REPORT")) {
+            if (method.equalsIgnoreCase("PERFORMANCE")) {
+                performance = gson.fromJson(xmlStr, PERFORMANCE.class);
+                Log.i(TAG, "performance=" + performance.toString());
+                updateDevice(performance);
+                mRouterManager.getCurrentSelectedRouter().setStatus("在线");
+                ContentValues values = new ContentValues();
+                values.put("Status", "在线");
+                DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
+                updatePerformance();
+            }
+        } else if (op.equalsIgnoreCase("DEVICES")) {
+            if (method.equalsIgnoreCase("REPORT")) {
+                mDevicesOnlineRoot = gson.fromJson(xmlStr, DevicesOnlineRoot.class);
+                mConnectedDevices.clear();
+                mConnectedDevices.addAll(mDevicesOnlineRoot.getDevicesOnline());
+                try {
+                    DialogThreeBounce.hideLoading();
+                    if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
+                        Log.i(TAG, "设备界面：获取已连接设备列表:" + mConnectedDevices.size());
+                        if (mConnectedDevices.size() == 0) {
+                            layout_no_connected_device.setVisibility(View.VISIBLE);
+                            textview_show_query_device_result.setVisibility(View.VISIBLE);
+                            textview_show_query_device_result.setText("没有设备连接当前的路由器");
+                        } else {
+                            layout_no_connected_device.setVisibility(View.GONE);
+                            textview_show_query_device_result.setVisibility(View.GONE);
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
+                        if (mDevicesOnlineRoot.getBLACKLIST().size() == 0) {
+                            layout_no_blacklist.setVisibility(View.VISIBLE);
+                            textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
+                            textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
+                        } else {
+                            layout_no_blacklist.setVisibility(View.GONE);
+                            textview_show_blacklist_device_result.setVisibility(View.GONE);
+                        }
+                        mBlackListDatas.clear();
+                        mBlackListDatas.addAll(mDevicesOnlineRoot.getBLACKLIST());
+                        mBlackListAdapter.notifyDataSetChanged();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private void updatePerformance() {
         Log.i(TAG, "updatePerformance");
         refreshCount = 0;
         //这里不用设置设备上线的字段，在routerdevice类里面设置了
-        String mem = routerDevice.getPerformance().getDevice().getMEM();
+        String mem = performance.getDevice().getMEM();
         textview_memory_use.setText(mem);
-        String cpu = routerDevice.getPerformance().getDevice().getCPU();
+        String cpu = performance.getDevice().getCPU();
         textview_cpu_use.setText(cpu);
-        textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getUpRate()));
-        textview_download_speend.setText("" + String.format(getResources().getString(R.string.rate_format), routerDevice.getDownRate()));
+        textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), uprate));
+        textview_download_speend.setText("" + String.format(getResources().getString(R.string.rate_format), downrate));
     }
 
     private void initEvents() {
@@ -511,7 +615,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                 blacklist.setDeviceName(name);
                                 control.setBLACKLIST(blacklist);
                                 if (!isStartFromExperience) {
-                                    routerDevice.setDeviceControl(control);
+                                    mHomeGenius.setDeviceControl(control, channels);
                                 }
                             }
                         });
@@ -588,9 +692,9 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                 WHITELIST whitelist = new WHITELIST();
                                 whitelist.setDeviceMac(mac);
                                 control.setWHITELIST(whitelist);
-                                if (routerDevice != null) {
-                                    routerDevice.setDeviceControl(control);
-                                }
+                                // if (routerDevice != null) {
+                                mHomeGenius.setDeviceControl(control, channels);
+                                // }
                             }
                         });
                         dialog.show();
@@ -616,9 +720,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                         WHITELIST whitelist = new WHITELIST();
                         whitelist.setDeviceMac(mac);
                         control.setWHITELIST(whitelist);
-                        if (routerDevice != null) {
-                            routerDevice.setDeviceControl(control);
-                        }
+                        mHomeGenius.setDeviceControl(control, channels);
                     }
                 });
                 dialog.show();

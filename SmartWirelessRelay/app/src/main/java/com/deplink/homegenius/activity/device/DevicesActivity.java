@@ -567,14 +567,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             dev.setType(deviceType);
             Router router = new Router();
             Log.i(TAG, "获取绑定的设备" + manager.getDeviceList().size());
-            //获取devicekey
-            for (int j = 0; j < manager.getDeviceList().size(); j++) {
-                Log.i(TAG, "获取绑定的设备" + manager.getDeviceList().get(j).getDeviceSN());
-                if (manager.getDeviceList().get(j).getDeviceSN().equals(devices.get(i).getSn())) {
-                    Log.i(TAG, "赋值device key:" + manager.getDeviceList().get(j).getDeviceKey());
-                    router.setRouterDeviceKey(manager.getDeviceList().get(j).getDeviceKey());
-                }
-            }
             if (deviceName == null || deviceName.equals("")) {
                 dev.setName("路由器");
             } else {

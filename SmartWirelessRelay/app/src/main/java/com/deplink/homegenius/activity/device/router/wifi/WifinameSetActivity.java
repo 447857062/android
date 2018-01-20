@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router.wifi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
@@ -20,7 +20,6 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.router.RouterDevice;
-import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -38,10 +37,11 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     private String wifiType;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_edit;
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,16 +53,12 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
+        if(! DeviceManager.getInstance().isStartFromExperience()){
             manager.addEventCallback(ec);
             isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-            if (isLogin) {
-                routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-            }
         }
-
+        mHomeGenius = new HomeGenius();
+        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
 
     }
     @Override
@@ -170,8 +166,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
                     ToastSingleShow.showText(this, "还没有输入wifi名称");
                     return;
                 }
-                if (isLogin && routerDevice != null) {
-                    Wifi content;
+                if (isLogin && channels != null) {
                     isSetWifiname = true;
                     Intent intent = new Intent();
                     switch (wifiType) {
@@ -190,10 +185,7 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
                     intent.putExtra("wifiname", wifiname);
                     setResult(RESULT_OK, intent);
                     this.finish();
-
-
                 }
-
                 break;
         }
     }

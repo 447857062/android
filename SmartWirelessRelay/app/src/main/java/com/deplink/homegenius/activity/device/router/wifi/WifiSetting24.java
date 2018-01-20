@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
@@ -26,11 +27,13 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.json.Wifi_2G;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 import com.deplink.sdk.android.sdk.rest.RouterResponse;
+import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import retrofit2.Call;
@@ -66,7 +69,6 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     private String bandwidth;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private Wifi_2G wifiParams;
     /**
      * wifi名称密码设置成功，后面要重启了
@@ -75,6 +77,8 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_edit;
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,115 +123,22 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
             }
 
             @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
+            }
+
+            @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
                 switch (op) {
                     case RouterDevice.OP_GET_WIFI:
-                        try {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    wifiParams = routerDevice.getWifi().getWifi_2G();
-                                    if(!isActivityResultSetWifiPassword){
-                                        wifi_password=wifiParams.getWifiPassword();
-                                    }
-                                    if (wifiParams.getWifiStatus().equalsIgnoreCase("ON")) {
-                                        checkbox_wireless_wifi.setChecked(true);
-                                    } else {
-                                        checkbox_wireless_wifi.setChecked(false);
-                                    }
-                                    if (wifiParams.getHIDDEN().equalsIgnoreCase("OFF")) {
-                                        checkbox_hide_net.setChecked(false);
-                                    } else {
-                                        checkbox_hide_net.setChecked(true);
-                                    }
 
-                                    if (!isActivityResultSetWifiname) {
-                                        wifiname = wifiParams.getWifiSSID();
-                                    }
-                                    Log.i(TAG,"isActivityResultSetWifiname="+isActivityResultSetWifiname+"wifiname="+wifiname);
-                                    textview_wifi_name.setText(wifiname);
-                                    if (!isActivityResultSetEncryptType) {
-                                        encryptionType = wifiParams.getEncryption();
-                                    }
 
-                                    if (encryptionType.equals("")) {
-                                        encryptionType = "--";
-                                    }
-                                    switch (encryptionType) {
-                                        case "none":
-                                            textview_encryption.setText("无加密");
-                                            break;
-                                        case "psk-mixed":
-                                            textview_encryption.setText("混合加密");
-                                            break;
-                                        case "psk2":
-                                            textview_encryption.setText("强加密");
-                                            break;
-                                    }
-                                    if (!isActivityResultSetModel) {
-                                        mode = wifiParams.getHWMODE();
-                                    }
-                                    if (mode.equals("")) {
 
-                                        textview_mode.setText("--");
-                                    }
-                                    switch (mode) {
-                                        case "0":
-                                            textview_mode.setText("802.11b/g");
-                                            break;
-                                        case "1":
-                                            textview_mode.setText("802.11b");
-                                            break;
-                                        case "4":
-                                            textview_mode.setText("802.11g");
-                                            break;
-                                        case "7":
-                                            textview_mode.setText("802.11g/n");
-                                            break;
-                                        case "9":
-                                            textview_mode.setText("802.11b/g/n");
-                                            break;
-                                    }
-                                    if (!isActivityResultSetChannel) {
-                                        channel = wifiParams.getCHANNEL();
-                                    }
-
-                                    if (channel.equals("")) {
-                                        channel = "--";
-                                    }
-                                    if (channel.equals("0")) {
-                                        textview_channel.setText("自动");
-                                    } else {
-                                        textview_channel.setText(channel);
-                                    }
-                                    if (!isActivityResultSetBandwidth) {
-                                        bandwidth = wifiParams.getHTMODE();
-                                    }
-
-                                    if (bandwidth.equals("")) {
-                                        bandwidth = "--";
-                                    }
-                                    switch (bandwidth) {
-                                        case "0":
-                                            textview_bandwidth.setText("20M模式");
-                                            break;
-                                        case "1":
-                                            textview_bandwidth.setText("40M模式");
-                                            break;
-
-                                    }
-
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         break;
                     case RouterDevice.OP_SUCCESS:
-                        if (isSetWifi2G) {
-                            ToastSingleShow.showText(WifiSetting24.this, "设置成功");
-                        }
+
                         break;
                 }
             }
@@ -244,19 +155,139 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
 
     }
 
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
+        if (op == null) {
+            if (content.getResult().equalsIgnoreCase("OK")) {
+                Log.i(TAG," mSDKCoordinator.notifyDeviceOpSuccess");
+                if (isSetWifi2G) {
+                    ToastSingleShow.showText(WifiSetting24.this, "设置成功");
+                }
+            }
+        }else{
+            if (op.equalsIgnoreCase("WIFI")){
+                if (method.equalsIgnoreCase("REPORT")) {
+                    final Wifi
+                    wifi = gson.fromJson(xmlStr, Wifi.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wifiParams = wifi.getWifi_2G();
+                            if(!isActivityResultSetWifiPassword){
+                                wifi_password=wifiParams.getWifiPassword();
+                            }
+                            if (wifiParams.getWifiStatus().equalsIgnoreCase("ON")) {
+                                checkbox_wireless_wifi.setChecked(true);
+                            } else {
+                                checkbox_wireless_wifi.setChecked(false);
+                            }
+                            if (wifiParams.getHIDDEN().equalsIgnoreCase("OFF")) {
+                                checkbox_hide_net.setChecked(false);
+                            } else {
+                                checkbox_hide_net.setChecked(true);
+                            }
+
+                            if (!isActivityResultSetWifiname) {
+                                wifiname = wifiParams.getWifiSSID();
+                            }
+                            Log.i(TAG,"isActivityResultSetWifiname="+isActivityResultSetWifiname+"wifiname="+wifiname);
+                            textview_wifi_name.setText(wifiname);
+                            if (!isActivityResultSetEncryptType) {
+                                encryptionType = wifiParams.getEncryption();
+                            }
+
+                            if (encryptionType.equals("")) {
+                                encryptionType = "--";
+                            }
+                            switch (encryptionType) {
+                                case "none":
+                                    textview_encryption.setText("无加密");
+                                    break;
+                                case "psk-mixed":
+                                    textview_encryption.setText("混合加密");
+                                    break;
+                                case "psk2":
+                                    textview_encryption.setText("强加密");
+                                    break;
+                            }
+                            if (!isActivityResultSetModel) {
+                                mode = wifiParams.getHWMODE();
+                            }
+                            if (mode.equals("")) {
+
+                                textview_mode.setText("--");
+                            }
+                            switch (mode) {
+                                case "0":
+                                    textview_mode.setText("802.11b/g");
+                                    break;
+                                case "1":
+                                    textview_mode.setText("802.11b");
+                                    break;
+                                case "4":
+                                    textview_mode.setText("802.11g");
+                                    break;
+                                case "7":
+                                    textview_mode.setText("802.11g/n");
+                                    break;
+                                case "9":
+                                    textview_mode.setText("802.11b/g/n");
+                                    break;
+                            }
+                            if (!isActivityResultSetChannel) {
+                                channel = wifiParams.getCHANNEL();
+                            }
+
+                            if (channel.equals("")) {
+                                channel = "--";
+                            }
+                            if (channel.equals("0")) {
+                                textview_channel.setText("自动");
+                            } else {
+                                textview_channel.setText(channel);
+                            }
+                            if (!isActivityResultSetBandwidth) {
+                                bandwidth = wifiParams.getHTMODE();
+                            }
+
+                            if (bandwidth.equals("")) {
+                                bandwidth = "--";
+                            }
+                            switch (bandwidth) {
+                                case "0":
+                                    textview_bandwidth.setText("20M模式");
+                                    break;
+                                case "1":
+                                    textview_bandwidth.setText("40M模式");
+                                    break;
+
+                            }
+
+                        }
+                    });
+                }
+            }
+        }
+
+    }
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        if( !DeviceManager.getInstance().isStartFromExperience()){
+            mHomeGenius = new HomeGenius();
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
             manager.addEventCallback(ec);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             // setWifiNameText();
-            if (isUserLogin && routerDevice != null && routerDevice.getOnline()) {
+            if (isUserLogin) {
                 if (NetUtil.isNetAvailable(this)) {
-                    routerDevice.queryWifi();
+                    mHomeGenius.queryWifi(channels);
                 } else {
                     ToastSingleShow.showText(this, "网络连接已断开");
                 }
@@ -280,8 +311,6 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                 textview_wifi_name.setText(wifiname);
             }
         }
-
-
 
     }
 
@@ -363,7 +392,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.textview_edit:
-                if (isUserLogin && routerDevice != null && routerDevice.getOnline()) {
+                if (isUserLogin ) {
                     isSetWifi2G = true;
                     Wifi_2G wifi_2g=new Wifi_2G();
                     Wifi content;
@@ -397,7 +426,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                     }
                     content = new Wifi();
                     content.setWifi_2G(wifi_2g);
-                    routerDevice.setWifi(content);
+                    mHomeGenius.setWifi(content,channels);
 
                 }else{
                     //本地接口

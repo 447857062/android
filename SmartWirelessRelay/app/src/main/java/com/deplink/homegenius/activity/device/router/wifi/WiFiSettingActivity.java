@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router.wifi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
@@ -18,7 +18,6 @@ import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -30,12 +29,13 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     private RelativeLayout layout_signal_strength;
     private boolean isUserLogin;
     private SDKManager manager;
-    private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private EventCallback ec;
     private RouterManager mRouterManager;
     private TextView textview_title;
     private FrameLayout image_back;
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,17 +92,14 @@ public class WiFiSettingActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
+        if( !DeviceManager.getInstance().isStartFromExperience()){
+            mHomeGenius = new HomeGenius();
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
             Perfence.setContext(getApplicationContext());
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-            if (routerDevice != null) {
-                deviceOnline = routerDevice.getOnline();
-            }
+
             //登录了，并且绑定了设备
-            if (isUserLogin && routerDevice != null && deviceOnline) {
+            if (isUserLogin && deviceOnline) {
                 layout_wifi_custom.setVisibility(View.VISIBLE);//目前不支持访客WIFI
                 layout_signal_strength.setVisibility(View.VISIBLE);
             } else {

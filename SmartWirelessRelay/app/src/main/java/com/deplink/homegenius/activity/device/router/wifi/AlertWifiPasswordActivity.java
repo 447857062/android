@@ -8,14 +8,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
@@ -25,19 +28,25 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.json.Wifi_2G;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AlertWifiPasswordActivity extends Activity implements View.OnClickListener {
+    private static final String TAG="AlertWifiPassword";
     private TextView textview_edit;
     private EditText edittext_password;
     private EditText edittext_password_again;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private String wifiType;
     private ImageView image_input_eye_password;
     private ImageView image_input_eye_password_again;
@@ -50,7 +59,8 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
-
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,11 +109,15 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
                 super.deviceOpSuccess(op, deviceKey);
                 switch (op) {
                     case RouterDevice.OP_SUCCESS:
-                        if (isSetWifiPassword) {
-                            ToastSingleShow.showText(AlertWifiPasswordActivity.this, "设置成功");
-                        }
+
                         break;
                 }
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
             }
 
             @Override
@@ -123,7 +137,23 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
         }
 
     }
-
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
+        if (op == null) {
+            if (content.getResult().equalsIgnoreCase("OK")) {
+                Log.i(TAG," mSDKCoordinator.notifyDeviceOpSuccess");
+                if (isSetWifiPassword) {
+                    ToastSingleShow.showText(AlertWifiPasswordActivity.this, "设置成功");
+                }
+            }
+        }
+    }
     private boolean isSetWifiPassword;
 
     private void initEvents() {
@@ -149,17 +179,12 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
+        if(! DeviceManager.getInstance().isStartFromExperience()){
             manager.addEventCallback(ec);
             isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-            if (isLogin) {
-                routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-            }
+            mHomeGenius = new HomeGenius();
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         }
-
-
     }
 
     @Override
@@ -214,7 +239,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
                     ToastSingleShow.showText(this, "两次输入的密码不一致");
                     return;
                 }
-                if (isLogin && routerDevice != null) {
+                if (isLogin && channels != null) {
                     isSetWifiPassword = true;
                     Wifi wifi = new Wifi();
                     switch (wifiType) {
@@ -222,7 +247,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
                             Wifi_2G wifi_2g = new Wifi_2G();
                             wifi_2g.setWifiPassword(password);
                             wifi.setWifi_2G(wifi_2g);
-                            routerDevice.setWifi(wifi);
+                            mHomeGenius.setWifi(wifi,channels);
                             break;
                         case AppConstant.WIFISETTING.WIFI_TYPE_VISITOR:
                             Intent intent = new Intent();
@@ -264,7 +289,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
      * 重启路由器（本地接口）
      */
     private void rebootRouterLocal() {
-       /* startActivity(new Intent(AlertWifiPasswordActivity.this, SettingActivity.class));
+       startActivity(new Intent(AlertWifiPasswordActivity.this, DevicesActivity.class));
         RestfulToolsRouter.getSingleton(AlertWifiPasswordActivity.this).rebootRouter(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -274,6 +299,6 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
             public void onFailure(Call<String> call, Throwable t) {
 
             }
-        });*/
+        });
     }
 }

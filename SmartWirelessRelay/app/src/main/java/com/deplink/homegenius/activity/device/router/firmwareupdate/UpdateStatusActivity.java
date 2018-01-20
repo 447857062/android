@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
@@ -29,11 +30,12 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     private TextView textview_updateing;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_title;
     private FrameLayout image_back;
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,11 +49,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
 
     private void initEvents() {
         button_sure.setOnClickListener(this);
-        try {
-            routerDevice.startUpgrade();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void initDatas() {
@@ -93,6 +91,12 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
             }
 
             @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+
+            }
+
+            @Override
             public void notifyDeviceDataChanged(String deviceKey, int type) {
                 Log.i(TAG, "notifyDeviceDataChanged type=" + type);
                 switch (type) {
@@ -131,7 +135,9 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        mHomeGenius = new HomeGenius();
+        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+
     }
 
 

@@ -314,9 +314,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        if (isLogin) {
-            mRoomManager.updateRooms();
-        }
+
         manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -341,7 +339,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         });
         mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
         layout_roomselect_normal.smoothScrollTo(0, 0);
-
+        if (isLogin) {
+            mRoomManager.updateRooms();
+        }
     }
 
     private void setRoomNormalLayout() {
@@ -365,7 +365,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRoomManager.removeRoomListener(this);
+        //mRoomManager.removeRoomListener(this);
         manager.removeEventCallback(ec);
         manager.onDestroy();
     }
@@ -408,6 +408,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
                         mRoomManager.updateRooms();
+
                         break;
                 }
             }

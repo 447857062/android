@@ -125,6 +125,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
+
     private void initEvents() {
         button_add_device_sure.setOnClickListener(this);
         image_back.setOnClickListener(this);
@@ -132,6 +133,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         layout_room_select.setOnClickListener(this);
         layout_remotecontrol_select.setOnClickListener(this);
     }
+
     private void initViews() {
         button_add_device_sure = findViewById(R.id.button_add_device_sure);
         edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
@@ -264,7 +266,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         edittext_add_device_input_name.setHint("最多10个字");
         if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
                 deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
-                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)||
+                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL) ||
                 deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_MENLING)
                 ) {
             layout_room_select.setVisibility(View.GONE);
@@ -327,31 +329,21 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         }
 
                     } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
+                        //去掉重名的路由器
                         deviceName = "路由器";
                         SmartDev currentAddRouter = new SmartDev();
                         currentAddRouter.setName(deviceName);
                         currentAddRouter.setUid(addDeviceUid);
                         currentAddRouter.setType(DeviceTypeConstant.TYPE.TYPE_ROUTER);
-                        for (int i = 0; i < manager.getDeviceList().size(); i++) {
-                            //查询设备列表，sn和上传时一样才修改名字
-                            if (manager.getDeviceList().get(i).getDeviceSN().equals(currentAddDevice)) {
-                                Router router = new Router();
-                                router.setRouterDeviceKey(manager.getDeviceList().get(i).getDeviceKey());
-                                router.setSmartDev(currentAddRouter);
-                                Log.i(TAG, "添加路由器返回的channels:" + responseBody.getChannels().toString());
-                                router.setChannels(responseBody.getChannels());
-                                router.save();
-                                currentAddRouter.setRouter(router);
-                            }
-                        }
+                        //查询设备列表，sn和上传时一样才修改名字
+                        Router router = new Router();
+                        router.setSmartDev(currentAddRouter);
+                        router.setChannels(responseBody.getChannels().getSecondary().getSub());
+                        router.save();
+                        currentAddRouter.setRouter(router);
                         boolean saveResult = mRouterManager.saveRouter(currentAddRouter);
-                        if (!saveResult) {
-
-                        } else {
+                        if (saveResult) {
                             Room room = RoomManager.getInstance().getCurrentSelectedRoom();
-                            if (room != null) {
-                                Log.i(TAG, "添加设备此处的房间是=" + room.getRoomName());
-                            }
                             boolean result = mRouterManager.updateDeviceInWhatRoom(room, addDeviceUid, deviceName);
                             if (result) {
                                 Message msg = Message.obtain();
@@ -929,15 +921,15 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             return;
         }
         deviceAddBody.setDevice_name(deviceName);
-        switch (deviceType){
+        switch (deviceType) {
             case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
-                deviceType="IREMOTE_V2_AC";
+                deviceType = "IREMOTE_V2_AC";
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
-                deviceType="IREMOTE_V2_TV";
+                deviceType = "IREMOTE_V2_TV";
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
-                deviceType="IREMOTE_V2_STB";
+                deviceType = "IREMOTE_V2_STB";
                 break;
         }
         deviceAddBody.setDevice_type(deviceType);

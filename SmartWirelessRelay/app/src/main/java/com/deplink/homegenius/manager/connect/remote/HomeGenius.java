@@ -9,6 +9,14 @@ import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.Protocol.json.wifi.Proto;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.bean.DeviceUpgradeInfo;
+import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.DeviceControl;
+import com.deplink.sdk.android.sdk.json.DeviceImageUpgrade;
+import com.deplink.sdk.android.sdk.json.Lan;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
+import com.deplink.sdk.android.sdk.json.Qos;
+import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.mqtt.MQTTController;
 import com.google.gson.Gson;
 
@@ -317,6 +325,188 @@ public class HomeGenius {
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
     }
 
+    /**
+     * 查询设备
+     */
+    public void queryDevices(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("QUERY");
+        textContent.setMethod("DEVICES");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_DEVICES));
+    }
+    /**
+     * 要求设备上报
+     */
+    public void getReport(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("QUERY");
+        textContent.setMethod("PERFORMANCE");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_REPORT));
+    }
+    /**
+     * 设置黑名单列表，从列表中移除
+     */
+    public void setDeviceControl(DeviceControl control,String sub) {
+        control.setOP("DEVICES");
+        control.setMethod("CONTROL");
+        control.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(control);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_SET_DEVICE_CONTROL));
+    }
+    /**
+     * 查询LAN
+     */
+    public void queryLan(String sub) {
+        Log.i(TAG, "queryLan");
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        textContent.setOP("QUERY");
+        textContent.setMethod("LAN");
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_LAN));
+    }
+
+    /**
+     * 查询WAN
+     */
+    public void queryWan(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("QUERY");
+        textContent.setMethod("WAN");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish( sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_WAN));
+    }
+    /**
+     * 重启设备
+     */
+    public void reboot(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("REBOOT");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_REBOOT));
+    }
+    /**
+     * 设置上网方式
+     */
+    public void setWan(com.deplink.sdk.android.sdk.json.Proto proto,String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("WAN");
+        textContent.setMethod("SET");
+        textContent.setProto(proto);
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_SET_WAN));
+    }
+    /**
+     * 启动设备固件升级
+     */
+    public void startUpgrade(DeviceUpgradeInfo deviceUpgradeInfo,String sub) {
+        if (null == deviceUpgradeInfo) {
+            return;
+        }
+        DeviceImageUpgrade upgrade = new DeviceImageUpgrade();
+        upgrade.setOP("IMAGE");
+        upgrade.setMethod("UPGRADE");
+        upgrade.setSoftwareVersion(deviceUpgradeInfo.getVersion());
+        upgrade.setProductKey(deviceUpgradeInfo.getProduct_key());
+        upgrade.setProtocol(deviceUpgradeInfo.getProtocol());
+        upgrade.setImgUrl(deviceUpgradeInfo.getImg_url());
+        upgrade.setBakProtocol(deviceUpgradeInfo.getBak_protocol());
+        upgrade.setBakImgUrl(deviceUpgradeInfo.getBak_img_url());
+        upgrade.setFileLen(deviceUpgradeInfo.getFile_len());
+        upgrade.setMD5(deviceUpgradeInfo.getFile_md5());
+        upgrade.setUpgradeTime("0");
+        upgrade.setRandomTime(0);
+        upgrade.setType(0);
+        Gson gson = new Gson();
+        String content = gson.toJson(upgrade);
+        Log.d(DeplinkSDK.SDK_TAG, "--->write JSON: " + content);
+        MQTTController.getSingleton().publish(sub, content, new MqttActionHandler(RouterDevice.OP_CHG_START_UPGRADE));
+    }
+    /**
+     * 设置LAN
+     */
+    public void setLan(Lan lan,String sub) {
+        lan.setOP("LAN");
+        lan.setMethod("SET");
+        lan.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(lan);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_SET_LAN));
+    }
+    /**
+     * 设置Qos
+     */
+    public void setQos(Qos qos,String sub) {
+
+        qos.setOP("QOS");
+        qos.setMethod("SET");
+        qos.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(qos);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_SET_QOS));
+    }
+    /**
+     * 查询Qos
+     */
+    public void queryQos(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("QUERY");
+        textContent.setMethod("QOS");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_QOS));
+    }
+    /**
+     * 设置wifi
+     */
+    public void setWifi(Wifi wifi,String sub) {
+        wifi.setOP("WIFI");
+        wifi.setMethod("SET");
+        wifi.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(wifi);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_SET_WIFI));
+    }
+    /**
+     * 查询无线中继
+     */
+    public void queryWifiRelay(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("QUERY");
+        textContent.setMethod("WIFIRELAY");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_WIFIRELAY));
+    }
+    /**
+     * 查询wifi
+     */
+    public void queryWifi(String sub) {
+        PERFORMANCE textContent = new PERFORMANCE();
+        textContent.setOP("QUERY");
+        textContent.setMethod("WIFI");
+        textContent.setTimestamp(System.currentTimeMillis() / 1000);
+        Gson gson = new Gson();
+        String text = gson.toJson(textContent);
+        MQTTController.getSingleton().publish(sub, text, new MqttActionHandler(RouterDevice.OP_QUERY_WIFI));
+    }
     private class MqttActionHandler implements IMqttActionListener {
         private String action;
 

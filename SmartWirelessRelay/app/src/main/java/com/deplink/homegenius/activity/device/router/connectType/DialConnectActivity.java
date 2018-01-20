@@ -2,8 +2,8 @@ package com.deplink.homegenius.activity.device.router.connectType;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.device.router.wifi.WifiSetting24;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
@@ -21,7 +22,7 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.PPPOE;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
@@ -38,6 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DialConnectActivity extends Activity implements View.OnClickListener {
+    private static final String TAG="DialConnectActivity";
     private TextView textview_title;
     private FrameLayout image_back;
     private EditText edittext_account;
@@ -48,10 +50,10 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
     private SDKManager manager;
     private TextView textview_edit;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private MakeSureDialog connectLostDialog;
     private RouterManager mRouterManager;
-
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,27 +90,16 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
 
             }
 
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
 
+            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op) {
-                    case RouterDevice.OP_GET_WAN:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (routerDevice != null) {
-                                    Proto proto = routerDevice.getProto();
-                                    if (proto.getPPPOE() != null) {
-                                        ToastSingleShow.showText(DialConnectActivity.this, "拨号上网设置成功");
-                                    }
-                                }
-
-                            }
-                        });
-                        break;
-                }
             }
 
             @Override
@@ -126,31 +117,50 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
             }
         };
     }
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
 
+        if (op == null) {
+
+        } else if (op.equalsIgnoreCase("WAN")) {
+            if (method.equalsIgnoreCase("REPORT")) {
+                PERFORMANCE wan = gson.fromJson(xmlStr, PERFORMANCE.class);
+                Proto proto = wan.getProto();
+                if (proto.getPPPOE() != null) {
+                    ToastSingleShow.showText(DialConnectActivity.this, "拨号上网设置成功");
+                }
+            }
+        }
+    }
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        edittext_account = (EditText) findViewById(R.id.edittext_account);
-        edittext_password = (EditText) findViewById(R.id.edittext_password);
-        edittext_dns = (EditText) findViewById(R.id.edittext_dns);
-        edittext_mtu = (EditText) findViewById(R.id.edittext_mtu);
-        edittext_mac = (EditText) findViewById(R.id.edittext_mac);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        edittext_account = findViewById(R.id.edittext_account);
+        edittext_password = findViewById(R.id.edittext_password);
+        edittext_dns = findViewById(R.id.edittext_dns);
+        edittext_mtu = findViewById(R.id.edittext_mtu);
+        edittext_mac = findViewById(R.id.edittext_mac);
+        textview_edit = findViewById(R.id.textview_edit);
     }
     private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
         isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
-        if(!isStartFromExperience){
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-        }
         manager.addEventCallback(ec);
+        mHomeGenius = new HomeGenius();
+        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
     }
 
 
@@ -188,15 +198,16 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
                     pppoe.setMTU(mtu);
                     proto.setPPPOE(pppoe);
                     if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
-                        if (routerDevice != null) {
                             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
                             if (isUserLogin) {
-                                routerDevice.setWan(proto);
+                                if(channels!=null){
+                                    mHomeGenius.setWan(proto,channels);
+                                }
                             } else {
                                 ToastSingleShow.showText(this, "未登录，无法设置拨号上网,请登录后重试");
                             }
 
-                        }
+
                     } else {
                         RestfulToolsRouter.getSingleton(this).internetAccess(account, password, new Callback<RouterResponse>() {
                             @Override
