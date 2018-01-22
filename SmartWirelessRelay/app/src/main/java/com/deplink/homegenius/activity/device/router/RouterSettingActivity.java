@@ -116,12 +116,12 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             manager.addEventCallback(ec);
             mDeviceManager.addDeviceListener(mDeviceListener);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         } else {
             textview_route_name_2.setText("体验路由器");
         }
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+
     }
 
 
@@ -250,9 +250,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            if (mDeviceManager.isStartFromExperience()) {
-
-            } else {
+            if (!mDeviceManager.isStartFromExperience()) {
                 roomName = data.getStringExtra("roomName");
                 room = RoomManager.getInstance().findRoom(roomName, true);
                 deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
@@ -262,17 +260,14 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             }
         }
     }
-
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private ConnectTypeLocalDialog selectConnectTypeDialog;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
                 break;
-
             case R.id.layout_router_name_out:
                 startActivity(new Intent(this, RouterNameUpdateActivity.class));
                 break;
@@ -311,8 +306,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                         selectConnectTypeDialog.show();
                     }
                 }
-
-
                 break;
             case R.id.layout_wifi_setting_out:
                 startActivity(new Intent(this, WiFiSettingActivity.class));
@@ -495,7 +488,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             }
         }
     };
-
     @Override
     protected void onPause() {
         super.onPause();

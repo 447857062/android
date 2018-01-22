@@ -128,6 +128,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
             mTvKeyCode =
                     DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyCode.class);
             if (mTvKeyCode != null) {
+                mRemoteControlManager.alertVirtualDevice(currentDeviceUid,null,mTvKeyCode.getKeycode(),null);
                 Log.i(TAG, "mAirconditionKeyCode=" + mTvKeyCode.toString());
             }
         }

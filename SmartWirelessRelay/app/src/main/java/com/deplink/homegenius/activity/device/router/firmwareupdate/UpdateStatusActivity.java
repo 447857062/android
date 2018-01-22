@@ -13,6 +13,7 @@ import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
@@ -131,13 +132,16 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
         };
     }
     private boolean isUserLogin;
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
-
+        if(!isStartFromExperience){
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        }
     }
 
 

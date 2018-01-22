@@ -269,8 +269,7 @@ public class RemoteControlManager implements LocalConnecteListener {
             cmd.setCommand("Send");
             cmd.setData(data);
             String text = gson.toJson(cmd);
-            Log.i(TAG, "mSelectRemoteControlDevice!=null" + (mSelectRemoteControlDevice != null));
-            Log.i(TAG, "" + text + " mSelectRemoteControlDevice.getRemotecontrolUid()!=null" + (mSelectRemoteControlDevice.getRemotecontrolUid()));
+            Log.i(TAG, "controlUid=" + controlUid );
             packet.packRemoteControlData(text.getBytes(), controlUid);
             cachedThreadPool.execute(new Runnable() {
                 @Override

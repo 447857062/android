@@ -307,8 +307,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             public void responseQueryVirtualDevices(List<DeviceOperationResponse> result) {
                 super.responseQueryVirtualDevices(result);
                 //保存虚拟设备
-                for(int i=0;i<result.size();i++){
-                    saveVirtualDeviceToSqlite(result,i);
+                for (int i = 0; i < result.size(); i++) {
+                    saveVirtualDeviceToSqlite(result, i);
                 }
             }
         };
@@ -572,10 +572,25 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             } else {
                 dev.setName(deviceName);
             }
+            router.setSign_seed(devices.get(i).getSign_seed());
+            router.setSignature(devices.get(i).getSignature());
+            router.setChannels(devices.get(i).getChannels().getSecondary().getSub());
+            router.setReceveChannels(devices.get(i).getChannels().getSecondary().getPub());
             router.setSmartDev(dev);
             router.save();
             dev.setRouter(router);
         }
+        GatwayDevice addGatwayDevice = null;
+        String gw_uid = devices.get(i).getGw_uid();
+        if (gw_uid != null) {
+            dev.setGetwayDeviceUid(gw_uid);
+            addGatwayDevice = DataSupport.where("uid=?", gw_uid).findFirst(GatwayDevice.class);
+        }
+        Log.i(TAG, "gw_uid=" + gw_uid + "addGatwayDevice" + (addGatwayDevice != null));
+        if (addGatwayDevice != null) {
+            dev.setGetwayDevice(addGatwayDevice);
+        }
+
         dev.setUid(devices.get(i).getUid());
         dev.setOrg(devices.get(i).getOrg_code());
         dev.setVer(devices.get(i).getVersion());
@@ -592,15 +607,38 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     }
 
     private void saveVirtualDeviceToSqlite(List<DeviceOperationResponse> devices, int i) {
-        SmartDev dev = new SmartDev();
+        SmartDev dev = DataSupport.where("Uid=?", devices.get(i).getUid()).findFirst(SmartDev.class);
+        if (dev == null) {
+            dev = new SmartDev();
+        }
         String deviceType = devices.get(i).getDevice_type();
+        switch (deviceType) {
+            case "IREMOTE_V2_AC":
+                deviceType = DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL;
+                break;
+            case "IREMOTE_V2_TV":
+                deviceType = DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL;
+                break;
+            case "IREMOTE_V2_STB":
+                deviceType = DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL;
+                break;
+        }
         dev.setType(deviceType);
         String deviceName = devices.get(i).getDevice_name();
         dev.setName(deviceName);
-        dev.setUid( devices.get(i).getUid());
+        dev.setUid(devices.get(i).getUid());
+        SmartDev realRc = DataSupport.where("Uid=?", devices.get(i).getIrmote_uid()).findFirst(SmartDev.class, true);
+        Log.i(TAG,"物理遥控器uid="+devices.get(i).getIrmote_uid());
+        if(realRc.getRooms()!=null){
+            dev.setRooms(realRc.getRooms());
+        }
         dev.setRemotecontrolUid(devices.get(i).getIrmote_uid());
-        dev.setMac(devices.get(i).getMac());
-        dev.setKey_codes(devices.get(i).getKey_codes());
+        dev.setMac(devices.get(i).getIrmote_mac());
+        String key_codes = devices.get(i).getKey_codes();
+        if (key_codes != null) {
+            dev.setKey_codes(key_codes);
+        }
+        dev.save();
     }
 
     private static final int MSG_UPDATE_DEVS = 0x01;
@@ -655,6 +693,34 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                 datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
                                 datasBottom.get(j).saveFast();
                             }
+                        }
+                    }
+                    //更新虚拟设备的状态
+                    List<SmartDev> airRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL).find(SmartDev.class);
+                    for (int i = 0; i < airRcs.size(); i++) {
+                        SmartDev realRc = DataSupport.where("Uid=?", airRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
+                        if (realRc != null) {
+                            airRcs.get(i).setRooms(realRc.getRooms());
+                            airRcs.get(i).setStatus(realRc.getStatus());
+                            airRcs.get(i).saveFast();
+                        }
+                    }
+                    List<SmartDev> tvRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL).find(SmartDev.class);
+                    for (int i = 0; i < tvRcs.size(); i++) {
+                        SmartDev realRc = DataSupport.where("Uid=?", tvRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
+                        if (realRc != null) {
+                            tvRcs.get(i).setStatus(realRc.getStatus());
+                            tvRcs.get(i).setRooms(realRc.getRooms());
+                            tvRcs.get(i).saveFast();
+                        }
+                    }
+                    List<SmartDev> tvboxRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL).find(SmartDev.class);
+                    for (int i = 0; i < tvboxRcs.size(); i++) {
+                        SmartDev realRc = DataSupport.where("Uid=?", tvboxRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
+                        if (realRc != null) {
+                            tvboxRcs.get(i).setStatus(realRc.getStatus());
+                            tvboxRcs.get(i).setRooms(realRc.getRooms());
+                            tvboxRcs.get(i).saveFast();
                         }
                     }
                     //智能设备下发列表

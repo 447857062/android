@@ -33,6 +33,8 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +98,9 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
             textview_select_remotecontrol_name.setText("未设置物理遥控器");
         } else {
             deviceName = RemoteControlManager.getInstance().getmSelectRemoteControlDevice().getName();
-            List<Room> rooms = RemoteControlManager.getInstance().getmSelectRemoteControlDevice().getRooms();
+            String realRcUid= RemoteControlManager.getInstance().getmSelectRemoteControlDevice().getRemotecontrolUid();
+            SmartDev realRc=DataSupport.where("Uid=?", realRcUid).findFirst(SmartDev.class,true);
+            List<Room> rooms = realRc.getRooms();;
             if (rooms.size() > 0) {
                 textview_select_room_name.setText(rooms.get(0).getRoomName());
             } else {

@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.deplink.homegenius.util.Wifi;
+import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -17,6 +19,7 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
     private TextView textview_title;
     private Button button_next_step;
     private TextView textview_wifi_name;
+    private ClearEditText edittext_wifi_password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +48,10 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
         image_back = findViewById(R.id.image_back);
         button_next_step = findViewById(R.id.button_next_step);
         textview_wifi_name = findViewById(R.id.textview_wifi_name);
+        edittext_wifi_password = findViewById(R.id.edittext_wifi_password);
 
     }
-
+    private  String wifiPassword;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -55,6 +59,11 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
                 onBackPressed();
                 break;
             case R.id.button_next_step:
+                wifiPassword=edittext_wifi_password.getText().toString();
+                if(wifiPassword.length()<8){
+                    ToastSingleShow.showText(this,"请输入正确的wifi密码");
+                    return;
+                }
                 startActivity(new Intent(this,ApModeActivity.class));
                 break;
         }

@@ -153,11 +153,12 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
         super.onResume();
         manager.addEventCallback(ec);
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+
         //获取当前连接设备的是否自动升级固件，
         //当前选择的设备判断：没有绑定设备就没有，如果已绑定，或者别人添加管理者，就默认选中这个，
         // 之后用户手动选择路由器才切换
         if (!DeviceManager.getInstance().isStartFromExperience()) {
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
             retrieveUpgradeInfo(mRouterManager.getCurrentSelectedRouter().getUid());
             if(channels!=null){
                 mHomeGenius.getReport(channels);

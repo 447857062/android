@@ -165,7 +165,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
             }
         }
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();

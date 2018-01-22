@@ -167,8 +167,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
-        receiverChannels=mRouterManager.getCurrentSelectedRouter().getRouter().getReceveChannels();
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
@@ -177,6 +175,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             showQueryingDialog();
         } else {
             manager.addEventCallback(ec);
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+            receiverChannels=mRouterManager.getCurrentSelectedRouter().getRouter().getReceveChannels();
             if (!isUserLogin) {
                 textview_cpu_use.setText("--");
                 textview_memory_use.setText("--");
@@ -248,7 +248,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private void queryRouterInfo() {
         if (refreshCount > TIME_OUT_WATCHDOG_MAXCOUNT) {
             Log.i(TAG, "设备离线了");
-            //  routerDevice.setOnline(false);
             mRouterManager.getCurrentSelectedRouter().setStatus("离线");
             ContentValues values = new ContentValues();
             values.put("Status", "离线");
@@ -258,19 +257,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             textview_memory_use.setText("--");
             textview_upload_speed.setText("--");
             textview_download_speend.setText("--");
-            //if (routerDevice != null) {
-            //  routerDevice.getReport(mRouterManager.getCurrentSelectedRouter().getRouter().getChannels().getSecondary().getSub());//这里只要查询设备有没有上线
-            //下面几个也加上
             mHomeGenius.getReport(channels);
             queryDevices();
-            // }
         } else {
-            // if (routerDevice != null) {
             refreshCount++;
-            //  routerDevice.getReport(mRouterManager.getCurrentSelectedRouter().getRouter().getChannels().getSecondary().getSub());
             mHomeGenius.getReport(channels);//进界面更新
             queryDevices();
-            //  }
         }
     }
 
@@ -278,17 +270,14 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
      * 查询已挂载到当前路由器的设备
      */
     private void queryDevices() {
-        //  Log.i(TAG, "routerDevice == null" + (routerDevice == null) + "isUserLogin=" + isUserLogin + "isMqttConnect=" + isMqttConnect);
         if (NetUtil.isNetAvailable(RouterMainActivity.this)) {
             if (isUserLogin) {
-                // if (routerDevice != null) {
                 if (deviceOnline) {
                     mHomeGenius.queryDevices(channels);
                 } else {
                     textview_show_query_device_result.setVisibility(View.VISIBLE);
                     textview_show_query_device_result.setText("设备不在线，无法读取设备信息");
                 }
-                //   }
             } else {
                 textview_show_query_device_result.setVisibility(View.VISIBLE);
                 textview_show_query_device_result.setText("尚未登录，无法读取设备信息");

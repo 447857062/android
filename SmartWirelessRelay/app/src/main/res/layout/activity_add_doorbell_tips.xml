@@ -37,7 +37,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:text="请将手机连接到门铃的WIFI热点" />
-
             <TextView
                 android:layout_centerHorizontal="true"
                 android:id="@+id/textview_info_2"
@@ -55,10 +54,7 @@
                 android:layout_below="@+id/textview_info_2"
                 android:gravity="left"
                 android:paddingLeft="@dimen/add_doorbell_tips_textview_padding_left"
-                android:text="密码为：12345678，连接成功返回APP操作" />
-
-
-
+                android:text="连接成功返回APP,点击下一步" />
         </RelativeLayout>
         <Button
             android:background="@drawable/radius22_bg_blue_background"
@@ -70,7 +66,7 @@
             android:textSize="@dimen/text_size_small"
             android:textColor="@color/white"
             android:layout_marginBottom="@dimen/add_doorbell_buttom_button_marginbuttom"
-            android:text="下一步" />
+            android:text="配置" />
     </RelativeLayout>
 
 </RelativeLayout>

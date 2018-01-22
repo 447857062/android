@@ -31,6 +31,7 @@ public class SmartDev extends DataSupport implements Serializable {
     private String bindLocal;
     /*绑定的网关*/
     private GatwayDevice getwayDevice;
+    private String  getwayDeviceUid;
     private boolean switch_one_open;
     private boolean switch_two_open;
     private boolean switch_three_open;
@@ -55,7 +56,13 @@ public class SmartDev extends DataSupport implements Serializable {
     private List<Info> alarmInfo = new ArrayList<>();
 
 
+    public String getGetwayDeviceUid() {
+        return getwayDeviceUid;
+    }
 
+    public void setGetwayDeviceUid(String getwayDeviceUid) {
+        this.getwayDeviceUid = getwayDeviceUid;
+    }
 
     public String getSmartUid() {
         return SmartUid;

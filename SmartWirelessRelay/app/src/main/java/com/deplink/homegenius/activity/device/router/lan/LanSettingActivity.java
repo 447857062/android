@@ -168,13 +168,17 @@ public class LanSettingActivity extends Activity implements View.OnClickListener
     }
 
     private boolean isSetLan;
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
         if (!DeviceManager.getInstance().isStartFromExperience()) {
             mHomeGenius = new HomeGenius();
-            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+            isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
+            if(!isStartFromExperience){
+                channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+            }
+
             manager.addEventCallback(ec);
             if (NetUtil.isNetAvailable(this)) {
                 if (channels != null) {

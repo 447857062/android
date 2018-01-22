@@ -1011,6 +1011,7 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
         initTvKeyCodeBytesData();
         mTvKeyCode.setGroupData(response.body().getValue().getGroup());
         mTvKeyCode.setKeycode(response.body().getValue().getCode());
+        //上传给服务器keycode
         mTvKeyCode.setmAirconditionUid(currentSelectDeviceUid);
         //保存按键的字符串
         data = packTvData(data_bytes_key_vol_reduce);

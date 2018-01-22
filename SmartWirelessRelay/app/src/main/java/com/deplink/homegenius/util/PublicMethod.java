@@ -27,7 +27,20 @@ public class PublicMethod {
         return info != null ? info.getSSID() : null;
     }
 
+    public static int seq;
 
+    /**
+     * 取得SEQ值
+     *
+     * @return
+     */
+    public static int getSeq() {
+        seq++;
+        if (seq != 0)
+            return seq;
+        else
+            return (seq + 1);
+    }
     public static String getIPAddress(Context ctx) {
         WifiManager wifiMan = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifiMan.getConnectionInfo();

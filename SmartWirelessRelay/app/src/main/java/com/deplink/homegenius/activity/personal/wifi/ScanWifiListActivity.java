@@ -269,9 +269,9 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
         String setApCliSsid = mDatas.get(position).getSSID();
         setCmd.setApCliSsid(setApCliSsid);
         String setApCliEncrypType = mDatas.get(position).getEncryption();
-        setCmd.setApCliEncrypType(setApCliEncrypType);
         String setApCliAuthMode = mDatas.get(position).getCRYTP();
-        setCmd.setApCliAuthMode(setApCliAuthMode);
+        setCmd.setApCliEncrypType(setApCliAuthMode);
+        setCmd.setApCliAuthMode(setApCliEncrypType);
         String setChannel = mDatas.get(position).getChannel();
         setCmd.setChannel(setChannel);
         //没有密码直接连接

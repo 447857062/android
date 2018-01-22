@@ -39,6 +39,8 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -243,6 +245,18 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 } else {
                     textview_select_room_name.setText("全部");
                 }
+            }
+            GatwayDevice temp = mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice();
+            if (temp == null) {
+                GatwayDevice localDbGatwayDevice= DataSupport.where("uid=?", mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                if(localDbGatwayDevice!=null){
+                    textview_select_getway_name.setText(localDbGatwayDevice.getName());
+                }else{
+                    textview_select_getway_name.setText("未设置网关");
+                }
+
+            } else {
+                textview_select_getway_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice().getName());
             }
         }
         mDeviceManager.addDeviceListener(mDeviceListener);

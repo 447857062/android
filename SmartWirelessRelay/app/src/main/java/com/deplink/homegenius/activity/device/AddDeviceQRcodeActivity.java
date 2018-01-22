@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.activity.device.adapter.AddDeviceTypeSelectAdapter;
-import com.deplink.homegenius.activity.device.doorbell.add.AddDoorbellTipsActivity;
+import com.deplink.homegenius.activity.device.doorbell.add.WifipasswordInputActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
@@ -193,7 +193,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
                     break;
                 case DeviceTypeConstant.TYPE.TYPE_MENLING:
-                    startActivity(new Intent(AddDeviceQRcodeActivity.this, AddDoorbellTipsActivity.class));
+                    startActivity(new Intent(AddDeviceQRcodeActivity.this, WifipasswordInputActivity.class));
                     break;
                 default:
                     //智能门锁，等没有在case中的设备

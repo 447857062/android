@@ -56,9 +56,10 @@ public class WifinameSetActivity extends Activity implements View.OnClickListene
         if(! DeviceManager.getInstance().isStartFromExperience()){
             manager.addEventCallback(ec);
             isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         }
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+
 
     }
     @Override

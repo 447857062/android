@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.device.router.wifi.WifiSetting24;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
@@ -25,9 +26,15 @@ import com.deplink.sdk.android.sdk.json.Lan;
 import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ErrorResponse;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
 import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ConnectSettingActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ConnectSettingActivity";
@@ -403,5 +410,85 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
 
                 break;
         }
+    }
+
+    /**
+     * （成功连接本地路由器后）选择上网方式
+     */
+    private void selectConnectType() {
+        RestfulToolsRouter.getSingleton(ConnectSettingActivity.this).dynamicIp(new Callback<RouterResponse>() {
+            @Override
+            public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {
+                int code = response.code();
+                if (code != 200) {
+                    String errorMsg = "";
+                    try {
+                        String text = response.errorBody().string();
+                        Gson gson = new Gson();
+                        ErrorResponse errorResponse = gson.fromJson(text, ErrorResponse.class);
+                        switch (errorResponse.getErrcode()) {
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_TOKEN:
+                                text = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_TOKEN;
+                                ToastSingleShow.showText(ConnectSettingActivity.this, "登录已失效 :" + text);
+                                startActivity(new Intent(ConnectSettingActivity.this, LoginActivity.class));
+                                return;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT;
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_NOT_FOUND:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_NOT_FOUND;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL_MAX:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL_MAX;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_CAPTCHA_INCORRECT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_CAPTCHA_INCORRECT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_INCORRECT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_INCORRECT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_SHORT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_SHORT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT_INFO:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT_INFO;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_DB_TRANSACTION_ERROR:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_DB_TRANSACTION_ERROR;
+                                break;
+                            default:
+                                errorMsg = errorResponse.getMsg();
+                                break;
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(!errorMsg.equalsIgnoreCase("")){
+                        ToastSingleShow.showText(ConnectSettingActivity.this, errorMsg);
+                    }
+                } else {
+                    ToastSingleShow.showText(ConnectSettingActivity.this, "动态IP设置成功，请设置wifi名字密码");
+                    Intent intentWifiSetting = new Intent(ConnectSettingActivity.this, WifiSetting24.class);
+                    intentWifiSetting.putExtra(AppConstant.OPERATION_TYPE, AppConstant.OPERATION_TYPE_LOCAL);
+                    startActivity(intentWifiSetting);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RouterResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

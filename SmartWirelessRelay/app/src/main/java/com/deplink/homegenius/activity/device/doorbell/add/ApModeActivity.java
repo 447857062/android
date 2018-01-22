@@ -8,9 +8,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.deplink.homegenius.activity.device.AddDeviceNameActivity;
-import com.deplink.homegenius.constant.DeviceTypeConstant;
-
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class ApModeActivity extends Activity implements View.OnClickListener{
@@ -47,9 +44,7 @@ public class ApModeActivity extends Activity implements View.OnClickListener{
                 onBackPressed();
                 break;
             case R.id.button_next_step:
-                Intent intent=new Intent(this,AddDeviceNameActivity.class);
-                intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_MENLING);
-                startActivity(intent);
+                startActivity(new Intent(this,AddDoorbellTipsActivity.class));
                 break;
         }
     }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
@@ -103,13 +104,17 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
             }
         };
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
+        if(!isStartFromExperience){
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        }
+
         retrieveUpgradeInfo();
 
     }

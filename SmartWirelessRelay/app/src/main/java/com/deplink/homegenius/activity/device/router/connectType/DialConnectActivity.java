@@ -160,7 +160,10 @@ public class DialConnectActivity extends Activity implements View.OnClickListene
         isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
         manager.addEventCallback(ec);
         mHomeGenius = new HomeGenius();
-        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        if(!isStartFromExperience){
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        }
+
     }
 
 

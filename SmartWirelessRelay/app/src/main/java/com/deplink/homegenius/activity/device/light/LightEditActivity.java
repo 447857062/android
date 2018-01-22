@@ -123,7 +123,13 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             }
             GatwayDevice temp = smartDev.getGetwayDevice();
             if (temp == null) {
-                textview_select_getway_name.setText("未设置网关");
+                GatwayDevice localDbGatwayDevice= DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+               if(localDbGatwayDevice!=null){
+                   textview_select_getway_name.setText(localDbGatwayDevice.getName());
+               }else{
+                   textview_select_getway_name.setText("未设置网关");
+               }
+
             } else {
                 textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
             }

@@ -3,10 +3,13 @@ package com.deplink.homegenius.activity.personal.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +40,8 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
     private EventCallback ec;
     private View view_phonenumber_dirverline;
     private View view_password_dirverline;
+    private FrameLayout layout_eye;
+    private ImageView imageview_eye;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +122,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
         button_login.setOnClickListener(this);
         edittext_input_phone_number.setOnFocusChangeListener(this);
         edittext_input_password.setOnFocusChangeListener(this);
+        layout_eye.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -128,6 +134,27 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
         edittext_input_phone_number= findViewById(R.id.edittext_input_phone_number);
         view_phonenumber_dirverline=  findViewById(R.id.view_phonenumber_dirverline);
         view_password_dirverline=  findViewById(R.id.view_password_dirverline);
+        layout_eye = findViewById(R.id.layout_eye);
+        imageview_eye = findViewById(R.id.imageview_eye);
+    }
+    /**
+     * 设置密文明文之间切换
+     */
+    private void changeInputCipher() {
+        if (edittext_input_password.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            imageview_eye.setImageResource(R.drawable.displayicon);
+            edittext_input_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+
+        } else if (edittext_input_password.getTransformationMethod() instanceof HideReturnsTransformationMethod) {
+
+            imageview_eye.setImageResource(R.drawable.hideicon);
+            edittext_input_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        }
+        int length = edittext_input_password.getText().toString().trim().length();
+        if (length != 0) {
+            edittext_input_password.setSelection(length);
+        }
     }
 
     @Override
@@ -135,6 +162,9 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
         switch (v.getId()){
             case R.id.imageview_delete:
                 this.finish();
+                break;
+            case R.id.layout_eye:
+                changeInputCipher();
                 break;
             case R.id.button_login:
                 final String phoneNumber = edittext_input_phone_number.getText().toString().trim();

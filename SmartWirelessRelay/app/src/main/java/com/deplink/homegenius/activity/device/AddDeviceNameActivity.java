@@ -266,8 +266,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         edittext_add_device_input_name.setHint("最多10个字");
         if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
                 deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
-                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL) ||
-                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_MENLING)
+                deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
                 ) {
             layout_room_select.setVisibility(View.GONE);
         } else {
@@ -338,6 +337,8 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         //查询设备列表，sn和上传时一样才修改名字
                         Router router = new Router();
                         router.setSmartDev(currentAddRouter);
+                        router.setSign_seed(responseBody.getSign_seed());
+                        router.setSignature(responseBody.getSignature());
                         router.setChannels(responseBody.getChannels().getSecondary().getSub());
                         router.setReceveChannels(responseBody.getChannels().getSecondary().getPub());
                         router.save();
@@ -476,6 +477,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
                     addDevice.setUid(addDeviceUid);
                     addDevice.setName(deviceName);
+                    addDevice.setRooms(currentSelectRemotecontrol.getRooms());
                     addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                     addDevice.setMac(currentSelectRemotecontrol.getMac());
                     Log.i(TAG, "currentSelectedRoom:" + (currentSelectedRoom != null));
@@ -502,6 +504,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
                     addDevice.setUid(addDeviceUid);
                     addDevice.setName(deviceName);
+                    addDevice.setRooms(currentSelectRemotecontrol.getRooms());
                     addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                     addDevice.setMac(currentSelectRemotecontrol.getMac());
                     Log.i(TAG, "currentSelectedRoom:" + (currentSelectedRoom != null));
@@ -530,6 +533,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     tvBoxDevice.setType(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
                     tvBoxDevice.setUid(addDeviceUid);
                     tvBoxDevice.setName(deviceName);
+                    addDevice.setRooms(currentSelectRemotecontrol.getRooms());
                     tvBoxDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
                     tvBoxDevice.setMac(currentSelectRemotecontrol.getMac().toLowerCase());
                     boolean addTvBoxresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvBoxDevice, currentSelectedRoom);
@@ -617,7 +621,9 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     private void showSettinglayout() {
         if (deviceType.equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
                 deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
-                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)) {
+                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)||
+                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_MENLING)
+                ) {
             layout_remotecontrol_select.setVisibility(View.VISIBLE);
             layout_getway_select.setVisibility(View.GONE);
             if (mRemoteControls.size() > 0) {
@@ -828,6 +834,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         if (deviceName.equals("")) {
                             deviceName = "智能门铃";
                         }
+                        //SMART_BELL
                         SmartDev doorbeelDev = new SmartDev();
                         doorbeelDev.setUid("testuid智能门铃");
                         doorbeelDev.setType("智能门铃");

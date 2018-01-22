@@ -124,7 +124,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
 
     public void removeLocalConnectListener(LocalConnecteListener listener) {
         if (listener != null && mLocalConnecteListener.contains(listener)) {
-            Log.i(TAG, "removeLocalConnectListener=" + listener.toString());
             this.mLocalConnecteListener.remove(listener);
         }
 
@@ -132,7 +131,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
 
     public void addLocalConnectListener(LocalConnecteListener listener) {
         if (listener != null && !mLocalConnecteListener.contains(listener)) {
-            Log.i(TAG, "addLocalConnectListener=" + listener.toString());
             this.mLocalConnecteListener.add(listener);
         }
     }

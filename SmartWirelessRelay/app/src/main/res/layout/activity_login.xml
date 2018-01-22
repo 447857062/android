@@ -75,6 +75,7 @@
                 android:gravity="center_vertical"
                 android:textColorHint="@color/white_alpha60"
                 android:textColor="@color/white"
+                android:inputType="phone"
                 android:textSize="@dimen/text_size_small"
                 android:hint="请输入手机号" />
         </RelativeLayout>
@@ -91,17 +92,16 @@
     <RelativeLayout
         android:id="@+id/layout_input_password_outer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
         android:layout_below="@+id/layout_input_phone_number_outer"
-        android:layout_marginTop="@dimen/password_layout_margin_account_top">
+       >
 
         <RelativeLayout
             android:id="@+id/layout_input_password_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <ImageView
                 android:id="@+id/image_password"
                 android:layout_width="wrap_content"
@@ -113,8 +113,10 @@
                 android:layout_marginLeft="@dimen/input_layout_input_margin_left_image"
                 android:id="@+id/edittext_input_password"
                 android:layout_width="match_parent"
+                android:layout_toLeftOf="@+id/layout_eye"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:inputType="textPassword"
                 android:layout_toRightOf="@+id/image_password"
                 android:background="@null"
                 android:textColorHint="@color/white_alpha60"
@@ -122,6 +124,19 @@
                 android:textSize="@dimen/text_size_small"
                 android:gravity="center_vertical"
                 android:hint="请输入密码" />
+            <FrameLayout
+                android:layout_alignParentRight="true"
+                android:id="@+id/layout_eye"
+                android:layout_width="48dp"
+                android:layout_height="44dp">
+                <ImageView
+                    android:layout_gravity="center_vertical|right"
+                    android:id="@+id/imageview_eye"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/hideicon" />
+            </FrameLayout>
         </RelativeLayout>
 
         <View
@@ -129,7 +144,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/layout_input_password_inner"
-            android:layout_marginTop="@dimen/line_margintop_input"
             android:background="@color/white_alpha60" />
     </RelativeLayout>
 

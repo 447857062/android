@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionInitKeyValue;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu;
@@ -117,7 +116,6 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
         textview_temperature.setText("" + tempature);
         temptureProgress = (int) (((tempature - 16) / 15.0) * 100);
         progressBar.setProgress(temptureProgress);
-
         if (key_power) {
             imageview_power.setBackgroundResource(R.drawable.button_power_learned);
         } else {
@@ -311,6 +309,7 @@ public class AirRemoteControlMianActivity extends Activity implements View.OnCli
             AirconditionKeyCode mAirconditionKeyCode =
                     DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(AirconditionKeyCode.class);
             if (mAirconditionKeyCode != null) {
+                mRemoteControlManager.alertVirtualDevice(currentDeviceUid,null,mAirconditionKeyCode.getKeycode(),null);
                 Log.i(TAG, "mAirconditionKeyCode=" + mAirconditionKeyCode.toString());
                 group = mAirconditionKeyCode.getGroupData();
                 code = mAirconditionKeyCode.getKeycode();
