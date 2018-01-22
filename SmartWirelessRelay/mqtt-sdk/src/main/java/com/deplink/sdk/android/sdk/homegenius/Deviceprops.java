@@ -3,6 +3,8 @@
   */
 package com.deplink.sdk.android.sdk.homegenius;
 
+import com.deplink.sdk.android.sdk.bean.Channels;
+
 /**
  * Auto-generated: 2016-07-06 12:3:50
  *
@@ -23,6 +25,15 @@ public class Deviceprops {
     private String room_name;
     private String sign_seed;
     private String signature;
+    private Channels channels;
+
+    public Channels getChannels() {
+        return channels;
+    }
+
+    public void setChannels(Channels channels) {
+        this.channels = channels;
+    }
 
     public String getSign_seed() {
         return sign_seed;

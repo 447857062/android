@@ -25,6 +25,24 @@ public class DeviceOperationResponse {
     private String key_codes;
     private String topic;
     private Channels channels;
+    private String sign_seed;
+    private String signature;
+
+    public String getSign_seed() {
+        return sign_seed;
+    }
+
+    public void setSign_seed(String sign_seed) {
+        this.sign_seed = sign_seed;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     public String getDevice_name() {
         return device_name;
