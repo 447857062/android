@@ -88,6 +88,13 @@ public class RestfulToolsPng {
         }
         return call;
     }
+    public Call<Bitmap> getDoorBellImage(String username,String device_uid,String file, Callback<Bitmap> cll) {
+        Call<Bitmap> call = apiService.getDoorBellVisitorImage(RestfulTools.getSingleton().getToken(),username,device_uid,file);
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
 
 
 }

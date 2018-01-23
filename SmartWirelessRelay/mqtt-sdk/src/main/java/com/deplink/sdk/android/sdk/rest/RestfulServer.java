@@ -51,9 +51,14 @@ public interface RestfulServer {
     @POST("/user/{user_name}/avatar")
     Call<UserSession> uploadImage(@Header("token") String token, @Path("user_name") String user_name, @Part MultipartBody.Part file);
 
-    //上传头像
     @GET("/user/{user_name}/avatar")
     Call<Bitmap> getImage(@Header("token") String token, @Path("user_name") String user_name);
+
+    @GET("/user/{user_name}/doorbell/{device_uid}/snapshot/{file}")
+    Call<Bitmap> getDoorBellVisitorImage(@Header("token") String token,
+                                         @Path("user_name") String user_name,
+                                         @Path("device_uid") String device_uid,
+                                         @Path("file") String file);
 
     //用户注销
     @PUT("/user/{user_name}/logout")

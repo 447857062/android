@@ -134,6 +134,20 @@ public class RestfulToolsHomeGeniusString {
         }
         return call;
     }
+    public Call<String> readDoorBeelVistorInfo(String username,String device_uid, Callback<String> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "readDoorBeelVistorInfo:" + username);
+        Call<String> call = apiService.readDoorBeelVisitorInfo(username, device_uid,RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
     public Call<String> getLockUseId(String username,String deviceUid, Callback<String> cll) {
         if (null == username) {
             if (cll != null) {

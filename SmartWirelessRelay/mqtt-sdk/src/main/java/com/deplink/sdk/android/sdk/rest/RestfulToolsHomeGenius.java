@@ -117,6 +117,20 @@ public class RestfulToolsHomeGenius {
         }
         return call;
     }
+    public Call<DeviceOperationResponse> deleteDoorBellVisitor(String username, String uid, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "deleteDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.deleteDoorBellVisitorImage(username, uid, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
     public Call<DeviceOperationResponse> deleteVirtualDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
             if (cll != null) {

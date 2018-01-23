@@ -60,9 +60,18 @@ public interface RestfulHomeGeniusServer {
     //读用户个人信息
     @GET("/user/{user_name}/profile")
     Call<String> readUserInfo(@Path("user_name") String user_name, @Header("token") String token);
+    //读门铃记录
+    @GET("/user/{user_name}/doorbell/visits/{device_uid}")
+    Call<String> readDoorBeelVisitorInfo(@Path("user_name") String user_name,@Path("device_uid") String device_uid, @Header("token") String token);
     //删除设备
     @DELETE("/user/{user_name}/devices/{uid}")
     Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
+    @DELETE("/user/{user_name}/doorbell/{device_uid}/sanpshot/{file}")
+    Call<DeviceOperationResponse> deleteDoorBellVisitorImage(
+            @Path("user_name") String user_name,
+            @Path("device_uid") String device_uid ,
+            @Path("file") String file ,
+            @Header("token") String token);
     //删除虚拟设备
     @DELETE("/user/{user_name}/irdevices/{uid}")
     Call<DeviceOperationResponse> deleteVirtualDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
