@@ -299,7 +299,30 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     return;
                 }
                 if (deviceTypeHttp == null) {
-
+                    switch (deviceType){
+                        case DeviceTypeConstant.TYPE.TYPE_MENLING:
+                            //SMART_BELL
+                            SmartDev doorbeelDev = new SmartDev();
+                            doorbeelDev.setUid(addDeviceUid);
+                            doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
+                            Message msg = Message.obtain();
+                            boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
+                            if (result) {
+                                boolean updateRoomResult = mDoorbeelManager.
+                                        updateDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+                                if (updateRoomResult) {
+                                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                                } else {
+                                    msg.what = MSG_UPDATE_ROOM_FAIL;
+                                    mHandler.sendMessage(msg);
+                                }
+                            } else {
+                                msg = Message.obtain();
+                                msg.what = MSG_ADD_DOORBEEL_FAIL;
+                                mHandler.sendMessage(msg);
+                            }
+                            break;
+                    }
                 } else {
                     if (deviceTypeHttp.equalsIgnoreCase("LKSGW")) {
                         topic = responseBody.getTopic();
@@ -409,7 +432,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
 
                         }
                     } else if (deviceTypeHttp.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)) {
-                        SmartDev addDevice = new SmartDev();
                         // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                         SmartDev tvBoxDevice = new SmartDev();
                         tvBoxDevice.setType(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
@@ -433,6 +455,27 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                                 }
                             });
                             configRemoteControlDialog.show();
+                        }
+                    } else if (deviceTypeHttp.equalsIgnoreCase("SMART_BELL")) {
+                        //SMART_BELL
+                        SmartDev doorbeelDev = new SmartDev();
+                        doorbeelDev.setUid(addDeviceUid);
+                        doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
+                        Message msg = Message.obtain();
+                        boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
+                        if (result) {
+                            boolean updateRoomResult = mDoorbeelManager.
+                                    updateDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+                            if (updateRoomResult) {
+                                startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
+                            } else {
+                                msg.what = MSG_UPDATE_ROOM_FAIL;
+                                mHandler.sendMessage(msg);
+                            }
+                        } else {
+                            msg = Message.obtain();
+                            msg.what = MSG_ADD_DOORBEEL_FAIL;
+                            mHandler.sendMessage(msg);
                         }
                     } else {
                         DialogThreeBounce.hideLoading();
@@ -621,8 +664,8 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     private void showSettinglayout() {
         if (deviceType.equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
                 deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
-                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)||
-                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_MENLING)
+                deviceType.equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
+
                 ) {
             layout_remotecontrol_select.setVisibility(View.VISIBLE);
             layout_getway_select.setVisibility(View.GONE);
@@ -636,6 +679,9 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             if (deviceType.equals(DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY)) {
                 layout_remotecontrol_select.setVisibility(View.GONE);
                 layout_getway_select.setVisibility(View.GONE);
+            } else if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_MENLING)) {
+                layout_remotecontrol_select.setVisibility(View.GONE);
+                layout_getway_select.setVisibility(View.VISIBLE);
             } else {
                 layout_remotecontrol_select.setVisibility(View.GONE);
                 layout_getway_select.setVisibility(View.VISIBLE);
@@ -834,26 +880,8 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         if (deviceName.equals("")) {
                             deviceName = "智能门铃";
                         }
-                        //SMART_BELL
-                        SmartDev doorbeelDev = new SmartDev();
-                        doorbeelDev.setUid("testuid智能门铃");
-                        doorbeelDev.setType("智能门铃");
-                        boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
-                        if (result) {
-                            boolean updateRoomResult = mDoorbeelManager.
-                                    updateDeviceInWhatRoom(currentSelectedRoom, "testuid智能门铃", deviceName);
-                            if (updateRoomResult) {
-                                startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
-                            } else {
-                                msg = Message.obtain();
-                                msg.what = MSG_UPDATE_ROOM_FAIL;
-                                mHandler.sendMessage(msg);
-                            }
-                        } else {
-                            msg = Message.obtain();
-                            msg.what = MSG_ADD_DOORBEEL_FAIL;
-                            mHandler.sendMessage(msg);
-                        }
+                        addDoorBeelDevice(deviceAddBody);
+
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
                         addGatwayDevice(deviceAddBody);
@@ -887,6 +915,24 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    private void addDoorBeelDevice(DeviceAddBody deviceAddBody) {
+        DialogThreeBounce.showLoading(this);
+        Message msg = Message.obtain();
+        msg.what = MSG_HIDE_DIALOG;
+        mHandler.sendMessageDelayed(msg, 3000);
+        deviceAddBody.setDevice_name(deviceName);
+        if (mRoomManager.getCurrentSelectedRoom() != null) {
+            deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
+        }
+        if (currentSelectGetway != null) {
+            deviceAddBody.setGw_uid(currentSelectGetway.getUid());
+        }
+        deviceAddBody.setDevice_type("SMART_BELL");
+        deviceAddBody.setMac(mDoorbeelManager.getMac());
+        //  deviceAddBody.setVersion(device.getVer());
+        mDeviceManager.addDeviceHttp(deviceAddBody);
     }
 
     /**

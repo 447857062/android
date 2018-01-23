@@ -232,7 +232,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                     break;
                             }
                             break;
-                        case "智能门铃":
+                        case DeviceTypeConstant.TYPE.TYPE_MENLING:
                             startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_LIGHT:
@@ -558,11 +558,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             dev.setType(deviceType);
             dev.setName(deviceName);
             dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
-        } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
+        }
+        else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
             dev.setType(deviceType);
             dev.setName(deviceName);
-        } else if (deviceType.equalsIgnoreCase("LKRT")) {
+        }
+        else if (deviceType.equalsIgnoreCase("SMART_BELL")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_MENLING;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+        }
+        else if (deviceType.equalsIgnoreCase("LKRT")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
             dev.setType(deviceType);
             Router router = new Router();
@@ -629,7 +636,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setUid(devices.get(i).getUid());
         SmartDev realRc = DataSupport.where("Uid=?", devices.get(i).getIrmote_uid()).findFirst(SmartDev.class, true);
         Log.i(TAG,"物理遥控器uid="+devices.get(i).getIrmote_uid());
-        if(realRc.getRooms()!=null){
+        if(realRc!=null&&realRc.getRooms()!=null){
             dev.setRooms(realRc.getRooms());
         }
         dev.setRemotecontrolUid(devices.get(i).getIrmote_uid());

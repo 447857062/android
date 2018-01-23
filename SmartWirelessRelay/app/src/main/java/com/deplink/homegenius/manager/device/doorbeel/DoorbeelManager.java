@@ -6,13 +6,9 @@ import android.util.Log;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.packet.GeneralPacket;
-import com.deplink.homegenius.Protocol.packet.unpacket.UnpacketWiFiConfig;
 
 import org.litepal.crud.DataSupport;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +38,15 @@ public class DoorbeelManager {
     private static DoorbeelManager instance;
     private Context mContext;
     private SmartDev currentSelectedDoorbeel;
+    private String mac;
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public SmartDev getCurrentSelectedDoorbeel() {
         return currentSelectedDoorbeel;
@@ -52,7 +57,7 @@ public class DoorbeelManager {
     }
 
 
-    public void getDoorbeelAtRooms( Observer observer) {
+    public void getDoorbeelAtRooms(Observer observer) {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -72,10 +77,27 @@ public class DoorbeelManager {
         }
         return instance;
     }
+    private String ssid;
+    private String password;
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public void InitDoorbeelManager(Context context) {
         this.mContext = context;
-
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
@@ -115,11 +137,11 @@ public class DoorbeelManager {
 
     private Observable mObservable;
 
-    public void deleteDoorbeel( SmartDev dev) {
+    public void deleteDoorbeel(SmartDev dev) {
 
-                 int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", dev.getUid());
+        int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", dev.getUid());
 
-                Log.i(TAG, "删除智能门铃设备=" + affectColumn);
+        Log.i(TAG, "删除智能门铃设备=" + affectColumn);
 
     }
 
@@ -144,74 +166,5 @@ public class DoorbeelManager {
         Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
         return saveResult;
     }
-    public static final int LocalConPort = 5880;
-    //设置设备的WiFi参数 -- 阻塞方式 -- 外部调用建议使用线程
-    public int setDevWiFiConfigWithMac(long mac, byte type, byte ver,String ssid,String pwd) {
-        //OneDev dev = DevStatus.getOneDev(mac);
-       // int netStatus = dev.getDevStatus(PublicMethod.getTimeMs());
-        UnpacketWiFiConfig unpack = new UnpacketWiFiConfig();
-        GeneralPacket rebootPacket = null;
-      //  Log.i(TAG,"setDevWiFiConfigWithMac netStatus="+netStatus);
-       // if (dev != null) {
-            //设备存在，并且设备在线，发起读取设备WiFi的任务
-            GeneralPacket packet = new GeneralPacket(mContext);
-           // if (netStatus == ConnTypeLocal) {
-                try {
-                    rebootPacket = new GeneralPacket(InetAddress.getByName("255.255.255.255"), LocalConPort, mContext);
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-                packet.packWiFiConfigPacket(mac, type, ver, true, ssid, pwd, unpack);
-                rebootPacket.packRebootWiFiConfigPacket(mac, type, ver, true, unpack);
-         //   }
-           /* else if (netStatus == ConnTypeRemote) {
-                rebootPacket = new GeneralPacket(dev.remoteIP, dev.remotePort, mContext);
-                packet.packWiFiConfigPacket(mac, type, ver, false, ssid, pwd, unpack);
-                rebootPacket.packRebootWiFiConfigPacket(mac, type, ver, false, unpack);
-            } */
-           /* else {
-                return -1;
-            }*/
-          //  udp.writeNet(packet);
-            boolean isFinish = false;
-            int count = 0;
-            boolean isSetOk = false;
-            while (!isFinish) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                count++;
-                switch (unpack.step) {
-                    case 2:
-                        isSetOk = false;
-                        isFinish = true;
-                        return 0;
-                    case 4:
-                        isFinish = true;
-                        isSetOk = true;
-                        break;
-                    case -1:
-                        isSetOk = false;
-                        isFinish = true;
-                        break;
-                    default:
-                        break;
-                }
-                if (count > 50) {
-                    isSetOk = false;
-                    isFinish = true;
-                }
-            }
-            if (isSetOk) {
-              //  udp.writeNet(rebootPacket);
-                return 1;
-            } else {
-                return 0;
-            }
-      //  }
-       // return -1;
 
-    }
 }

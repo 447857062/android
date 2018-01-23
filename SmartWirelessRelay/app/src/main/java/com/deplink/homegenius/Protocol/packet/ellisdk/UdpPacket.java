@@ -1,14 +1,24 @@
-package com.deplink.homegenius.Protocol.packet;
+package com.deplink.homegenius.Protocol.packet.ellisdk;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.deplink.homegenius.util.PublicMethod;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 
 
 public class UdpPacket implements OnRecvListener {
+
     public static final String TAG = "UdpPacket";
+
+
     UdpComm netUdp;
+
+
     private OnRecvListener listener;
 
     //发送网络包队列
@@ -49,10 +59,10 @@ public class UdpPacket implements OnRecvListener {
         return true;
     }
 
-    public static final int LocalConPort = 5880;
+
     public void start() {
         stop();
-        netUdp = new UdpComm(mContext, LocalConPort, this);
+        netUdp = new UdpComm(mContext,  EllESDK_DEF.LocalConPort, this);
         netUdp.startServer();
         udpPacketThread = new UdpPacketThread();
         udpPacketThread.start();
@@ -76,24 +86,22 @@ public class UdpPacket implements OnRecvListener {
 
     public void dealListener(BasicPacket packet) {
         int size = sendNetPakcetList.size();
-        if (packet.xdata != null && packet.xdata.length > 0 && packet.xdata[0] == 0x04) {
-        }
         for (int i = 0; i < size; i++) {
             BasicPacket tmp = sendNetPakcetList.get(i);
-            /*if (tmp.seq == packet.seq && tmp.mac == packet.mac && tmp.listener != null) {
+            if (tmp.seq == packet.seq && tmp.mac == packet.mac && tmp.listener != null) {
                 tmp.listener.OnRecvData(packet);
                 tmp.isFinish = true;
                 return;
-            }*/
+            }
             size = sendNetPakcetList.size();
         }
     }
 
     @Override
     public void OnRecvData(BasicPacket packet) {
-      //  DevStatus.statusDealPacket(packet);
+        DevStatus.statusDealPacket(packet);
         dealListener(packet);
-    //    EllESDK.getNewPacket(packet);
+        EllESDK.getNewPacket(packet);
     }
 
     private class UdpPacketThread extends Thread {
@@ -115,17 +123,17 @@ public class UdpPacket implements OnRecvListener {
                         delOneSendPacket(sendNetPakcetList, tmp);
                         continue;
                     }
-                 /*   if (tmp != null) {
+                    if (tmp != null) {
                         if (tmp.ip != null && tmp.isSetIp) {
                             Log.i(TAG,"udppacket 141 tmp data="+tmp.toString());
                             netUdp.sendData(tmp.getUdpData());
                             delOneSendPacket(sendNetPakcetList, tmp);
                         } else {
                             int result=tmp.isPacketCouldSend(PublicMethod.getTimeMs());
-                            if (result==PacketWait){
+                            if (result==BasicPacket.PacketWait){
                                 continue;
                             }
-                            if (result==PacketTimeout) {
+                            if (result==BasicPacket.PacketTimeout) {
                                 if (tmp.listener != null) {
                                     delOneSendPacket(sendNetPakcetList, tmp);
                                 }
@@ -134,26 +142,26 @@ public class UdpPacket implements OnRecvListener {
                             OneDev dev = DevStatus.getOneDev(tmp.mac);
                             if (dev != null) {
                                 switch (dev.getDevStatus(PublicMethod.getTimeMs())) {
-                                    case ConnTypeNULL:
+                                    case OneDev.ConnTypeNULL:
                                         Log.d("TAG", "设备离线，回掉失败");
                                         if (tmp.listener != null)
                                             tmp.listener.OnRecvData(tmp);
                                         delOneSendPacket(sendNetPakcetList, tmp);
                                         break;
-                                    case ConnTypeLocal:
+                                    case OneDev.ConnTypeLocal:
 
                                         try {
                                             tmp.ip = InetAddress.getByName("255.255.255.255");
-                                            tmp.port = LocalConPort;
+                                            tmp.port =  EllESDK_DEF.LocalConPort;
                                             Log.i(TAG,"udppacket 170");
                                             netUdp.sendData(tmp.getUdpData(tmp.ip, tmp.port));
                                         } catch (UnknownHostException e) {
                                             e.printStackTrace();
                                         }
                                         break;
-                                    case ConnTypeRemote:
+                                    case OneDev.ConnTypeRemote:
                                         tmp.ip = dev.remoteIP;
-                                        tmp.port = RemoteConPort;
+                                        tmp.port = EllESDK_DEF.RemoteConPort;
                                         Log.i(TAG,"udppacket 179");
                                         netUdp.sendData(tmp.getUdpData(tmp.ip, tmp.port));
                                         break;
@@ -162,7 +170,7 @@ public class UdpPacket implements OnRecvListener {
                                 if (tmp.isLocal) {
                                     try {
                                         tmp.ip = InetAddress.getByName("255.255.255.255");
-                                        tmp.port = LocalConPort;
+                                        tmp.port = EllESDK_DEF.LocalConPort;
                                         Log.i(TAG,"udppacket 187");
                                         netUdp.sendData(tmp.getUdpData(tmp.ip, tmp.port));
                                     } catch (UnknownHostException e) {
@@ -178,9 +186,8 @@ public class UdpPacket implements OnRecvListener {
                             }
                         }
 
-                    }*/
+                    }
                 }
-
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {

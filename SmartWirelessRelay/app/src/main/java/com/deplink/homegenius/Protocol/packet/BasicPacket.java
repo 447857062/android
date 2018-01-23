@@ -6,7 +6,6 @@ import android.util.Log;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.ComandID;
 import com.deplink.homegenius.util.DataExchange;
-import com.deplink.homegenius.util.IPV4Util;
 import com.deplink.homegenius.util.Perfence;
 
 import java.net.DatagramPacket;
@@ -25,8 +24,6 @@ public class BasicPacket {
     public int port;
     public boolean isFinish;
     private Context mContext;
-    public byte fun;
-    public byte[] xdata;
     public long mac;
     public BasicPacket(Context context) {
         this.mContext = context;
@@ -119,91 +116,6 @@ public class BasicPacket {
             System.arraycopy(xdata, 0, data, len, xdata.length);
         }
         Log.e(TAG, "打包数据长度data.length=" + data.length+"数据是："+DataExchange.byteArrayToHexString(data));
-        return data.length;
-    }
-    /**
-     * 基础打包函数
-     **/
-    public static final int BasicLen = 37;
-    public int packDoorbeelData(byte devfun, byte[] controlid, int seq, byte[] xdata, boolean isLocal, long mac, byte type, byte ver) {
-        Log.i(TAG,"基础打包函数 devfun="+devfun+"mac="+mac+"type="+type+"ver="+ver);
-       fun = devfun;
-       this.xdata = xdata;
-        byte[] tmp;
-        int len = 0;
-
-        isFinish = false;
-     //   this.seq = seq;
-
-        if (xdata != null)
-            data = new byte[BasicLen + xdata.length];
-        else {
-            xdata = new byte[0];
-            data = new byte[BasicLen];
-        }
-        //head
-
-     //   this.isLocal = isLocal;
-        if (isLocal) {
-            data[len++] = 0x55;
-            data[len++] = (byte) 0xaa;
-        } else {
-            data[len++] = 0x55;
-            data[len++] = 0x66;
-        }
-        //data len
-        tmp = DataExchange.intToTwoByte(BasicLen + xdata.length);
-        data[len++] = tmp[0];
-        data[len++] = tmp[1];//765920768
-        //frame len
-        data[len++] = 1;
-        //frame num
-        data[len++] = 0;
-        //frame key
-        data[len++] = 0;
-        //mac
-       this.mac = mac;
-        System.arraycopy(DataExchange.longToEightByte(mac), 0, data, len, 8);
-        len = len + 8;
-        //frame quality
-        data[len++] = 0;
-        data[len++] = 0;
-        //dev status
-        data[len++] = 0;
-        //dev code
-
-        data[len++] = type;
-   //     this.type=type;
-        //dev ver
-        data[len++] = ver;
-    //    this.ver=ver;
-        //dev fun
-        data[len++] = devfun;
-        //typebig
-        data[len++] = 0;
-        //typesmall
-        data[len++] = 0;
-        //control id
-        System.arraycopy(controlid, 0, data, len, 4);
-        len = len + 4;
-        //reserved
-        len = len + 4;
-        //seq
-        tmp = DataExchange.intToTwoByte(seq);
-        data[len++] = tmp[0];
-        data[len++] = tmp[1];
-        //xdatalen
-        tmp = DataExchange.intToTwoByte(xdata.length);
-        data[len++] = tmp[0];
-        data[len++] = tmp[1];
-        //crc
-        data[len++] = 0;
-        data[len++] = 0;
-
-        if (xdata.length > 0) {
-            System.arraycopy(xdata, 0, data, len, xdata.length);
-        }
-
         return data.length;
     }
     /**
@@ -320,56 +232,12 @@ public class BasicPacket {
     public DatagramPacket getUdpData() {
         return new DatagramPacket(this.data, this.data.length, ip, port);
     }
-
+    public DatagramPacket getUdpData(InetAddress ip, int port) {
+        DatagramPacket packet = null;
+        if (data != null)
+            packet = new DatagramPacket(this.data, this.data.length, ip, port);
+        return packet;
+    }
     public byte type;
     public byte ver;
-    int frameLen;
-    int frameCount;
-    public boolean isLocal;
-    int xdataLen;
-    int uuid;
-    //seq编号，方便返回的时候回掉到界面
-    public int seq;
-    public int unpackPacketWithData(byte[] data, int len) {
-        if (len < BasicLen)
-            return -1;
-        if (data[0] != 0x55)
-            return -2;
-        if (data[1] != (byte) 0x66 && data[1] != (byte) 0xaa)
-            return -3;
-        IPV4Util ipv4Util = new IPV4Util();
-
-     /*   if (PublicMethod.checkConnectionState(mContext) == 1) {   //如果是WiFi情况下，则判断ip地址
-            if (ipv4Util.checkSameSegment(this.ip.getHostAddress(), PublicMethod.getLocalIP(mContext))) {
-                isLocal = true;
-//            NSLog(@"收到一个本地包");
-            } else {
-                isLocal = false;
-//            NSLog(@"收到一个远程包");
-            }
-        } else {
-            isLocal = false;
-//        NSLog(@"收到一个远程包");
-        }*/
-        isLocal=true;
-        byte[] bytesLen = new byte[2];
-        System.arraycopy(data, 2, bytesLen, 0, 2);
-        len = DataExchange.twoCharToInt(bytesLen);
-        frameLen = data[4];
-        frameCount = data[5];
-
-        mac = DataExchange.eightByteToLong(data[7], data[8], data[9], data[10], data[11], data[12], data[13], data[14]);
-        uuid = DataExchange.fourByteToInt(data[23], data[24], data[25], data[26]);
-        fun = data[20];
-        ver = data[19];
-        type = data[18];
-        frameLen = data[4];
-        frameCount = data[5];
-        seq = DataExchange.bytesToInt(data, 31, 2);
-        xdataLen = DataExchange.bytesToInt(data, 33, 2);
-        xdata = new byte[this.xdataLen];
-        System.arraycopy(data, 37, xdata, 0, xdataLen);
-        Log.i(TAG,"解码 mac="+mac+"uuid="+uuid+"fun="+fun+"ver="+ver+"type="+type);
-        return 0;
-    }
 }

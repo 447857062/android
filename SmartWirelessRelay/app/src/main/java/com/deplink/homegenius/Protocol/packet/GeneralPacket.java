@@ -3,7 +3,6 @@ package com.deplink.homegenius.Protocol.packet;
 import android.content.Context;
 
 import com.deplink.homegenius.constant.ComandID;
-import com.deplink.homegenius.util.PublicMethod;
 
 import java.net.InetAddress;
 
@@ -15,9 +14,11 @@ public class GeneralPacket extends BasicPacket {
     private Context mContext;
     public GeneralPacket(InetAddress ip, int port, Context context) {
         super(context, ip, port);
+        this.mContext=context;
     }
     public GeneralPacket(Context context) {
         super(context);
+        this.mContext=context;
     }
     /**
      * 绑定设备
@@ -87,29 +88,5 @@ public class GeneralPacket extends BasicPacket {
     public int packSendDevsData( byte[]xdata) {
         return packData( xdata,ComandID.CMD_SEND_SMART_DEV,false,null);
     }
-    public static final byte FunWiFiConfig = (byte) 0xf0;
-    public int packWiFiConfigPacket(long mac, byte type, byte ver, boolean isLocal, String SSID, String pwd, OnRecvListener listener) {
-      //  this.listener = listener;
-        if (SSID == null || pwd == null)
-            return -1;
 
-        if (SSID.length() == 0 || pwd.length() == 0)
-            return -2;
-
-        int xlen = 3 + SSID.length() + pwd.length();
-        byte[] xdata = new byte[xlen];
-        xdata[0] = 0x03;
-        xdata[1] = (byte) (SSID.length() & 0xff);
-        System.arraycopy(SSID.getBytes(), 0, xdata, 2, SSID.length());
-        xdata[2 + SSID.length()] = (byte) (pwd.length() & 0xff);
-        System.arraycopy(pwd.getBytes(), 0, xdata, 3 + SSID.length(), pwd.length());
-        return packDoorbeelData(FunWiFiConfig, PublicMethod.getUuid(mContext), PublicMethod.getSeq(), xdata, isLocal, mac, type, ver);
-    }
-    public int packRebootWiFiConfigPacket(long mac, byte type, byte ver, boolean isLocal, OnRecvListener listener) {
-        byte[] xdata = new byte[1];
-        xdata[0] = 0x05;
-     //   this.listener = listener;
-        return packDoorbeelData(FunWiFiConfig, PublicMethod.getUuid(mContext), PublicMethod.getSeq(), xdata, isLocal, mac, type, ver);
-
-    }
 }

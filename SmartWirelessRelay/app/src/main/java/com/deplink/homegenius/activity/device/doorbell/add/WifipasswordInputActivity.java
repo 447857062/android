@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.util.Wifi;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -20,6 +21,7 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
     private Button button_next_step;
     private TextView textview_wifi_name;
     private ClearEditText edittext_wifi_password;
+    private DoorbeelManager mDoorbeelManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +35,11 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
         image_back.setOnClickListener(this);
         button_next_step.setOnClickListener(this);
     }
-
+    private String  wifiName;
     private void initDatas() {
+        mDoorbeelManager=DoorbeelManager.getInstance();
         textview_title.setText("输入WIFI信息");
-       String wifiName= Wifi.getConnectedWifiName(this);
+        wifiName= Wifi.getConnectedWifiName(this);
         if(wifiName!=null&&!wifiName.equals("")){
             textview_wifi_name.setText(wifiName);
         }
@@ -64,6 +67,8 @@ public class WifipasswordInputActivity extends Activity implements View.OnClickL
                     ToastSingleShow.showText(this,"请输入正确的wifi密码");
                     return;
                 }
+                mDoorbeelManager.setSsid(wifiName);
+                mDoorbeelManager.setPassword(wifiPassword);
                 startActivity(new Intent(this,ApModeActivity.class));
                 break;
         }

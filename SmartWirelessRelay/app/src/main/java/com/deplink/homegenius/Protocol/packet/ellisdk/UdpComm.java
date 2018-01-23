@@ -1,7 +1,9 @@
-package com.deplink.homegenius.Protocol.packet;
+package com.deplink.homegenius.Protocol.packet.ellisdk;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.deplink.homegenius.util.DataExchange;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -51,7 +53,7 @@ public class UdpComm {
             Log.e(TAG, "sendData:" + packet.getAddress().getHostAddress() + ":" + packet.getPort());
           byte[]temp= packet.getData();
 
-          //  Log.e(TAG, "sendData:" + DataExchange.byteArrayToHexString(temp));
+            Log.e(TAG, "sendData:" + DataExchange.byteArrayToHexString(temp));
             udp.send(packet);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -148,7 +150,7 @@ public class UdpComm {
                         BasicPacket basicPacket = new BasicPacket(mContext, packet.getAddress(), packet.getPort());
                         Log.i(TAG,"basicPacket.tostring="+basicPacket.toString());
                         basicPacket.unpackPacketWithData(result, result.length);
-                      //  Log.d("RecvThread", DataExchange.byteArrayToHexString(result));
+                        Log.d("RecvThread", DataExchange.byteArrayToHexString(result));
                         listener.OnRecvData(basicPacket);
                     }
                 } catch (IOException e) {

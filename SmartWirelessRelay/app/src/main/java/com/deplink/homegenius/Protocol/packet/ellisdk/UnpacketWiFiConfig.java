@@ -1,11 +1,7 @@
-package com.deplink.homegenius.Protocol.packet.unpacket;
+package com.deplink.homegenius.Protocol.packet.ellisdk;
 
 
 import android.util.Log;
-
-import com.deplink.homegenius.Protocol.packet.BasicPacket;
-import com.deplink.homegenius.Protocol.packet.OnRecvListener;
-
 
 
 /**
@@ -20,6 +16,7 @@ public class UnpacketWiFiConfig implements OnRecvListener {
     public int step;
     @Override
     public void OnRecvData( BasicPacket packet) {
+        Log.i(TAG,"UnpacketWiFiConfig");
         int ssidLen = 0;
         int pwdLen = 0;
         if (packet != null) {

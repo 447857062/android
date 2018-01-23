@@ -310,7 +310,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }).start();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
