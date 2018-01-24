@@ -72,9 +72,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                     case LOGIN:
                         Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
                         manager.connectMQTT(getApplicationContext());
-                        Log.i(TAG, "onSuccess login");
-                        break;
-                    case CONNECTED:
                         User user = manager.getUserInfo();
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
@@ -82,6 +79,10 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                         startActivity(new Intent(LoginActivity.this, SmartHomeMainActivity.class));
                         DialogLoading.hideLoading();
                         LoginActivity.this.finish();
+                        Log.i(TAG, "onSuccess login");
+                        break;
+                    case CONNECTED:
+
                         break;
                     default:
                         break;

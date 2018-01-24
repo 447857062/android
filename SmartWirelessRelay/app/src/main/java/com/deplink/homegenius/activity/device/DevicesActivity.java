@@ -570,6 +570,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         else if (deviceType.equalsIgnoreCase("SMART_BELL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_MENLING;
             dev.setType(deviceType);
+            dev.setStatus("在线");
             dev.setName(deviceName);
         }
         else if (deviceType.equalsIgnoreCase("LKRT")) {

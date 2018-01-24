@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,6 +43,7 @@ import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.ConfigGetwayDialog;
 import com.deplink.homegenius.view.dialog.ConfigRemoteControlDialog;
@@ -306,10 +308,11 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                             doorbeelDev.setUid(addDeviceUid);
                             doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
                             deviceName=edittext_add_device_input_name.getText().toString();
-                            if(deviceName==null||deviceName.equalsIgnoreCase("")){
+                            if(deviceName.equalsIgnoreCase("")){
                                 deviceName="智能门铃";
                             }
-                            dbSmartDev.setName(deviceName);
+                            doorbeelDev.setStatus("在线");
+                            doorbeelDev.setName(deviceName);
                             Message msg = Message.obtain();
                             boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
                             if (result) {
@@ -924,6 +927,10 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     }
 
     private void addDoorBeelDevice(DeviceAddBody deviceAddBody) {
+        if(!NetUtil.isNetAvailable(this)){
+            ToastSingleShow.showText(this,"网络连接不可用,请重新连接上网络");
+            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        }
         DialogThreeBounce.showLoading(this);
         Message msg = Message.obtain();
         msg.what = MSG_HIDE_DIALOG;

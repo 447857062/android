@@ -39,6 +39,8 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
+import java.util.List;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class EditDoorbellActivity extends Activity implements View.OnClickListener , EllE_Listener {
@@ -96,6 +98,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
             Handler_Background.execute(new Runnable() {
                 @Override
                 public void run() {
+                    ellESDK.stopSearchDevs();
                     wifiData= ellESDK.getDevWiFiConfigWithMac(maclong,type,ver);
                     Handler_UiThread.runTask("", new Runnable() {
                         @Override
@@ -103,14 +106,19 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                             if(wifiData!=null){
                                 textview_select_getway_name.setText("当前配置的WIFI:"+wifiData.ssid);
                             }else{
-                                textview_select_getway_name.setText("当前设备未配置WIFI");
+                               // textview_select_getway_name.setText("当前设备未配置WIFI");
                             }
 
                         }
                     },0);
                 }
             });
-
+            List<Room> rooms = mDoorbeelManager.getCurrentSelectedDoorbeel().getRooms();
+            if (rooms.size() == 1) {
+                textview_select_room_name.setText(rooms.get(0).getRoomName());
+            } else {
+                textview_select_room_name.setText("全部");
+            }
         }
     }
     private long maclong;
@@ -119,7 +127,6 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     @Override
     protected void onPause() {
         super.onPause();
-        ellESDK.stopSearchDevs();
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }

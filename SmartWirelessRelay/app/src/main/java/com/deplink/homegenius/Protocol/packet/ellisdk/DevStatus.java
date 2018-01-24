@@ -43,6 +43,7 @@ public class DevStatus {
             e.printStackTrace();
         }
     }
+
     class timerTimeoutTask extends TimerTask {
 
         @Override
@@ -84,7 +85,7 @@ public class DevStatus {
                 System.arraycopy(packet.xdata, 0, byteIp, 0, 4);
                 System.arraycopy(packet.xdata, 4, byteIp, 0, 2);
                 dev.remoteIP = InetAddress.getByName(DataExchange.charToIp(byteIp));
-                dev.remotePort =DataExchange.twoCharToInt(bytePort);
+                dev.remotePort = DataExchange.twoCharToInt(bytePort);
 
             } catch (UnknownHostException e) {
                 e.printStackTrace();
@@ -136,7 +137,7 @@ public class DevStatus {
         if (!couldSearch) {
             for (int i = 0; i < devs.devs.size(); i++) {
                 OneDev dev = devs.devs.get(i);
-                if (dev != null && (dev.getDevStatus(curtiem) !=OneDev.ConnTypeLocal) && dev.remoteIP != null) {   //连接方式不等于本地的时候，就需要去远端查询
+                if (dev != null && (dev.getDevStatus(curtiem) != OneDev.ConnTypeLocal) && dev.remoteIP != null) {   //连接方式不等于本地的时候，就需要去远端查询
                     GeneralPacket packet = new GeneralPacket(dev.remoteIP, dev.remotePort, mContext);
                     packet.packCheckPacketWithDev(dev, false, null);
                     udp.writeNet(packet);
@@ -148,7 +149,7 @@ public class DevStatus {
         GeneralPacket packet = null;
         try {
             //发送一个局域网查询包
-            packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"),EllESDK_DEF.LocalConPort, mContext);
+            packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"), EllESDK_DEF.LocalConPort, mContext);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -220,15 +221,15 @@ public class DevStatus {
             case EllESDK_DEF.FunRegBack:    //返回的注册包
                 dealRegBackPacket(packet);
                 break;
-            case  EllESDK_DEF.FunCheckBack:
-                Log.i(TAG,"statusDealPacket FunCheckBack mac="+packet.mac+"type="+packet.type+"ver="+packet.ver);
+            case EllESDK_DEF.FunCheckBack:
+                Log.i(TAG, "statusDealPacket FunCheckBack mac=" + packet.mac + "type=" + packet.type + "ver=" + packet.ver);
                 dealDataBackPacket(packet);
                 break;
             case (byte) 0xee:  //wifi信息返回的包
-              //  dealWiFiSsidListPacket(packet);
+                //  dealWiFiSsidListPacket(packet);
                 break;
             case (byte) 0xf0:  //
-                Log.i(TAG,"wifi config 返回的包");
+                Log.i(TAG, "wifi config 返回的包");
                 break;
         }
         return 0;
@@ -236,22 +237,16 @@ public class DevStatus {
 
     //得到设备的WiFi参数 -- 阻塞方式 -- 外部调用建议使用线程
     public WIFIData getDevWiFiConfigWithMac(long mac, byte type, byte ver) {
+        Log.i(TAG,"得到设备的WiFi参数");
         WIFIData wifiData = null;
         OneDev dev = DevStatus.getOneDev(mac);
         int netStatus = dev.getDevStatus(PublicMethod.getTimeMs());
-       UnpacketWiFiConfig unpack = new UnpacketWiFiConfig();
+        UnpacketWiFiConfig unpack = new UnpacketWiFiConfig();
         //设备存在，并且设备在线，发起读取设备WiFi的任务
-        GeneralPacket packet = null;
+        GeneralPacket packet;
         try {
-            if (netStatus ==OneDev. ConnTypeLocal) {
-                packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"),  EllESDK_DEF.LocalConPort, mContext);
-                packet.packGetWiFiConfigPacket(mac, type, ver, true, unpack);
-            } else if (netStatus == OneDev.ConnTypeRemote) {
-                packet = new GeneralPacket(dev.remoteIP, dev.remotePort, mContext);
-                packet.packGetWiFiConfigPacket(mac, type, ver, false, unpack);
-            } else {
-                return null;
-            }
+            packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"), EllESDK_DEF.LocalConPort, mContext);
+            packet.packGetWiFiConfigPacket(mac, type, ver, true, unpack);
             udp.writeNet(packet);
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,7 +255,6 @@ public class DevStatus {
         boolean isFinish = false;
         int count = 0;
         while (!isFinish) {
-//                [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01f]];
             count++;
             switch (unpack.step) {
                 case 2:
@@ -293,12 +287,12 @@ public class DevStatus {
         int netStatus = dev.getDevStatus(PublicMethod.getTimeMs());
         UnpacketWiFiConfig unpack = new UnpacketWiFiConfig();
         GeneralPacket rebootPacket = null;
-        Log.i(TAG,"setDevWiFiConfigWithMac netStatus="+netStatus);
+        Log.i(TAG, "setDevWiFiConfigWithMac netStatus=" + netStatus);
         //设备存在，并且设备在线，发起读取设备WiFi的任务
         GeneralPacket packet = new GeneralPacket(mContext);
         if (netStatus == OneDev.ConnTypeLocal) {
             try {
-                rebootPacket = new GeneralPacket(InetAddress.getByName("255.255.255.255"),  EllESDK_DEF.LocalConPort, mContext);
+                rebootPacket = new GeneralPacket(InetAddress.getByName("255.255.255.255"), EllESDK_DEF.LocalConPort, mContext);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }

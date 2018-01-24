@@ -106,7 +106,7 @@
                 android:layout_centerVertical="true"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small"
-                android:layout_toRightOf="@+id/textview_getway_name"
+               android:layout_toLeftOf="@+id/imageview_getway_arror_right"
                 android:gravity="center_vertical"
                 android:id="@+id/textview_select_getway_name"
                 android:layout_width="wrap_content"

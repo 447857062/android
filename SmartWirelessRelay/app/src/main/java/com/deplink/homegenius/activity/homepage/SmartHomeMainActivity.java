@@ -399,14 +399,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         manager.connectMQTT(SmartHomeMainActivity.this);
                         Log.i(TAG, "LOGIN success uuid=" + manager.getUserInfo().getUuid());
                         Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
-                        break;
-                    case CONNECTED:
-                        Log.i(TAG, "CONNECTED mqtt");
                         User user = manager.getUserInfo();
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
+                        Log.i(TAG, "CONNECTED mqtt");
                         mRoomManager.updateRooms();
+                        break;
+                    case CONNECTED:
 
                         break;
                 }
