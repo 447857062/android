@@ -562,9 +562,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         frame_setting.setOnClickListener(this);
         layout_connected_devices.setOnClickListener(this);
         layout_blak_list.setOnClickListener(this);
-        if (isStartFromExperience) {
-
-        } else {
+        if (!isStartFromExperience) {
             listview_device_list.setAdapter(mAdapter);
         }
 

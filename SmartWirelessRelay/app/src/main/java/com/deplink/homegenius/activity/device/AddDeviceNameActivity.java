@@ -305,11 +305,16 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                             SmartDev doorbeelDev = new SmartDev();
                             doorbeelDev.setUid(addDeviceUid);
                             doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
+                            deviceName=edittext_add_device_input_name.getText().toString();
+                            if(deviceName==null||deviceName.equalsIgnoreCase("")){
+                                deviceName="智能门铃";
+                            }
+                            dbSmartDev.setName(deviceName);
                             Message msg = Message.obtain();
                             boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
                             if (result) {
                                 boolean updateRoomResult = mDoorbeelManager.
-                                        updateDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+                                        updateDeviceInWhatRoom(currentSelectedRoom, addDeviceUid);
                                 if (updateRoomResult) {
                                     startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
                                 } else {
@@ -461,11 +466,12 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         SmartDev doorbeelDev = new SmartDev();
                         doorbeelDev.setUid(addDeviceUid);
                         doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
+                        dbSmartDev.setName(deviceName);
                         Message msg = Message.obtain();
                         boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
                         if (result) {
                             boolean updateRoomResult = mDoorbeelManager.
-                                    updateDeviceInWhatRoom(currentSelectedRoom, addDeviceUid, deviceName);
+                                    updateDeviceInWhatRoom(currentSelectedRoom, addDeviceUid);
                             if (updateRoomResult) {
                                 startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
                             } else {
@@ -681,7 +687,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                 layout_getway_select.setVisibility(View.GONE);
             } else if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_MENLING)) {
                 layout_remotecontrol_select.setVisibility(View.GONE);
-                layout_getway_select.setVisibility(View.VISIBLE);
+                layout_getway_select.setVisibility(View.GONE);
             } else {
                 layout_remotecontrol_select.setVisibility(View.GONE);
                 layout_getway_select.setVisibility(View.VISIBLE);
@@ -925,9 +931,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         deviceAddBody.setDevice_name(deviceName);
         if (mRoomManager.getCurrentSelectedRoom() != null) {
             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
-        }
-        if (currentSelectGetway != null) {
-            deviceAddBody.setGw_uid(currentSelectGetway.getUid());
         }
         deviceAddBody.setDevice_type("SMART_BELL");
         deviceAddBody.setMac(mDoorbeelManager.getMac());

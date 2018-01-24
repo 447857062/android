@@ -239,55 +239,47 @@ public class DevStatus {
         WIFIData wifiData = null;
         OneDev dev = DevStatus.getOneDev(mac);
         int netStatus = dev.getDevStatus(PublicMethod.getTimeMs());
-
        UnpacketWiFiConfig unpack = new UnpacketWiFiConfig();
-
-        if (dev != null) {
-            //设备存在，并且设备在线，发起读取设备WiFi的任务
-            GeneralPacket packet = null;
-            try {
-                if (netStatus ==OneDev. ConnTypeLocal) {
-                    packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"),  EllESDK_DEF.LocalConPort, mContext);
-                    packet.packGetWiFiConfigPacket(mac, type, ver, true, unpack);
-                } else if (netStatus == OneDev.ConnTypeRemote) {
-                    packet = new GeneralPacket(dev.remoteIP, dev.remotePort, mContext);
-                    packet.packGetWiFiConfigPacket(mac, type, ver, false, unpack);
-                } else {
-                    return null;
-                }
-                if (packet != null)
-                    udp.writeNet(packet);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
+        //设备存在，并且设备在线，发起读取设备WiFi的任务
+        GeneralPacket packet = null;
+        try {
+            if (netStatus ==OneDev. ConnTypeLocal) {
+                packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"),  EllESDK_DEF.LocalConPort, mContext);
+                packet.packGetWiFiConfigPacket(mac, type, ver, true, unpack);
+            } else if (netStatus == OneDev.ConnTypeRemote) {
+                packet = new GeneralPacket(dev.remoteIP, dev.remotePort, mContext);
+                packet.packGetWiFiConfigPacket(mac, type, ver, false, unpack);
+            } else {
+                return null;
             }
+            udp.writeNet(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            boolean isFinish = false;
-            int count = 0;
-            while (!isFinish) {
+        boolean isFinish = false;
+        int count = 0;
+        while (!isFinish) {
 //                [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01f]];
-                count++;
-                switch (unpack.step) {
-                    case 2:
-                        isFinish = true;
-                        wifiData.pwd = unpack.ssid;
-                        wifiData.ssid = unpack.ssid;
-                        return wifiData;
-                    case 4:
-                        isFinish = true;
-                        break;
-                    case -1:
-                        isFinish = true;
-                        break;
-                    default:
-                        break;
-                }
-                if (count > 800) {
+            count++;
+            switch (unpack.step) {
+                case 2:
                     isFinish = true;
-                }
+                    wifiData.pwd = unpack.ssid;
+                    wifiData.ssid = unpack.ssid;
+                    return wifiData;
+                case 4:
+                    isFinish = true;
+                    break;
+                case -1:
+                    isFinish = true;
+                    break;
+                default:
+                    break;
             }
-
+            if (count > 800) {
+                isFinish = true;
+            }
         }
         return null;
 
@@ -387,7 +379,7 @@ public class DevStatus {
         GeneralPacket packet = null;
         if (dev != null) {
             int netStatus = dev.getDevStatus(PublicMethod.getTimeMs());
-            if ((dev != null) && (netStatus > 0)) {
+            if ((netStatus > 0)) {
                 //设备存在，并且设备在线，发起读取设备WiFi的任务
                 if (netStatus == OneDev.ConnTypeLocal) {
                     try {

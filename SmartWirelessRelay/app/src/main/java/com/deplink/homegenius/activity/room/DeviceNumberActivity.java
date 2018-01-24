@@ -15,6 +15,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
+import com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
 import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -30,6 +31,7 @@ import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.RoomConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
@@ -138,6 +140,10 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                         case DeviceTypeConstant.TYPE.TYPE_LOCK:
                             SmartLockManager.getInstance().setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
+                            break;
+                        case DeviceTypeConstant.TYPE.TYPE_MENLING:
+                            DoorbeelManager.getInstance().setCurrentSelectedDoorbeel(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DeviceNumberActivity.this, VistorHistoryActivity.class));
                             break;
                         case "IRMOTE_V2":
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));

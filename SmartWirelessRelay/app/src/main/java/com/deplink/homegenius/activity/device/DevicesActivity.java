@@ -21,7 +21,7 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
-import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
+import com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
 import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -43,6 +43,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
@@ -114,7 +115,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private GetwayManager mGetwayManager;
     private RemoteControlManager mRemoteControlManager;
     private RemoteControlListener mRemoteControlListener;
-
+    private DoorbeelManager mDoorbeelManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,6 +172,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
     private void initDatas() {
         initManager();
+        mDoorbeelManager=DoorbeelManager.getInstance();
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
@@ -233,7 +235,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                             }
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_MENLING:
-                            startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
+                            mDoorbeelManager.setCurrentSelectedDoorbeel(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DevicesActivity.this, VistorHistoryActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                             SmartLightManager.getInstance().setCurrentSelectLight(datasBottom.get(position - datasTop.size()));
@@ -738,16 +741,18 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                     || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)
                                     || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL)
                                     || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
+                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_MENLING
                             )) {
                                 addSmartdev = false;
                             }
                         }
                         if (addSmartdev) {
-                            Log.i(TAG, "下发远程添加了本地没有添加的智能设备" + datasBottom.get(j).getName());
+                            Log.i(TAG, "下发远程添加了本地没有添加的智能设备名称:" + datasBottom.get(j).getName()+"设备类型"+
+                                    datasBottom.get(j).getType()
+                            );
                             QrcodeSmartDevice device = new QrcodeSmartDevice();
                             device.setAd(datasBottom.get(j).getMac());
-                            Log.i(TAG, "下发远程添加了本地没有添加的智能设备 type=" + datasBottom.get(j).getType());
                             switch (datasBottom.get(j).getType()) {
                                 case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                                     device.setTp("YWLIGHTCONTROL");

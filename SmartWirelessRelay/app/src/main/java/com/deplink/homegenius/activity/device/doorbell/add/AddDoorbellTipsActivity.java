@@ -16,6 +16,7 @@ import com.deplink.homegenius.Protocol.packet.ellisdk.Handler_Background;
 import com.deplink.homegenius.Protocol.packet.ellisdk.Handler_UiThread;
 import com.deplink.homegenius.Protocol.packet.ellisdk.WIFIData;
 import com.deplink.homegenius.activity.device.AddDeviceNameActivity;
+import com.deplink.homegenius.activity.device.doorbell.EditDoorbellActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.util.DataExchange;
@@ -77,11 +78,7 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
     String account;
     String password;
 
-    @Override
-    protected void onDestroy() {
-        EllESDK.getInstance().stopSearchDevs();
-        super.onDestroy();
-    }
+
 
     @Override
     public void onRecvEllEPacket(BasicPacket packet) {
@@ -96,17 +93,24 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
                 @Override
                 public void run() {
                     WIFIData wifiData = new WIFIData(account, password);
-
                     int setresult = EllESDK.getInstance().setDevWiFiConfigWithMac(mac, type, ver, wifiData);
                     Log.i(TAG, "配置wifi结果是=" + setresult);
                     if (setresult == 1) {
                         Handler_UiThread.runTask("", new Runnable() {
                             @Override
                             public void run() {
-                                ToastSingleShow.showText(AddDoorbellTipsActivity.this, "门铃网络已配置,现在重启门邻设备,等手机连上网络后进行设备添加");
-                                Intent intent = new Intent(AddDoorbellTipsActivity.this, AddDeviceNameActivity.class);
-                                intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_MENLING);
-                                startActivity(intent);
+                                EllESDK.getInstance().stopSearchDevs();
+                                if(mDoorbeelManager.isConfigWifi()){
+                                    ToastSingleShow.showText(AddDoorbellTipsActivity.this, "门铃网络已配置,现在重启门邻设备");
+                                    Intent intent = new Intent(AddDoorbellTipsActivity.this, EditDoorbellActivity.class);
+                                    startActivity(intent);
+                                }else{
+                                    ToastSingleShow.showText(AddDoorbellTipsActivity.this, "门铃网络已配置,现在重启门邻设备,等手机连上网络后进行设备添加");
+                                    Intent intent = new Intent(AddDoorbellTipsActivity.this, AddDeviceNameActivity.class);
+                                    intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_MENLING);
+                                    startActivity(intent);
+                                }
+
                             }
                         }, 0);
 

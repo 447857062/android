@@ -5,27 +5,67 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.packet.ellisdk.BasicPacket;
+import com.deplink.homegenius.Protocol.packet.ellisdk.EllESDK;
+import com.deplink.homegenius.Protocol.packet.ellisdk.EllE_Listener;
+import com.deplink.homegenius.Protocol.packet.ellisdk.Handler_Background;
+import com.deplink.homegenius.Protocol.packet.ellisdk.Handler_UiThread;
+import com.deplink.homegenius.Protocol.packet.ellisdk.WIFIData;
+import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.doorbell.add.WifipasswordInputActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
+import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
+import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class EditDoorbellActivity extends Activity implements View.OnClickListener{
+public class EditDoorbellActivity extends Activity implements View.OnClickListener , EllE_Listener {
+    private static final String TAG = "EditDoorbellActivity";
     private TextView button_delete_device;
     private DeleteDeviceDialog deleteDialog;
     private TextView textview_title;
     private FrameLayout image_back;
     private DeviceManager mDeviceManager;
     private DeviceListener mDeviceListener;
+    private ClearEditText edittext_add_device_input_name;
+    private DoorbeelManager mDoorbeelManager;
+    private TextView textview_edit;
+    private String deviceUid;
+    private RelativeLayout layout_room_select;
+    private boolean isUserLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private MakeSureDialog connectLostDialog;
+    private TextView textview_select_room_name;
+    private boolean isStartFromExperience;
+    private String devicename;
+    private RelativeLayout layout_getway_select;
+    private Room room;
+    private String action;
+    private EllESDK ellESDK;
+    private TextView textview_select_getway_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,39 +74,145 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         initDatas();
         initEvents();
     }
-
+    private WIFIData wifiData;
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         mDeviceManager.addDeviceListener(mDeviceListener);
-    }
+        if (isStartFromExperience) {
+            edittext_add_device_input_name.setText("智能门铃");
+            edittext_add_device_input_name.setSelection(4);
+        } else {
+            manager.addEventCallback(ec);
+            devicename = mDoorbeelManager.getCurrentSelectedDoorbeel().getName();
+            if (devicename != null && !devicename.equalsIgnoreCase("")) {
+                edittext_add_device_input_name.setText(devicename);
+                edittext_add_device_input_name.setSelection(devicename.length());
+            }
+            deviceUid = mDoorbeelManager.getCurrentSelectedDoorbeel().getUid();
+            ellESDK.startSearchDevs();
+            Handler_Background.execute(new Runnable() {
+                @Override
+                public void run() {
+                    wifiData= ellESDK.getDevWiFiConfigWithMac(maclong,type,ver);
+                    Handler_UiThread.runTask("", new Runnable() {
+                        @Override
+                        public void run() {
+                            if(wifiData!=null){
+                                textview_select_getway_name.setText("当前配置的WIFI:"+wifiData.ssid);
+                            }else{
+                                textview_select_getway_name.setText("当前设备未配置WIFI");
+                            }
 
+                        }
+                    },0);
+                }
+            });
+
+        }
+    }
+    private long maclong;
+    private byte ver;
+    private byte type;
     @Override
     protected void onPause() {
         super.onPause();
+        ellESDK.stopSearchDevs();
         mDeviceManager.removeDeviceListener(mDeviceListener);
+        manager.removeEventCallback(ec);
     }
 
     private void initEvents() {
         button_delete_device.setOnClickListener(this);
         image_back.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
+        layout_room_select.setOnClickListener(this);
+        layout_getway_select.setOnClickListener(this);
+    }
+
+    private void initMqtt() {
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        connectLostDialog = new MakeSureDialog(EditDoorbellActivity.this);
+        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(EditDoorbellActivity.this, LoginActivity.class));
+            }
+        });
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+            }
+
+
+            @Override
+            public void deviceOpSuccess(String op, final String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+            }
+        };
     }
 
     private void initDatas() {
-        deleteDialog=new DeleteDeviceDialog(this);
+        ellESDK = EllESDK.getInstance();
+        ellESDK.InitEllESDK(this, this);
+        deleteDialog = new DeleteDeviceDialog(this);
         textview_title.setText("智能门铃");
-        mDeviceManager=DeviceManager.getInstance();
+        textview_edit.setText("完成");
+        mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
-        mDeviceListener=new DeviceListener() {
+        mDoorbeelManager = DoorbeelManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseDeleteDeviceHttpResult(result);
                 DialogThreeBounce.hideLoading();
                 mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
             }
+            @Override
+            public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseAlertDeviceHttpResult(result);
+                switch (action) {
+                    case "alertname":
+                        mHandler.sendEmptyMessage(MSG_ALERT_DEVICENAME_RESULT);
+                        break;
+                    case "alertroom":
+                        mHandler.sendEmptyMessage(MSG_ALERT_DEVICEROOM_RESULT);
+                        break;
+                }
+                action="";
+
+            }
         };
+        initMqtt();
     }
+
+    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
+    private static final int MSG_ALERT_DEVICENAME_RESULT = 101;
+    private static final int MSG_ALERT_DEVICEROOM_RESULT = 102;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -79,24 +225,58 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     break;
-
+                case MSG_ALERT_DEVICENAME_RESULT:
+                    Log.i(TAG, "修改设备名称 handler msg");
+                    mDoorbeelManager.updateDoorbeelName(devicename);
+                    startActivity(new Intent(EditDoorbellActivity.this, VistorHistoryActivity.class));
+                    break;
+                case MSG_ALERT_DEVICEROOM_RESULT:
+                    Log.i(TAG, "修改设备房间 handler msg");
+                    if (room != null) {
+                        mDoorbeelManager.updateDeviceInWhatRoom(room, deviceUid);
+                    }
+                    break;
             }
         }
     };
+
     private void initViews() {
-        button_delete_device= findViewById(R.id.button_delete_device);
-        textview_title= findViewById(R.id.textview_title);
-        image_back= findViewById(R.id.image_back);
+        button_delete_device = findViewById(R.id.button_delete_device);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        textview_edit = findViewById(R.id.textview_edit);
+        edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
+        layout_room_select = findViewById(R.id.layout_room_select);
+        textview_select_room_name = findViewById(R.id.textview_select_room_name);
+        layout_getway_select = findViewById(R.id.layout_getway_select);
+        textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
+            String roomName = data.getStringExtra("roomName");
+            Log.i(TAG, "isStartFromExperience=" + isStartFromExperience);
+            if (!isStartFromExperience) {
+                room = RoomManager.getInstance().findRoom(roomName, true);
+                mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
+                action = "alertroom";
+            }
+            textview_select_room_name.setText(roomName);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button_delete_device:
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                    mDeviceManager.deleteDeviceHttp();
+                        mDeviceManager.deleteDeviceHttp();
                     }
                 });
                 deleteDialog.show();
@@ -104,6 +284,46 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
             case R.id.image_back:
                 onBackPressed();
                 break;
+            case R.id.layout_getway_select:
+                mDoorbeelManager.setConfigWifi(true);
+                startActivity(new Intent(this, WifipasswordInputActivity.class));
+                break;
+            case R.id.layout_room_select:
+                if (isStartFromExperience) {
+                    Intent intent = new Intent(this, AddDeviceActivity.class);
+                    intent.putExtra("addDeviceSelectRoom", true);
+                    startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
+                } else {
+                    if (isUserLogin) {
+                        Intent intent = new Intent(this, AddDeviceActivity.class);
+                        intent.putExtra("addDeviceSelectRoom", true);
+                        startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
+                    }
+                }
+                break;
+            case R.id.textview_edit:
+                String devcienamechange = edittext_add_device_input_name.getText().toString();
+                if (!devcienamechange.equalsIgnoreCase(devicename)) {
+                    action = "alertname";
+                    devicename = devcienamechange;
+                    mDeviceManager.alertDeviceHttp(deviceUid, null, devcienamechange, null);
+                } else {
+                    onBackPressed();
+                }
+                break;
         }
+    }
+
+    @Override
+    public void onRecvEllEPacket(BasicPacket packet) {
+
+    }
+
+    @Override
+    public void searchDevCBS(long mac, byte type, byte ver) {
+        Log.e(TAG, "mac:" + mac + "type:" + type + "ver:" + ver);
+        maclong=mac;
+        this.type=type;
+        this.ver=ver;
     }
 }

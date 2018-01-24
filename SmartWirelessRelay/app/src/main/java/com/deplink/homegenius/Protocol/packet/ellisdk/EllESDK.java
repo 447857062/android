@@ -71,6 +71,10 @@ public class EllESDK {//
     public int setDevWiFiConfigWithMac(long mac, byte type, byte ver, WIFIData wifiData) {
         return devStatus.setDevWiFiConfigWithMac(mac, type, ver, wifiData);
     }
+    //设置设备的WiFi参数 -- 阻塞方式 -- 外部调用建议使用线程
+    public WIFIData getDevWiFiConfigWithMac(long mac, byte type, byte ver) {
+        return devStatus.getDevWiFiConfigWithMac(mac, type, ver);
+    }
 
     //添加需要通讯的设备进入队列
     public int addDevToCommWithMac(long mac, byte type, byte ver) {

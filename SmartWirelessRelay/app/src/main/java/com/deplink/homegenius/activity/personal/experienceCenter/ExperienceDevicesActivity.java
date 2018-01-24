@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.device.ExperienceCenterDevice;
-import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
+import com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
 import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -125,7 +125,7 @@ public class ExperienceDevicesActivity extends Activity implements AdapterView.O
                 startActivity(intent);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_MENLING:
-                intent = new Intent(this, DoorbeelMainActivity.class);
+                intent = new Intent(this, VistorHistoryActivity.class);
                 startActivity(intent);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SWITCH:

@@ -171,7 +171,6 @@ public class DeviceListAdapter extends BaseAdapter {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
-            Log.i(TAG,"devicetype="+deviceType+"devicename="+deviceName+"deviceStatu="+deviceStatu);
             if (deviceStatu != null) {
                 switch (deviceStatu){
                     case "on":
@@ -212,7 +211,6 @@ public class DeviceListAdapter extends BaseAdapter {
            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                String deviceSubType;
                deviceSubType = listBottom.get(position - TopCount).getSubType();
-               Log.i(TAG,"deviceSubType="+deviceSubType);
                if(deviceSubType==null){
                    return;
                }

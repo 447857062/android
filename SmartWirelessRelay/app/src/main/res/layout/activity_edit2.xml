@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.deplink.homegenius.activity.device.doorbell.EditDoorbellActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
     <RelativeLayout
         android:background="@color/white_background"
         android:layout_below="@+id/layout_topbar"
@@ -100,11 +100,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="网关:" />
+                android:text="配置设备WIFI" />
 
             <TextView
                 android:layout_centerVertical="true"
-                android:text="我家的网关"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small"
                 android:layout_toRightOf="@+id/textview_getway_name"

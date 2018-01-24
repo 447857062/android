@@ -4,5 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <include layout="@layout/layout_title_with_right_have_image_have_textbackground" android:id="@+id/layout_topbar"/>
+    <com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuListView
+        android:id="@+id/listview_vistor_list"
+        android:layout_below="@+id/layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null" />
 </RelativeLayout>
