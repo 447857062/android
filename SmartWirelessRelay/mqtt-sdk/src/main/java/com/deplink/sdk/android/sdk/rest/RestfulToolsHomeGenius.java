@@ -8,6 +8,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.ShareDeviceBody;
 import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
@@ -102,6 +103,23 @@ public class RestfulToolsHomeGenius {
         }
         return call;
     }
+    public Call<DeviceOperationResponse> cancelDeviceShare(String username, String  device_uid, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        ShareDeviceBody body=new ShareDeviceBody();
+        body.setUser_name(username);
+        body.setDevice_uid(device_uid);
+        Log.i(TAG, "cancelDeviceShare:" + username);
+        Call<DeviceOperationResponse> call = apiService.cancelDeviceShare(username, body, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
 
     public Call<DeviceOperationResponse> deleteDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
@@ -117,7 +135,7 @@ public class RestfulToolsHomeGenius {
         }
         return call;
     }
-    public Call<DeviceOperationResponse> deleteDoorBellVisitor(String username, String uid, Callback<DeviceOperationResponse> cll) {
+    public Call<DeviceOperationResponse> deleteDoorBellVisitor(String username, String uid,String file, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
             if (cll != null) {
                 cll.onFailure(null, new Throwable(errMsg));
@@ -125,12 +143,17 @@ public class RestfulToolsHomeGenius {
             return null;
         }
         Log.i(TAG, "deleteDevice:" + username);
-        Call<DeviceOperationResponse> call = apiService.deleteDoorBellVisitorImage(username, uid, RestfulTools.getSingleton().getToken());
+        Call<DeviceOperationResponse> call = apiService.deleteDoorBellVisitorImage(
+                username,
+                uid,
+                file,
+                RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
         return call;
     }
+
     public Call<DeviceOperationResponse> deleteVirtualDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
             if (cll != null) {

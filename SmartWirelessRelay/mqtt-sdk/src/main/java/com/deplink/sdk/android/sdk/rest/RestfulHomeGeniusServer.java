@@ -6,6 +6,7 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.ShareDeviceBody;
 import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
 import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
@@ -44,6 +45,9 @@ public interface RestfulHomeGeniusServer {
   //添加虚拟设备
     @POST("/user/{user_name}/irdevices")
     Call<DeviceOperationResponse> addVirtualDevice(@Path("user_name") String user_name, @Body VirtualDeviceAddBody deviceAddBody, @Header("token") String token);
+  //取消设备分享
+    @POST("/user/{user_name}/deviceshare")
+    Call<DeviceOperationResponse> cancelDeviceShare(@Path("user_name") String user_name, @Body ShareDeviceBody shareDeviceBody, @Header("token") String token);
 
     //修改设备属性
     @PUT("/user/{user_name}/deviceprops")
@@ -62,7 +66,13 @@ public interface RestfulHomeGeniusServer {
     Call<String> readUserInfo(@Path("user_name") String user_name, @Header("token") String token);
     //读门铃记录
     @GET("/user/{user_name}/doorbell/visits/{device_uid}")
-    Call<String> readDoorBeelVisitorInfo(@Path("user_name") String user_name,@Path("device_uid") String device_uid, @Header("token") String token);
+    Call<String> readDoorBeelVisitorInfo(@Path("user_name") String user_name, @Path("device_uid") String device_uid, @Header("token") String token);
+    //分享设备
+    @PUT("/user/{user_name}/deviceshare")
+    Call<String> shareDevice(@Path("user_name") String user_name, @Body ShareDeviceBody shareDeviceBody, @Header("token") String token);
+    //获取设备分享信息
+    @GET("/user/{user_name}/deviceshare/{device_uid}")
+    Call<String> getDeviceShareInfo(@Path("user_name") String user_name, @Path("device_uid") String device_uid, @Header("token") String token);
     //删除设备
     @DELETE("/user/{user_name}/devices/{uid}")
     Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
