@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
+
     defaultConfig {
         applicationId "com.deplink.smarthome.cmcc"
         ndk {
@@ -16,8 +17,10 @@ android {
         ]
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 100
+        versionName '1.0.0'
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -57,7 +60,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.code.gson:gson:2.7'
@@ -83,8 +86,10 @@ dependencies {
     compile 'com.zxy.android:tiny:0.1.0'
     //信鸽jar
     compile 'com.tencent.xinge:xinge:3.2.0-release'
-   //wup包
+    //wup包
     compile 'com.tencent.wup:wup:1.0.0.E-release'
-   //mid包
+    //mid包
     compile 'com.tencent.mid:mid:4.0.0-release'
+    compile 'com.daimajia.numberprogressbar:library:1.4@aar'
+    compile 'com.android.support:multidex:1.0.0’ //dependencies'
 }
