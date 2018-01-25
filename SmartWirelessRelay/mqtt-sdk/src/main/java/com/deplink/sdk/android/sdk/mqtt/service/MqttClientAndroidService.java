@@ -135,7 +135,6 @@ public class MqttClientAndroidService extends BroadcastReceiver implements IMqtt
      */
     @Override
     public boolean isConnected() {
-        Log.d(DeplinkSDK.SDK_TAG, "===>clientHandle = " + clientHandle + " mqttService=" + mqttService);
         return (null != mqttService && clientHandle != null && mqttService.isConnected(clientHandle));
     }
 

@@ -129,6 +129,4 @@ public interface RestfulServer {
     //APP升级
     @GET("/app/upgrade")
     Call<AppUpdateResponse> getAppUpdateInfo(@Header("app-key") String appkey, @Header("app-version") String appVersion);
-
-
 }
