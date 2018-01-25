@@ -1,7 +1,5 @@
 package com.deplink.homegenius.util;
 
-import com.deplink.homegenius.view.viewselector.Utils.TextUtil;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

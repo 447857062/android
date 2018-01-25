@@ -39,7 +39,6 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.json.BLACKLIST;
 import com.deplink.sdk.android.sdk.json.DeviceControl;
 import com.deplink.sdk.android.sdk.json.DevicesOnline;
@@ -107,7 +106,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private TextView textview_show_blacklist_device_result;
     private RelativeLayout layout_no_blacklist;
     private RelativeLayout layout_no_connected_device;
-    private boolean isMqttConnect = true;
     private FrameLayout frame_blacklist_content;
     private FrameLayout frame_devicelist_content_content;
     private TextView textview_cpu_use;
@@ -160,9 +158,9 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             dialog.setTitleText("确定将设备\"" + devicename + "\"拉入黑名单");
         }
     };
-    private String channels;
     private String receiverChannels;
-
+    private String channels;
+    private HomeGenius mHomeGenius;
     @Override
     protected void onResume() {
         super.onResume();
@@ -202,7 +200,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         }
     }
 
-    private HomeGenius mHomeGenius;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -360,36 +358,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 @Override
                 public void deviceOpSuccess(String op, final String deviceKey) {
                     super.deviceOpSuccess(op, deviceKey);
-                    Log.i(TAG, "deviceOpSuccess op=" + op);
-                    switch (op) {
-                        case RouterDevice.OP_GET_DEVICES:
-
-
-                            break;
-                        case RouterDevice.OP_GET_REPORT:
-
-
-                            break;
-                        case RouterDevice.OP_SUCCESS:
-                            if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
-                                if (isSetBlackList) {
-                                    ToastSingleShow.showText(RouterMainActivity.this, "加入黑名单成功");
-                                }
-                            }
-                            if (frame_blacklist_content.getVisibility() == View.VISIBLE) {
-                                if (isRemoveBlackList) {
-                                    ToastSingleShow.showText(RouterMainActivity.this, "恢复上网设置成功");
-                                }
-                            }
-
-                            break;
-                    }
                 }
 
                 @Override
                 public void connectionLost(Throwable throwable) {
                     super.connectionLost(throwable);
-                    isMqttConnect = false;
                     mConnectedDevices.clear();
                     mAdapter.notifyDataSetChanged();
                     isUserLogin = false;

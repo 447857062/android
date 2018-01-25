@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
@@ -37,7 +36,6 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
@@ -79,6 +77,8 @@ public class EditActivity extends Activity implements View.OnClickListener {
     private SDKManager manager;
     private EventCallback ec;
     private MakeSureDialog connectLostDialog;
+    private GatwayDevice selectedGatway;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +96,6 @@ public class EditActivity extends Activity implements View.OnClickListener {
         textview_edit.setOnClickListener(this);
     }
 
-    private GatwayDevice selectedGatway;
     private void initDatas() {
         textview_edit.setText("完成");
         switchType = getIntent().getStringExtra("switchType");
@@ -116,8 +115,8 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                action="alertgetway";
-                selectedGatway=mGetways.get(position);
+                action = "alertgetway";
+                selectedGatway = mGetways.get(position);
                 deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
                 mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
 
@@ -156,27 +155,27 @@ public class EditActivity extends Activity implements View.OnClickListener {
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-                isLogin=false;
+                isLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
             }
         };
-        mDeviceListener=new DeviceListener() {
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseBindDeviceResult(String result) {
                 super.responseBindDeviceResult(result);
-                Gson gson = new Gson();
-                boolean deleteSuccess = true;
-                DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-                for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
-                    if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
-                        deleteSuccess = false;
-                    }
-                }
-                DialogThreeBounce.hideLoading();
-                if (deleteSuccess) {
+               //不处理本地删除设备的回应,远程http接口删除了就代表删除成功
+            }
+
+            @Override
+            public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
+                super.responseDeleteDeviceHttpResult(result);
+                if (result.getStatus() != null && result.getStatus().equals("ok")) {
+                    mDeviceManager.deleteSmartDevice();
+                    DialogThreeBounce.hideLoading();
+
                     int deleteResult = mSmartSwitchManager.deleteDBSmartDevice(mSmartSwitchManager.getCurrentSelectSmartDevice().getUid());
                     if (deleteResult > 0) {
                         startActivity(new Intent(EditActivity.this, DevicesActivity.class));
@@ -186,14 +185,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 } else {
                     ToastSingleShow.showText(EditActivity.this, "删除开关设备失败");
                 }
-            }
 
-            @Override
-            public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
-                super.responseDeleteDeviceHttpResult(result);
-                if (result.getStatus() != null && result.getStatus().equals("ok")) {
-                    mDeviceManager.deleteSmartDevice();
-                }
             }
 
             @Override
@@ -207,7 +199,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
                     if (saveResult) {
                         onBackPressed();
                     }
-                }else if(action.equals("alertgetway")){
+                } else if (action.equals("alertgetway")) {
                     boolean saveDbResult = mSmartSwitchManager.updateSmartDeviceGetway(selectedGatway);
                     if (!saveDbResult) {
                         Toast.makeText(EditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
@@ -222,10 +214,10 @@ public class EditActivity extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        isStartFromExperience=mDeviceManager.isStartFromExperience();
-        if(isStartFromExperience){
-            deviceName ="智能开关";
-        }else{
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
+        if (isStartFromExperience) {
+            deviceName = "智能开关";
+        } else {
             deviceName = mSmartSwitchManager.getCurrentSelectSmartDevice().getName();
         }
         if (deviceName != null && deviceName.length() > 0) {
@@ -237,9 +229,9 @@ public class EditActivity extends Activity implements View.OnClickListener {
         }
         if (!isOnActivityResult) {
             isOnActivityResult = false;
-            if(isStartFromExperience){
+            if (isStartFromExperience) {
                 textview_select_room_name.setText("全部");
-            }else{
+            } else {
                 if (mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().size() == 1) {
                     textview_select_room_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getRooms().get(0).getRoomName());
                 } else {
@@ -248,10 +240,10 @@ public class EditActivity extends Activity implements View.OnClickListener {
             }
             GatwayDevice temp = mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice();
             if (temp == null) {
-                GatwayDevice localDbGatwayDevice= DataSupport.where("uid=?", mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDeviceUid()).findFirst(GatwayDevice.class);
-                if(localDbGatwayDevice!=null){
+                GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                if (localDbGatwayDevice != null) {
                     textview_select_getway_name.setText(localDbGatwayDevice.getName());
-                }else{
+                } else {
                     textview_select_getway_name.setText("未设置网关");
                 }
 
@@ -305,7 +297,6 @@ public class EditActivity extends Activity implements View.OnClickListener {
     }
 
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -313,20 +304,18 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.textview_edit:
-                if(isStartFromExperience){
+                if (isStartFromExperience) {
                     onBackPressed();
-                }else{
+                } else {
                     action = "alertname";
                     deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
                     deviceName = edittext_add_device_input_name.getText().toString();
-                    if(isLogin){
+                    if (isLogin) {
                         mDeviceManager.alertDeviceHttp(deviceUid, null, deviceName, null);
-                    }else{
-                        ToastSingleShow.showText(this,"未登录,登录后操作");
+                    } else {
+                        ToastSingleShow.showText(this, "未登录,登录后操作");
                     }
                 }
-
-
                 break;
             case R.id.layout_getway_select:
                 if (layout_getway_list.getVisibility() == View.VISIBLE) {
@@ -347,9 +336,11 @@ public class EditActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onSureBtnClicked() {
                         DialogThreeBounce.showLoading(EditActivity.this);
-                        mDeviceManager.deleteDeviceHttp();
-
-
+                        if (isLogin) {
+                            mDeviceManager.deleteDeviceHttp();
+                        } else {
+                            ToastSingleShow.showText(EditActivity.this, "未登录,登录后操作");
+                        }
                     }
                 });
                 deleteDialog.show();

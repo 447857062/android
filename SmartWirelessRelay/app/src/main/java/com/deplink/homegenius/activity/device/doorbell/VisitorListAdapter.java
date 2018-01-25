@@ -56,8 +56,15 @@ public class VisitorListAdapter extends BaseSwipListAdapter {
         }else{
             vh = (ViewHolder) convertView.getTag();
         }
-        vh.image_snap.setImageBitmap(mListDataImage.get(position));
-        vh.textview_timestamp.setText(""+ DateUtil.format(mListData.get(position).getTimestamp()));
+        try {
+            if(mListDataImage.size()>0 && mListDataImage.get(position)!=null){
+                vh.image_snap.setImageBitmap(mListDataImage.get(position));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //这里是秒
+        vh.textview_timestamp.setText(""+ DateUtil.format(mListData.get(position).getTimestamp()*1000));
        return convertView;
     }
 
@@ -68,7 +75,6 @@ public class VisitorListAdapter extends BaseSwipListAdapter {
     }
     @Override
     public boolean getSwipEnableByPosition(int position) {        //设置条目是否可以滑动
-
         return true;
     }
 }

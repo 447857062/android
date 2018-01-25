@@ -1,6 +1,7 @@
 package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.StringValidatorUtil;
@@ -167,7 +169,6 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
                             message.obj = des;
                             mhandler.sendMessage(message);
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -190,6 +191,9 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
                 switch (action) {
                     case REGISTER:
                         ToastSingleShow.showText(RegistActivity.this, "注册成功");
+                        Intent intent=new Intent(RegistActivity.this, SmartHomeMainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                         break;
                     default:
                         break;

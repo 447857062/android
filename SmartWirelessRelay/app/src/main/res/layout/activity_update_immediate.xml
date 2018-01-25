@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_background"
+    tools:context="com.deplink.homegenius.activity.personal.softupdate.UpdateImmediateActivity">
+
+    <include
+        android:id="@+id/layout_topbar"
+        layout="@layout/layout_title_with_back_center_titletext" />
+
+    <RelativeLayout
+        android:id="@+id/layout_versioninfo"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_topbar"
+        android:layout_marginLeft="15dp"
+        android:paddingTop="15dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="15dp"
+        android:layout_marginTop="20dp">
+
+
+        <TextView
+            android:id="@+id/textview_version_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="升级版本 2.2.10"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:layout_below="@+id/textview_version_code"
+            android:id="@+id/textview_file_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="--"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/version_explan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_file_size"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:gravity="left"
+            android:text="--"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/button_update"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_below="@+id/layout_versioninfo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+        android:layout_marginRight="@dimen/input_layout_marginleft_right"
+        android:layout_marginTop="@dimen/wifirelay_reload_wifilist_button_margintop"
+        android:background="@drawable/wifirelay_reload_button_normal_background"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="升级"
+        android:textColor="@color/white" />
+</RelativeLayout>

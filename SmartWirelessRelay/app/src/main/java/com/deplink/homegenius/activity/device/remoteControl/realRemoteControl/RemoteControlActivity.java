@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
@@ -43,7 +42,6 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
@@ -122,7 +120,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                if(!isStartFromExperience){
+                if (!isStartFromExperience) {
                     action = "alertgetway";
                     selectedGatway = mGetways.get(position);
                     deviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
@@ -168,20 +166,8 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             @Override
             public void responseBindDeviceResult(String result) {
                 super.responseBindDeviceResult(result);
-                Gson gson = new Gson();
-                boolean deleteSuccess = true;
-                DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-                for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
-                    if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
-                        deleteSuccess = false;
-                    }
-                }
-                DialogThreeBounce.hideLoading();
-                if (deleteSuccess) {
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-                } else {
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
-                }
+                //不处理本地删除设备的回应,远程http接口删除了就代表删除成功
+
             }
 
             @Override
@@ -214,11 +200,10 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 super.responseDeleteDeviceHttpResult(result);
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.deleteSmartDevice();
-                } else {
-                    DialogThreeBounce.hideLoading();
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-                    ToastSingleShow.showText(RemoteControlActivity.this, "无可用的网关");
                 }
+                DialogThreeBounce.hideLoading();
+                mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+
             }
         };
     }
@@ -260,10 +245,10 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 }
                 GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {
-                    GatwayDevice localDbGatwayDevice= DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
-                    if(localDbGatwayDevice!=null){
+                    GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                    if (localDbGatwayDevice != null) {
                         textview_select_getway_name.setText(localDbGatwayDevice.getName());
-                    }else{
+                    } else {
                         textview_select_getway_name.setText("未设置网关");
                     }
                 } else {
@@ -312,17 +297,17 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                     ToastSingleShow.showText(this, "请输入设备而名称");
                     return;
                 }
-                if(!isStartFromExperience){
+                if (!isStartFromExperience) {
                     if (!changeDeviceName.equals(deviceName)) {
                         mRemoteControlManager.saveCurrentSelectDeviceName(changeDeviceName);
                     }
                     if (isLogin) {
-                        deviceUid=DeviceManager.getInstance().getCurrentSelectSmartDevice().getUid();
+                        deviceUid = DeviceManager.getInstance().getCurrentSelectSmartDevice().getUid();
                         deviceName = changeDeviceName;
                         mDeviceManager.alertDeviceHttp(deviceUid, changeDeviceName, null, null);
                     }
-                }else{
-                    startActivity(new Intent(this,ExperienceDevicesActivity.class));
+                } else {
+                    startActivity(new Intent(this, ExperienceDevicesActivity.class));
                 }
 
                 break;

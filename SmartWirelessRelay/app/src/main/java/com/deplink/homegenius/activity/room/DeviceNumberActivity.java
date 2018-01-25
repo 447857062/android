@@ -150,6 +150,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             startActivity(new Intent(DeviceNumberActivity.this, RemoteControlActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_ROUTER:
@@ -157,9 +158,11 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, TvMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, TvBoxMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_LIGHT:
@@ -196,7 +199,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
 
     private void initViews() {
         image_back = findViewById(R.id.image_back);
-
         textview_edit = findViewById(R.id.textview_edit);
         listview_devies= findViewById(R.id.listview_devies);
         layout_device_number_root= findViewById(R.id.layout_device_number_root);
@@ -213,7 +215,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                 break;
         }
     }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

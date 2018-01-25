@@ -336,7 +336,10 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         topic = responseBody.getTopic();
                         //TODO 扫网关
                         //如果有可用的网关
-                        deviceName = "中继器";
+                        deviceName = edittext_add_device_input_name.getText().toString();
+                        if(deviceName==null || deviceName.equalsIgnoreCase("")){
+                            deviceName = "中继器";
+                        }
                         mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid, topic);
                         mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom, addDeviceUid);
                         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
@@ -360,7 +363,10 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
 
                     } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
                         //去掉重名的路由器
-                        deviceName = "路由器";
+                        deviceName = edittext_add_device_input_name.getText().toString();
+                        if(deviceName==null || deviceName.equalsIgnoreCase("")){
+                            deviceName="路由器";
+                        }
                         SmartDev currentAddRouter = new SmartDev();
                         currentAddRouter.setName(deviceName);
                         currentAddRouter.setUid(addDeviceUid);
@@ -824,7 +830,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                             deviceName = "我家的门锁";
                         }
                         addSmartDevice(deviceAddBody, gson);
-                        Message msg;
                         break;
                     case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                         if (deviceName.equals("")) {
@@ -1008,6 +1013,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
      * @param deviceAddBody
      */
     private void addGatwayDevice(DeviceAddBody deviceAddBody) {
+        deviceName=edittext_add_device_input_name.getText().toString();
         if (deviceName.equals("")) {
             deviceName = "中继器/路由器";
         }

@@ -85,7 +85,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/noAnimTheme" />
         <activity
-            android:name="com.deplink.homegenius.activity.personal.PersonalCenterActivity"
+            android:name="com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/noAnimTheme" />
@@ -332,11 +332,16 @@
             android:name="com.deplink.homegenius.activity.device.light.LightActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.deplink.homegenius.activity.personal.softupdate.UpdateProgressActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.deplink.homegenius.activity.personal.softupdate.UpdateImmediateActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.deplink.homegenius.activity.device.light.LightEditActivity"
             android:screenOrientation="portrait">
-
         </activity>
-
+        <service android:name="com.deplink.homegenius.activity.personal.softupdate.download.UpdateService" />
 
     </application>
 

@@ -3,31 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/router_device_connect_devices_list_item_height">
-   <ImageView
-       android:id="@+id/image_snap"
-       android:layout_width="200dp"
-       android:layout_height="150dp" />
-   <RelativeLayout
-       android:layout_toRightOf="@+id/image_snap"
-       android:layout_width="match_parent"
-       android:gravity="center_vertical"
-       android:layout_height="150dp">
-      <TextView
-          android:paddingLeft="15dp"
-          android:id="@+id/textview_file_name"
-          android:textSize="@dimen/text_size_small"
-          android:textColor="@color/room_type_text"
-          android:text="你有一位新访客!"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
-      <TextView
-          android:paddingLeft="15dp"
-          android:layout_below="@+id/textview_file_name"
-          android:id="@+id/textview_timestamp"
-          android:textSize="@dimen/text_size_small"
-          android:textColor="@color/room_type_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
-   </RelativeLayout>
+
+    <ImageView
+        android:layout_marginTop="5dp"
+        android:id="@+id/image_snap"
+        android:layout_width="45dp"
+        android:scaleType="centerCrop"
+        android:layout_height="45dp"
+        android:layout_marginLeft="15dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_toRightOf="@+id/image_snap"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textview_file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:text="你有一位新访客!"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/textview_timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_file_name"
+            android:paddingLeft="15dp"
+            android:textColor="@color/room_type_text"
+            android:textSize="@dimen/text_size_small" />
+    </RelativeLayout>
 
 </RelativeLayout>

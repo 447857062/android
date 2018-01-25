@@ -1,4 +1,4 @@
-package com.deplink.homegenius.view.viewselector.Utils;
+package com.deplink.homegenius.util;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

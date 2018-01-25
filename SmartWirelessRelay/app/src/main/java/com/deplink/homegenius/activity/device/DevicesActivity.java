@@ -35,7 +35,7 @@ import com.deplink.homegenius.activity.device.smartSwitch.SwitchThreeActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
@@ -116,6 +116,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private RemoteControlManager mRemoteControlManager;
     private RemoteControlListener mRemoteControlListener;
     private DoorbeelManager mDoorbeelManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,7 +173,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
     private void initDatas() {
         initManager();
-        mDoorbeelManager=DoorbeelManager.getInstance();
+        mDoorbeelManager = DoorbeelManager.getInstance();
         roomTypeDialog = new DeviceAtRoomDialog(this, mRooms);
         mRooms.addAll(mRoomManager.getRoomNames());
         datasTop = new ArrayList<>();
@@ -447,30 +448,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 startActivity(new Intent(this, SmartHomeMainActivity.class));
                 break;
             case R.id.layout_select_room_type:
-                roomTypeDialog.setRoomTypeItemClickListener(new DeviceAtRoomDialog.onItemClickListener() {
-                    @Override
-                    public void onItemClicked(int position) {
-                        datasTop.clear();
-                        datasBottom.clear();
-                        if (mRooms.get(position).equals("全部")) {
-                            datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
-                            datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
-                            mDeviceAdapter.setTopList(datasTop);
-                            mDeviceAdapter.setBottomList(datasBottom);
-                        } else {
-                            Room room = mRoomManager.findRoom(mRooms.get(position), true);
-                            //使用数据库中的数据
-                            datasTop.addAll(room.getmGetwayDevices());
-                            datasBottom.addAll(room.getmDevices());
-                            mDeviceAdapter.setTopList(datasTop);
-                            mDeviceAdapter.setBottomList(datasBottom);
-                        }
-                        mDeviceAdapter.notifyDataSetChanged();
-                        textview_room_name.setText(mRooms.get(position));
-                        roomTypeDialog.dismiss();
-                    }
-                });
-                roomTypeDialog.show();
+                showRoomFilterSelected();
                 break;
             case R.id.layout_rooms:
                 startActivity(new Intent(this, RoomActivity.class));
@@ -482,6 +460,36 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 startActivity(new Intent(this, AddDeviceActivity.class));
                 break;
         }
+    }
+
+    /**
+     * 按照房间过滤设备对话框
+     */
+    private void showRoomFilterSelected() {
+        roomTypeDialog.setRoomTypeItemClickListener(new DeviceAtRoomDialog.onItemClickListener() {
+            @Override
+            public void onItemClicked(int position) {
+                datasTop.clear();
+                datasBottom.clear();
+                if (mRooms.get(position).equals("全部")) {
+                    datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
+                    datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
+                    mDeviceAdapter.setTopList(datasTop);
+                    mDeviceAdapter.setBottomList(datasBottom);
+                } else {
+                    Room room = mRoomManager.findRoom(mRooms.get(position), true);
+                    //使用数据库中的数据
+                    datasTop.addAll(room.getmGetwayDevices());
+                    datasBottom.addAll(room.getmDevices());
+                    mDeviceAdapter.setTopList(datasTop);
+                    mDeviceAdapter.setBottomList(datasBottom);
+                }
+                mDeviceAdapter.notifyDataSetChanged();
+                textview_room_name.setText(mRooms.get(position));
+                roomTypeDialog.dismiss();
+            }
+        });
+        roomTypeDialog.show();
     }
 
 
@@ -500,6 +508,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
     }
 
+    /**
+     * 保存网关设备到本地数据库
+     *
+     * @param devices
+     * @param i
+     */
     private void saveGetwayDeviceToSqlite(List<Deviceprops> devices, int i) {
         GatwayDevice dev = new GatwayDevice();
         String deviceType = devices.get(i).getDevice_type();
@@ -561,19 +575,16 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             dev.setType(deviceType);
             dev.setName(deviceName);
             dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
-        }
-        else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
+        } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
             dev.setType(deviceType);
             dev.setName(deviceName);
-        }
-        else if (deviceType.equalsIgnoreCase("SMART_BELL")) {
+        } else if (deviceType.equalsIgnoreCase("SMART_BELL")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_MENLING;
             dev.setType(deviceType);
             dev.setStatus("在线");
             dev.setName(deviceName);
-        }
-        else if (deviceType.equalsIgnoreCase("LKRT")) {
+        } else if (deviceType.equalsIgnoreCase("LKRT")) {
             deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
             dev.setType(deviceType);
             Router router = new Router();
@@ -639,8 +650,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setName(deviceName);
         dev.setUid(devices.get(i).getUid());
         SmartDev realRc = DataSupport.where("Uid=?", devices.get(i).getIrmote_uid()).findFirst(SmartDev.class, true);
-        Log.i(TAG,"物理遥控器uid="+devices.get(i).getIrmote_uid());
-        if(realRc!=null&&realRc.getRooms()!=null){
+        Log.i(TAG, "物理遥控器uid=" + devices.get(i).getIrmote_uid());
+        if (realRc != null && realRc.getRooms() != null) {
             dev.setRooms(realRc.getRooms());
         }
         dev.setRemotecontrolUid(devices.get(i).getIrmote_uid());
@@ -658,141 +669,20 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            String str = (String) msg.obj;
+            final String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_UPDATE_DEVS:
-                    List<GatwayDevice> tempDevice = new ArrayList<>();
-                    List<SmartDev> tempSmartDevice = new ArrayList<>();
-                    Gson gson = new Gson();
-                    DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
-                    if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
-                        tempSmartDevice.addAll(aDeviceList.getSmartDev());
-                    }
-                    Log.i(TAG, "tempSmartDevice.size" + tempSmartDevice.size());
-                    //存储设备列表
-                    if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
-                        tempDevice.addAll(aDeviceList.getDevice());
-                    }
-                    //网关设备更新状态
-                    for (int i = 0; i < tempDevice.size(); i++) {
-                        for (int j = 0; j < datasTop.size(); j++) {
-                            if (datasTop.get(j).getUid().equalsIgnoreCase(tempDevice.get(i).getUid())) {
-                                datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
-                                datasTop.get(j).saveFast();
-                            }
-                        }
-                    }
-                    //网关设备下发列表
-                    for (int j = 0; j < datasTop.size(); j++) {
-                        boolean addGatway = true;
-                        for (int i = 0; i < tempDevice.size(); i++) {
-                            if (tempDevice.get(i).getUid().equalsIgnoreCase(datasTop.get(j).getUid())) {
-                                addGatway = false;
-                            }
-                        }
-                        if (addGatway) {
-                            Log.i(TAG, "下发网关设备 uid:" + datasTop.get(j).getUid());
-                            mGetwayManager.bindDevice(datasTop.get(j).getUid());
-                        }
-                    }
-                    //智能设备更新状态
-                    for (int i = 0; i < tempSmartDevice.size(); i++) {
-                        for (int j = 0; j < datasBottom.size(); j++) {
-                            if (datasBottom.get(j).getMac() != null &&
-                                    datasBottom.get(j).getMac().equalsIgnoreCase(tempSmartDevice.get(i).getSmartUid())
-                                    ) {
-                                datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
-                                datasBottom.get(j).saveFast();
-                            }
-                        }
-                    }
-                    //更新虚拟设备的状态
-                    List<SmartDev> airRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL).find(SmartDev.class);
-                    for (int i = 0; i < airRcs.size(); i++) {
-                        SmartDev realRc = DataSupport.where("Uid=?", airRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
-                        if (realRc != null) {
-                            airRcs.get(i).setRooms(realRc.getRooms());
-                            airRcs.get(i).setStatus(realRc.getStatus());
-                            airRcs.get(i).saveFast();
-                        }
-                    }
-                    List<SmartDev> tvRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL).find(SmartDev.class);
-                    for (int i = 0; i < tvRcs.size(); i++) {
-                        SmartDev realRc = DataSupport.where("Uid=?", tvRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
-                        if (realRc != null) {
-                            tvRcs.get(i).setStatus(realRc.getStatus());
-                            tvRcs.get(i).setRooms(realRc.getRooms());
-                            tvRcs.get(i).saveFast();
-                        }
-                    }
-                    List<SmartDev> tvboxRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL).find(SmartDev.class);
-                    for (int i = 0; i < tvboxRcs.size(); i++) {
-                        SmartDev realRc = DataSupport.where("Uid=?", tvboxRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
-                        if (realRc != null) {
-                            tvboxRcs.get(i).setStatus(realRc.getStatus());
-                            tvboxRcs.get(i).setRooms(realRc.getRooms());
-                            tvboxRcs.get(i).saveFast();
-                        }
-                    }
-                    //智能设备下发列表
-                    for (int j = 0; j < datasBottom.size(); j++) {
-                        boolean addSmartdev = true;
-                        for (int i = 0; i < tempSmartDevice.size(); i++) {
-                            if (tempSmartDevice.get(i).getSmartUid().equalsIgnoreCase(datasBottom.get(j).getMac())
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL)
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
-                                    || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_MENLING
-                            )) {
-                                addSmartdev = false;
-                            }
-                        }
-                        if (addSmartdev) {
-                            Log.i(TAG, "下发远程添加了本地没有添加的智能设备名称:" + datasBottom.get(j).getName()+"设备类型"+
-                                    datasBottom.get(j).getType()
-                            );
-                            QrcodeSmartDevice device = new QrcodeSmartDevice();
-                            device.setAd(datasBottom.get(j).getMac());
-                            switch (datasBottom.get(j).getType()) {
-                                case DeviceTypeConstant.TYPE.TYPE_LIGHT:
-                                    device.setTp("YWLIGHTCONTROL");
-                                    break;
-                                case DeviceTypeConstant.TYPE.TYPE_LOCK:
-                                    device.setTp("SMART_LOCK");
-                                    break;
-                                case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
-                                case "IRMOTE_V2":
-                                    device.setTp("IRMOTE_V2");
-                                    break;
-                                case DeviceTypeConstant.TYPE.TYPE_SWITCH:
-                                    if (datasBottom.get(j).getSubType() != null) {
-                                        switch (datasBottom.get(j).getSubType()) {
-                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
-                                                device.setTp("SmartWallSwitch1");
-                                                break;
-                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
-                                                device.setTp("SmartWallSwitch2");
-                                                break;
-                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
-                                                device.setTp("SmartWallSwitch3");
-                                                break;
-                                            case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
-                                                device.setTp("SmartWallSwitch4");
-                                                break;
-                                        }
-                                    }
-                                    break;
-                            }
-                            device.setOrg(datasBottom.get(j).getOrg());
-                            device.setVer(datasBottom.get(j).getVer());
-                            mDeviceManager.bindSmartDevList(device);
-                        }
-                        mDeviceAdapter.setTopList(datasTop);
-                        mDeviceAdapter.setBottomList(datasBottom);
-                        mDeviceAdapter.notifyDataSetChanged();
-                    }
                     Log.i(TAG, "设备列表=" + str);
+                     List<GatwayDevice> tempDevice = new ArrayList<>();
+                     List<SmartDev> tempSmartDevice = new ArrayList<>();
+                    parseLocalReturnDeviceList(str, tempDevice, tempSmartDevice);
+                    gatWayDeviceStatuUpdate(tempDevice);
+                    gatwayDevcieBindLocal(tempDevice);
+                    smartDeviceStatuUpdate(tempSmartDevice);
+                    virtualDeviceUpdate();
+                    smartDeviceBindLocal(tempSmartDevice);
+
+
                     break;
                 case MSG_GET_DEVS_HTTPS:
                     datasTop.clear();
@@ -809,4 +699,171 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             }
         }
     };
+
+    private void parseLocalReturnDeviceList(String str, List<GatwayDevice> tempDevice, List<SmartDev> tempSmartDevice) {
+        Gson gson = new Gson();
+        DeviceList aDeviceList = gson.fromJson(str, DeviceList.class);
+        if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
+            tempSmartDevice.addAll(aDeviceList.getSmartDev());
+        }
+        Log.i(TAG, "tempSmartDevice.size" + tempSmartDevice.size());
+        //存储设备列表
+        if (aDeviceList.getDevice() != null && aDeviceList.getDevice().size() > 0) {
+            tempDevice.addAll(aDeviceList.getDevice());
+        }
+    }
+
+    /**
+     * //智能设备下发列表
+     *
+     * @param tempSmartDevice
+     */
+    private void smartDeviceBindLocal(List<SmartDev> tempSmartDevice) {
+        for (int j = 0; j < datasBottom.size(); j++) {
+            boolean addSmartdev = true;
+            for (int i = 0; i < tempSmartDevice.size(); i++) {
+                if (tempSmartDevice.get(i).getSmartUid().equalsIgnoreCase(datasBottom.get(j).getMac())
+                        || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_ROUTER)
+                        || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL)
+                        || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)
+                        || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
+                        || datasBottom.get(j).getType().equals(DeviceTypeConstant.TYPE.TYPE_MENLING
+                )) {
+                    addSmartdev = false;
+                }
+            }
+            if (addSmartdev) {
+                Log.i(TAG, "下发远程添加了本地没有添加的智能设备名称:" + datasBottom.get(j).getName() + "设备类型" +
+                        datasBottom.get(j).getType()
+                );
+                QrcodeSmartDevice device = new QrcodeSmartDevice();
+                device.setAd(datasBottom.get(j).getMac());
+                switch (datasBottom.get(j).getType()) {
+                    case DeviceTypeConstant.TYPE.TYPE_LIGHT:
+                        device.setTp("YWLIGHTCONTROL");
+                        break;
+                    case DeviceTypeConstant.TYPE.TYPE_LOCK:
+                        device.setTp("SMART_LOCK");
+                        break;
+                    case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
+                    case "IRMOTE_V2":
+                        device.setTp("IRMOTE_V2");
+                        break;
+                    case DeviceTypeConstant.TYPE.TYPE_SWITCH:
+                        if (datasBottom.get(j).getSubType() != null) {
+                            switch (datasBottom.get(j).getSubType()) {
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY:
+                                    device.setTp("SmartWallSwitch1");
+                                    break;
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY:
+                                    device.setTp("SmartWallSwitch2");
+                                    break;
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY:
+                                    device.setTp("SmartWallSwitch3");
+                                    break;
+                                case DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY:
+                                    device.setTp("SmartWallSwitch4");
+                                    break;
+                            }
+                        }
+                        break;
+                }
+                device.setOrg(datasBottom.get(j).getOrg());
+                device.setVer(datasBottom.get(j).getVer());
+                mDeviceManager.bindSmartDevList(device);
+            }
+            mDeviceAdapter.setTopList(datasTop);
+            mDeviceAdapter.setBottomList(datasBottom);
+            mDeviceAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 更新虚拟设备的状态
+     */
+    private void virtualDeviceUpdate() {
+        List<SmartDev> airRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL).find(SmartDev.class);
+        for (int i = 0; i < airRcs.size(); i++) {
+            SmartDev realRc = DataSupport.where("Uid=?", airRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
+            if (realRc != null) {
+                airRcs.get(i).setRooms(realRc.getRooms());
+                airRcs.get(i).setStatus(realRc.getStatus());
+                airRcs.get(i).saveFast();
+            }
+        }
+        List<SmartDev> tvRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL).find(SmartDev.class);
+        for (int i = 0; i < tvRcs.size(); i++) {
+            SmartDev realRc = DataSupport.where("Uid=?", tvRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
+            if (realRc != null) {
+                tvRcs.get(i).setStatus(realRc.getStatus());
+                tvRcs.get(i).setRooms(realRc.getRooms());
+                tvRcs.get(i).saveFast();
+            }
+        }
+        List<SmartDev> tvboxRcs = DataSupport.where("Type=?", DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL).find(SmartDev.class);
+        for (int i = 0; i < tvboxRcs.size(); i++) {
+            SmartDev realRc = DataSupport.where("Uid=?", tvboxRcs.get(i).getRemotecontrolUid()).findFirst(SmartDev.class, true);
+            if (realRc != null) {
+                tvboxRcs.get(i).setStatus(realRc.getStatus());
+                tvboxRcs.get(i).setRooms(realRc.getRooms());
+                tvboxRcs.get(i).saveFast();
+            }
+        }
+    }
+
+    /**
+     * 智能设备更新状态
+     *
+     * @param tempSmartDevice
+     */
+    private void smartDeviceStatuUpdate(List<SmartDev> tempSmartDevice) {
+        for (int i = 0; i < tempSmartDevice.size(); i++) {
+            for (int j = 0; j < datasBottom.size(); j++) {
+                if (datasBottom.get(j).getMac() != null &&
+                        datasBottom.get(j).getMac().equalsIgnoreCase(tempSmartDevice.get(i).getSmartUid())
+                        ) {
+                    datasBottom.get(j).setStatus(tempSmartDevice.get(i).getStatus());
+                    datasBottom.get(j).saveFast();
+                }
+            }
+        }
+    }
+
+    /**
+     * 网关设备下发列表
+     * 网关设备本地绑定
+     *
+     * @param tempDevice
+     */
+    private void gatwayDevcieBindLocal(List<GatwayDevice> tempDevice) {
+        for (int j = 0; j < datasTop.size(); j++) {
+            boolean addGatway = true;
+            for (int i = 0; i < tempDevice.size(); i++) {
+                if (tempDevice.get(i).getUid().equalsIgnoreCase(datasTop.get(j).getUid())) {
+                    addGatway = false;
+                }
+            }
+            if (addGatway) {
+                Log.i(TAG, "下发网关设备 uid:" + datasTop.get(j).getUid());
+                mGetwayManager.bindDevice(datasTop.get(j).getUid());
+            }
+        }
+    }
+
+    /**
+     * 网关设备更新状态
+     *
+     * @param tempDevice
+     */
+    private void gatWayDeviceStatuUpdate(List<GatwayDevice> tempDevice) {
+
+        for (int i = 0; i < tempDevice.size(); i++) {
+            for (int j = 0; j < datasTop.size(); j++) {
+                if (datasTop.get(j).getUid().equalsIgnoreCase(tempDevice.get(i).getUid())) {
+                    datasTop.get(j).setStatus(tempDevice.get(i).getStatus());
+                    datasTop.get(j).saveFast();
+                }
+            }
+        }
+    }
 }

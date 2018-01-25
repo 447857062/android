@@ -22,8 +22,6 @@ public class PublicMethod {
     public static long getTimeMs() {
         return System.currentTimeMillis();
     }
-
-
     public static String getSSID(Context ctx) {
         WifiManager wifiMgr = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifiMgr.getConnectionInfo();
@@ -82,7 +80,7 @@ public class PublicMethod {
         } else {
             return 0;
         }
-        if (netType == 1 && getSSID(ctx).equals("EllE.")) {
+        if (getSSID(ctx).equals("EllE.")) {
             return 3;
 
         } else if (netType == 1) {
@@ -104,7 +102,6 @@ public class PublicMethod {
         TelephonyManager mTm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         return mTm.getDeviceId();
     }
-
 
     public static byte[] getUuid(Context context) {
         Log.i("getUuid","context!=null"+(context!=null));

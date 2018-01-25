@@ -37,5 +37,9 @@
     </string>
     <string name="rate_format">%.1f</string>
     <string name="ip_address_digits">0123456789.</string>
+    <string name="update_app_model_prepare">准备下载</string>
+    <string name="update_app_model_progress">正在下载, %1$d%2$s</string>
+    <string name="update_app_model_success">下载成功</string>
+    <string name="update_app_model_error">下载失败</string>
     <string name="remotecontrol_learn_auto_tips">请逐个点击下方显示的测试案件,并观察设备是否有相\n应的反应.您也可以点击[连续测试]按钮自定轮流测试</string>
 </resources>

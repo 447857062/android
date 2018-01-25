@@ -1,4 +1,4 @@
-package com.deplink.homegenius.view.viewselector.Utils;
+package com.deplink.homegenius.util;
 
 /**
  * Created by liuli on 2015/11/27.

@@ -233,13 +233,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-
                     android:layout_marginLeft="@dimen/router_connect_setting_edit_marginleft"
                     android:layout_toRightOf="@+id/textview_dns1_title"
                     android:background="@null"
-                    android:hint="(非必须选项，可不填写)"
-                    android:inputType="number"
                     android:text=""
+                    android:digits="@string/ip_address_digits"
+                    android:hint="(非必须选项，可不填写)"
+                    android:inputType="phone"
                     android:textColor="@color/room_type_text"
                     android:textColorHint="@color/huise"
                     android:textSize="@dimen/text_size_small" />
@@ -299,8 +299,5 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/router_line_dirver" />
         </RelativeLayout>
-
     </RelativeLayout>
-
-
 </RelativeLayout>

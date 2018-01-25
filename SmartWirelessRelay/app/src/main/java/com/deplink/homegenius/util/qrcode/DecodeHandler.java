@@ -88,13 +88,12 @@ final class DecodeHandler extends Handler {
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         try {
             rawResult = multiFormatReader.decodeWithState(bitmap);
-
         } catch (ReaderException re) {
             // continue
         } finally {
             multiFormatReader.reset();
         }
-        if (rawResult != null) {
+        if (rawResult != null && !rawResult.getText().contains("http://")) {
             long end = System.currentTimeMillis();
             Log.d(TAG, "扫到二维码 (" + (end - start) + " ms):\n" + rawResult.toString());
             Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);

@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
@@ -43,7 +42,6 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
@@ -228,10 +226,9 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                 super.responseDeleteDeviceHttpResult(result);
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.deleteSmartDevice();
-                } else {
-                    DialogThreeBounce.hideLoading();
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
                 }
+                DialogThreeBounce.hideLoading();
+                mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
             }
 
             @Override
@@ -263,20 +260,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             @Override
             public void responseBindDeviceResult(String result) {
                 super.responseBindDeviceResult(result);
-                Gson gson = new Gson();
-                boolean deleteSuccess = true;
-                DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-                for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
-                    if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
-                        deleteSuccess = false;
-                    }
-                }
-                DialogThreeBounce.hideLoading();
-                if (deleteSuccess) {
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-                } else {
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
-                }
             }
         };
         if(getIntent().getBooleanExtra("isupdateroom",false)){

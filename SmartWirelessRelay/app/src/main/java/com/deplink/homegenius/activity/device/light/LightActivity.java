@@ -81,7 +81,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                 if (isStartFromExperience) {
                     button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
                     float alpha = (float) (lightColorProgress / 200.0);
-                    Log.i(TAG, "alpha=" + alpha);
                     button_switch_light.setAlpha(alpha);
                 }
             }
@@ -96,8 +95,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                 if(!isStartFromExperience){
                     mSmartLightManager.setSmartLightParamas("regulation", lightColorProgress, lightBrightnessProgress);
                 }
-
-
             }
         });
         progressBarLightWhite.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -164,9 +161,8 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
             }
 
             @Override
-            public void deviceOpSuccess(String op, final String deviceKey) {
+            public void deviceOpSuccess(String op,  String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-
             }
 
             @Override
@@ -217,6 +213,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
         if (isStartFromExperience) {
             layout_lightcolor_control.setVisibility(View.GONE);
             layout_brightness_control.setVisibility(View.GONE);
+            textview_switch_tips.setText("点击开启");
         } else {
             mSmartLightManager.queryLightStatus();
             mSmartLightManager.addSmartLightListener(this);

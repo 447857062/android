@@ -38,8 +38,8 @@ import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import com.deplink.homegenius.activity.homepage.adapter.HomepageGridViewAdapter;
 import com.deplink.homegenius.activity.homepage.adapter.HomepageRoomShowTypeChangedViewAdapter;
-import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.DeviceNumberActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
@@ -314,7 +314,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-
+       /* long macl=71778318375177216L;
+        String macS= DataExchange.byteArrayToHexString( DataExchange.longToEightByte(macl));
+        macS=macS.replaceAll("0x","").trim();
+        macS=macS.replaceAll(" ","-");
+        Log.i(TAG,"savemac="+macS);*/
         manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));

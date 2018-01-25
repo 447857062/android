@@ -18,6 +18,7 @@ import com.deplink.homegenius.Protocol.packet.ellisdk.WIFIData;
 import com.deplink.homegenius.activity.device.AddDeviceNameActivity;
 import com.deplink.homegenius.activity.device.doorbell.EditDoorbellActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.util.DataExchange;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -30,7 +31,7 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
     private TextView textview_title;
     private Button button_next_step;
     private DoorbeelManager mDoorbeelManager;
-
+    private boolean isStartFromExperience;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,12 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
         initViews();
         initEvents();
         initDatas();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
     }
 
     private void initEvents() {
@@ -70,7 +77,15 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
                 onBackPressed();
                 break;
             case R.id.button_next_step:
-                ellESDK.startSearchDevs();
+                if(!isStartFromExperience){
+                    ellESDK.startSearchDevs();
+                }else{
+                    if(mDoorbeelManager.isConfigWifi()){
+                        ToastSingleShow.showText(AddDoorbellTipsActivity.this, "门铃网络已配置,现在重启门邻设备");
+                        Intent intent = new Intent(AddDoorbellTipsActivity.this, EditDoorbellActivity.class);
+                        startActivity(intent);
+                    }
+                }
                 break;
         }
     }
@@ -127,7 +142,6 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
         String macS=DataExchange.byteArrayToHexString( DataExchange.longToEightByte(mac));
         macS=macS.replaceAll("0x","").trim();
         macS=macS.replaceAll(" ","-");
-        Log.i(TAG,"mac="+macS);
         Log.i(TAG,"savemac="+macS);
         mDoorbeelManager.setMac(macS);
         onDoneClick(mac, type, ver);

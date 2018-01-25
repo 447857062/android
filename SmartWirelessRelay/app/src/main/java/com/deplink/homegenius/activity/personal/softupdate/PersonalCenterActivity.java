@@ -1,4 +1,4 @@
-package com.deplink.homegenius.activity.personal;
+package com.deplink.homegenius.activity.personal.softupdate;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
+import com.deplink.homegenius.activity.personal.HomeNetWorkActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.usrinfo.UserinfoActivity;
@@ -24,6 +25,7 @@ import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.util.APKVersionCodeUtils;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.ConfirmDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
@@ -66,6 +68,11 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private boolean hasGetUserImage;
     private ConfirmDialog mLogoutDialog;
     private TextView user_nickname;
+    private TextView textview_update_now;
+    private boolean isAppUpdate = false;
+    private boolean isClickUpdate;
+    private RelativeLayout layout_update_soft;
+    private TextView textview_current_version;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +106,17 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             button_logout.setText("退出登录");
             String userName=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
             manager.getUserInfo(userName);
+            manager.queryAppUpdateInfo(Perfence.SDK_APP_KEY, APKVersionCodeUtils.getVerName(this));
+            if( manager.getAppUpdateInfo()!=null){
+                String version = manager.getAppUpdateInfo().getVersion();
+                int oldVersion=Integer.valueOf(APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).replace(".",""));
+                int newVersion=Integer.valueOf(version.replace(".",""));
+                isAppUpdate = !APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).equals(version) && (newVersion > oldVersion);
+            }else{
+                isAppUpdate = false;
+                textview_update_now.setText("已是最新版本");
+            }
+            textview_current_version.setText("当前版本:"+APKVersionCodeUtils.getVerName(this));
         }else{
             button_logout.setText("登录");
         }
@@ -141,6 +159,28 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                     case LOGOUT:
                         Perfence.setPerfence(AppConstant.USER_LOGIN,false);
                         startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
+                        break;
+                    case APPUPDATE:
+                            String version = manager.getAppUpdateInfo().getVersion();
+                            int oldVersion=Integer.valueOf(APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).replace(".",""));
+                            int newVersion=Integer.valueOf(version.replace(".",""));
+                            if (!APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).equals(version) && (newVersion>oldVersion)) {
+                                isAppUpdate = true;
+                                textview_update_now.setText("立即升级");
+                            } else {
+                                textview_update_now.setText("已是最新版本");
+                                isAppUpdate = false;
+                            }
+                            if(isClickUpdate){
+                                isClickUpdate=false;
+                                if(isAppUpdate){
+                                    startActivity(new Intent(PersonalCenterActivity.this, UpdateImmediateActivity.class));
+                                }else{
+                                    ToastSingleShow.showText(PersonalCenterActivity.this,"已是最新版本");
+                                }
+                            }
+
+
                         break;
                 }
             }
@@ -216,6 +256,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         layout_personal_center.setOnClickListener(this);
         button_logout.setOnClickListener(this);
         user_head_portrait.setOnClickListener(this);
+        layout_update_soft.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -237,6 +278,9 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         button_logout = findViewById(R.id.button_logout);
         user_head_portrait = findViewById(R.id.user_head_portrait);
         user_nickname = findViewById(R.id.user_nickname);
+        textview_update_now = findViewById(R.id.textview_update_now);
+        layout_update_soft = findViewById(R.id.layout_update_soft);
+        textview_current_version = findViewById(R.id.textview_current_version);
     }
 
     /**
@@ -301,6 +345,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 break;
             case R.id.user_head_portrait:
                 startActivity(new Intent(this, UserinfoActivity.class));
+                break;
+            case R.id.layout_update_soft:
+                manager.queryAppUpdateInfo(Perfence.SDK_APP_KEY, APKVersionCodeUtils.getVerName(this));
+                isClickUpdate=true;
                 break;
 
         }

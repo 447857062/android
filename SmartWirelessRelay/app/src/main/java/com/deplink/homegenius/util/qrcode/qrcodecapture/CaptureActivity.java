@@ -15,8 +15,13 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.device.AddDeviceNameActivity;
+import com.deplink.homegenius.activity.device.AddDeviceQRcodeActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.util.qrcode.CameraManager;
+import com.deplink.homegenius.util.qrcode.CaptureActivityHandler;
 import com.deplink.homegenius.util.qrcode.InactivityTimer;
+import com.deplink.homegenius.util.qrcode.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
@@ -24,11 +29,6 @@ import java.io.IOException;
 import java.util.Vector;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.device.AddDeviceNameActivity;
-import com.deplink.homegenius.activity.device.AddDeviceQRcodeActivity;
-import com.deplink.homegenius.util.qrcode.CameraManager;
-import com.deplink.homegenius.util.qrcode.CaptureActivityHandler;
-import com.deplink.homegenius.util.qrcode.ViewfinderView;
 
 public class CaptureActivity extends Activity implements SurfaceHolder.Callback, View.OnClickListener {
     private static final String TAG = "CaptureActivity";
@@ -63,12 +63,12 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     }
 
     private void viewInit() {
-        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        surfaceView = findViewById(R.id.preview_view);
+        viewfinderView = findViewById(R.id.viewfinder_view);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
 
-        TextView textview_cancel = (TextView) findViewById(R.id.textview_cancel);
+        TextView textview_cancel = findViewById(R.id.textview_cancel);
         textview_cancel.setOnClickListener(this);
     }
 
