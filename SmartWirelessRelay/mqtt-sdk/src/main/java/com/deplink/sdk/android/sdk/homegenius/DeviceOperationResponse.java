@@ -17,6 +17,7 @@ public class DeviceOperationResponse {
     private String status;
     private String uid;
     private int errcode;
+    private int errCode;
     private int sort_num;
     private String device_type;
     private String device_name;
@@ -30,6 +31,14 @@ public class DeviceOperationResponse {
 
     public String getSign_seed() {
         return sign_seed;
+    }
+
+    public int getErrCode() {
+        return errCode;
+    }
+
+    public void setErrCode(int errCode) {
+        this.errCode = errCode;
     }
 
     public void setSign_seed(String sign_seed) {

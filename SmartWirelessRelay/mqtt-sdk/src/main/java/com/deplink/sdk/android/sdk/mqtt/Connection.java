@@ -44,9 +44,6 @@ public class Connection {
   private String clientId = null;
   /** The host that the {@link MqttClientAndroidService} represented by this <code>Connection</code> is represented by **/
   private String host = null;
-  /** The port on the server this client is connecting to **/
-  @SuppressWarnings("unused")
-private int port = 0;
   /** {@link ConnectionStatus} of the {@link MqttClientAndroidService} represented by this <code>Connection</code> object. Default value is {@link ConnectionStatus#NONE} **/
   private ConnectionStatus status = ConnectionStatus.NONE;
   /** The history of the {@link MqttClientAndroidService} represented by this <code>Connection</code> object **/
@@ -54,15 +51,13 @@ private int port = 0;
   /** The {@link MqttClientAndroidService} instance this class represents**/
   private MqttClientAndroidService client = null;
 
-  private ArrayList<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+  private ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
 
   /** The {@link Context} of the application this object is part of**/
   private Context context = null;
 
   /** The {@link MqttConnectOptions} that were used to connect this client**/
   private MqttConnectOptions conOpt;
-  private boolean isConn=false;
-
   /**
    * Connections status for  a connect
    */
@@ -88,25 +83,23 @@ private int port = 0;
    * @param clientHandle The handle to this <code>Connection</code> object
    * @param clientId The Id of the client
    * @param host The server which the client is connecting to
-   * @param port The port on the server which the client will attempt to connect to
    * @param context The application context
    * @param client The MqttClientAndroidService which communicates with the service for this connect
    */
   public Connection(String clientHandle, String clientId, String host,
-      String port, Context context, MqttClientAndroidService client) {
+                    Context context, MqttClientAndroidService client) {
     //generate the client handle from its hash code
     this.clientHandle = clientHandle;
     this.clientId = clientId;
     this.host = host;
-    this.port = Integer.valueOf(port);
+    /* The port on the server this client is connecting to */
     this.context = context;
     this.client = client;
-    history = new ArrayList<String>();
-    StringBuilder sb = new StringBuilder();
-    sb.append("Client: ");
-    sb.append(clientId);
-    sb.append(" created");
-    addAction(sb.toString());
+    history = new ArrayList<>();
+    String sb = "Client: " +
+            clientId +
+            " created";
+    addAction(sb);
   }
 
   /**
@@ -173,7 +166,7 @@ private int port = 0;
    */
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(clientId);
     sb.append("\n ");
 
@@ -201,15 +194,6 @@ private int port = 0;
     sb.append(host);
 
     return sb.toString();
-  }
-
-  /**
-   * Determines if a given handle refers to this client
-   * @param handle The handle to compare with this clients handle
-   * @return true if the handles match
-   */
-  public boolean isHandle(String handle) {
-    return clientHandle.equals(handle);
   }
 
   /**

@@ -257,7 +257,6 @@ public class DeviceManager implements MqttListener {
 
     private void processMqttMsg(MqttMessage message) {
         String jsonString = new String(message.getPayload());
-        Log.i(TAG,"处理智能家居的设备消息:"+jsonString);
         mSDKCoordinator.notifyHomeGeniusResult(jsonString);
     }
 

@@ -214,7 +214,7 @@ public class MQTTController implements MqttListener {
         String clientHandle = uri + clientId;
         int timeout = 30;
         int keepAlive = 10;
-        mConnection = new Connection(clientHandle, clientId, host, port, context, client);
+        mConnection = new Connection(clientHandle, clientId, host, context, client);
         Connections.getInstance().addConnection(mConnection);
         // connect client
         String[] actionArgs = new String[1];

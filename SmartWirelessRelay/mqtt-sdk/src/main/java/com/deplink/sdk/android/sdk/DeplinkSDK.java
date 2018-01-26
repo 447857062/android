@@ -48,7 +48,7 @@ public class DeplinkSDK {
 
     private DeplinkSDK(Context context,String key) {
         this.key = key;
-        sdkManager = new SDKManager(context);
+        sdkManager = new SDKManager();
     }
 
     public static DeplinkSDK initSDK(Context context,String key) {

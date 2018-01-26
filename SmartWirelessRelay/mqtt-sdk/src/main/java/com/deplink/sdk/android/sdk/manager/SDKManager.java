@@ -35,7 +35,7 @@ public class SDKManager {
     private SDKCoordinator mSDKCoordinator = null;
     private List<EventCallback> eventCallbackList = new ArrayList<>();
     private UserManager mUserManager;
-    public SDKManager(Context context) {
+    public SDKManager() {
         mSDKCoordinator = new Coordinator();
         mUserManager = new UserManager(mSDKCoordinator);
         mDeviceManager = new DeviceManager(mSDKCoordinator);
@@ -99,7 +99,6 @@ public class SDKManager {
      * @param imagePath
      */
     public void uploadImage(String imagePath) {
-        Log.i(TAG, "uploadImage imagePath=" + imagePath);
         mUserManager.uploadImage(imagePath);
     }
 
@@ -210,7 +209,6 @@ public class SDKManager {
         if (mDeviceManager != null) {
             return mDeviceManager.getDevice(deviceKey);
         }
-        Log.i(TAG, "mDeviceManager ==null");
         return null;
     }
 
