@@ -28,9 +28,9 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenu;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuCreator;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuItem;
@@ -138,8 +138,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private AdapterView.OnItemClickListener deviceItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-            MakeSureDialog dialog = new MakeSureDialog(RouterMainActivity.this);
-            dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            DeleteDeviceDialog dialog = new DeleteDeviceDialog(RouterMainActivity.this);
+            dialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                 @Override
                 public void onSureBtnClicked() {
                     isSetBlackList = true;
@@ -155,7 +155,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             });
             dialog.show();
             String devicename = mConnectedDevices.get(position).getDeviceName().trim();
-            dialog.setTitleText("确定将设备\"" + devicename + "\"拉入黑名单");
+            dialog.setContentText("确定将设备\"" + devicename + "\"拉入黑名单");
+            dialog.setTitleText("加入黑名单");
         }
     };
     private String receiverChannels;
@@ -294,7 +295,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         if (isStartFromExperience) {
             mHandler.post(hideLoadingCallback);
         } else {
-            DialogThreeBounce.showLoading(this);
             mHandler.postDelayed(hideLoadingCallback, 1500);
         }
 
@@ -315,8 +315,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     textview_show_blacklist_device_result.setVisibility(View.VISIBLE);
                     textview_show_blacklist_device_result.setText("黑名单中没有添加设备");
                 }
-            } else {
-                DialogThreeBounce.hideLoading();
             }
 
         }
@@ -485,7 +483,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 mConnectedDevices.clear();
                 mConnectedDevices.addAll(mDevicesOnlineRoot.getDevicesOnline());
                 try {
-                    DialogThreeBounce.hideLoading();
                     if (frame_devicelist_content_content.getVisibility() == View.VISIBLE) {
                         Log.i(TAG, "设备界面：获取已连接设备列表:" + mConnectedDevices.size());
                         if (mConnectedDevices.size() == 0) {
@@ -565,25 +562,25 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             public boolean onMenuItemClick(final int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
-                        MakeSureDialog dialog = new MakeSureDialog(RouterMainActivity.this);
-                        dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                        DeleteDeviceDialog dialog = new DeleteDeviceDialog(RouterMainActivity.this);
+                        dialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                             @Override
                             public void onSureBtnClicked() {
                                 isSetBlackList = true;
                                 String mac = mConnectedDevices.get(position).getMAC();
                                 String name = mConnectedDevices.get(position).getDeviceName();
                                 DeviceControl control = new DeviceControl();
-                                BLACKLIST blacklist = new BLACKLIST();
+                                com.deplink.sdk.android.sdk.json.BLACKLIST blacklist = new com.deplink.sdk.android.sdk.json.BLACKLIST();
                                 blacklist.setDeviceMac(mac);
                                 blacklist.setDeviceName(name);
                                 control.setBLACKLIST(blacklist);
-                                if (!isStartFromExperience) {
-                                    mHomeGenius.setDeviceControl(control, channels);
-                                }
+                                mHomeGenius.setDeviceControl(control, channels);
                             }
                         });
                         dialog.show();
-                        dialog.setMsg("确定将设备\"" + mConnectedDevices.get(position).getDeviceName() + "\"拉入黑名单");
+                        String devicename = mConnectedDevices.get(position).getDeviceName().trim();
+                        dialog.setContentText("确定将设备\"" + devicename + "\"拉入黑名单");
+                        dialog.setTitleText("加入黑名单");
                         break;
                 }
                 return false;
@@ -601,13 +598,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     case MotionEvent.ACTION_MOVE:
                         Log.i(TAG, "setOnTouchListener ACTION_MOVE" + (event.getY() - Yoffset));
                         if (event.getY() - Yoffset > HEIGHT_MARK_TO_REFRESH) {
-                            DialogThreeBounce.showLoading(RouterMainActivity.this);
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    DialogThreeBounce.hideLoading();
-                                }
-                            }, 2000);
+
                         }
                 }
                 return false;
@@ -645,8 +636,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 switch (index) {
                     case 0:
                         // open
-                        MakeSureDialog dialog = new MakeSureDialog(RouterMainActivity.this);
-                        dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                        DeleteDeviceDialog dialog = new DeleteDeviceDialog(RouterMainActivity.this);
+                        dialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                             @Override
                             public void onSureBtnClicked() {
                                 isRemoveBlackList = true;
@@ -655,13 +646,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                 WHITELIST whitelist = new WHITELIST();
                                 whitelist.setDeviceMac(mac);
                                 control.setWHITELIST(whitelist);
-                                // if (routerDevice != null) {
                                 mHomeGenius.setDeviceControl(control, channels);
-                                // }
                             }
                         });
                         dialog.show();
-                        dialog.setTitleText("确定将该设备从黑名单移除");
+                        dialog.setTitleText("移除黑名单");
+                        dialog.setContentText("确定将该设备从黑名单移除");
 
                         break;
 
@@ -673,8 +663,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         listview_black_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                MakeSureDialog dialog = new MakeSureDialog(RouterMainActivity.this);
-                dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                DeleteDeviceDialog dialog = new DeleteDeviceDialog(RouterMainActivity.this);
+                dialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
                         isRemoveBlackList = true;
@@ -687,7 +677,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     }
                 });
                 dialog.show();
-                dialog.setTitleText("确定将该设备从黑名单移除");
+                dialog.setTitleText("移除黑名单");
+                dialog.setContentText("确定将该设备从黑名单移除");
             }
         });
 
@@ -768,7 +759,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private void showCheckRouterLoadingDialog() {
         Log.i(TAG, "showCheckRouterLoadingDialog");
         mHandler.postDelayed(connectStatus, 3000);
-        DialogThreeBounce.showLoading(this);
     }
 
 
@@ -781,13 +771,11 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 connetWifiDialog.setSureBtnClickListener(new MakeSureWithInputDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked(String password) {
-                        DialogThreeBounce.hideLoading();
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
                 connetWifiDialog.show();
             }
-            DialogThreeBounce.hideLoading();
         }
     };
 
@@ -799,7 +787,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         dialog.setSureBtnClickListener(new MakeSureWithInputDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked(String password) {
-
                 if (!password.equals("")) {
                     showCheckRouterLoadingDialog();
                     isConnectLocalRouter = false;
@@ -815,7 +802,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString("token", token);
                             editor.apply();
-
                             if (!result.getLink().equalsIgnoreCase("")) {
                                 RestfulToolsRouter.getSingleton(getApplicationContext()).setLink(result.getLink());
                                 isConnectLocalRouter = true;
@@ -826,9 +812,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                                     e.printStackTrace();
                                 }
                                 startActivity(new Intent(RouterMainActivity.this, RouterSettingActivity.class));
-                                DialogThreeBounce.hideLoading();
-
-
                             }
                         }
 

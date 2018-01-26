@@ -1,12 +1,14 @@
 package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -14,6 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
+import com.deplink.homegenius.Protocol.json.device.lock.Record;
+import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
@@ -26,10 +33,15 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
+import org.litepal.crud.DataSupport;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class LoginActivity extends Activity implements View.OnClickListener,View.OnFocusChangeListener{
-    private static final String TAG="LoginActivity";
+public class LoginActivity extends Activity implements View.OnClickListener, View.OnFocusChangeListener {
+    private static final String TAG = "LoginActivity";
     private ImageView imageview_delete;
     private TextView textview_forget_password;
     private TextView textview_regist_now;
@@ -42,6 +54,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
     private View view_password_dirverline;
     private FrameLayout layout_eye;
     private ImageView imageview_eye;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +64,26 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
         initEvents();
     }
 
+    private void showInputmothed() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+                           public void run() {
+
+                               InputMethodManager inputManager =
+                                       (InputMethodManager) edittext_input_phone_number.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                               inputManager.showSoftInput(edittext_input_phone_number, 0);
+                           }
+                       },
+                500);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
+        showInputmothed();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -73,6 +101,16 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                         Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
                         manager.connectMQTT(getApplicationContext());
                         User user = manager.getUserInfo();
+                        //清除本地数据库
+                        String lastLoginUser = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+                        Log.i(TAG,"lastLoginUser="+lastLoginUser);
+                        if (lastLoginUser != null && !lastLoginUser.equalsIgnoreCase(user.getName())) {
+                            DataSupport.deleteAll(SmartDev.class);
+                            DataSupport.deleteAll(GatwayDevice.class);
+                            DataSupport.deleteAll(Room.class);
+                            DataSupport.deleteAll(Record.class);
+                            DataSupport.deleteAll(Router.class);
+                        }
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
@@ -80,9 +118,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                         DialogLoading.hideLoading();
                         LoginActivity.this.finish();
                         Log.i(TAG, "onSuccess login");
-                        break;
-                    case CONNECTED:
-
                         break;
                     default:
                         break;
@@ -94,7 +129,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
 
 
             }
-
 
 
             @Override
@@ -127,17 +161,18 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
     }
 
     private void initViews() {
-        imageview_delete= findViewById(R.id.imageview_delete);
-        textview_forget_password= findViewById(R.id.textview_forget_password);
-        textview_regist_now= findViewById(R.id.textview_regist_now);
-        button_login= findViewById(R.id.button_login);
-        edittext_input_password= findViewById(R.id.edittext_input_password);
-        edittext_input_phone_number= findViewById(R.id.edittext_input_phone_number);
-        view_phonenumber_dirverline=  findViewById(R.id.view_phonenumber_dirverline);
-        view_password_dirverline=  findViewById(R.id.view_password_dirverline);
+        imageview_delete = findViewById(R.id.imageview_delete);
+        textview_forget_password = findViewById(R.id.textview_forget_password);
+        textview_regist_now = findViewById(R.id.textview_regist_now);
+        button_login = findViewById(R.id.button_login);
+        edittext_input_password = findViewById(R.id.edittext_input_password);
+        edittext_input_phone_number = findViewById(R.id.edittext_input_phone_number);
+        view_phonenumber_dirverline = findViewById(R.id.view_phonenumber_dirverline);
+        view_password_dirverline = findViewById(R.id.view_password_dirverline);
         layout_eye = findViewById(R.id.layout_eye);
         imageview_eye = findViewById(R.id.imageview_eye);
     }
+
     /**
      * 设置密文明文之间切换
      */
@@ -160,7 +195,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.imageview_delete:
                 this.finish();
                 break;
@@ -174,28 +209,26 @@ public class LoginActivity extends Activity implements View.OnClickListener,View
                     Toast.makeText(this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Perfence.setPerfence(Perfence.PERFENCE_PHONE, phoneNumber);
                 String password = edittext_input_password.getText().toString().trim();
                 if (password.length() < 6) {
                     Toast.makeText(this, "密码位数6-20", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 DialogLoading.showLoading(this);
-                    manager.login(phoneNumber, password);
+                manager.login(phoneNumber, password);
                 break;
             case R.id.textview_forget_password:
-                startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));
+                startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));
                 break;
             case R.id.textview_regist_now:
-                startActivity(new Intent(LoginActivity.this,RegistActivity.class));
+                startActivity(new Intent(LoginActivity.this, RegistActivity.class));
                 break;
         }
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.edittext_input_phone_number:
                 if (hasFocus) {
                     // 此处为得到焦点时的处理内容

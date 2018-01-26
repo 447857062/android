@@ -251,14 +251,12 @@ public class DevStatus {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         boolean isFinish = false;
         int count = 0;
         while (!isFinish) {
             count++;
             switch (unpack.step) {
                 case 2:
-                    isFinish = true;
                     wifiData.pwd = unpack.ssid;
                     wifiData.ssid = unpack.ssid;
                     return wifiData;
@@ -318,8 +316,6 @@ public class DevStatus {
             count++;
             switch (unpack.step) {
                 case 2:
-                    isSetOk = false;
-                    isFinish = true;
                     return 0;
                 case 4:
                     isFinish = true;

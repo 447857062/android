@@ -121,7 +121,6 @@ public class AddDeviceGridViewAdapter extends BaseAdapter {
      *
      * @see android.widget.Adapter#getCount()
   */
-
     @Override
     public int getCount() {
 
@@ -132,6 +131,5 @@ public class AddDeviceGridViewAdapter extends BaseAdapter {
     final static class ViewHolder {
         TextView textview_room_item;
         ImageView imageview_room_type;
-        ImageView imageview_room_item_add;
     }
 }

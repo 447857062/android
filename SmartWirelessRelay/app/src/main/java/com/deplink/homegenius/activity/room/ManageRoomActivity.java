@@ -30,7 +30,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class ManageRoomActivity extends Activity implements View.OnClickListener,RoomListener {
+public class ManageRoomActivity extends Activity implements View.OnClickListener, RoomListener {
     private static final String TAG = "ManageRoomActivity";
     private FrameLayout image_back;
     private Button button_delete_room;
@@ -39,7 +39,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     private RelativeLayout layout_room_name;
     private RoomManager mRoomManager;
     private TextView textview_title;
-    private TextView textview_edit;
     private RelativeLayout layout_getway;
     private ListView listview_select_getway;
     private RelativeLayout layout_getway_list;
@@ -58,9 +57,9 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         initDatas();
         initEvents();
     }
+
     private void initDatas() {
         textview_title.setText("编辑");
-        textview_edit.setText("完成");
         mRoomManager = RoomManager.getInstance();
         mRoomManager.initRoomManager(this, this);
 
@@ -88,12 +87,10 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         button_delete_room.setOnClickListener(this);
         layout_room_name.setOnClickListener(this);
         layout_getway.setOnClickListener(this);
-        textview_edit.setOnClickListener(this);
     }
 
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
-        textview_edit = findViewById(R.id.textview_edit);
         textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
         image_back = findViewById(R.id.image_back);
         button_delete_room = findViewById(R.id.button_delete_room);
@@ -132,11 +129,10 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.textview_edit:
-                onBackPressed();
-                break;
             case R.id.image_back:
-                onBackPressed();
+                intent = new Intent(this, DeviceNumberActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 break;
             case R.id.button_delete_room:
                 if (!NetUtil.isNetAvailable(this)) {
@@ -153,7 +149,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                         public void onSureBtnClicked() {
                             String uid = mRoomManager.findRoom(mRoomName, true).getUid();
                             Log.i(TAG, "删除房间,UID=" + uid);
-                            if(uid==null){
+                            if (uid == null) {
                                 return;
                             }
                             mRoomManager.deleteRoomHttp(uid);
@@ -193,7 +189,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
 
     @Override
     public void responseDeleteRoomResult() {
-        int result =mRoomManager.deleteRoom(mRoomName);
+        int result = mRoomManager.deleteRoom(mRoomName);
         Log.i(TAG, "删除房间，影响的行数=" + result);
         if (result > 0) {
             startActivity(new Intent(ManageRoomActivity.this, RoomActivity.class));

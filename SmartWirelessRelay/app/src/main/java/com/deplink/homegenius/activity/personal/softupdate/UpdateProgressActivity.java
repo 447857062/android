@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
     BroadcastReceiver br;
     private TextView textview_title;
     private FrameLayout image_back;
+    private Button button_cancel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,7 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
 
     private void initEvents() {
         image_back.setOnClickListener(this);
+        button_cancel.setOnClickListener(this);
         IntentFilter intentFilter = new IntentFilter(UpdateService.ACTION);
         registerReceiver(br, intentFilter);
     }
@@ -157,6 +160,7 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
         textview_updateing = findViewById(R.id.textview_updateing);
         textview_title = findViewById(R.id.textview_title);
         image_back = findViewById(R.id.image_back);
+        button_cancel = findViewById(R.id.button_cancel);
 
     }
 
@@ -164,6 +168,9 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.image_back:
+                onBackPressed();
+                break;
+            case R.id.button_cancel:
                 onBackPressed();
                 break;
         }

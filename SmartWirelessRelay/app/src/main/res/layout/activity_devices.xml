@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/layout_root"
     android:background="@drawable/equipmentbackground"
     tools:context="com.deplink.homegenius.activity.device.DevicesActivity">
 
@@ -74,7 +75,6 @@
                 android:id="@+id/imageview_empty_device"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:background="@drawable/equipmentemptystate" />
         </ScrollView>
     <com.handmark.pulltorefresh.library.PullToRefreshListView
@@ -88,8 +88,6 @@
         android:dividerHeight="@dimen/device_item_divider_height"
         android:listSelector="@color/transparent"
         android:scrollbars="none" />
-
-
     <RelativeLayout
         android:id="@+id/layout_buttom_bar"
         android:layout_width="match_parent"

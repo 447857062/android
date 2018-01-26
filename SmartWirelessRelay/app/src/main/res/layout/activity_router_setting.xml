@@ -35,6 +35,7 @@
                 <TextView
                     android:text="路由器"
                     android:textSize="@dimen/text_size_small"
+                    android:paddingLeft="5dp"
                     android:textColor="@color/room_type_text"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/textview_route_name_1"

@@ -19,7 +19,7 @@
             android:id="@+id/layout_mtu"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -140,12 +140,6 @@
                     android:textColorHint="@color/huise"
                     android:textSize="@dimen/text_size_small" />
             </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
         </RelativeLayout>
 
     </RelativeLayout>

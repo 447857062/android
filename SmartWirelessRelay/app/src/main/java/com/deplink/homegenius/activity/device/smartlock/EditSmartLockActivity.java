@@ -250,12 +250,11 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
 
-   private  Intent intentBack ;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-                 intentBack = new Intent(this, SmartLockActivity.class);
+                Intent intentBack = new Intent(this, SmartLockActivity.class);
                 intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 if (isStartFromExperience) {
                     startActivity(intentBack);

@@ -27,7 +27,6 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.json.Wifi_2G;
@@ -49,7 +48,9 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private EventCallback ec;
     private String wifiType;
     private ImageView image_input_eye_password;
+    private FrameLayout framelayout_input_eye_password;
     private ImageView image_input_eye_password_again;
+    private FrameLayout framelayout_nput_eye_password_again;
     private String password;
     private TextView textview_title;
     private FrameLayout image_back;
@@ -107,11 +108,6 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op) {
-                    case RouterDevice.OP_SUCCESS:
-
-                        break;
-                }
             }
 
             @Override
@@ -138,7 +134,7 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
 
     }
     private void parseDeviceReport(String xmlStr) {
-        String op = "";
+        String op;
         String method;
         Gson gson = new Gson();
         PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
@@ -159,23 +155,22 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
     private void initEvents() {
         textview_edit.setOnClickListener(this);
         image_back.setOnClickListener(this);
-        image_input_eye_password.setOnClickListener(this);
-        image_input_eye_password_again.setOnClickListener(this);
+        framelayout_input_eye_password.setOnClickListener(this);
+        framelayout_nput_eye_password_again.setOnClickListener(this);
     }
 
     private void initViews() {
         textview_edit = findViewById(R.id.textview_edit);
         image_input_eye_password = findViewById(R.id.image_input_eye_password);
+        framelayout_input_eye_password = findViewById(R.id.framelayout_input_eye_password);
         image_input_eye_password_again = findViewById(R.id.image_input_eye_password_again);
+        framelayout_nput_eye_password_again = findViewById(R.id.framelayout_nput_eye_password_again);
         textview_title = findViewById(R.id.textview_title);
         image_back = findViewById(R.id.image_back);
         edittext_password = findViewById(R.id.edittext_password);
         edittext_password_again = findViewById(R.id.edittext_password_again);
     }
-
     private boolean isLogin;
-    private boolean isConnectedLocalRouter;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -199,13 +194,13 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
             case R.id.button_cancel:
                 onBackPressed();
                 break;
-            case R.id.image_input_eye_password:
+            case R.id.framelayout_input_eye_password:
                 if (edittext_password.getTransformationMethod() instanceof PasswordTransformationMethod) {
-                    image_input_eye_password.setImageResource(R.drawable.input_eye);
+                    image_input_eye_password.setImageResource(R.drawable.blueeye);
                     edittext_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
 
                 } else if (edittext_password.getTransformationMethod() instanceof HideReturnsTransformationMethod) {
-                    image_input_eye_password.setImageResource(R.drawable.input_eye_white);
+                    image_input_eye_password.setImageResource(R.drawable.grayeye);
                     edittext_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
                 }
@@ -213,20 +208,19 @@ public class AlertWifiPasswordActivity extends Activity implements View.OnClickL
                     edittext_password.setSelection(edittext_password.getText().toString().trim().length());
                 }
                 break;
-            case R.id.image_input_eye_password_again:
+            case R.id.framelayout_nput_eye_password_again:
                 if (edittext_password_again.getTransformationMethod() instanceof PasswordTransformationMethod) {
-                    image_input_eye_password_again.setImageResource(R.drawable.input_eye);
+                    image_input_eye_password_again.setImageResource(R.drawable.blueeye);
                     edittext_password_again.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
 
                 } else if (edittext_password_again.getTransformationMethod() instanceof HideReturnsTransformationMethod) {
-                    image_input_eye_password_again.setImageResource(R.drawable.input_eye_white);
+                    image_input_eye_password_again.setImageResource(R.drawable.grayeye);
                     edittext_password_again.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
                 }
                 if (edittext_password_again.getText().toString().trim().length() > 0) {
                     edittext_password_again.setSelection(edittext_password_again.getText().toString().trim().length());
                 }
-
                 break;
             case R.id.textview_edit:
                 String password = edittext_password.getText().toString().trim();

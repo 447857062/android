@@ -62,14 +62,13 @@ public class UpdateImmediateActivity extends Activity implements View.OnClickLis
             public void onSuccess(SDKAction action) {
                 switch (action) {
                     case APPUPDATE:
-                        try {
                             version = manager.getAppUpdateInfo().getVersion();
                             desc = manager.getAppUpdateInfo().getDesc();
                             size = manager.getAppUpdateInfo().getSize();
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    textview_version_code.setText("升级版本: " + version);
+                                    textview_version_code.setText("1.升级版本: " + version);
                                     String fileSizeDots=String.valueOf((size/1024%1024)/1024.0);
                                     Log.i(TAG,"fileSizeDots="+fileSizeDots);
                                     if(fileSizeDots.contains(".") && fileSizeDots.length()>4){
@@ -77,14 +76,11 @@ public class UpdateImmediateActivity extends Activity implements View.OnClickLis
                                     }else{
                                         fileSizeDots=".0";
                                     }
-                                    textview_file_size.setText("APK大小: "+size/1024/1024+fileSizeDots+"M");
-                                    version_explan.setText("" + desc);
+                                    textview_file_size.setText("2.APK大小: "+size/1024/1024+fileSizeDots+"M");
+                                    version_explan.setText("3." + desc);
 
                                 }
                             });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         break;
                 }
             }

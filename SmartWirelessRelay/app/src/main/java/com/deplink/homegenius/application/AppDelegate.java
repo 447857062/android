@@ -1,5 +1,7 @@
 package com.deplink.homegenius.application;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.deplink.homegenius.constant.AppConstant;
@@ -22,23 +24,11 @@ public class AppDelegate extends LitePalApplication {
         Perfence.setContext(getApplicationContext());
         String uuid= Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
         if(!uuid.equalsIgnoreCase("")){
-          /*  XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
-                @Override
-                public void onSuccess(Object o, int i) {
-                    Log.d("TPush", "注册成功，设备token为：" + o);
-                }
-
-                @Override
-                public void onFail(Object o, int i, String s) {
-
-                }
-            });*/
           XGPushManager.registerPush(getApplicationContext(),uuid,new XGIOperateCallback() {
                 @Override
                 public void onSuccess(Object data, int flag) {
                     Log.d("TPush", "注册成功，设备token为：" + data);
                 }
-
                 @Override
                 public void onFail(Object data, int errCode, String msg) {
                     Log.d("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
@@ -46,6 +36,10 @@ public class AppDelegate extends LitePalApplication {
             });
         }
 
+    }
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
     @Override
     public void onTerminate() {

@@ -1,6 +1,7 @@
 package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -32,6 +34,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -78,12 +82,24 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
     String phoneNumber;
     String password;
     private boolean isGetCaptche;
+    private void showInputmothed() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+                           public void run() {
 
+                               InputMethodManager inputManager =
+                                       (InputMethodManager) edittext_input_phone_number.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                               inputManager.showSoftInput(edittext_input_phone_number, 0);
+                           }
+                       },
+                500);
+    }
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
         edittext_input_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        showInputmothed();
     }
 
     private String username;

@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.deplink.homegenius.activity.device.router.RouterMainActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
@@ -57,7 +57,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private List<Bitmap> visitorListImage;
     private DoorBellListener mDoorBellListener;
     private VisitorListAdapter mAdapter;
-    private ImageView imageview_novisitor;
+    private RelativeLayout layout_no_visitor;
     private Timer refreshTimer = null;
     private TimerTask refreshTask = null;
     private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 3000;
@@ -109,8 +109,10 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        isUserLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mDoorbeelManager.addDeviceListener(mDoorBellListener);
+        manager.addEventCallback(ec);
         if (!isStartFromExperience) {
             if(isUserLogin){
                 startTimer();
@@ -118,8 +120,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
                 ToastSingleShow.showText(this,"未登录");
             }
         } else {
-
-            imageview_novisitor.setVisibility(View.VISIBLE);
+            layout_no_visitor.setVisibility(View.VISIBLE);
         }
     }
 
@@ -127,6 +128,8 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         mDoorbeelManager.removeDeviceListener(mDoorBellListener);
+        manager.removeEventCallback(ec);
+        stopTimer();
     }
 
     private void initEvents() {
@@ -237,6 +240,11 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
                     for (int i = 0; i < visitorList.size(); i++) {
                         mDoorbeelManager.getDoorbellVistorImage(list.get(i).getFile(), i);
                     }
+                    if (visitorList.size() > 0) {
+                        layout_no_visitor.setVisibility(View.GONE);
+                    } else {
+                        layout_no_visitor.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -247,11 +255,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
                     visitorListImage.add(bitmap);
                 }
                 mAdapter.notifyDataSetChanged();
-                if (visitorListImage.size() > 0) {
-                    imageview_novisitor.setVisibility(View.GONE);
-                } else {
-                    imageview_novisitor.setVisibility(View.VISIBLE);
-                }
+
             }
         };
         mAdapter = new VisitorListAdapter(this, visitorList, visitorListImage);
@@ -303,7 +307,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
         image_setting = findViewById(R.id.image_setting);
         frame_setting = findViewById(R.id.frame_setting);
         listview_vistor_list = findViewById(R.id.listview_vistor_list);
-        imageview_novisitor = findViewById(R.id.imageview_novisitor);
+        layout_no_visitor = findViewById(R.id.layout_no_visitor);
     }
 
     @Override

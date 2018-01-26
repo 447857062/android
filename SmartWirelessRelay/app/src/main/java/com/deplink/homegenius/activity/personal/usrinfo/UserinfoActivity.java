@@ -114,10 +114,12 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             public void onGetUserInfouccess(String info) {
                 super.onGetUserInfouccess(info);
                 Gson gson = new Gson();
-                UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
-                textview_show_nicknamke.setText(responseInfo.getNickname());
-                textview_show_sex.setText(responseInfo.getGender());
-                textview_show_birthday.setText(responseInfo.getBirthday());
+                if(!info.equalsIgnoreCase("[]")){
+                    UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
+                    textview_show_nicknamke.setText(responseInfo.getNickname());
+                    textview_show_sex.setText(responseInfo.getGender());
+                    textview_show_birthday.setText(responseInfo.getBirthday());
+                }
             }
 
             @Override
@@ -249,35 +251,47 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                 onBackPressed();
                 break;
             case R.id.layout_update_user_nickname:
-                Intent intent = new Intent(this, UpdateNicknameActivity.class);
-                intent.putExtra("nickname", textview_show_nicknamke.getText().toString());
-                startActivity(intent);
+                if(isUserLogin){
+                    Intent intent = new Intent(this, UpdateNicknameActivity.class);
+                    intent.putExtra("nickname", textview_show_nicknamke.getText().toString());
+                    startActivity(intent);
+                }else {
+                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                }
+
                 break;
             case R.id.layout_update_sex:
-                mSexDialog.setmOnSexSelectClickListener(new SexSelectDialog.onSexSelectClickListener() {
-                    @Override
-                    public void onSexSelect(String selectMode) {
-                        textview_show_sex.setText(selectMode);
-                        UserInfoAlertBody body = new UserInfoAlertBody();
-                        body.setGender(selectMode);
-                        manager.alertUserInfo(userName, body);
-                    }
-                });
-                mSexDialog.show();
-
-
+                if(isUserLogin){
+                    mSexDialog.setmOnSexSelectClickListener(new SexSelectDialog.onSexSelectClickListener() {
+                        @Override
+                        public void onSexSelect(String selectMode) {
+                            textview_show_sex.setText(selectMode);
+                            UserInfoAlertBody body = new UserInfoAlertBody();
+                            body.setGender(selectMode);
+                            manager.alertUserInfo(userName, body);
+                        }
+                    });
+                    mSexDialog.show();
+                }else{
+                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                }
                 break;
             case R.id.layout_birthday:
-                TimeSelector timeSelector = new TimeSelector(this, new TimeSelector.ResultHandler() {
-                    @Override
-                    public void handle(String time, Calendar selectedCalendar) {
-                        textview_show_birthday.setText(time);
-                        UserInfoAlertBody body = new UserInfoAlertBody();
-                        body.setBirthday(time);
-                        manager.alertUserInfo(userName, body);
-                    }
-                }, "1900-11-22");
-                timeSelector.show();
+                if(isUserLogin){
+                    TimeSelector timeSelector = new TimeSelector(this, new TimeSelector.ResultHandler() {
+                        @Override
+                        public void handle(String time, Calendar selectedCalendar) {
+                            textview_show_birthday.setText(time);
+                            UserInfoAlertBody body = new UserInfoAlertBody();
+                            body.setBirthday(time);
+                            manager.alertUserInfo(userName, body);
+                        }
+                    }, "1900-11-22");
+                    timeSelector.show();
+                }else{
+                    ToastSingleShow.showText(this,"未登录,登录后操作");
+                }
+
 
                 break;
             case R.id.layout_user_header_image:

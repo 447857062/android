@@ -212,10 +212,7 @@ public class DeviceManager implements LocalConnecteListener {
                         );
                     }
                 } else if (response.code() == 403) {
-                    int errorcode = deviceOperationResponse.getErrcode();
-                    if (errorcode == 100006) {
-                        ToastSingleShow.showText(mContext, "没有授权,请让第一次添加此设备的用户给你授权");
-                    }
+                    ToastSingleShow.showText(mContext, "没有授权,请让第一次添加此设备的用户给你授权");
                 }
             }
 
@@ -225,6 +222,7 @@ public class DeviceManager implements LocalConnecteListener {
             }
         });
     }
+
     public void addVirtualDeviceHttp(VirtualDeviceAddBody device) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
@@ -331,6 +329,7 @@ public class DeviceManager implements LocalConnecteListener {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());

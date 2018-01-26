@@ -14,12 +14,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null" />
-        <ImageView
-            android:background="@drawable/nodoorbellrecord"
-            android:visibility="gone"
-            android:id="@+id/imageview_novisitor"
+        <RelativeLayout
+            android:id="@+id/layout_no_visitor"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:visibility="gone"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:background="@drawable/nodoorbellrecord"
+                android:id="@+id/imageview_novisitor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:layout_marginTop="10dp"
+                android:text="没有访问记录"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/imageview_novisitor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
     </FrameLayout>
 
 

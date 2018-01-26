@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.util.Perfence;
 
 
 /**
@@ -26,7 +26,6 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
     private Context mContext;
     private Button btn_sure;
     private Button btn_cancel;
-
     private TextView textview_unbind_device_type;
     private onSureBtnClickListener mOnSureBtnClickListener;
     private EditText edittext_input_password;

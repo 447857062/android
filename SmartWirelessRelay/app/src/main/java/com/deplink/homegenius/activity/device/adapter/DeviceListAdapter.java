@@ -24,7 +24,7 @@ public class DeviceListAdapter extends BaseAdapter {
     private List<GatwayDevice> listTop = null;
     private List<SmartDev> listBottom = null;
     private Context mContext;
-    private final int TOP_ITEM = 0, BOTTOM_ITEM = 1, TYPE_COUNT = 2;
+    private final int TOP_ITEM = 0;
     /**
      * 头部列表数据的大小
      */
@@ -102,7 +102,7 @@ public class DeviceListAdapter extends BaseAdapter {
      */
     @Override
     public int getViewTypeCount() {
-        return TYPE_COUNT;
+        return 2;
     }
 
     /**
@@ -112,6 +112,7 @@ public class DeviceListAdapter extends BaseAdapter {
      **/
     @Override
     public int getItemViewType(int position) {
+        int BOTTOM_ITEM = 1;
         if (position < TopCount)
             return TOP_ITEM;
         else
@@ -191,6 +192,11 @@ public class DeviceListAdapter extends BaseAdapter {
                 deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
+            if(deviceStatu.equalsIgnoreCase("在线")){
+                viewHolder.textview_device_status.setBackgroundResource(R.drawable.blue);
+            }else{
+                viewHolder.textview_device_status.setBackgroundResource(R.drawable.gray);
+            }
             viewHolder.textview_device_status.setText(deviceStatu);
             getDeviceTypeImage(viewHolder, deviceType, position);
         }

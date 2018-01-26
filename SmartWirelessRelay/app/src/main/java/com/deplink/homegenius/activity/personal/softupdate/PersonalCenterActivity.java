@@ -179,8 +179,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                                     ToastSingleShow.showText(PersonalCenterActivity.this,"已是最新版本");
                                 }
                             }
-
-
                         break;
                 }
             }
@@ -208,8 +206,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void onGetUserInfouccess(String info) {
                 super.onGetUserInfouccess(info);
                 Gson gson = new Gson();
-                UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
-                user_nickname.setText(responseInfo.getNickname());
+                if(!info.equalsIgnoreCase("[]")){
+                    UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
+                    user_nickname.setText(responseInfo.getNickname());
+                }
             }
 
             @Override
@@ -217,7 +217,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 switch (action){
                     case LOGOUT:
                         Log.i(TAG, "退出登录失败");
-
                         ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败，请检查网络连接");
                         break;
                 }

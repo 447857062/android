@@ -142,12 +142,12 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         if(isUserLogin){
             Intent intentQrcodeSn = new Intent(AddDeviceQRcodeActivity.this, CaptureActivity.class);
             intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
+            intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_QRCODE);
             Intent intentEditDeviceMessage = new Intent(AddDeviceQRcodeActivity.this, AddDeviceNameActivity.class);
             List<SmartDev> mRemotecontrol = new ArrayList<>();
             switch (mDeviceTypes.get(position)) {
                 case DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY:
-                    startActivityForResult(intentQrcodeSn, REQUEST_ADD_GETWAY);
+                    startActivityForResult(intentQrcodeSn, REQUEST_ADD_GETWAY_OR_ROUTER);
                     break;
                 case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                     startActivityForResult(intentQrcodeSn, REQUEST_ADD_INFRAED_UNIVERSAL_RC);
@@ -164,7 +164,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     }
                     break;
                 case DeviceTypeConstant.TYPE.TYPE_ROUTER:
-                    startActivityForResult(intentQrcodeSn, REQUEST_ADD_ROUTER);
+                    startActivityForResult(intentQrcodeSn, REQUEST_ADD_GETWAY_OR_ROUTER);
                     break;
                 case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                     RemoteControlManager.getInstance().setCurrentActionIsAddDevice(true);
@@ -197,7 +197,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     break;
                 default:
                     //智能门锁，等没有在case中的设备
-                    startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_SN);
+                    startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_QRCODE);
                     break;
             }
         }else{
@@ -205,13 +205,12 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
         }
     }
 
-    public final static int REQUEST_CODE_DEVICE_SN = 1;
+    public final static int REQUEST_CODE_DEVICE_QRCODE = 1;
     /**
      * 红外万能遥控
      */
     public final static int REQUEST_ADD_INFRAED_UNIVERSAL_RC = 3;
-    public final static int REQUEST_ADD_ROUTER = 4;
-    public final static int REQUEST_ADD_GETWAY = 5;
+    public final static int REQUEST_ADD_GETWAY_OR_ROUTER = 5;
 
     @Override
     public void onClick(View v) {
@@ -221,8 +220,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     Intent intentQrcodeSn = new Intent();
                     intentQrcodeSn.setClass(AddDeviceQRcodeActivity.this, CaptureActivity.class);
                     intentQrcodeSn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_SN);
-                    startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_SN);
+                    intentQrcodeSn.putExtra("requestType", REQUEST_CODE_DEVICE_QRCODE);
+                    startActivityForResult(intentQrcodeSn, REQUEST_CODE_DEVICE_QRCODE);
                 }else{
                     ToastSingleShow.showText(AddDeviceQRcodeActivity.this,"未登录,登录后操作");
                 }
@@ -243,7 +242,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
             String qrCodeResult = data.getStringExtra("deviceSN");
             Log.i(TAG, "二维码扫码结果=" + qrCodeResult);
             switch (requestCode) {
-                case REQUEST_CODE_DEVICE_SN:
+                case REQUEST_CODE_DEVICE_QRCODE:
                     if (qrCodeResult.contains("SMART_LOCK")) {
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LOCK);
@@ -252,12 +251,19 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
                         startActivity(intent);
-                    } else if (qrCodeResult.contains("YWLIGHTCONTROL")) {
+                    }
+                    else if (qrCodeResult.contains("YWLIGHTCONTROL")) {
                         intent.putExtra("currentAddDevice", qrCodeResult);
                         intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_LIGHT);
                         startActivity(intent);
-                    } else {
-
+                    }
+                    else if (qrCodeResult.contains("IRMOTE_V2")) {
+                        intent.putExtra("currentAddDevice", qrCodeResult);
+                        intent.putExtra("DeviceType", "IRMOTE_V2");
+                        startActivity(intent);
+                    }
+                    else {
+                    ToastSingleShow.showText(AddDeviceQRcodeActivity.this,"不支持的设备");
                     }
                     break;
                 case REQUEST_ADD_INFRAED_UNIVERSAL_RC:
@@ -266,13 +272,8 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     intent.putExtra("DeviceType", "IRMOTE_V2");
                     startActivity(intent);
                     break;
-                case REQUEST_ADD_ROUTER:
-                    //添加路由器
-                    intent.putExtra("currentAddDevice", qrCodeResult);
-                    intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
-                    startActivity(intent);
-                    break;
-                case REQUEST_ADD_GETWAY:
+                case REQUEST_ADD_GETWAY_OR_ROUTER:
+                    //添加路由器,网关
                     intent.putExtra("currentAddDevice", qrCodeResult);
                     intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY);
                     startActivity(intent);

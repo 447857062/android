@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_password"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -197,7 +197,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_mtu"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 

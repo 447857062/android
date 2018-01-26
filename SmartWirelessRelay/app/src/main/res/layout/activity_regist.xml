@@ -64,7 +64,7 @@
         android:layout_below="@+id/layout_input_phone_number_outer"
         android:layout_marginLeft="@dimen/input_layout_marginleft_right"
         android:layout_marginRight="@dimen/input_layout_marginleft_right"
-        android:layout_marginTop="@dimen/password_layout_margin_account_top">
+        android:layout_marginTop="15dp">
 
         <RelativeLayout
             android:id="@+id/layout_verification_code_inner"
@@ -89,6 +89,7 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="请输入验证码"
+                android:inputType="number"
                 android:textSize="@dimen/text_size_small"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white_alpha60" />

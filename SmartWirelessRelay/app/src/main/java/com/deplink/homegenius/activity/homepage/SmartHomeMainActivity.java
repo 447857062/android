@@ -190,7 +190,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     @Override
     public void responseQueryResultHttps(List<Room> result) {
-        Log.i(TAG,"主页获取到房间列表="+result);
+        Log.i(TAG, "主页获取到房间列表=" + result);
         Message msg = Message.obtain();
         msg.what = MSG_GET_ROOM;
         mHandler.sendMessage(msg);
@@ -375,7 +375,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     private void initDatas() {
-        Intent bindIntent = new Intent(this, LocalConnectService.class);
+        Intent bindIntent = new Intent(SmartHomeMainActivity.this, LocalConnectService.class);
         startService(bindIntent);
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
         mRoomManager = RoomManager.getInstance();
@@ -518,6 +518,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         mRoomManager.removeRoomListener(this);
+        manager.removeEventCallback(ec);
     }
 
     /**

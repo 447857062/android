@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.constant.RoomConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
@@ -116,7 +118,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private RemoteControlManager mRemoteControlManager;
     private RemoteControlListener mRemoteControlListener;
     private DoorbeelManager mDoorbeelManager;
-
+    private RelativeLayout layout_title;
+    private RelativeLayout layout_root;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +128,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         initDatas();
         initEvents();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -252,6 +254,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             }
         });
         initMqttCallback();
+        initListener();
+    }
+
+    private void initListener() {
         mDeviceListener = new DeviceListener() {
             @Override
             public void responseQueryResult(String result) {
@@ -439,6 +445,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         textview_room = findViewById(R.id.textview_room);
         textview_mine = findViewById(R.id.textview_mine);
         textview_room_name = findViewById(R.id.textview_room_name);
+        layout_root = findViewById(R.id.layout_root);
+        layout_title = findViewById(R.id.layout_title);
     }
 
     @Override
@@ -472,24 +480,69 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 datasTop.clear();
                 datasBottom.clear();
                 if (mRooms.get(position).equals("全部")) {
+                    layout_root.setBackgroundResource(R.drawable.equipmentbackground);
+                    layout_title.setBackgroundResource(R.color.title_blue_bg);
+                    layout_title.setAlpha((float) 0.9);
                     datasTop.addAll(GetwayManager.getInstance().getAllGetwayDevice());
                     datasBottom.addAll(DataSupport.findAll(SmartDev.class, true));
                     mDeviceAdapter.setTopList(datasTop);
                     mDeviceAdapter.setBottomList(datasBottom);
                 } else {
                     Room room = mRoomManager.findRoom(mRooms.get(position), true);
+                    setRoomBg(room);
                     //使用数据库中的数据
                     datasTop.addAll(room.getmGetwayDevices());
                     datasBottom.addAll(room.getmDevices());
                     mDeviceAdapter.setTopList(datasTop);
                     mDeviceAdapter.setBottomList(datasBottom);
                 }
+
                 mDeviceAdapter.notifyDataSetChanged();
                 textview_room_name.setText(mRooms.get(position));
                 roomTypeDialog.dismiss();
             }
         });
         roomTypeDialog.show();
+    }
+    private void setRoomBg(Room room) {
+        String roomType=room.getRoomType();
+        switch (roomType){
+            case RoomConstant.ROOMTYPE.TYPE_LIVING:
+                layout_root.setBackgroundResource(R.drawable.livingroombackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_BED:
+                layout_root.setBackgroundResource(R.drawable.bedroombackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_KITCHEN:
+                layout_root.setBackgroundResource(R.drawable.kitchenbackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_STUDY:
+                layout_root.setBackgroundResource(R.drawable.studybackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_STORAGE:
+                layout_root.setBackgroundResource(R.drawable.storageroom);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_TOILET:
+                layout_root.setBackgroundResource(R.drawable.toiletbackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_DINING:
+                layout_root.setBackgroundResource(R.drawable.diningroombackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+        }
     }
 
 

@@ -14,13 +14,8 @@ import java.util.ArrayList;
 public class UdpPacket implements OnRecvListener {
 
     public static final String TAG = "UdpPacket";
-
-
     UdpComm netUdp;
-
-
     private OnRecvListener listener;
-
     //发送网络包队列
     public static ArrayList<BasicPacket> sendNetPakcetList;
 
@@ -149,21 +144,13 @@ public class UdpPacket implements OnRecvListener {
                                         delOneSendPacket(sendNetPakcetList, tmp);
                                         break;
                                     case OneDev.ConnTypeLocal:
-
                                         try {
                                             tmp.ip = InetAddress.getByName("255.255.255.255");
                                             tmp.port =  EllESDK_DEF.LocalConPort;
-                                            Log.i(TAG,"udppacket 170");
                                             netUdp.sendData(tmp.getUdpData(tmp.ip, tmp.port));
                                         } catch (UnknownHostException e) {
                                             e.printStackTrace();
                                         }
-                                        break;
-                                    case OneDev.ConnTypeRemote:
-                                        tmp.ip = dev.remoteIP;
-                                        tmp.port = EllESDK_DEF.RemoteConPort;
-                                        Log.i(TAG,"udppacket 179");
-                                        netUdp.sendData(tmp.getUdpData(tmp.ip, tmp.port));
                                         break;
                                 }
                             } else {
@@ -176,10 +163,6 @@ public class UdpPacket implements OnRecvListener {
                                     } catch (UnknownHostException e) {
                                         e.printStackTrace();
                                     }
-                                } else {
-                                    if (tmp.listener != null)
-                                        tmp.listener.OnRecvData(tmp);
-                                    delOneSendPacket(sendNetPakcetList, tmp);
                                 }
 
 
