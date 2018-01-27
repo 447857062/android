@@ -142,7 +142,7 @@ public class RestfulToolsHomeGenius {
             }
             return null;
         }
-        Log.i(TAG, "deleteDevice:" + username);
+        Log.i(TAG, "deleteDevice:" + username+"file name="+file);
         Call<DeviceOperationResponse> call = apiService.deleteDoorBellVisitorImage(
                 username,
                 uid,
