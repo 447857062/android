@@ -39,6 +39,7 @@ import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdap
 import com.deplink.homegenius.activity.homepage.adapter.HomepageGridViewAdapter;
 import com.deplink.homegenius.activity.homepage.adapter.HomepageRoomShowTypeChangedViewAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.DeviceNumberActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
@@ -49,6 +50,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.scrollview.NonScrollableListView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -269,7 +271,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             mHandler.sendMessage(message);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
@@ -299,7 +300,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             mHandler.sendMessage(message);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
 
@@ -373,7 +373,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         manager.removeEventCallback(ec);
         manager.onDestroy();
     }
-
+    private DeleteDeviceDialog connectLostDialog;
     private void initDatas() {
         Intent bindIntent = new Intent(SmartHomeMainActivity.this, LocalConnectService.class);
         startService(bindIntent);
@@ -393,6 +393,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         mExperienceCenterDeviceList.add(oneDevice);
         mExperienceCenterListAdapter = new ExperienceCenterListAdapter(this, mExperienceCenterDeviceList);
         listview_experience_center.setOnItemClickListener(mExperienceCenterListClickListener);
+        connectLostDialog = new DeleteDeviceDialog(SmartHomeMainActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(SmartHomeMainActivity.this, LoginActivity.class));
+            }
+        });
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
@@ -434,9 +441,15 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
+
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isLogin=false;
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
+        Perfence.setContext(getApplicationContext());
         String phoneNumber = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         String password = Perfence.getPerfence(Perfence.USER_PASSWORD);
         Log.i(TAG, "phoneNumber=" + phoneNumber + "password=" + password);

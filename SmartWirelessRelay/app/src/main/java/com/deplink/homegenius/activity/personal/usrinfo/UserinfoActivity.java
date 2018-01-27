@@ -22,7 +22,7 @@ import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.bitmap.BitmapHandler;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.PictureSelectDialog;
 import com.deplink.homegenius.view.dialog.SexSelectDialog;
 import com.deplink.homegenius.view.imageview.CircleImageView;
@@ -60,7 +60,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     private TextView textview_show_nicknamke;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private SexSelectDialog mSexDialog;
 
     @Override
@@ -76,8 +76,8 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         textview_title.setText("个人信息");
         mSexDialog = new SexSelectDialog(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(UserinfoActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(UserinfoActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(UserinfoActivity.this, LoginActivity.class));
@@ -133,7 +133,7 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

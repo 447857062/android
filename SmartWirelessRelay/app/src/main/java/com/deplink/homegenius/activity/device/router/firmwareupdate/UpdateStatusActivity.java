@@ -9,14 +9,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -31,7 +31,7 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     private TextView textview_updateing;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_title;
     private FrameLayout image_back;
@@ -57,8 +57,8 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
         textview_title.setText("固件升级");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
-        connectLostDialog = new MakeSureDialog(UpdateStatusActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(UpdateStatusActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(UpdateStatusActivity.this, LoginActivity.class));
@@ -125,9 +125,10 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

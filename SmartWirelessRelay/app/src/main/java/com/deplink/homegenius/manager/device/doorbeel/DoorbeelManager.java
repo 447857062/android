@@ -246,6 +246,7 @@ public class DoorbeelManager {
         if (uid != null) {
             device.setUid(uid);
         }
+        
         RestfulToolsHomeGenius.getSingleton().deleteDoorBellVisitor(userName, uid, file, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {

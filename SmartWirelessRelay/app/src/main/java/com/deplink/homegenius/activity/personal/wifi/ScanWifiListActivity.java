@@ -23,7 +23,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -57,7 +57,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
     private boolean isLogin;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private DeviceListener mDeviceListener;
 
     @Override
@@ -158,8 +158,8 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
         if (!isShowSkipOption) {
             textview_edit.setVisibility(View.GONE);
         }
-        connectLostDialog = new MakeSureDialog(ScanWifiListActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(ScanWifiListActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(ScanWifiListActivity.this, LoginActivity.class));
@@ -195,7 +195,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                 isLogin = false;
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
 
             @Override

@@ -57,7 +57,7 @@ public class VisitorListAdapter extends BaseSwipListAdapter {
             vh = (ViewHolder) convertView.getTag();
         }
         try {
-            if(mListDataImage.size()>0 && mListDataImage.get(position)!=null){
+            if(mListDataImage.size()>0 && position-1<=mListDataImage.size()){
                 vh.image_snap.setImageBitmap(mListDataImage.get(position));
             }
         } catch (Exception e) {

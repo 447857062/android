@@ -26,7 +26,7 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.DateUtil;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -62,7 +62,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private boolean isLogin;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private DeviceManager mDeviceManager;
     private ArrayList<String> mRecordListId;
 
@@ -104,8 +104,8 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             }
         }
         recordAdapter = new LockHistoryAdapter(this, mRecordList);
-        connectLostDialog = new MakeSureDialog(LockHistoryActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(LockHistoryActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(LockHistoryActivity.this, LoginActivity.class));
@@ -141,7 +141,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 isLogin = false;
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

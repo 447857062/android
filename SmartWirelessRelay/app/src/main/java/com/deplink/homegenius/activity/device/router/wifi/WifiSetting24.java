@@ -21,6 +21,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -74,7 +75,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
      * wifi名称密码设置成功，后面要重启了
      */
     private static final int MSG_LOCAL_OP_RETURN_OK = 1;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_edit;
     private HomeGenius mHomeGenius;
@@ -95,8 +96,8 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(WifiSetting24.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(WifiSetting24.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(WifiSetting24.this, LoginActivity.class));
@@ -149,7 +150,7 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
 

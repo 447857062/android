@@ -62,12 +62,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="选择房间:" />
+                android:text="选择房间" />
 
             <TextView
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/imageview_roomname_arror_right"
                 android:text="全部"
+                android:textColor="@color/huise"
                 android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
                 android:gravity="center_vertical"
                 android:id="@+id/textview_select_room_name"

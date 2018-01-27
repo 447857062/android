@@ -15,15 +15,15 @@ import android.widget.TextView;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.adapter.GridViewAdapter;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.gridview.DragGridView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -59,7 +59,7 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
     private SDKManager manager;
     private EventCallback ec;
     private boolean isUserLogin;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -84,8 +84,8 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
     }
     private void initMqttCallback() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(RoomActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(RoomActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(RoomActivity.this, LoginActivity.class));
@@ -119,7 +119,7 @@ public class RoomActivity extends Activity implements View.OnClickListener, Room
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

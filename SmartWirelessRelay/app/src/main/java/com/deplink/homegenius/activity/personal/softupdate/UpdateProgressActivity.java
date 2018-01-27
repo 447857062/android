@@ -18,7 +18,7 @@ import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.personal.softupdate.download.UpdateService;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -32,7 +32,7 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
     private TextView textview_updateing;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     /**
      * 在线升级的广播接收器，状态和进度
      */
@@ -90,8 +90,8 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
     private void initDatas() {
         textview_title.setText("软件升级");
         manager = DeplinkSDK.getSDKManager();
-        connectLostDialog = new MakeSureDialog(UpdateProgressActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(UpdateProgressActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(UpdateProgressActivity.this, LoginActivity.class));
@@ -149,7 +149,7 @@ public class UpdateProgressActivity extends Activity implements View.OnClickList
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
 
             }
         };

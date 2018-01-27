@@ -32,6 +32,8 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushManager;
 
 import org.litepal.crud.DataSupport;
 
@@ -110,6 +112,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                             DataSupport.deleteAll(Room.class);
                             DataSupport.deleteAll(Record.class);
                             DataSupport.deleteAll(Router.class);
+
                         }
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
@@ -117,7 +120,33 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                         startActivity(new Intent(LoginActivity.this, SmartHomeMainActivity.class));
                         DialogLoading.hideLoading();
                         LoginActivity.this.finish();
-                        Log.i(TAG, "onSuccess login");
+
+                        Perfence.setContext(getApplicationContext());
+                        String uuid= manager.getUserInfo().getUuid();
+                        Log.i(TAG, "点击登录 onSuccess login uuid="+uuid);
+                        XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
+                            @Override
+                            public void onSuccess(Object data, int i) {
+                                Log.i("TPush", "注册成功，设备token为：" + data);
+                            }
+
+                            @Override
+                            public void onFail(Object o, int i, String s) {
+
+                            }
+                        });
+                        if(!uuid.equalsIgnoreCase("")){
+                            XGPushManager.registerPush(getApplicationContext(),uuid,new XGIOperateCallback() {
+                                @Override
+                                public void onSuccess(Object data, int flag) {
+                                    Log.i("TPush", "注册成功，设备token为：" + data);
+                                }
+                                @Override
+                                public void onFail(Object data, int errCode, String msg) {
+                                    Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
+                                }
+                            });
+                        }
                         break;
                     default:
                         break;

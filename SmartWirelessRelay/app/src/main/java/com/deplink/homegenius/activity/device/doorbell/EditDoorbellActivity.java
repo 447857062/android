@@ -30,7 +30,6 @@ import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -59,7 +58,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     private boolean isUserLogin;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private TextView textview_select_room_name;
     private boolean isStartFromExperience;
     private String devicename;
@@ -142,8 +141,8 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     private void initMqtt() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
-        connectLostDialog = new MakeSureDialog(EditDoorbellActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(EditDoorbellActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(EditDoorbellActivity.this, LoginActivity.class));
@@ -168,11 +167,12 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
+
                 isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
 
             @Override
@@ -235,7 +235,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 case MSG_ALERT_DEVICENAME_RESULT:
                     Log.i(TAG, "修改设备名称 handler msg");
                     mDoorbeelManager.updateDoorbeelName(devicename);
-                    startActivity(new Intent(EditDoorbellActivity.this, VistorHistoryActivity.class));
+                    startActivity(new Intent(EditDoorbellActivity.this, DoorbeelMainActivity.class));
                     break;
                 case MSG_ALERT_DEVICEROOM_RESULT:
                     Log.i(TAG, "修改设备房间 handler msg");

@@ -33,7 +33,6 @@ import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -73,7 +72,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private String deviceName;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private boolean isLogin;
     private RoomManager mRoomManager;
     private String selectGetwayName;
@@ -103,8 +102,8 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         textview_edit.setText("完成");
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this);
-        connectLostDialog = new MakeSureDialog(RemoteControlActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(RemoteControlActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(RemoteControlActivity.this, LoginActivity.class));
@@ -156,10 +155,11 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 isLogin = false;
+
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         mDeviceListener = new DeviceListener() {

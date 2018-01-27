@@ -15,7 +15,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
-import com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity;
+import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
 import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -126,7 +126,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_MENLING:
                             DoorbeelManager.getInstance().setCurrentSelectedDoorbeel(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DeviceNumberActivity.this, VistorHistoryActivity.class));
+                            startActivity(new Intent(DeviceNumberActivity.this, DoorbeelMainActivity.class));
                             break;
                         case "IRMOTE_V2":
                         case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:

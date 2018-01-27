@@ -29,7 +29,6 @@ import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenu;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuCreator;
@@ -91,7 +90,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private BlackListAdapter mBlackListAdapter;
     private RelativeLayout layout_blak_list;
     private RelativeLayout layout_connected_devices;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private TextView textview_show_query_device_result;
     private SDKManager manager;
     private EventCallback ec;
@@ -336,8 +335,8 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         if (isStartFromExperience) {
 
         } else {
-            connectLostDialog = new MakeSureDialog(RouterMainActivity.this);
-            connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+            connectLostDialog = new DeleteDeviceDialog(RouterMainActivity.this);
+            connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                 @Override
                 public void onSureBtnClicked() {
                     startActivity(new Intent(RouterMainActivity.this, LoginActivity.class));
@@ -363,11 +362,12 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     super.connectionLost(throwable);
                     mConnectedDevices.clear();
                     mAdapter.notifyDataSetChanged();
+
                     isUserLogin = false;
                     Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                     connectLostDialog.show();
                     connectLostDialog.setTitleText("账号异地登录");
-                    connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                    connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
                 }
 
                 @Override

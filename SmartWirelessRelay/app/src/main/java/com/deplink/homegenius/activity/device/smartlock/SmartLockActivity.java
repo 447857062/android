@@ -28,7 +28,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.smartlock.AuthoriseDialog;
 import com.deplink.homegenius.view.dialog.smartlock.LockdeviceClearRecordDialog;
 import com.deplink.homegenius.view.dialog.smartlock.PasswordNotsaveDialog;
@@ -68,7 +68,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
     private boolean isLogin;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private DeviceManager mDeviceManager;
     private long currentTime;
     @Override
@@ -85,8 +85,8 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         mSmartLockManager.InitSmartLockManager(this);
         saveManagetPasswordExperience = true;
         clearRecordDialog = new LockdeviceClearRecordDialog(this);
-        connectLostDialog = new MakeSureDialog(SmartLockActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(SmartLockActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(SmartLockActivity.this, LoginActivity.class));
@@ -175,7 +175,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 isLogin = false;
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

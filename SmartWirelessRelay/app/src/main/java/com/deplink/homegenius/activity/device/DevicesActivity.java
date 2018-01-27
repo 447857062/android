@@ -22,7 +22,7 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
-import com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity;
+import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
 import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -36,8 +36,8 @@ import com.deplink.homegenius.activity.device.smartSwitch.SwitchThreeActivity;
 import com.deplink.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
@@ -56,7 +56,7 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -112,7 +112,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private SDKManager manager;
     private EventCallback ec;
     private DeviceListener mDeviceListener;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private boolean isUserLogin;
     private GetwayManager mGetwayManager;
     private RemoteControlManager mRemoteControlManager;
@@ -239,7 +239,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_MENLING:
                             mDoorbeelManager.setCurrentSelectedDoorbeel(datasBottom.get(position - datasTop.size()));
-                            startActivity(new Intent(DevicesActivity.this, VistorHistoryActivity.class));
+                            startActivity(new Intent(DevicesActivity.this, DoorbeelMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_LIGHT:
                             SmartLightManager.getInstance().setCurrentSelectLight(datasBottom.get(position - datasTop.size()));
@@ -326,8 +326,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
     private void initMqttCallback() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(DevicesActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(DevicesActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(DevicesActivity.this, LoginActivity.class));
@@ -371,7 +371,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

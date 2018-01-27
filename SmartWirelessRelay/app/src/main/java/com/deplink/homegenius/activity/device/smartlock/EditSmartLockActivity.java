@@ -34,7 +34,6 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -80,7 +79,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private boolean isLogin;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,8 +180,8 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 action = "";
             }
         };
-        connectLostDialog = new MakeSureDialog(EditSmartLockActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(EditSmartLockActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(EditSmartLockActivity.this, LoginActivity.class));
@@ -218,7 +217,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         if(getIntent().getBooleanExtra("isupdateroom",false)){

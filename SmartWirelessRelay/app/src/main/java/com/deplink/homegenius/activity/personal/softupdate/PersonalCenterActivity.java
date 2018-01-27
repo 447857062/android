@@ -28,7 +28,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.util.APKVersionCodeUtils;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.ConfirmDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.imageview.CircleImageView;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -63,7 +63,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private TextView textview_mine;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private boolean isUserLogin;
     private boolean hasGetUserImage;
     private ConfirmDialog mLogoutDialog;
@@ -142,8 +142,8 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     }
     private void initDatas() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(PersonalCenterActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(PersonalCenterActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
@@ -157,6 +157,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void onSuccess(SDKAction action) {
                 switch (action){
                     case LOGOUT:
+
                         Perfence.setPerfence(AppConstant.USER_LOGIN,false);
                         startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
                         break;
@@ -229,7 +230,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

@@ -19,6 +19,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
@@ -77,7 +78,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     private int channel = 1;
     private String userName = "";
     private String password = "";
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private TextView button_reload_wifirelay;
     private HomeGenius mHomeGenius;
     private Handler mHandler = new Handler() {
@@ -106,8 +107,8 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         textview_title.setText("无线中继");
         mRouterManager = RouterManager.getInstance();
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(WirelessRelayActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(WirelessRelayActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(WirelessRelayActivity.this, LoginActivity.class));
@@ -145,9 +146,10 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         mqttSetWanDialogNoPassword = new MakeSureDialog(WirelessRelayActivity.this);

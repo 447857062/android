@@ -24,7 +24,6 @@ import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -63,7 +62,7 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
     private SDKManager manager;
     private EventCallback ec;
     private boolean isUserLogin;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private boolean isOnActivityResult;
     private boolean isStartFromExperience;
     private String deviceType;
@@ -126,14 +125,17 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
         listview_select_remotecontrol.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                action="alertBindedRemoteControl";
-                currentSelectRemotecontrol = mRemoteControls.get(position);
-                selectRemotecontrolName = mRemoteControls.get(position).getName();
-                textview_select_remotecontrol_name.setText(selectRemotecontrolName);
-                layout_remotecontrol_list.setVisibility(View.GONE);
-                imageview_remotecontrol_arror_right.setImageResource(R.drawable.directionicon);
-                deviceUid=mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-                mRemoteControlManager.alertVirtualDevice(deviceUid,null,null,currentSelectRemotecontrol.getUid());
+                if(!isStartFromExperience){
+                    action="alertBindedRemoteControl";
+                    currentSelectRemotecontrol = mRemoteControls.get(position);
+                    selectRemotecontrolName = mRemoteControls.get(position).getName();
+                    textview_select_remotecontrol_name.setText(selectRemotecontrolName);
+                    layout_remotecontrol_list.setVisibility(View.GONE);
+                    imageview_remotecontrol_arror_right.setImageResource(R.drawable.directionicon);
+                    deviceUid=mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+                    mRemoteControlManager.alertVirtualDevice(deviceUid,null,null,currentSelectRemotecontrol.getUid());
+                }
+
             }
         });
         initMqttCallback();
@@ -201,8 +203,8 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
 
     private void initMqttCallback() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(EditRemoteDevicesActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(EditRemoteDevicesActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(EditRemoteDevicesActivity.this, LoginActivity.class));
@@ -232,11 +234,12 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
+
                 isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

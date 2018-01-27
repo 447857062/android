@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,8 +21,6 @@ import com.deplink.homegenius.manager.device.doorbeel.DoorBellListener;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
-import com.deplink.homegenius.view.dialog.doorbeel.Doorbeel_menu_Dialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenu;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuCreator;
@@ -47,10 +44,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private static final String TAG = "VistorHistoryActivity";
     private TextView textview_title;
     private FrameLayout image_back;
-    private FrameLayout frame_setting;
     private DoorbeelManager mDoorbeelManager;
-    private ImageView image_setting;
-    private Doorbeel_menu_Dialog doorbeelMenuDialog;
     private SwipeMenuListView listview_vistor_list;
     private boolean isStartFromExperience;
     private List<DoorBellItem> visitorList;
@@ -60,11 +54,12 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_no_visitor;
     private Timer refreshTimer = null;
     private TimerTask refreshTask = null;
-    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 3000;
+    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 5000;
     private SDKManager manager;
     private EventCallback ec;
     private boolean isUserLogin;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
+    private TextView textview_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +129,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        frame_setting.setOnClickListener(this);
+        textview_edit.setOnClickListener(this);
         if (!isStartFromExperience) {
             listview_vistor_list.setAdapter(mAdapter);
             SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -215,18 +210,16 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private AdapterView.OnItemClickListener deviceItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-            Intent intent = new Intent(VistorHistoryActivity.this, DoorbeelMainActivity.class);
-            intent.putExtra("file", visitorList.get(position).getFile());
-            startActivity(intent);
+           // Intent intent = new Intent(VistorHistoryActivity.this, DoorbeelMainActivity.class);
+           // intent.putExtra("file", visitorList.get(position).getFile());
+           // startActivity(intent);
         }
     };
-
+    private int count;
     private void initDatas() {
         textview_title.setText("访客记录");
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDoorbeelManager.InitDoorbeelManager(this);
-        image_setting.setImageResource(R.drawable.menuicon);
-        doorbeelMenuDialog = new Doorbeel_menu_Dialog(this);
         visitorList = new ArrayList<>();
         visitorListImage = new ArrayList<>();
         mDoorBellListener = new DoorBellListener() {
@@ -254,6 +247,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
                 if (count < visitorList.size()) {
                     visitorListImage.add(bitmap);
                 }
+
                 mAdapter.notifyDataSetChanged();
 
             }
@@ -261,8 +255,8 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
         mAdapter = new VisitorListAdapter(this, visitorList, visitorListImage);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
-        connectLostDialog = new MakeSureDialog(VistorHistoryActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(VistorHistoryActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(VistorHistoryActivity.this, LoginActivity.class));
@@ -288,11 +282,12 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 mAdapter.notifyDataSetChanged();
+
                 isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
 
             @Override
@@ -304,8 +299,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
         image_back = findViewById(R.id.image_back);
-        image_setting = findViewById(R.id.image_setting);
-        frame_setting = findViewById(R.id.frame_setting);
+        textview_edit = findViewById(R.id.textview_edit);
         listview_vistor_list = findViewById(R.id.listview_vistor_list);
         layout_no_visitor = findViewById(R.id.layout_no_visitor);
     }
@@ -316,8 +310,9 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             case R.id.image_back:
                 onBackPressed();
                 break;
-            case R.id.frame_setting:
-                doorbeelMenuDialog.show();
+            case R.id.textview_edit:
+                //TODO 清除所有的记录
+
                 break;
         }
     }
