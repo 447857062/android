@@ -76,7 +76,7 @@ public interface RestfulHomeGeniusServer {
     //删除设备
     @DELETE("/user/{user_name}/devices/{uid}")
     Call<DeviceOperationResponse> deleteDevice(@Path("user_name") String user_name,@Path("uid") String uid ,@Header("token") String token);
-    @DELETE("/user/{user_name}/doorbell/{device_uid}/sanpshot/{file}")
+    @DELETE("/user/{user_name}/doorbell/{device_uid}/snapshot/{file}")
     Call<DeviceOperationResponse> deleteDoorBellVisitorImage(
             @Path("user_name") String user_name,
             @Path("device_uid") String device_uid ,
