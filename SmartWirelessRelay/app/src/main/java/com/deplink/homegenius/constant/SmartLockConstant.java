@@ -43,6 +43,7 @@ public  class SmartLockConstant {
         String ONCE = "Once";
         String PERMANENT = "Perpetual";
         String TIMELIMIT = "Time-limited";
+        String QUERY = "query";
 
     }
 }

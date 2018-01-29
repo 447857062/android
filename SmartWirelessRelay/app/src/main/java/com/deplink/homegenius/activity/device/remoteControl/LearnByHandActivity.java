@@ -1,12 +1,14 @@
 package com.deplink.homegenius.activity.device.remoteControl;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.AirconditionKeyLearnStatu;
@@ -14,25 +16,38 @@ import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvboxKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvboxLearnStatu;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AirKeyNameConstant;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.TvBoxNameConstant;
 import com.deplink.homegenius.constant.TvKeyNameConstant;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class LearnByHandActivity extends Activity implements View.OnClickListener, RemoteControlListener {
+public class LearnByHandActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "LearnByHandActivity";
     private Button button_cancel;
     private RemoteControlManager mRemoteControlManager;
     private String currentSelectDeviceUid;
-
+    private RemoteControlListener mRemoteControlListener;
+    private Handler mHandler=new Handler();
+    private SDKManager manager;
+    private EventCallback ec;
+    private boolean isUserLogin;
+    private DeleteDeviceDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,43 +58,22 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
     }
 
     private void initDatas() {
+
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, this);
+        mRemoteControlManager.InitRemoteControlManager(this);
         currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        mRemoteControlListener=new RemoteControlListener() {
+            @Override
+            public void responseQueryResult(String result) {
+                super.responseQueryResult(result);
+                Log.i(TAG, "学习结果=" + result);
+                responseLearnResult(result);
+            }
+        };
+        initMqttCallback();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mRemoteControlManager.study();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mRemoteControlManager.removeRemoteControlListener(this);
-    }
-
-    private void initEvents() {
-        button_cancel.setOnClickListener(this);
-    }
-
-    private void initViews() {
-        button_cancel = findViewById(R.id.button_cancel);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_cancel:
-                this.finish();
-                break;
-        }
-    }
-    private Handler mHandler=new Handler();
-    @Override
-    public void responseQueryResult(String result) {
-        Log.i(TAG, "学习结果=" + result);
+    private void responseLearnResult(String result) {
         if (result.contains("Study")) {
             //学习成功
             String currentLearnByHandType = mRemoteControlManager.getCurrentLearnByHandTypeName();
@@ -89,7 +83,6 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
             String codeData = resultQueryOptions.getData();
             Log.i(TAG, "学习结果=" + codeData);
             switch (currentLearnByHandType) {
-
                 case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                     AirconditionKeyCode mAirconditionKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyCode.class);
                     if (mAirconditionKeyCode == null) {
@@ -714,8 +707,6 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
                         case TvKeyNameConstant.KEYNAME.KEYNAME_HOME:
                             mTvKeyCode.setData_key_home(codeData);
                             mTvKeyCode.save();
-                            /*mTvKeyLearnStatu.setKey_h(true);
-                            mTvKeyLearnStatu.saveFast();*/
                             break;
                         case TvKeyNameConstant.KEYNAME.KEYNAME_LEFT:
                             mTvKeyCode.setData_key_left(codeData);
@@ -1214,4 +1205,93 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
             LearnByHandActivity.this.finish();
         }
     }
+
+    private void initMqttCallback() {
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new DeleteDeviceDialog(LearnByHandActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(LearnByHandActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Gson gson=new Gson();
+                OpResult result1=gson.fromJson(result,OpResult.class);
+                if(result1.getOP().equalsIgnoreCase("REPORT")
+                        && result1.getMethod().equalsIgnoreCase("IrmoteV2")
+                        ){
+                    if(result1.getCommand().equalsIgnoreCase("Study")){
+                       responseLearnResult(result);
+                    }
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager.addEventCallback(ec);
+        mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
+        mRemoteControlManager.study();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
+        mRemoteControlManager.stopStudy();
+        mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
+    }
+    private void initEvents() {
+        button_cancel.setOnClickListener(this);
+    }
+
+    private void initViews() {
+        button_cancel = findViewById(R.id.button_cancel);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_cancel:
+                this.finish();
+                break;
+        }
+    }
+
 }

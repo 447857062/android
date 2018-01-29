@@ -2,7 +2,6 @@ package com.deplink.homegenius.activity.device.router.wifi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -24,7 +23,7 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class EncryptTypeActivity extends Activity implements View.OnClickListener{
-
+    private static final String TAG="EncryptTypeActivity";
     private RelativeLayout layout_type_strong;
     private RelativeLayout layout_type_mix;
     private RelativeLayout layout_type_none;
@@ -38,7 +37,7 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
     private String wifiType;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +51,8 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
         textview_title.setText("加密方式");
         textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(EncryptTypeActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(EncryptTypeActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(EncryptTypeActivity.this, LoginActivity.class));
@@ -95,9 +94,10 @@ public class EncryptTypeActivity extends Activity implements View.OnClickListene
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         currentSelectEncryptType = getIntent().getStringExtra(AppConstant.WIFISETTING.WIFI_ENCRYPT_TYPE);

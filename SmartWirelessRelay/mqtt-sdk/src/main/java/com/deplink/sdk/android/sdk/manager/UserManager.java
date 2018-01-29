@@ -13,11 +13,15 @@ import com.deplink.sdk.android.sdk.bean.DeviceRoot;
 import com.deplink.sdk.android.sdk.bean.User;
 import com.deplink.sdk.android.sdk.bean.UserSession;
 import com.deplink.sdk.android.sdk.device.router.BaseDevice;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.interfaces.MqttListener;
 import com.deplink.sdk.android.sdk.interfaces.SDKCoordinator;
 import com.deplink.sdk.android.sdk.json.AppUpdateResponse;
 import com.deplink.sdk.android.sdk.json.ErrorBody;
 import com.deplink.sdk.android.sdk.rest.RestfulTools;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsPng;
 import com.google.gson.Gson;
 
@@ -59,7 +63,6 @@ public class UserManager implements MqttListener {
      * MQTT连接建立
      */
     public void onMQTTConnection() {
-//        MQTTController.getSingleton().subscribe(mUserSession.getTopic_sub().get(0), this);
     }
 
     /**
@@ -156,10 +159,10 @@ public class UserManager implements MqttListener {
         RestfulTools.getSingleton().login(username, password, new Callback<UserSession>() {
             @Override
             public void onResponse(Call<UserSession> call, Response<UserSession> response) {
-                int code = 0;
+                int code;
                 code = response.code();
                 Log.i(TAG, "登录  code=" + code);
-                String error = "", errorJson = "";
+                String error = "";
                 if (code == 200) { //登录成功
                     mUserSession = response.body();
                     Log.i(TAG,"mUserSession:"+mUserSession.toString());
@@ -210,7 +213,7 @@ public class UserManager implements MqttListener {
             public void onResponse(Call<UserSession> call, Response<UserSession> response) {
                 int code = 0;
                 code = response.code();
-                String error = "", errorJson = "";
+                String error = "";
                 Log.i(TAG, "code=" + code);
                 if (code == 200) { //登录成功
                     mSDKCoordinator.notifySuccess(SDKAction.ALERTPASSWORD);
@@ -297,7 +300,7 @@ public class UserManager implements MqttListener {
         RestfulTools.getSingleton().uploadImage(imagePath, new Callback<UserSession>() {
             @Override
             public void onResponse(Call<UserSession> call, Response<UserSession> response) {
-                int code = 0;
+                int code;
                 code = response.code();
                 String error = "";
                 Log.i(TAG, "code=" + code);
@@ -320,7 +323,6 @@ public class UserManager implements MqttListener {
                         Gson gson = new Gson();
                         Log.i(TAG, "code=" + code + response.message() + response.errorBody().string());
                         ErrorBody errorbody = gson.fromJson(response.errorBody().string(), ErrorBody.class);
-
                         mSDKCoordinator.notifyFailure(SDKAction.UPLOADIMAGE, errorbody.getMsg());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -328,7 +330,6 @@ public class UserManager implements MqttListener {
                 } else {
                     mSDKCoordinator.notifyFailure(SDKAction.UPLOADIMAGE, error);
                 }
-
             }
 
             @Override
@@ -349,14 +350,12 @@ public class UserManager implements MqttListener {
      * 用户获取头像
      */
     public void getImage(final String username) {
-        Log.i(TAG, "getImage");
         RestfulToolsPng.getSingleton().getImage(username, new Callback<Bitmap>() {
             @Override
             public void onResponse(Call<Bitmap> call, Response<Bitmap> response) {
-                int code = 0;
+                int code;
                 code = response.code();
-                String error = "", errorJson = "";
-                Log.i(TAG, "code=" + code);
+                String error = "";
                 if (code == 200) {
                     userImages.put(username, response.body());
                     mSDKCoordinator.notifyGetImageSuccess(SDKAction.GETIMAGE, response.body());
@@ -382,14 +381,63 @@ public class UserManager implements MqttListener {
                 } else {
                     mSDKCoordinator.notifyFailure(SDKAction.GETIMAGE, error);
                 }
-
             }
 
             @Override
             public void onFailure(Call<Bitmap> call, Throwable t) {
-                Log.i(TAG, "getImage:" + t.getMessage());
                 String error = "无法访问网络";
                 mSDKCoordinator.notifyFailure(SDKAction.GETIMAGE, error);
+            }
+        });
+    }
+    public void getUserInfo( String username) {
+        Log.i(TAG, "getUserInfo");
+        RestfulToolsHomeGeniusString.getSingleton().readUserInfo(username, new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                int responseCode=response.code();
+                Log.i(TAG,"code="+responseCode);
+                if(response.errorBody()!=null){
+                    try {
+                        Log.i(TAG,"error="+response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(responseCode==200){
+                    Log.i(TAG,"getUserInfo="+response.body());
+                    mSDKCoordinator.homeGeniusGetUserInfo(response.body());
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+    public void alertUserInfo(String username, UserInfoAlertBody body) {
+        Log.i(TAG, "alertUserInfo");
+        RestfulToolsHomeGenius.getSingleton().alertUserInfo(username, body, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                int responseCode=response.code();
+                Log.i(TAG,"code="+responseCode);
+                if(response.errorBody()!=null){
+                    try {
+                        Log.i(TAG,"error="+response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(responseCode==200){
+                    Log.i(TAG,"alertUserInfo="+response.body());
+                    mSDKCoordinator.alertUserInfo(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+
             }
         });
     }
@@ -407,7 +455,6 @@ public class UserManager implements MqttListener {
             @Override
             public void onResponse(Call<UserSession> call, Response<UserSession> response) {
                 int code = response.code();
-                UserSession root = response.body();
                 if (code == 200) {
                     RestfulTools.getSingleton().setUsername(null);
                     RestfulTools.getSingleton().setToken(null);
@@ -415,12 +462,6 @@ public class UserManager implements MqttListener {
                     mUserSession = null;//用户注销成功后清除用户的个人信息
                     mSDKCoordinator.notifySuccess(SDKAction.LOGOUT);
                 } else if (code == 400) {
-                    try {
-                        String errorJson = response.errorBody().string();
-                        root = new Gson().fromJson(errorJson, UserSession.class);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     String error = "服务器内部错误";
                     mSDKCoordinator.notifyFailure(SDKAction.LOGOUT, error);
                 } else if (code == 403) {

@@ -22,7 +22,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-import com.deplink.homegenius.activity.device.remoteControl.AddRemoteControlActivity;
+import com.deplink.homegenius.activity.device.remoteControl.RemoteControlQuickLearnActivity;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.listview.sortlistview.CharacterParser;
 import com.deplink.homegenius.view.listview.sortlistview.PinyinComparator;
@@ -128,7 +128,7 @@ public class AddTvDeviceActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(AddTvDeviceActivity.this,AddRemoteControlActivity.class);
+        Intent intent=new Intent(AddTvDeviceActivity.this,RemoteControlQuickLearnActivity.class);
         intent.putExtra("bandname",SourceDateList.get(position).getName());
         intent.putExtra("type","TV");
         startActivity(intent);

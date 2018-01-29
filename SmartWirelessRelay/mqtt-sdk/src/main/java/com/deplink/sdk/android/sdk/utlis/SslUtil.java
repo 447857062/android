@@ -1,9 +1,6 @@
 package com.deplink.sdk.android.sdk.utlis;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.deplink.sdk.android.sdk.DeplinkSDK;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -30,12 +27,7 @@ public class SslUtil {
             // I'm using Java7. If you used Java6 close it manually with finally.
             InputStream cert = context.getResources().openRawResource(certId);
             ca = (X509Certificate)cf.generateCertificate(cert);
-            Log.d(DeplinkSDK.SDK_TAG, "---->signName:" + ca.getSigAlgName());
-            Log.d(DeplinkSDK.SDK_TAG, "---->pubKey:" + ca.getPublicKey().toString());
-            Log.d(DeplinkSDK.SDK_TAG, "---->signNumber:" + ca.getSerialNumber().toString());
-            Log.d(DeplinkSDK.SDK_TAG, "---->subjectDN:" + ca.getSubjectDN().toString());
             cert.close();
-
             // Creating a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();
             KeyStore keyStore   = KeyStore.getInstance(keyStoreType);
@@ -68,10 +60,6 @@ public class SslUtil {
             X509Certificate ca;
             InputStream cert = new ByteArrayInputStream(certificate.getBytes());
             ca = (X509Certificate)cf.generateCertificate(cert);
-            Log.d(DeplinkSDK.SDK_TAG, "---->signName:" + ca.getSigAlgName());
-            Log.d(DeplinkSDK.SDK_TAG, "---->pubKey:" + ca.getPublicKey().toString());
-            Log.d(DeplinkSDK.SDK_TAG, "---->signNumber:" + ca.getSerialNumber().toString());
-            Log.d(DeplinkSDK.SDK_TAG, "---->subjectDN:" + ca.getSubjectDN().toString());
             cert.close();
             // Creating a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();

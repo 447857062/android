@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
 
     defaultConfig {
         minSdkVersion 14
@@ -34,7 +34,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile files('libs/org.eclipse.paho.client.mqttv3.jar')
     compile files('libs/simple-xml-2.7.1.jar')
-    compile 'com.android.support:support-v4:21.0.3'
     //retrofit->resful api
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'

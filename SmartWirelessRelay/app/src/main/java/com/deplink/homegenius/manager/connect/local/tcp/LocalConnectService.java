@@ -11,7 +11,6 @@ import com.deplink.homegenius.util.Perfence;
 public class LocalConnectService extends Service {
     public static final String TAG = "LocalConnectService";
     public LocalConnectmanager connectmanager = LocalConnectmanager.getInstance();
-
     public LocalConnectService() {
 
     }

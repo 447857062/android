@@ -8,13 +8,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
-import com.deplink.homegenius.manager.device.DeviceManager;
-import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 
 public class AlarmHistoryActivity extends Activity implements View.OnClickListener {
     private ListView list_alart_histroy;
@@ -95,8 +96,6 @@ public class AlarmHistoryActivity extends Activity implements View.OnClickListen
             mSmartLockManager = SmartLockManager.getInstance();
         }
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

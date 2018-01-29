@@ -13,10 +13,11 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.deplink.homegenius.util.Perfence;
+
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.util.Perfence;
 
 
 /**
@@ -47,11 +48,7 @@ public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener ,
         initView();
         //初始化界面控件的事件
         initEvent();
-
-
     }
-
-
     private void initView() {
         view_device_menu=findViewById(R.id.view_device_menu);
         listview_room_types= (ListView) findViewById(R.id.listview_room_types);
@@ -87,7 +84,6 @@ public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener ,
     }
     private onItemClickListener mOnItemClickListener;
     public void setRoomTypeItemClickListener(onItemClickListener mOnItemClickListener) {
-
         this.mOnItemClickListener = mOnItemClickListener;
     }
     public interface onItemClickListener {
@@ -95,6 +91,8 @@ public class DeviceAtRoomDialog extends Dialog implements View.OnClickListener ,
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(mOnItemClickListener!=null){
             mOnItemClickListener.onItemClicked(position);
+        }
     }
 }

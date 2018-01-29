@@ -27,6 +27,35 @@ public class QueryOptions implements Serializable {
     private int  white;
     private int  open;
     private String SenderId;
+    private int Query_Num;
+    private int Total;
+
+    public int getQuery_Num() {
+        return Query_Num;
+    }
+
+    public void setQuery_Num(int query_Num) {
+        Query_Num = query_Num;
+    }
+
+    public int getTotal() {
+        return Total;
+    }
+
+    public void setTotal(int total) {
+        Total = total;
+    }
+
+    private com.deplink.homegenius.Protocol.json.wifi.Proto Proto;
+
+    public com.deplink.homegenius.Protocol.json.wifi.Proto getProto() {
+        return Proto;
+    }
+
+    public void setProto(com.deplink.homegenius.Protocol.json.wifi.Proto proto) {
+        Proto = proto;
+    }
+
     /**
      * 查询智能设备使用
      */
@@ -70,10 +99,6 @@ public class QueryOptions implements Serializable {
     public void setData(String data) {
         Data = data;
     }
-
-
-
-
     public String getResult() {
         return Result;
     }
@@ -204,6 +229,7 @@ public class QueryOptions implements Serializable {
                 ", white=" + white +
                 ", open=" + open +
                 ", SenderId='" + SenderId + '\'' +
+                ", Proto=" + Proto +
                 ", SmartUid='" + SmartUid + '\'' +
                 '}';
     }

@@ -15,11 +15,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.keyboard.KeyboardUtil;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -34,6 +45,10 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     private ImageView switch_remond_managerpassword;
     private boolean isStartFromExperience;
     private RelativeLayout layout_save_password;
+    private boolean isLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private DeleteDeviceDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +104,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                 }
             }
         });
-        //switch_remond_managerpassword.setOnClickListener(this);
         layout_save_password.setOnClickListener(this);
     }
 
@@ -122,6 +136,82 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdFive_setLockPwd.setInputType(InputType.TYPE_NULL);
         etPwdSix_setLockPwd.setInputType(InputType.TYPE_NULL);
         MyHandle();
+        connectLostDialog = new DeleteDeviceDialog(SetLockPwdActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(SetLockPwdActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String setResult) {
+                super.notifyHomeGeniusResponse(setResult);
+                Gson gson = new Gson();
+                OpResult type = gson.fromJson(setResult, OpResult.class);
+                Log.i(TAG,"智能门锁接收远程门锁设置结果返回:"+setResult);
+                if (type != null && type.getOP().equalsIgnoreCase("REPORT") && type.getMethod().equalsIgnoreCase("SmartLock")) {
+                    switch (type.getCommand()) {
+                        case SmartLockConstant.CMD.OPEN:
+                            switch (type.getResult()) {
+                                case SmartLockConstant.OPENLOCK.TIMEOUT:
+                                    setResult = "开锁超时";
+                                    break;
+                                case SmartLockConstant.OPENLOCK.SUCCESS:
+                                    setResult = "开锁成功";
+                                    mSmartLockManager.getCurrentSelectLock().setLockPassword(currentPassword);
+                                    mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
+                                    mSmartLockManager.getCurrentSelectLock().save();
+                                    break;
+                                case SmartLockConstant.OPENLOCK.PASSWORDERROR:
+                                    setResult = "密码错误";
+                                    break;
+                                case SmartLockConstant.OPENLOCK.FAIL:
+                                    setResult = "开锁失败";
+                                    break;
+                            }
+                            break;
+                    }
+                }
+
+                Message msg = Message.obtain();
+                msg.what = MSG_SHOW_TOAST;
+                msg.obj = setResult;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isLogin = false;
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
     }
 
     void backToActivity() {
@@ -131,6 +221,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
 
     private SmartLockManager mSmartLockManager;
     private static final int MSG_TOAST = 1;
+    private static final int MSG_SHOW_TOAST = 2;
     private String currentPassword;
 
     public void MyHandle() {
@@ -156,7 +247,8 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                                         SetLockPwdActivity.this.finish();
                                     }
                                 },3000);
-                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, "003", strReapt, null, null,true);
+                                String userId= Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
+                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, userId, strReapt, null, null);
                             }
                             etPwdOne.setText("");
                             etPwdTwo.setText("");
@@ -165,6 +257,10 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                             etPwdFive_setLockPwd.setText("");
                             etPwdSix_setLockPwd.setText("");
                         }
+                        break;
+                    case MSG_SHOW_TOAST:
+                        Toast.makeText(SetLockPwdActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                        SetLockPwdActivity.this.finish();
                         break;
                     default:
                         break;
@@ -188,9 +284,8 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     public void responseSetResult(String result) {
         Log.i(TAG, "设置管理密码=" + result);
         //密码正确才能保存，消失界面显示
-        // TODO 保存密码
         Log.i(TAG, "result=" + result);
-        if ("成功".equals(result)) {
+        if ("开锁成功".equals(result)) {
             if (currentImageLevel == 1) {
                 mSmartLockManager.getCurrentSelectLock().setLockPassword(currentPassword);
                 mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
@@ -203,13 +298,22 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     @Override
     public void responseBind(String result) {
     }
+
+    @Override
+    public void responseLockStatu(int RecondNum, int LockStatus) {
+
+    }
+
+    @Override
+    public void responseUserIdInfo(UserIdInfo userIdInfo) {
+
+    }
+
     private int currentImageLevel;
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
+        if(! DeviceManager.getInstance().isStartFromExperience()){
             if (mSmartLockManager.getCurrentSelectLock().isRemerberPassword()) {
                 switch_remond_managerpassword.setImageLevel(1);
                 currentImageLevel = 1;
@@ -218,7 +322,15 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                 currentImageLevel = 0;
             }
         }
+        manager.addEventCallback(ec);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -229,7 +341,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                         if(!isStartFromExperience){
                             mSmartLockManager.getCurrentSelectLock().setRemerberPassword(true);
                         }
-
                         break;
                     case 1:
                         currentImageLevel = 0;
@@ -240,10 +351,8 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                 }
                 switch_remond_managerpassword.setImageLevel(currentImageLevel);
                 if(!isStartFromExperience){
-
                     mSmartLockManager.getCurrentSelectLock().save();
                 }
-
                 break;
 
         }

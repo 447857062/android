@@ -22,7 +22,6 @@ public class ReflectUtlis {
             try {
                 map.put(field.getName(), field.get(object));
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

@@ -8,9 +8,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.deplink.homegenius.activity.device.AddDeviceNameActivity;
-import com.deplink.homegenius.constant.DeviceTypeConstant;
-
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class ApModeActivity extends Activity implements View.OnClickListener{
@@ -35,9 +32,9 @@ public class ApModeActivity extends Activity implements View.OnClickListener{
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        button_next_step = (Button) findViewById(R.id.button_next_step);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
+        button_next_step = findViewById(R.id.button_next_step);
     }
 
     @Override
@@ -47,9 +44,7 @@ public class ApModeActivity extends Activity implements View.OnClickListener{
                 onBackPressed();
                 break;
             case R.id.button_next_step:
-                Intent intent=new Intent(this,AddDeviceNameActivity.class);
-                intent.putExtra("DeviceType", DeviceTypeConstant.TYPE.TYPE_MENLING);
-                startActivity(intent);
+                startActivity(new Intent(this,AddDoorbellTipsActivity.class));
                 break;
         }
     }

@@ -351,7 +351,11 @@ import java.util.Map;
             service.messageStore.clearArrivedMessages(clientHandle);
         }
         // We don't need the ping mechanism now
-        service.unregisterReceiver(pingSender);
+        try {
+            service.unregisterReceiver(pingSender);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

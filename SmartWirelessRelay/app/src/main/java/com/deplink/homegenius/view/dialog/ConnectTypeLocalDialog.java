@@ -13,13 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import com.deplink.homegenius.activity.device.router.connectType.DialConnectActivity;
 import com.deplink.homegenius.activity.device.router.connectType.StaticConnectActivity;
+import com.deplink.homegenius.activity.device.router.connectType.WirelessRelayActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.activity.device.router.connectType.DialConnectActivity;
-import com.deplink.homegenius.activity.device.router.connectType.WirelessRelayActivity;
-import com.deplink.homegenius.constant.AppConstant;
 
 
 /**
@@ -33,13 +33,10 @@ public class ConnectTypeLocalDialog extends Dialog implements View.OnClickListen
     private RelativeLayout layout_static_ip;
     private RelativeLayout layout_wireless_relay;
     private RelativeLayout layout_cancel;
-
-
     public ConnectTypeLocalDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +50,6 @@ public class ConnectTypeLocalDialog extends Dialog implements View.OnClickListen
         initView();
         //初始化界面控件的事件
         initEvent();
-
-
     }
 
 
@@ -64,7 +59,6 @@ public class ConnectTypeLocalDialog extends Dialog implements View.OnClickListen
         layout_static_ip= findViewById(R.id.layout_static_ip);
         layout_wireless_relay= findViewById(R.id.layout_wireless_relay);
         layout_cancel= findViewById(R.id.layout_cancel);
-
     }
 
 

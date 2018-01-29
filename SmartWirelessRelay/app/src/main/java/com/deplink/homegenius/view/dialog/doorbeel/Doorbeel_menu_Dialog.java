@@ -52,8 +52,8 @@ public class Doorbeel_menu_Dialog extends Dialog implements View.OnClickListener
 
     private void initView() {
         view_mode_menu=findViewById(R.id.view_mode_menu);
-        textview_edit= (TextView) findViewById(R.id.textview_edit);
-        textview_record= (TextView) findViewById(R.id.textview_record);
+        textview_edit= findViewById(R.id.textview_edit);
+        textview_record= findViewById(R.id.textview_record);
 
     }
 

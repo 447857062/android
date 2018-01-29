@@ -15,6 +15,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.DeviceListAdapter;
+import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.light.LightActivity;
 import com.deplink.homegenius.activity.device.remoteControl.airContorl.AirRemoteControlMianActivity;
@@ -30,6 +31,7 @@ import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.RoomConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
@@ -49,7 +51,6 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG="DeviceNumberActivity";
     private FrameLayout image_back;
-
     private TextView textview_edit;
     private DeviceListAdapter mDeviceAdapter;
     /**
@@ -67,6 +68,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private Room currentRoom;
     private DeviceManager mDeviceManager;
     private GetwayManager mGetwayManager;
+    private TextView textview_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +81,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
     }
-
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
@@ -91,6 +93,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mDeviceAdapter.setTopList(datasTop);
         mDeviceAdapter.setBottomList(datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
     }
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
@@ -99,30 +102,11 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mGetwayManager=GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this,null);
         currentRoom=mRoomManager.getCurrentSelectedRoom();
-        String roomType=currentRoom.getRoomType();
-        switch (roomType){
-            case RoomConstant.ROOMTYPE.TYPE_LIVING:
-                layout_device_number_root.setBackgroundResource(R.drawable.livingroombackground);
-                break;
-            case RoomConstant.ROOMTYPE.TYPE_BED:
-                layout_device_number_root.setBackgroundResource(R.drawable.bedroombackground);
-                break;
-            case RoomConstant.ROOMTYPE.TYPE_KITCHEN:
-                layout_device_number_root.setBackgroundResource(R.drawable.kitchenbackground);
-                break;
-            case RoomConstant.ROOMTYPE.TYPE_STUDY:
-                layout_device_number_root.setBackgroundResource(R.drawable.studybackground);
-                break;
-            case RoomConstant.ROOMTYPE.TYPE_STORAGE:
-                layout_device_number_root.setBackgroundResource(R.drawable.storageroom);
-                break;
-            case RoomConstant.ROOMTYPE.TYPE_TOILET:
-                layout_device_number_root.setBackgroundResource(R.drawable.toiletbackground);
-                break;
-            case RoomConstant.ROOMTYPE.TYPE_DINING:
-                layout_device_number_root.setBackgroundResource(R.drawable.diningroombackground);
-                break;
+
+        if(!isStartFromExperience){
+            textview_title.setText(currentRoom.getRoomName());
         }
+        setRoomBg();
         datasTop = new ArrayList<>();
         datasBottom = new ArrayList<>();
         mDeviceAdapter = new DeviceListAdapter(this, datasTop, datasBottom);
@@ -140,11 +124,17 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             SmartLockManager.getInstance().setCurrentSelectLock(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, SmartLockActivity.class));
                             break;
+                        case DeviceTypeConstant.TYPE.TYPE_MENLING:
+                            DoorbeelManager.getInstance().setCurrentSelectedDoorbeel(datasBottom.get(position - datasTop.size()));
+                            startActivity(new Intent(DeviceNumberActivity.this, DoorbeelMainActivity.class));
+                            break;
                         case "IRMOTE_V2":
+                        case DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL:
                             RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, RemoteControlActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, AirRemoteControlMianActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_ROUTER:
@@ -152,9 +142,11 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                             startActivity(new Intent(DeviceNumberActivity.this, RouterMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, TvMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
+                            RemoteControlManager.getInstance().setmSelectRemoteControlDevice(datasBottom.get(position - datasTop.size()));
                             startActivity(new Intent(DeviceNumberActivity.this, TvBoxMainActivity.class));
                             break;
                         case DeviceTypeConstant.TYPE.TYPE_LIGHT:
@@ -188,13 +180,55 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
             }
         });
     }
+    private RelativeLayout layout_title;
+    private void setRoomBg() {
+        String roomType=currentRoom.getRoomType();
+        switch (roomType){
+            case RoomConstant.ROOMTYPE.TYPE_LIVING:
+                layout_device_number_root.setBackgroundResource(R.drawable.livingroombackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_BED:
+                layout_device_number_root.setBackgroundResource(R.drawable.bedroombackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_KITCHEN:
+                layout_device_number_root.setBackgroundResource(R.drawable.kitchenbackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_STUDY:
+                layout_device_number_root.setBackgroundResource(R.drawable.studybackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_STORAGE:
+                layout_device_number_root.setBackgroundResource(R.drawable.storageroom);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_TOILET:
+                layout_device_number_root.setBackgroundResource(R.drawable.toiletbackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+            case RoomConstant.ROOMTYPE.TYPE_DINING:
+                layout_device_number_root.setBackgroundResource(R.drawable.diningroombackground);
+                layout_title.setBackgroundResource(R.color.title_blue_bg);
+                layout_title.setAlpha((float) 0.9);
+                break;
+        }
+    }
 
     private void initViews() {
         image_back = findViewById(R.id.image_back);
-
         textview_edit = findViewById(R.id.textview_edit);
         listview_devies= findViewById(R.id.listview_devies);
         layout_device_number_root= findViewById(R.id.layout_device_number_root);
+        textview_title= findViewById(R.id.textview_title);
+        layout_title= findViewById(R.id.layout_title);
     }
 
     @Override
@@ -208,7 +242,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                 break;
         }
     }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

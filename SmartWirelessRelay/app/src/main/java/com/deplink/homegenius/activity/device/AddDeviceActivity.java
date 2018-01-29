@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.device.adapter.AddDeviceGridViewAdapter;
+import com.deplink.homegenius.activity.device.light.LightEditActivity;
 import com.deplink.homegenius.activity.device.smartlock.EditSmartLockActivity;
 import com.deplink.homegenius.activity.room.AddRommActivity;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 
@@ -40,7 +42,6 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
         initDatas();
         initEvents();
     }
-
     /**
      * startactivityforresult中结束后应该返回的界面
      */
@@ -49,7 +50,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this,null);
+        mRoomManager.initRoomManager(this, null);
         addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (addDeviceSelectRoom) {
@@ -59,6 +60,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
             textview_show_select_room.setText("请选择设备所在的房间,跳过设备默认分类为全部");
             textview_skip_this_option.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void initEvents() {
@@ -87,21 +89,30 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                             SmartLockManager.getInstance().setEditSmartLock(false);
                             Intent intentSeleteedRoom = new Intent();
                             intentSeleteedRoom.setClass(AddDeviceActivity.this, EditSmartLockActivity.class);
+                            intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                            intentSeleteedRoom.putExtra("isupdateroom", true);
                             startActivity(intentSeleteedRoom);
-                            finish();
                         } else {
-                            if (addDeviceSelectRoom) {
-                                Intent intentSeleteedRoom = new Intent();
+                            if(SmartLightManager.getInstance().isEditSmartLight()){
+                                SmartLockManager.getInstance().setEditSmartLock(false);
+                                Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, LightEditActivity.class);
+                                intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intentSeleteedRoom.putExtra("roomName", currentAddRomm);
-                                AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
-                                finish();
-                            } else {
-                                Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
-                                startActivity(intent);
+                                intentSeleteedRoom.putExtra("isupdateroom", true);
+                                startActivity(intentSeleteedRoom);
+                            }else{
+                                if (addDeviceSelectRoom) {
+                                    Intent intentSeleteedRoom = new Intent();
+                                    intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                                    AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);
+                                    finish();
+                                } else {
+                                    Intent intent = new Intent(AddDeviceActivity.this, AddDeviceQRcodeActivity.class);
+                                    startActivity(intent);
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -115,14 +126,6 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
         textview_skip_this_option = findViewById(R.id.textview_skip_this_option);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!isStartFromExperience) {
-
-        }
-
-    }
 
     @Override
     protected void onResume() {

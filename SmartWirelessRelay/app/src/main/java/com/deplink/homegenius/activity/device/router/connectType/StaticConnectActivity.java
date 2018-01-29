@@ -15,16 +15,20 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.device.router.wifi.WifiSetting24;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.StringValidatorUtil;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.json.STATIC;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
@@ -50,12 +54,10 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
     private EditText edittext_getway;
     private EditText edittext_dns1;
     private EditText edittext_dns2;
-
     private String op_type;
     private EditText edittext_mtu;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private boolean isSetStaticConnect;
     //本地设置需要的参数
     private String ipaddress;
@@ -63,8 +65,10 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
     private String getway;
     private String dns1;
     private String mtu;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     //本地设置需要的参数 end
+    private String channels;
+    private HomeGenius mHomeGenius;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,18 +77,18 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-
     private void initDatas() {
         textview_title.setText("静态IP");
         textview_edit.setText("保存");
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(StaticConnectActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(StaticConnectActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(StaticConnectActivity.this, LoginActivity.class));
             }
         });
+        mRouterManager = RouterManager.getInstance();
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
 
@@ -99,23 +103,21 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
             }
 
 
-
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
+            }
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
                 switch (op) {
                     case RouterDevice.OP_GET_WAN:
-                        try {
-                            if (routerDevice.getProto().getSTATIC() != null) {
                                 ToastSingleShow.showText(StaticConnectActivity.this, "动态IP设置成功");
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+
+
                     case RouterDevice.OP_SUCCESS:
-                        if (isSetStaticConnect) {
-                            ToastSingleShow.showText(StaticConnectActivity.this, "设置成功");
-                        }
+
                         break;
                 }
             }
@@ -129,37 +131,54 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
 
+        if (op == null) {
+            if (content.getResult().equalsIgnoreCase("OK")) {
+                if (content.getResult().equalsIgnoreCase("OK")) {
+                    Log.i(TAG," mSDKCoordinator.notifyDeviceOpSuccess");
+                    if (isSetStaticConnect) {
+                        ToastSingleShow.showText(StaticConnectActivity.this, "设置成功");
+                    }
+                }
+            }
+        }else if (op.equalsIgnoreCase("WAN")) {
+            if (method.equalsIgnoreCase("REPORT")) {
+                PERFORMANCE wan = gson.fromJson(xmlStr, PERFORMANCE.class);
+                ToastSingleShow.showText(StaticConnectActivity.this, "静态IP设置成功");
+            }
+        }
+    }
     private boolean isUserLogin;
+    private boolean isStartFromExperience;
+    private RouterManager mRouterManager;
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        if(isUserLogin){
-            getRouterDevice();
-        }
-
         manager.addEventCallback(ec);
-
-    }
-
-    private void getRouterDevice() {
-        String currentDevcieKey = Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY);
-        if (currentDevcieKey.equals("")) {
-            if (manager.getDeviceList() != null && manager.getDeviceList().size() > 0) {
-                Perfence.setPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY, manager.getDeviceList().get(0).getDeviceKey());
-            } else {
-                ToastSingleShow.showText(this, "还没有绑定设备");
-            }
+        mHomeGenius = new HomeGenius();
+        if(!isStartFromExperience){
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         }
-        routerDevice = (RouterDevice) manager.getDevice(Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY));
     }
+
+
 
     @Override
     protected void onPause() {
@@ -174,16 +193,16 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         op_type = getIntent().getStringExtra(AppConstant.OPERATION_TYPE);
-        textview_title= (TextView) findViewById(R.id.textview_title);
-        image_back= (FrameLayout) findViewById(R.id.image_back);
-        textview_edit = (TextView) findViewById(R.id.textview_edit);
-        ip_address = (EditText) findViewById(R.id.edittext_ip_address);
-        edittext_submask = (EditText) findViewById(R.id.edittext_submask);
-        edittext_getway = (EditText) findViewById(R.id.edittext_getway);
-        RelativeLayout layout_dns2 = (RelativeLayout) findViewById(R.id.layout_dns2);
-        edittext_mtu = (EditText) findViewById(R.id.edittext_mtu);
-        edittext_dns1 = (EditText) findViewById(R.id.edittext_dns1);
-        edittext_dns2 = (EditText) findViewById(R.id.edittext_dns2);
+        textview_title= findViewById(R.id.textview_title);
+        image_back= findViewById(R.id.image_back);
+        textview_edit = findViewById(R.id.textview_edit);
+        ip_address = findViewById(R.id.edittext_ip_address);
+        edittext_submask = findViewById(R.id.edittext_submask);
+        edittext_getway = findViewById(R.id.edittext_getway);
+        RelativeLayout layout_dns2 = findViewById(R.id.layout_dns2);
+        edittext_mtu = findViewById(R.id.edittext_mtu);
+        edittext_dns1 = findViewById(R.id.edittext_dns1);
+        edittext_dns2 = findViewById(R.id.edittext_dns2);
         if (op_type != null && op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
             layout_dns2.setVisibility(View.GONE);
         } else {
@@ -202,10 +221,9 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
                 submask = edittext_submask.getText().toString().trim();
                 getway = edittext_getway.getText().toString().trim();
                 dns1 = edittext_dns1.getText().toString().trim();
-
                 mtu = edittext_mtu.getText().toString().trim();
-                if (mtu.equals("1500(默认)")) {
-                    mtu = "1500";
+                if (mtu.equals("1480(默认)")) {
+                    mtu = "1480";
                 }
                 String dns2 = edittext_dns2.getText().toString().trim();
                 if (!StringValidatorUtil.isIPString(ipaddress)) {
@@ -227,11 +245,9 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
                     } else {
                         ToastSingleShow.showText(StaticConnectActivity.this, "请确保连接上想配置路由器的wifi");
                     }
-
                 } else {
                     //MQTT接口
                     if (NetUtil.isNetAvailable(StaticConnectActivity.this)) {
-                        if (routerDevice != null) {
                             isSetStaticConnect = true;
                             Proto proto = new Proto();
                             STATIC static_ = new STATIC();
@@ -254,19 +270,15 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
                                 } else if (!dns2.equals("")) {
                                     static_.setDNS(dns2);
                                 }
-
                             }
                             proto.setSTATIC(static_);
                             boolean isUserLogin;
                             isUserLogin= Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
                             if(isUserLogin){
-                                routerDevice.setWan(proto);
+                                mHomeGenius.setWan(proto,channels);
                             }else{
                                 ToastSingleShow.showText(this,"未登录，无法设置静态上网,请登录后重试");
                             }
-
-                        }
-
                     } else {
                         ToastSingleShow.showText(StaticConnectActivity.this, "网络连接已断开");
                     }
@@ -301,7 +313,6 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
 
 
     private void setStaticConnectLocal(String ipaddress, String submask, String getway, String dns1) {
-
        RestfulToolsRouter.getSingleton(StaticConnectActivity.this).staticIp(ipaddress, submask, getway, dns1, new Callback<RouterResponse>() {
             @Override
             public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {

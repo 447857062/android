@@ -23,6 +23,24 @@ public class GatwayDevice extends DataSupport implements Serializable{
     private String name;
     private String bindLocal;
     private String topic;
+    private String sign_seed;
+    private String signature;
+
+    public String getSign_seed() {
+        return sign_seed;
+    }
+
+    public void setSign_seed(String sign_seed) {
+        this.sign_seed = sign_seed;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     public String getTopic() {
         return topic;

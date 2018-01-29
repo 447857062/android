@@ -3,6 +3,7 @@ package com.deplink.homegenius.activity.device.router.qos;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -13,22 +14,25 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Qos;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 public class QosSettingActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "QosSettingActivity";
     private TextView textview_title;
     private FrameLayout image_back;
     private RelativeLayout layout_model_A;
@@ -41,12 +45,13 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
     private TextView textview_edit;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private CheckBox checkbox_qos_switch;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private RouterManager mRouterManager;
     private Qos qos;
     private boolean isSetQos;
+    private HomeGenius mHomeGenius;
+    private String channels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +69,8 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(QosSettingActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(QosSettingActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(QosSettingActivity.this, LoginActivity.class));
@@ -91,50 +96,15 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
             }
 
             @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
+            }
+
+            @Override
             public void deviceOpSuccess(final String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (op) {
-                            case RouterDevice.OP_GET_QOS:
-                                try {
-                                    qos = routerDevice.getQos();
-                                    if (qos.getSWITCH().equalsIgnoreCase("ON")) {
-                                        layout_model_A.setVisibility(View.VISIBLE);
-                                        layout_model_B.setVisibility(View.VISIBLE);
-                                        layout_model_download.setVisibility(View.VISIBLE);
-                                        checkbox_qos_switch.setChecked(true);
-                                        currentQosMode = qos.getCLASSIFY();
-                                        switch (currentQosMode) {
-                                            case "1":
-                                                layout_model_A.callOnClick();
-                                                break;
-                                            case "2":
-                                                layout_model_B.callOnClick();
-                                                break;
-                                            case "3":
-                                                layout_model_download.callOnClick();
-                                                break;
-                                        }
-                                    } else if (qos.getSWITCH().equalsIgnoreCase("OFF")) {
-                                        checkbox_qos_switch.setChecked(false);
-                                        layout_model_A.setVisibility(View.GONE);
-                                        layout_model_B.setVisibility(View.GONE);
-                                        layout_model_download.setVisibility(View.GONE);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case RouterDevice.OP_SUCCESS:
-                                if (isSetQos) {
-                                    ToastSingleShow.showText(QosSettingActivity.this, "设置成功");
-                                }
-                                break;
-                        }
-                    }
-                });
+
 
             }
 
@@ -142,32 +112,76 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }
 
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
 
+        if (op == null) {
+            if (content.getResult().equalsIgnoreCase("OK")) {
+                Log.i(TAG, " mSDKCoordinator.notifyDeviceOpSuccess");
+
+            }
+        } else {
+            if (op.equalsIgnoreCase("QOS")) {
+                if (method.equalsIgnoreCase("REPORT")) {
+                    qos = gson.fromJson(xmlStr, Qos.class);
+                    if (qos.getSWITCH().equalsIgnoreCase("ON")) {
+                        layout_model_A.setVisibility(View.VISIBLE);
+                        layout_model_B.setVisibility(View.VISIBLE);
+                        layout_model_download.setVisibility(View.VISIBLE);
+                        checkbox_qos_switch.setChecked(true);
+                        currentQosMode = qos.getCLASSIFY();
+                        switch (currentQosMode) {
+                            case "1":
+                                layout_model_A.callOnClick();
+                                break;
+                            case "2":
+                                layout_model_B.callOnClick();
+                                break;
+                            case "3":
+                                layout_model_download.callOnClick();
+                                break;
+                        }
+                    } else if (qos.getSWITCH().equalsIgnoreCase("OFF")) {
+                        checkbox_qos_switch.setChecked(false);
+                        layout_model_A.setVisibility(View.GONE);
+                        layout_model_B.setVisibility(View.GONE);
+                        layout_model_download.setVisibility(View.GONE);
+                    }
+
+                }
+            }
+        }
+    }
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
-        if ( DeviceManager.getInstance().isStartFromExperience()) {
-
-        } else {
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        if (!DeviceManager.getInstance().isStartFromExperience()) {
+            mHomeGenius = new HomeGenius();
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
             manager.addEventCallback(ec);
             if (NetUtil.isNetAvailable(this)) {
-                if (routerDevice != null) {
-                    routerDevice.queryQos();
+                if (channels != null) {
+                    mHomeGenius.queryQos(channels);
                 }
             } else {
                 ToastSingleShow.showText(this, "网络连接已断开");
             }
         }
-
-
     }
 
 
@@ -231,7 +245,7 @@ public class QosSettingActivity extends Activity implements View.OnClickListener
                         if (isUserLogin) {
                             isSetQos = true;
                             ToastSingleShow.showText(this, "QOS已设置");
-                            routerDevice.setQos(qos);
+                            mHomeGenius.setQos(qos, channels);
                         } else {
                             ToastSingleShow.showText(this, "未登录，无法设置静态上网,请登录后重试");
                         }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.json.QueryOptions;
-import com.deplink.homegenius.Protocol.json.RemoteControlOpResult;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
@@ -17,15 +16,26 @@ import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -110,6 +120,7 @@ public class RemoteControlManager implements LocalConnecteListener {
     }
 
     public SmartDev getmSelectRemoteControlDevice() {
+        Log.i(TAG,"mSelectRemoteControlDevice="+(mSelectRemoteControlDevice!=null));
         return mSelectRemoteControlDevice;
     }
 
@@ -120,7 +131,7 @@ public class RemoteControlManager implements LocalConnecteListener {
 
     public List<SmartDev> findAllRemotecontrolDevice() {
         List<SmartDev> newsList = DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL).find(SmartDev.class);
-        Log.i(TAG, "查找所有的智能设备,设备个数=" + newsList.size());
+        Log.i(TAG, "查找所有的物理遥控器设备,设备个数=" + newsList.size());
         return newsList;
     }
     /**
@@ -141,10 +152,11 @@ public class RemoteControlManager implements LocalConnecteListener {
         return instance;
     }
 
-    public void InitRemoteControlManager(Context context, RemoteControlListener listener) {
+    public void InitRemoteControlManager(Context context) {
         this.mContext = context;
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
+           Perfence.setContext(mContext);
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             mLocalConnectmanager.InitLocalConnectManager(context, uuid);
         }
@@ -159,16 +171,9 @@ public class RemoteControlManager implements LocalConnecteListener {
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
         mRemoteControlListenerList = new ArrayList<>();
-        if (listener != null) {
-            addRemoteControlListener(listener);
-        }
         gson = new Gson();
         mRemoteControlDeviceList = new ArrayList<>();
         mRemoteControlDeviceList.addAll(DataSupport.where("Type=?", "IRMOTE_V2").find(SmartDev.class));
-        //TODO 当前选中的遥控器
-        // if (mRemoteControlDeviceList.size() > 0) {
-        //    mSelectRemoteControlDevice = mRemoteControlDeviceList.get(0);
-        //   }
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
@@ -189,27 +194,6 @@ public class RemoteControlManager implements LocalConnecteListener {
         } else {
             rooms.addAll(RoomManager.getInstance().getmRooms());
         }
-        mSelectRemoteControlDevice.setRooms(rooms);
-        smartDev.setRooms(rooms);
-        boolean saveResult = smartDev.save();
-        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
-    }
-
-    /**
-     * 更新设备所在房间
-     */
-    public void updateSelectedDeviceInWhatRoom(Room room) {
-        Log.i(TAG, "更新智能设备所在的房间=start");
-        //保存所在的房间
-        //查询设备
-        //找到要更行的设备,设置关联的房间
-        List<Room> rooms = new ArrayList<>();
-        if (room != null) {
-            rooms.add(room);
-        } else {
-            rooms.addAll(RoomManager.getInstance().getmRooms());
-        }
-        SmartDev smartDev = DataSupport.where("Uid=?", mSelectRemoteControlDevice.getUid()).findFirst(SmartDev.class, true);
         mSelectRemoteControlDevice.setRooms(rooms);
         smartDev.setRooms(rooms);
         boolean saveResult = smartDev.save();
@@ -243,9 +227,35 @@ public class RemoteControlManager implements LocalConnecteListener {
             }
         }
     }
+    public void stopStudy() {
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            QueryOptions cmd = new QueryOptions();
+            cmd.setOP("SET");
+            cmd.setMethod("IrmoteV2");
+            cmd.setTimestamp();
+            cmd.setSmartUid(mSelectRemoteControlDevice.getMac());
+            cmd.setCommand("Quit");
+            String text = gson.toJson(cmd);
+            packet.packRemoteControlData(text.getBytes(), mSelectRemoteControlDevice.getMac());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        } else {
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.stopStudy(mSelectRemoteControlDevice, device.getTopic(), uuid);
+                }
+            }
+        }
+    }
 
     public void sendData(String data) {
-        //TODO 当前选中的遥控器和当前选中的物理遥控器混乱
         if (mLocalConnectmanager.isLocalconnectAvailable()) {
             Log.i(TAG, "mSelectRemoteControlDevice mac=" + mSelectRemoteControlDevice.getMac());
             String controlUid = mSelectRemoteControlDevice.getMac();
@@ -260,8 +270,7 @@ public class RemoteControlManager implements LocalConnecteListener {
             cmd.setCommand("Send");
             cmd.setData(data);
             String text = gson.toJson(cmd);
-            Log.i(TAG, "mSelectRemoteControlDevice!=null" + (mSelectRemoteControlDevice != null));
-            Log.i(TAG, "" + text + " mSelectRemoteControlDevice.getRemotecontrolUid()!=null" + (mSelectRemoteControlDevice.getRemotecontrolUid()));
+            Log.i(TAG, "controlUid=" + controlUid );
             packet.packRemoteControlData(text.getBytes(), controlUid);
             cachedThreadPool.execute(new Runnable() {
                 @Override
@@ -279,9 +288,113 @@ public class RemoteControlManager implements LocalConnecteListener {
                 }
             }
         }
-
     }
+    public void deleteVirtualDeviceHttp() {
+        String uid = mSelectRemoteControlDevice.getUid();
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            return;
+        }
+        Deviceprops device = new Deviceprops();
+        if (uid != null) {
+            device.setUid(uid);
+        }
+        RestfulToolsHomeGenius.getSingleton().deleteVirtualDevice(userName, uid, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if (response.code() == 200) {
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                        mRemoteControlListenerList.get(i).responseDeleteVirtualDevice(response.body());
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+                Log.i(TAG, "" + t.getMessage());
+            }
+        });
+    }
+    /**
+     * 查询设备列表
+     */
+    public void queryVirtualDeviceList() {
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            return;
+        }
+        RestfulToolsHomeGeniusString.getSingleton().readVirtualDevices(userName, new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if (response.code() == 200) {
+                    ArrayList<DeviceOperationResponse> list = ParseUtil.jsonToArrayList(response.body(), DeviceOperationResponse.class);
+                    for (int i = 0; i < list.size(); i++) {
+                        Log.i(TAG, "device=" + list.get(i).toString());
+                    }
+                    for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                        mRemoteControlListenerList.get(i).responseQueryVirtualDevices(list);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+    /**
+     * 修改设备属性
+     */
+    public void alertVirtualDevice(String uid,String device_name, String key_codes, String iremote_uid) {
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (userName.equals("")) {
+            return;
+        }
+        VirtualDeviceAlertBody device = new VirtualDeviceAlertBody();
+        if(uid!=null){
+            device.setUid(uid);
+        }
+        if (device_name != null) {
+            device.setDevice_name(device_name);
+        }
+        if (key_codes != null) {
+            device.setKey_codes(key_codes);
+        }
+        if (iremote_uid != null) {
+            device.setIremote_uid(iremote_uid);
+        }
+        Log.i(TAG, "alert device:" + device.toString());
+        RestfulToolsHomeGenius.getSingleton().alertVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
+            @Override
+            public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
+                Log.i(TAG, "" + response.code());
+                Log.i(TAG, "" + response.message());
+                if (response.errorBody() != null) {
+                    try {
+                        Log.i(TAG, "" + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (response.code() == 200) {
+                    Log.i(TAG, "" + response.body().toString());
+                    for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
+                        mRemoteControlListenerList.get(i).responseAlertVirtualDevice(response.body());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
+                Log.i(TAG, "" + t.getMessage());
+            }
+        });
+    }
     /**
      * 如果数据库中没有这个设备，需要修改数据库
      * 如果有这个设备就不处理
@@ -346,6 +459,18 @@ public class RemoteControlManager implements LocalConnecteListener {
         return result;
     }
 
+    /**
+     *修改当前虚拟遥控器绑定的真实物理遥控器的uid
+     * @param uid
+     * @return
+     */
+    public boolean saveCurrentVirtualDeviceBindRCUid(String uid) {
+        mSelectRemoteControlDevice.setRemotecontrolUid(uid);
+        boolean result = mSelectRemoteControlDevice.save();
+        Log.i(TAG, "绑定的真实物理遥控器的uid=" + result);
+        return result;
+    }
+
     public void addRemoteControlListener(RemoteControlListener listener) {
         if (listener != null && !mRemoteControlListenerList.contains(listener)) {
             this.mRemoteControlListenerList.add(listener);
@@ -371,9 +496,9 @@ public class RemoteControlManager implements LocalConnecteListener {
 
     @Override
     public void OnGetSetresult(String setResult) {
-        RemoteControlOpResult result = gson.fromJson(setResult, RemoteControlOpResult.class);
+        QueryOptions result = gson.fromJson(setResult, QueryOptions.class);
         Log.i(TAG, TAG + ":获取设置结果setResult=" + setResult);
-        if (result != null) {
+        if (result != null && result.getOP().equalsIgnoreCase("REPORT")) {
             if (setResult.contains("Study")) {
                 for (int i = 0; i < mRemoteControlListenerList.size(); i++) {
                     mRemoteControlListenerList.get(i).responseQueryResult(setResult);
@@ -383,7 +508,6 @@ public class RemoteControlManager implements LocalConnecteListener {
                     mRemoteControlListenerList.get(i).responseQueryResult(result.getCommand() + result.getResult());
                 }
             }
-
         }
 
     }

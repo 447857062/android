@@ -33,12 +33,9 @@ import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 
 public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView> {
-
 	private LoadingLayout mHeaderLoadingView;
 	private LoadingLayout mFooterLoadingView;
-
 	private FrameLayout mLvFooterLoadingFrame;
-
 	private boolean mListViewExtrasEnabled;
 
 	public PullToRefreshListView(Context context) {
@@ -112,7 +109,6 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		if (doScroll) {
 			// We need to disable the automatic visibility changes for now
 			disableLoadingLayoutVisibilityChanges();
-
 			// We scroll slightly so that the ListView's header/footer is at the
 			// same Y position as our normal header/footer
 			setHeaderScroll(scrollToY);
@@ -120,7 +116,6 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 			// Make sure the ListView is scrolled to show the loading
 			// header/footer
 			mRefreshableView.setSelection(selection);
-
 			// Smooth scroll as normal
 			smoothScrollTo(0);
 		}
@@ -139,7 +134,6 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		final LoadingLayout originalLoadingLayout, listViewLoadingLayout;
 		final int scrollToHeight, selection;
 		final boolean scrollLvToEdge;
-
 		switch (getCurrentMode()) {
 			case MANUAL_REFRESH_ONLY:
 			case PULL_FROM_END:

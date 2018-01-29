@@ -11,11 +11,14 @@ import java.net.InetAddress;
  */
 
 public class GeneralPacket extends BasicPacket {
+    private Context mContext;
     public GeneralPacket(InetAddress ip, int port, Context context) {
         super(context, ip, port);
+        this.mContext=context;
     }
     public GeneralPacket(Context context) {
         super(context);
+        this.mContext=context;
     }
     /**
      * 绑定设备

@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="选择房间:"
+                android:text="选择房间"
                 android:textColor="@color/room_type_text"
                 android:textSize="@dimen/text_size_small" />
 

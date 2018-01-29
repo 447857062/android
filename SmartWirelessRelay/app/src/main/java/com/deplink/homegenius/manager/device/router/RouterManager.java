@@ -107,9 +107,9 @@ public class RouterManager {
         return saveResult;
     }
 
-    public String getRouterDeviceKey() {
+    public String getRouterDeviceUid() {
         Log.i(TAG, currentSelectedRouter.toString());
-        String currentDevcieKey = currentSelectedRouter.getRouter().getRouterDeviceKey();
+        String currentDevcieKey = currentSelectedRouter.getUid();
         Log.i(TAG, "获取绑定的路由器设备currentDevcieKey=" + currentDevcieKey);
         return currentDevcieKey;
     }

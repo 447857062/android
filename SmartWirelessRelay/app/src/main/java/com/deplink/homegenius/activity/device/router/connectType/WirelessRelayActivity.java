@@ -14,9 +14,12 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
@@ -25,19 +28,22 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.json.AP_CLIENT;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.json.SSIDList;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ErrorResponse;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsString;
 import com.deplink.sdk.android.sdk.rest.RouterResponse;
+import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +64,6 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     //MQTT接口
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private List<SSIDList> mDatasMqtt;
     private WirelessRelayAdapterMqtt mAdapterMqtt;
     private MakeSureDialog mqttSetWanDialogNoPassword;
@@ -73,8 +78,9 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
     private int channel = 1;
     private String userName = "";
     private String password = "";
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private TextView button_reload_wifirelay;
+    private HomeGenius mHomeGenius;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -99,9 +105,10 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
 
     private void initDatas() {
         textview_title.setText("无线中继");
+        mRouterManager = RouterManager.getInstance();
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(WirelessRelayActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(WirelessRelayActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(WirelessRelayActivity.this, LoginActivity.class));
@@ -119,51 +126,60 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             public void onBindSuccess(SDKAction action, String devicekey) {
 
             }
-
-
-
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
 
             }
 
             @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
+            }
+
+            @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op) {
-                    case RouterDevice.OP_GET_WIFIRELAY:
-                        mDatasMqtt.clear();
-                        if (routerDevice != null) {
-                            Log.i(TAG, "routerDevice.getWifiRelay()=" + routerDevice.getWifiRelay().size());
-                            mDatasMqtt.addAll(routerDevice.getWifiRelay());
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    DialogThreeBounce.hideLoading();
-                                    mAdapterMqtt.notifyDataSetChanged();
-                                    mPullToRefreshListView.onRefreshComplete();
-                                }
-                            });
-                        }
-
-                        break;
-
-                }
             }
 
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         mqttSetWanDialogNoPassword = new MakeSureDialog(WirelessRelayActivity.this);
         mqttSetWanDialogHasPassword = new WifiRelayInputDialog(WirelessRelayActivity.this);
     }
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
+        if (op == null) {
 
+        } else if (op.equalsIgnoreCase("REPORT")) {
+            if (method.equalsIgnoreCase("WIFIRELAY")) {
+                mDatasMqtt.clear();
+                mDatasMqtt.addAll(content.getSSIDList());
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        DialogThreeBounce.hideLoading();
+                        mAdapterMqtt.notifyDataSetChanged();
+                        mPullToRefreshListView.onRefreshComplete();
+                    }
+                });
+            }
+        }
+    }
     /**
      * 显示重启确认对话框
      */
@@ -196,12 +212,16 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         manager.removeEventCallback(ec);
     }
     private boolean isStartFromExperience;
+    private String channels;
+    private RouterManager mRouterManager;
     @Override
     protected void onResume() {
         super.onResume();
         isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
+        mHomeGenius = new HomeGenius();
         if(!isStartFromExperience){
             manager.addEventCallback(ec);
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
             getRouterDevice();
             handlerResumeDialogShowing();
             Log.i(TAG, "op_type=" + op_type);
@@ -210,9 +230,8 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                 getLocalWirelessRelay();
             } else {
                 initMqttPulltoRefreshView();
-                if (routerDevice != null) {
-                    routerDevice.queryWifiRelay();
-                }
+                    mHomeGenius.queryWifiRelay(channels);
+
             }
         }
 
@@ -261,7 +280,6 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             }
 
         }
-        routerDevice = (RouterDevice) manager.getDevice(Perfence.getPerfence(AppConstant.DEVICE.CURRENT_DEVICE_KEY));
     }
 
     /**
@@ -342,14 +360,12 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
         userName = mDatas.get(position).getSsid();
         Log.i(TAG, "crypt=" + crypt + "encryption=" + encryption + "channel=" + channel + "userName=" + userName + "password=" + password);
     }
-
     private AdapterView.OnItemClickListener mMqttItemClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
             Log.i(TAG, "mqtt item click position=" + position);
             //注意position位置从1开始,data数据要减少一个
             if (!mDatasMqtt.get(position - 1).getEncryption().equalsIgnoreCase("none")) {
-
                 mqttSetWanDialogWithPasswordShow(position);
             } else {
                 mqttSetWanDialogNoPasswordShow(position);
@@ -376,12 +392,9 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                 ap_client.setApCliAuthMode(ssidlist.getEncryption());
                 proto.setAP_CLIENT(ap_client);
                 if (NetUtil.isNetAvailable(WirelessRelayActivity.this)) {
-                    try {
-                        routerDevice.setWan(proto);
+                        mHomeGenius.setWan(proto,channels);
                         ToastSingleShow.showText(WirelessRelayActivity.this, "中继上网已设置,正在重启路由器");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+
                 } else {
                     ToastSingleShow.showText(WirelessRelayActivity.this, "网络连接已断开");
                 }
@@ -409,16 +422,16 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                 ap_client.setApCliEncrypType(ssidlist.getEncryption());
                 proto.setAP_CLIENT(ap_client);
                 if (NetUtil.isNetAvailable(WirelessRelayActivity.this)) {
-                    if (routerDevice != null) {
+
                         boolean isUserLogin;
                         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
                         if (isUserLogin) {
-                            routerDevice.setWan(proto);
+                            mHomeGenius.setWan(proto,channels);
                             ToastSingleShow.showText(WirelessRelayActivity.this, "中继上网已设置，正在重启路由器");
                         } else {
                             ToastSingleShow.showText(WirelessRelayActivity.this, "未登录，无法设置静态上网,请登录后重试");
                         }
-                    }
+
 
                 } else {
                     ToastSingleShow.showText(WirelessRelayActivity.this, "网络连接已断开");
@@ -546,9 +559,9 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                         if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
                             refreshLocalWirelessRelay();
                         } else {
-                            if (routerDevice != null) {
-                                routerDevice.queryWifiRelay();
-                            }
+
+                                mHomeGenius.queryWifiRelay(channels);
+
 
                         }
                     }
@@ -566,7 +579,7 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
      * 下拉刷新-本地接口
      */
     private void refreshLocalWirelessRelay() {
-       /* RestfulToolsString.getSingleton(WirelessRelayActivity.this).WirelessRelayScan(new Callback<String>() {
+       RestfulToolsString.getSingleton(WirelessRelayActivity.this).WirelessRelayScan(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 int code = response.code();
@@ -648,14 +661,14 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             @Override
             public void onFailure(Call<String> call, Throwable t) {
             }
-        });*/
+        });
     }
 
     private void initViews() {
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        button_reload_wifirelay = (TextView) findViewById(R.id.button_reload_wifirelay);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
-        mPullToRefreshListView = (PullToRefreshListView) findViewById(R.id.list_wireless_relay_line);
+        textview_title = findViewById(R.id.textview_title);
+        button_reload_wifirelay = findViewById(R.id.button_reload_wifirelay);
+        image_back = findViewById(R.id.image_back);
+        mPullToRefreshListView = findViewById(R.id.list_wireless_relay_line);
 
     }
 
@@ -669,13 +682,10 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
             case R.id.button_reload_wifirelay:
                 if(!isStartFromExperience) {
                     if (op_type.equals(AppConstant.OPERATION_TYPE_LOCAL)) {
-
                         getLocalWirelessRelay();
-
                     } else {
-                        if (routerDevice != null) {
-                            routerDevice.queryWifiRelay();
-                        }
+                            mHomeGenius.queryWifiRelay(channels);
+
                     }
                 }
 
@@ -741,7 +751,6 @@ public class WirelessRelayActivity extends Activity implements View.OnClickListe
                                     reader.beginObject();
                                     encryption.setPairCiphers(pair_ciphers);
                                     reader.endObject();
-                                    ;
                                 }
                             } else if (tagName.equals("group_ciphers")) {
                                 List<String> group_ciphers = new ArrayList<>();

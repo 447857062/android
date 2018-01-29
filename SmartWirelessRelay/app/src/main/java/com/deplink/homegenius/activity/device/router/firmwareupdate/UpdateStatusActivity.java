@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -29,11 +31,12 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
     private TextView textview_updateing;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private RouterManager mRouterManager;
     private TextView textview_title;
     private FrameLayout image_back;
+    private HomeGenius mHomeGenius;
+    private String channels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,19 +50,15 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
 
     private void initEvents() {
         button_sure.setOnClickListener(this);
-        try {
-            routerDevice.startUpgrade();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void initDatas() {
         textview_title.setText("固件升级");
         mRouterManager=RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
-        connectLostDialog = new MakeSureDialog(UpdateStatusActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(UpdateStatusActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(UpdateStatusActivity.this, LoginActivity.class));
@@ -93,6 +92,12 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
             }
 
             @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+
+            }
+
+            @Override
             public void notifyDeviceDataChanged(String deviceKey, int type) {
                 Log.i(TAG, "notifyDeviceDataChanged type=" + type);
                 switch (type) {
@@ -120,18 +125,24 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }
     private boolean isUserLogin;
+    private boolean isStartFromExperience;
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        mHomeGenius = new HomeGenius();
+        if(!isStartFromExperience){
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        }
     }
 
 

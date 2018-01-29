@@ -29,7 +29,6 @@ public interface MqttServiceConstants {
     String DESTINATION_NAME = "destinationName";
     String CLIENT_HANDLE = "clientHandle";
     String MESSAGE_ID = "messageId";
-
     /* Tags for actions passed between the Activity and the Service */
     String SEND_ACTION = "send";
     String UNSUBSCRIBE_ACTION = "unsubscribe";
@@ -40,10 +39,8 @@ public interface MqttServiceConstants {
     String MESSAGE_DELIVERED_ACTION = "messageDelivered";
     String ON_CONNECTION_LOST_ACTION = "onConnectionLost";
     String TRACE_ACTION = "trace";
-
     /* Identifies an Intent which calls back to the Activity */
     String CALLBACK_TO_ACTIVITY = MqttService.TAG + ".callbackToActivity";
-
     /* Identifiers for extra data on Intents broadcast to the Activity */
     String CALLBACK_ACTION = MqttService.TAG + ".callbackAction";
     String CALLBACK_STATUS = MqttService.TAG + ".callbackStatus";
@@ -51,16 +48,12 @@ public interface MqttServiceConstants {
     String CALLBACK_ERROR_MESSAGE = MqttService.TAG + ".errorMessage";
     String CALLBACK_EXCEPTION_STACK = MqttService.TAG + ".exceptionStack";
     String CALLBACK_INVOCATION_CONTEXT = MqttService.TAG + "." + "invocationContext";
-
     String CALLBACK_ACTIVITY_TOKEN = MqttService.TAG + "." + "activityToken";
-
     String CALLBACK_DESTINATION_NAME = MqttService.TAG + '.' + DESTINATION_NAME;
     String CALLBACK_MESSAGE_ID = MqttService.TAG + '.' + MESSAGE_ID;
-
     String CALLBACK_MESSAGE_PARCEL = MqttService.TAG + ".PARCEL";
     String CALLBACK_TRACE_SEVERITY = MqttService.TAG + ".traceSeverity";
     String CALLBACK_ERROR_NUMBER = MqttService.TAG + ".ERROR_NUMBER";
-
     // Prefices for actions used in intents for registering callback listeners
     String ALARM_INTENT_PREFIX = MqttService.TAG + ".ALARM_";
     String PING_TOPIC_PREFIX = MqttService.TAG + ".PING_";

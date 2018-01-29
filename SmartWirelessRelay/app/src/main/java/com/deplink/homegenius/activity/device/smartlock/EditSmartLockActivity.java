@@ -24,6 +24,7 @@ import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
@@ -35,7 +36,11 @@ import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
@@ -67,6 +72,15 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private GatwayDevice selectedGatway;
     private String action;
     private String deviceUid;
+    private boolean isStartFromExperience;
+    private boolean isOnActivityResult;
+    private Room changeRoom;
+    private String selectGetwayName;
+    private boolean isLogin;
+    private SDKManager manager;
+    private EventCallback ec;
+    private DeleteDeviceDialog connectLostDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,23 +98,19 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         layout_getway.setOnClickListener(this);
     }
 
-    private boolean isStartFromExperience;
-
     private void initDatas() {
         mSmartLockManager = SmartLockManager.getInstance();
         mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
+        mSmartLockManager.InitSmartLockManager(this);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_title.setText("编辑");
         textview_edit.setText("完成");
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("我家的门锁");
             edittext_input_devie_name.setSelection(5);
-        } else {
-            mDeviceManager.InitDeviceManager(this);
-            mSmartLockManager.InitSmartLockManager(this);
         }
         deleteDialog = new DeleteDeviceDialog(this);
-
         mGetways = new ArrayList<>();
         mGetways.addAll(GetwayManager.getInstance().getAllGetwayDevice());
         GetwaySelectListAdapter selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
@@ -111,22 +121,24 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                action="alertgetway";
-                selectedGatway=mGetways.get(position);
-                deviceUid = mSmartLockManager.getCurrentSelectLock().getUid();
-                mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+                if (!isStartFromExperience) {
+                    action = "alertgetway";
+                    selectedGatway = mGetways.get(position);
+                    deviceUid = mSmartLockManager.getCurrentSelectLock().getUid();
+                    mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+                }
             }
         });
-        mDeviceListener=new DeviceListener() {
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseDeleteDeviceHttpResult(result);
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.deleteSmartDevice();
-                } else {
-                    DialogThreeBounce.hideLoading();
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
                 }
+                DialogThreeBounce.hideLoading();
+                mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+
             }
 
             @Override
@@ -151,7 +163,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
             @Override
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
-                switch (action){
+                switch (action) {
                     case "alertroom":
                         mSmartLockManager.updateSmartDeviceInWhatRoom(changeRoom, deviceUid);
                         break;
@@ -165,12 +177,62 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                         }
                         break;
                 }
-                action="";
+                action = "";
             }
         };
-    }
+        connectLostDialog = new DeleteDeviceDialog(EditSmartLockActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(EditSmartLockActivity.this, LoginActivity.class));
+            }
+        });
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
 
-    private String selectGetwayName;
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+        if(getIntent().getBooleanExtra("isupdateroom",false)){
+            isOnActivityResult = true;
+            String roomName = getIntent().getStringExtra("roomName");
+            Log.i(TAG, "roomName=" + roomName);
+            if (!isStartFromExperience) {
+                action = "alertroom";
+                changeRoom = RoomManager.getInstance().findRoom(roomName, true);
+                deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
+                mDeviceManager.alertDeviceHttp(deviceUid, changeRoom.getUid(), null, null);
+            }
+            textview_select_room_name.setText(roomName);
+        }
+    }
 
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
@@ -187,43 +249,24 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
     }
 
-    private boolean isOnActivityResult;
-    private Room changeRoom;
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            isOnActivityResult = true;
-            String roomName = data.getStringExtra("roomName");
-            Log.i(TAG, "roomName=" + roomName);
-            if (!isStartFromExperience) {
-                action="alertroom";
-                changeRoom = RoomManager.getInstance().findRoom(roomName, true);
-                 deviceUid = mDeviceManager.getCurrentSelectSmartDevice().getUid();
-                mDeviceManager.alertDeviceHttp(deviceUid, changeRoom.getUid(), null, null);
-
-            }
-            textview_select_room_name.setText(roomName);
-        }
-    }
-
-    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-                String devciename = edittext_input_devie_name.getText().toString();
-                mSmartLockManager.updateSmartDeviceName(devciename);
                 Intent intentBack = new Intent(this, SmartLockActivity.class);
-                intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intentBack);
+                intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                if (isStartFromExperience) {
+                    startActivity(intentBack);
+                } else {
+                    String devciename = edittext_input_devie_name.getText().toString();
+                    mSmartLockManager.updateSmartDeviceName(devciename);
+                    startActivity(intentBack);
+                }
                 break;
             case R.id.layout_select_room:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
                 intent.putExtra("addDeviceSelectRoom", true);
-                intent.putExtra("isStartFromExperience", isStartFromExperience);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
+                startActivity(intent);
                 mSmartLockManager.setEditSmartLock(true);
                 break;
             case R.id.button_delete_device:
@@ -231,14 +274,11 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-
                         if (!isStartFromExperience) {
                             if (isLogin) {
                                 DialogThreeBounce.showLoading(EditSmartLockActivity.this);
                                 mDeviceManager.deleteDeviceHttp();
-
                             }
-
                         } else {
                             startActivity(new Intent(EditSmartLockActivity.this, ExperienceDevicesActivity.class));
                         }
@@ -262,11 +302,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private boolean isLogin;
-
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isStartFromExperience) {
 
@@ -287,25 +326,30 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 } else {
                     textview_select_room_name.setText("全部");
                 }
-
                 SmartDev smartDev = DataSupport.where("Uid=?", mSmartLockManager.getCurrentSelectLock().getUid()).findFirst(SmartDev.class, true);
                 GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {
-                    textview_select_getway_name.setText("未设置网关");
+                    GatwayDevice localDbGatwayDevice= DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                    if(localDbGatwayDevice!=null){
+                        textview_select_getway_name.setText(localDbGatwayDevice.getName());
+                    }else{
+                        textview_select_getway_name.setText("未设置网关");
+                    }
                 } else {
                     textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
                 }
             }
         }
         mDeviceManager.addDeviceListener(mDeviceListener);
+        manager.addEventCallback(ec);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mDeviceManager.removeDeviceListener(mDeviceListener);
+        manager.removeEventCallback(ec);
     }
-
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
     private Handler mHandler = new Handler() {
@@ -316,7 +360,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
                     mDeviceManager.deleteDBSmartDevice(mDeviceManager.getCurrentSelectSmartDevice().getUid());
                     Toast.makeText(EditSmartLockActivity.this, "删除设备成功", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(EditSmartLockActivity.this, DevicesActivity.class));
+                    Intent intent = new Intent(EditSmartLockActivity.this, DevicesActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     break;
                 case MSG_HANDLE_DELETE_DEVICE_FAILED:
                     Toast.makeText(EditSmartLockActivity.this, "删除设备失败", Toast.LENGTH_SHORT).show();

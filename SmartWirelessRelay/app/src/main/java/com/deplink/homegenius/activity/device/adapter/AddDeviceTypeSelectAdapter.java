@@ -15,7 +15,7 @@ import java.util.List;
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 /**
- * Created by Administrator on 2017/11/14.
+ * Created by ${kelijun} on 2017/11/14.
  */
 public class AddDeviceTypeSelectAdapter extends BaseAdapter {
     private Context mContext;

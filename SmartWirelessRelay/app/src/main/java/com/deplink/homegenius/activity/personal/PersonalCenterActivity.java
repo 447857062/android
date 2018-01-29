@@ -19,19 +19,24 @@ import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.softupdate.UpdateImmediateActivity;
 import com.deplink.homegenius.activity.personal.usrinfo.UserinfoActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.util.APKVersionCodeUtils;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.ConfirmDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.imageview.CircleImageView;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,10 +63,16 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     private TextView textview_mine;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private boolean isUserLogin;
     private boolean hasGetUserImage;
     private ConfirmDialog mLogoutDialog;
+    private TextView user_nickname;
+    private TextView textview_update_now;
+    private boolean isAppUpdate = false;
+    private boolean isClickUpdate;
+    private RelativeLayout layout_update_soft;
+    private TextView textview_current_version;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,9 +104,23 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 setLocalImage(user_head_portrait);
             }
             button_logout.setText("退出登录");
+            String userName=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+            manager.getUserInfo(userName);
+            manager.queryAppUpdateInfo(Perfence.SDK_APP_KEY, APKVersionCodeUtils.getVerName(this));
+            if( manager.getAppUpdateInfo()!=null){
+                String version = manager.getAppUpdateInfo().getVersion();
+                int oldVersion=Integer.valueOf(APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).replace(".",""));
+                int newVersion=Integer.valueOf(version.replace(".",""));
+                isAppUpdate = !APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).equals(version) && (newVersion > oldVersion);
+            }else{
+                isAppUpdate = false;
+                textview_update_now.setText("已是最新版本");
+            }
+            textview_current_version.setText("当前版本:"+APKVersionCodeUtils.getVerName(this));
         }else{
             button_logout.setText("登录");
         }
+
     }
     private void setLocalImage(CircleImageView user_head_portrait) {
         boolean isSdCardExist = Environment.getExternalStorageState().equals(
@@ -117,8 +142,8 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     }
     private void initDatas() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(PersonalCenterActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(PersonalCenterActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
@@ -132,8 +157,29 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void onSuccess(SDKAction action) {
                 switch (action){
                     case LOGOUT:
+
                         Perfence.setPerfence(AppConstant.USER_LOGIN,false);
                         startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
+                        break;
+                    case APPUPDATE:
+                            String version = manager.getAppUpdateInfo().getVersion();
+                            int oldVersion=Integer.valueOf(APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).replace(".",""));
+                            int newVersion=Integer.valueOf(version.replace(".",""));
+                            if (!APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).equals(version) && (newVersion>oldVersion)) {
+                                isAppUpdate = true;
+                                textview_update_now.setText("立即升级");
+                            } else {
+                                textview_update_now.setText("已是最新版本");
+                                isAppUpdate = false;
+                            }
+                            if(isClickUpdate){
+                                isClickUpdate=false;
+                                if(isAppUpdate){
+                                    startActivity(new Intent(PersonalCenterActivity.this, UpdateImmediateActivity.class));
+                                }else{
+                                    ToastSingleShow.showText(PersonalCenterActivity.this,"已是最新版本");
+                                }
+                            }
                         break;
                 }
             }
@@ -158,11 +204,20 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             }
 
             @Override
+            public void onGetUserInfouccess(String info) {
+                super.onGetUserInfouccess(info);
+                Gson gson = new Gson();
+                if(!info.equalsIgnoreCase("[]")){
+                    UserInfoAlertBody responseInfo = gson.fromJson(info, UserInfoAlertBody.class);
+                    user_nickname.setText(responseInfo.getNickname());
+                }
+            }
+
+            @Override
             public void onFailure(SDKAction action, Throwable throwable) {
                 switch (action){
                     case LOGOUT:
                         Log.i(TAG, "退出登录失败");
-
                         ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败，请检查网络连接");
                         break;
                 }
@@ -173,9 +228,11 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isUserLogin=false;
+                mLogoutDialog.setDialogTitleText("登录");
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }
@@ -201,6 +258,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         layout_personal_center.setOnClickListener(this);
         button_logout.setOnClickListener(this);
         user_head_portrait.setOnClickListener(this);
+        layout_update_soft.setOnClickListener(this);
     }
 
     private void initViews() {
@@ -221,6 +279,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         layout_personal_center = findViewById(R.id.layout_personal_center);
         button_logout = findViewById(R.id.button_logout);
         user_head_portrait = findViewById(R.id.user_head_portrait);
+        user_nickname = findViewById(R.id.user_nickname);
+        textview_update_now = findViewById(R.id.textview_update_now);
+        layout_update_soft = findViewById(R.id.layout_update_soft);
+        textview_current_version = findViewById(R.id.textview_current_version);
     }
 
     /**
@@ -254,6 +316,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 startActivity(new Intent(PersonalCenterActivity.this, HomeNetWorkActivity.class));
                 break;
             case R.id.layout_experience_center:
+                DeviceManager.getInstance().setExperCenterStartFromHomePage(false);
                 startActivity(new Intent(this, ExperienceDevicesActivity.class));
                 break;
             case R.id.layout_home_page:
@@ -284,6 +347,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 break;
             case R.id.user_head_portrait:
                 startActivity(new Intent(this, UserinfoActivity.class));
+                break;
+            case R.id.layout_update_soft:
+                manager.queryAppUpdateInfo(Perfence.SDK_APP_KEY, APKVersionCodeUtils.getVerName(this));
+                isClickUpdate=true;
                 break;
 
         }

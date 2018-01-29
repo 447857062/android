@@ -23,9 +23,6 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
  */
 public class DeleteDeviceDialog extends Dialog implements View.OnClickListener {
     private Context mContext;
-
-
-
     public DeleteDeviceDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
@@ -51,9 +48,13 @@ public class DeleteDeviceDialog extends Dialog implements View.OnClickListener {
 
     private TextView textview_cancel;
     private TextView textview_center;
+    private TextView textview_title;
+    private TextView textview_makesure;
     private void initView() {
-        textview_cancel= (TextView) findViewById(R.id.textview_cancel);
-        textview_center= (TextView) findViewById(R.id.textview_center);
+        textview_cancel= findViewById(R.id.textview_cancel);
+        textview_center= findViewById(R.id.textview_center);
+        textview_title= findViewById(R.id.textview_title);
+        textview_makesure= findViewById(R.id.textview_makesure);
 
     }
 
@@ -62,7 +63,12 @@ public class DeleteDeviceDialog extends Dialog implements View.OnClickListener {
         textview_cancel.setOnClickListener(this);
         textview_center.setOnClickListener(this);
     }
-
+    public void setTitleText(String msg) {
+        textview_title.setText(msg);
+    }
+    public void setContentText(String msg) {
+        textview_makesure.setText(msg);
+    }
 
 
     private onSureBtnClickListener mOnSureBtnClickListener;

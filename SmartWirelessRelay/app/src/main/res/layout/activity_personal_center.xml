@@ -57,7 +57,7 @@
             android:layout_marginTop="0dp"
             android:textSize="@dimen/text_size_small"
             android:gravity="center_horizontal"
-            android:text="Clamdown"
+            android:text=""
             android:textColor="@color/white" />
     </RelativeLayout>
     <com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout
@@ -130,13 +130,52 @@
                         android:layout_centerVertical="true"
                         android:src="@drawable/directionicon" />
                 </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/layout_update_soft"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_item_content_height"
+                    android:layout_below="@+id/layout_experience_center"
+                    android:layout_marginTop="@dimen/room_list_item_margin_top"
+                    android:background="@drawable/button_press_normal"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/layout_content_margin_left_right"
+                    android:paddingRight="@dimen/layout_content_margin_left_right">
+
+                    <TextView
+                        android:id="@+id/textview_update_now"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="立即更新"
+                        android:textColor="@color/room_type_text"
+                        android:textSize="@dimen/text_size_small" />
+                    <TextView
+                        android:layout_toRightOf="@+id/textview_update_now"
+                        android:layout_toLeftOf="@+id/imageview_arror"
+                        android:id="@+id/textview_current_version"
+                        android:textColor="@color/huise"
+                        android:gravity="center_vertical|right"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <ImageView
+                        android:id="@+id/imageview_arror"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/directionicon" />
+                </RelativeLayout>
                 <!--退出登录-->
                 <TextView
                     android:id="@+id/button_logout"
                     android:layout_width="match_parent"
                     android:background="@drawable/button_delete_background"
                     android:layout_height="@dimen/layout_item_content_height"
-                    android:layout_below="@+id/layout_experience_center"
+                    android:layout_below="@+id/layout_update_soft"
                     android:layout_marginTop="@dimen/mine_page_logout_margitop"
                     android:gravity="center_horizontal|center_vertical"
                     android:textSize="@dimen/text_size_small"

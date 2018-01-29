@@ -2,36 +2,45 @@ package com.deplink.homegenius.activity.device.router;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.activity.device.router.wifi.WifiSetting24;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.SelectConnectTypeDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.device.router.RouterDevice;
 import com.deplink.sdk.android.sdk.json.Lan;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.Proto;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.deplink.sdk.android.sdk.rest.ErrorResponse;
+import com.deplink.sdk.android.sdk.rest.RestfulToolsRouter;
+import com.deplink.sdk.android.sdk.rest.RouterResponse;
+import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class ConnectSettingActivity extends Activity implements View.OnClickListener{
+public class ConnectSettingActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "ConnectSettingActivity";
     private RelativeLayout layout_connect_type_setting;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private TextView textview_current_connect_type;
     private RelativeLayout layout_pppoe_account;
     private RelativeLayout layout_pppoe_password;
@@ -63,11 +72,14 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     private TextView textview_lan_ip;
     private TextView textview_netmask;
     private TextView textview_dhcp_status;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private RouterManager mRouterManager;
     private boolean isUserLogin;
     private TextView textview_title;
     private FrameLayout image_back;
+    private HomeGenius mHomeGenius;
+    private String channels;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,17 +92,16 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        mHomeGenius = new HomeGenius();
+        channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+        if (!DeviceManager.getInstance().isStartFromExperience()) {
             manager.addEventCallback(ec);
-            if (routerDevice != null) {
-                routerDevice.queryWan();
-                routerDevice.queryLan();
+            if (channels != null) {
+                mHomeGenius.queryWan(channels);
+                mHomeGenius.queryLan(channels);
             }
-        }
 
+        }
     }
 
     @Override
@@ -99,13 +110,64 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
         manager.removeEventCallback(ec);
     }
 
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
+
+        if (op == null) {
+
+        } else if (op.equalsIgnoreCase("LAN")) {
+            if (method.equalsIgnoreCase("REPORT")) {
+                Lan lan = gson.fromJson(xmlStr, Lan.class);
+                Log.i(TAG, "get lan =" + lan.toString());
+                textview_lan_ip.setText(lan.getLANIP());
+                textview_netmask.setText(lan.getNETMASK());
+                if (lan.getDhcpStatus().equalsIgnoreCase("ON")) {
+                    textview_dhcp_status.setText("开启");
+                } else {
+                    textview_dhcp_status.setText("关闭");
+                }
+            }
+        } else if (op.equalsIgnoreCase("WAN")) {
+            if (method.equalsIgnoreCase("REPORT")) {
+                PERFORMANCE wan = gson.fromJson(xmlStr, PERFORMANCE.class);
+                Proto proto;
+                proto = wan.getProto();
+                String ConnectType;
+                if (proto != null) {
+                    if (proto.getAP_CLIENT() != null) {
+                        ConnectType = "中继功能";
+                        setApclientConnectTypeTextview(proto);
+                    } else if (proto.getDHCP() != null) {
+                        ConnectType = "动态IP";
+                        setDynamicConnectTypeTextview(proto);
+                    } else if (proto.getSTATIC() != null) {
+                        ConnectType = "静态IP";
+                        setStaticipConnecttypeTextview(proto);
+                    } else if (proto.getPPPOE() != null) {
+                        ConnectType = "拨号上网";
+                        setPPPOEConnectTypeTextview(proto);
+                    } else {
+                        ConnectType = "--";
+                    }
+                    textview_current_connect_type.setText(ConnectType);
+                }
+            }
+        }
+    }
+
     private void initDatas() {
         textview_title.setText("上网设置");
-        mRouterManager=RouterManager.getInstance();
+        mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(ConnectSettingActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(ConnectSettingActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(ConnectSettingActivity.this, LoginActivity.class));
@@ -124,65 +186,16 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
 
             }
 
-
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
+            }
 
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
-                switch (op) {
-                    case RouterDevice.OP_GET_WAN:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Proto proto = null;
-                                if (routerDevice != null) {
-                                    proto = routerDevice.getProto();
-                                }
-                                String ConnectType;
-                                if (proto != null) {
-                                    if (proto.getAP_CLIENT() != null) {
-                                        ConnectType = "中继功能";
-                                        setApclientConnectTypeTextview(proto);
-                                    } else if (proto.getDHCP() != null) {
-                                        ConnectType = "动态IP";
-                                        setDynamicConnectTypeTextview(proto);
-                                    } else if (proto.getSTATIC() != null) {
-                                        ConnectType = "静态IP";
-                                        setStaticipConnecttypeTextview(proto);
-                                    } else if (proto.getPPPOE() != null) {
-                                        ConnectType = "拨号上网";
-                                        setPPPOEConnectTypeTextview(proto);
-                                    } else {
-                                        ConnectType = "--";
-                                    }
-                                    textview_current_connect_type.setText(ConnectType);
-                                }
 
-                            }
-                        });
-                        break;
-                    case  RouterDevice.OP_GET_LAN:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Lan lan=routerDevice.getLan();
-                                    textview_lan_ip.setText(lan.getLANIP());
-                                    textview_netmask.setText(lan.getNETMASK());
-                                    if(lan.getDhcpStatus().equalsIgnoreCase("ON")){
-                                        textview_dhcp_status.setText("开启");
-                                    }else{
-                                        textview_dhcp_status.setText("关闭");
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
-
-                        break;
-                }
             }
 
             @Override
@@ -194,9 +207,10 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         selectConnectTypeDialog = new SelectConnectTypeDialog(ConnectSettingActivity.this);
@@ -344,8 +358,8 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-        textview_title= findViewById(R.id.textview_title);
-        image_back= findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
         layout_connect_type_setting = findViewById(R.id.layout_connect_type_setting);
         textview_current_connect_type = findViewById(R.id.textview_current_connect_type);
 
@@ -362,7 +376,6 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
         textview_encryption = findViewById(R.id.textview_encryption);
         textview_encryption_algorithm = findViewById(R.id.textview_encryption_algorithm);
         textview_channel = findViewById(R.id.textview_channel);
-
         layout_pppoe_account = findViewById(R.id.layout_pppoe_account);
         layout_pppoe_password = findViewById(R.id.layout_pppoe_password);
         layout_wan_ip_setting = findViewById(R.id.layout_wan_ip_setting);
@@ -386,17 +399,97 @@ public class ConnectSettingActivity extends Activity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
-               onBackPressed();
+                onBackPressed();
                 break;
             case R.id.layout_connect_type_setting:
-                isUserLogin= Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-                if(isUserLogin){
+                isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+                if (isUserLogin) {
                     selectConnectTypeDialog.show();
-                }else{
-                    ToastSingleShow.showText(this,"未登录，无法设置上网方式,请登录后重试");
+                } else {
+                    ToastSingleShow.showText(this, "未登录，无法设置上网方式,请登录后重试");
                 }
 
                 break;
         }
+    }
+
+    /**
+     * （成功连接本地路由器后）选择上网方式
+     */
+    private void selectConnectType() {
+        RestfulToolsRouter.getSingleton(ConnectSettingActivity.this).dynamicIp(new Callback<RouterResponse>() {
+            @Override
+            public void onResponse(Call<RouterResponse> call, Response<RouterResponse> response) {
+                int code = response.code();
+                if (code != 200) {
+                    String errorMsg = "";
+                    try {
+                        String text = response.errorBody().string();
+                        Gson gson = new Gson();
+                        ErrorResponse errorResponse = gson.fromJson(text, ErrorResponse.class);
+                        switch (errorResponse.getErrcode()) {
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_TOKEN:
+                                text = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_TOKEN;
+                                ToastSingleShow.showText(ConnectSettingActivity.this, "登录已失效 :" + text);
+                                startActivity(new Intent(ConnectSettingActivity.this, LoginActivity.class));
+                                return;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT;
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_NOT_FOUND:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_NOT_FOUND;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_LOGIN_FAIL_MAX:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_LOGIN_FAIL_MAX;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_CAPTCHA_INCORRECT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_CAPTCHA_INCORRECT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_INCORRECT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_INCORRECT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_PASSWORD_SHORT:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_PASSWORD_SHORT;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_BAD_ACCOUNT_INFO:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_BAD_ACCOUNT_INFO;
+
+                                break;
+                            case AppConstant.ERROR_CODE.OP_ERRCODE_DB_TRANSACTION_ERROR:
+                                errorMsg = AppConstant.ERROR_MSG.OP_ERRCODE_DB_TRANSACTION_ERROR;
+                                break;
+                            default:
+                                errorMsg = errorResponse.getMsg();
+                                break;
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(!errorMsg.equalsIgnoreCase("")){
+                        ToastSingleShow.showText(ConnectSettingActivity.this, errorMsg);
+                    }
+                } else {
+                    ToastSingleShow.showText(ConnectSettingActivity.this, "动态IP设置成功，请设置wifi名字密码");
+                    Intent intentWifiSetting = new Intent(ConnectSettingActivity.this, WifiSetting24.class);
+                    intentWifiSetting.putExtra(AppConstant.OPERATION_TYPE, AppConstant.OPERATION_TYPE_LOCAL);
+                    startActivity(intentWifiSetting);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RouterResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

@@ -24,12 +24,11 @@ public class DeviceListAdapter extends BaseAdapter {
     private List<GatwayDevice> listTop = null;
     private List<SmartDev> listBottom = null;
     private Context mContext;
-    private final int TOP_ITEM = 0, BOTTOM_ITEM = 1, TYPE_COUNT = 2;
+    private final int TOP_ITEM = 0;
     /**
      * 头部列表数据的大小
      */
     private int TopCount = 0;
-
     public DeviceListAdapter(Context mContext, List<GatwayDevice> list,
                              List<SmartDev> datasOther) {
         this.mContext = mContext;
@@ -51,7 +50,6 @@ public class DeviceListAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        Log.i(TAG, "头部列表=" + listTop.size());
     }
 
     /**
@@ -104,7 +102,7 @@ public class DeviceListAdapter extends BaseAdapter {
      */
     @Override
     public int getViewTypeCount() {
-        return TYPE_COUNT;
+        return 2;
     }
 
     /**
@@ -114,7 +112,7 @@ public class DeviceListAdapter extends BaseAdapter {
      **/
     @Override
     public int getItemViewType(int position) {
-
+        int BOTTOM_ITEM = 1;
         if (position < TopCount)
             return TOP_ITEM;
         else
@@ -174,7 +172,6 @@ public class DeviceListAdapter extends BaseAdapter {
             String deviceType = listBottom.get(position - TopCount).getType();
             String deviceName = listBottom.get(position - TopCount).getName();
             String deviceStatu = listBottom.get(position - TopCount).getStatus();
-            Log.i(TAG,"devicetype="+deviceType+"devicename="+deviceName+"deviceStatu="+deviceStatu);
             if (deviceStatu != null) {
                 switch (deviceStatu){
                     case "on":
@@ -195,6 +192,11 @@ public class DeviceListAdapter extends BaseAdapter {
                 deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
             }
             viewHolder.textview_device_name.setText(deviceName);
+            if(deviceStatu.equalsIgnoreCase("在线")){
+                viewHolder.textview_device_status.setBackgroundResource(R.drawable.blue);
+            }else{
+                viewHolder.textview_device_status.setBackgroundResource(R.drawable.gray);
+            }
             viewHolder.textview_device_status.setText(deviceStatu);
             getDeviceTypeImage(viewHolder, deviceType, position);
         }
@@ -215,7 +217,6 @@ public class DeviceListAdapter extends BaseAdapter {
            case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                String deviceSubType;
                deviceSubType = listBottom.get(position - TopCount).getSubType();
-               Log.i(TAG,"deviceSubType="+deviceSubType);
                if(deviceSubType==null){
                    return;
                }

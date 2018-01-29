@@ -3,6 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     tools:context="com.deplink.homegenius.activity.device.doorbell.VistorHistoryActivity">
-    <include layout="@layout/layout_title_with_back_center_titletext" android:id="@+id/layout_topbar"/>
+    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_topbar"/>
+    <FrameLayout
+        android:layout_below="@+id/layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuListView
+            android:id="@+id/listview_vistor_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:dividerHeight="5dp"
+            android:divider="@null" />
+        <RelativeLayout
+            android:id="@+id/layout_no_visitor"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:background="@drawable/nodoorbellrecord"
+                android:id="@+id/imageview_novisitor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small"
+                android:layout_marginTop="10dp"
+                android:text="没有访问记录"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/imageview_novisitor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </FrameLayout>
+
+
 </RelativeLayout>

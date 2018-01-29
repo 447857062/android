@@ -20,7 +20,6 @@ import retrofit2.Retrofit;
 public class RestfulToolsPng {
     private volatile static RestfulToolsPng singleton;
     private volatile static RestfulServer apiService;
-
     private String username;
 
     /**
@@ -58,7 +57,6 @@ public class RestfulToolsPng {
 
         builder.client(okClient);
         Retrofit retrofit = builder.build();
-
         apiService = retrofit.create(RestfulServer.class);
     }
 
@@ -85,6 +83,13 @@ public class RestfulToolsPng {
 
     public Call<Bitmap> getImage(String username, Callback<Bitmap> cll) {
         Call<Bitmap> call = apiService.getImage(RestfulTools.getSingleton().getToken(),username);
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<Bitmap> getDoorBellImage(String username,String device_uid,String file, Callback<Bitmap> cll) {
+        Call<Bitmap> call = apiService.getDoorBellVisitorImage(RestfulTools.getSingleton().getToken(),username,device_uid,file);
         if (cll != null) {
             call.enqueue(cll);
         }

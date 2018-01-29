@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.QueryOptions;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.ReportAlertRecord;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
@@ -22,6 +23,8 @@ import com.deplink.homegenius.manager.connect.local.udp.interfaces.UdpManagerGet
 import com.deplink.homegenius.util.DataExchange;
 import com.deplink.homegenius.util.NetUtil;
 import com.google.gson.Gson;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,15 +124,16 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
 
     public void removeLocalConnectListener(LocalConnecteListener listener) {
         if (listener != null && mLocalConnecteListener.contains(listener)) {
-            Log.i(TAG, "removeLocalConnectListener=" + listener.toString());
             this.mLocalConnecteListener.remove(listener);
         }
 
     }
 
     public void addLocalConnectListener(LocalConnecteListener listener) {
+        if(mLocalConnecteListener==null){
+            return;
+        }
         if (listener != null && !mLocalConnecteListener.contains(listener)) {
-            Log.i(TAG, "addLocalConnectListener=" + listener.toString());
             this.mLocalConnecteListener.add(listener);
         }
     }
@@ -255,6 +259,7 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
      * 连接上后需要绑定app才能通讯
      */
     private void bindApp(String uid) {
+        Log.i(TAG, "初始化中继器");
         GeneralPacket packet = new GeneralPacket(mContext);
         QueryOptions queryCmd = new QueryOptions();
         queryCmd.setOP("SET");
@@ -266,7 +271,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
         packet.packBindUnbindAppPacket(uid, ComandID.CMD_BIND, text.getBytes());
         getOut(packet.data);
     }
-
 
     /**
      * tcp发送数据
@@ -350,8 +354,8 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                         break;
                     case ComandID.CMD_BIND_APP_RESPONSE:
                         str = new String(buf, AppConstant.BASICLEGTH, length);
+                        Log.i(TAG, "绑定结果=" + str);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                            Log.i(TAG, "绑定结果=" + str);
                             mLocalConnecteListener.get(i).OnBindAppResult(str);
                         }
                         break;
@@ -432,10 +436,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
         conext.unregisterReceiver(broadCast);
     }
 
-    /**
-     * 当前的网络情况
-     */
-    private int currentNetStatu = 4;
     private int lastNetStatu;
     public static final int NET_TYPE_WIFI_CONNECTED = 0;
     /**
@@ -454,6 +454,10 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeInfo = manager.getActiveNetworkInfo();
                 if (activeInfo != null && NetUtil.isWiFiActive(context)) {
+                    /*
+      当前的网络情况
+     */
+                    int currentNetStatu = 4;
                     if (NetUtil.isWiFiActive(mContext)) {
                         currentNetStatu = NET_TYPE_WIFI_CONNECTED;
                     } else {
@@ -476,7 +480,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                             resetSslSocket();
                         }
                     }
-
                 }
             }
         }
@@ -503,9 +506,21 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
     }
 
     private boolean initSocketing = false;
+    private List<GatwayDevice> mGatwayDevices;
 
     @Override
     public void onGetLocalConnectIp(String ipAddress, String uid) {
+        mGatwayDevices = DataSupport.findAll(GatwayDevice.class);
+        Log.i(TAG, "探测到的网关的uid:" + uid);
+        for (int i = 0; i < mGatwayDevices.size(); i++) {
+            Log.i(TAG, "绑定的网关的uid:" + mGatwayDevices.get(i).getUid());
+            if (mGatwayDevices.get(i).getUid().equalsIgnoreCase(uid)) {
+                if (!initSocketing) {
+                    initSocketing = true;
+                    InitConnect(ipAddress);
+                }
+            }
+        }
         if (!initSocketing) {
             initSocketing = true;
             InitConnect(ipAddress);

@@ -16,7 +16,6 @@
             android:paddingRight="15dp"
             android:textSize="@dimen/text_size_small"
             android:textColor="@color/room_type_text"
-            android:hint="ClamDown"
             android:singleLine="true"
             android:background="@color/white"
             android:layout_width="match_parent"

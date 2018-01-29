@@ -1,7 +1,6 @@
 package com.deplink.sdk.android.sdk.rest;
 
 
-import android.content.Context;
 import android.util.Log;
 
 import com.deplink.sdk.android.sdk.homegenius.DeviceAddBody;
@@ -9,12 +8,18 @@ import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.homegenius.Room;
 import com.deplink.sdk.android.sdk.homegenius.RoomUpdateName;
+import com.deplink.sdk.android.sdk.homegenius.ShareDeviceBody;
+import com.deplink.sdk.android.sdk.homegenius.UserInfoAlertBody;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAddBody;
+import com.deplink.sdk.android.sdk.homegenius.VirtualDeviceAlertBody;
+import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -24,7 +29,6 @@ public class RestfulToolsHomeGenius {
     private static final String TAG = "RestfulToolsHomeGenius";
     private volatile static RestfulToolsHomeGenius singleton;
     private volatile static RestfulHomeGeniusServer apiService;
-    private static Context mContext;
     private static final String baseUrl = "https://api.deplink.net";
     private String errMsg = "请先登录";
 
@@ -49,9 +53,19 @@ public class RestfulToolsHomeGenius {
                 "gtPeEexrQAoohDEi0FgAEoMS7OlCvRRVBXZ66VkA6yH2uvr9G5qmEBbMOCpq/z+J\n" +
                 "NkX8gffeUmw2VqA/7adjNLdZg3Zs8rJncgz9ooXcpdXL/+tbuQ==\n" +
                 "-----END CERTIFICATE-----";
+        HttpLoggingInterceptor.Level level= HttpLoggingInterceptor.Level.BODY;
+        //新建log拦截器
+        HttpLoggingInterceptor loggingInterceptor=new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                Log.d("OkHttpClient","OkHttpMessage:"+message);
+            }
+        });
+        loggingInterceptor.setLevel(level);
         builder = new Retrofit.Builder().baseUrl(baseUrl).
                 addConverterFactory(GsonConverterFactory.create());
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        clientBuilder.addInterceptor(loggingInterceptor);
         clientBuilder.connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(SslUtil.getSocketFactory(ca))
                 .readTimeout(20 * 1000, TimeUnit.MILLISECONDS);
@@ -61,8 +75,7 @@ public class RestfulToolsHomeGenius {
         apiService = retrofit.create(RestfulHomeGeniusServer.class);
     }
 
-    public static RestfulToolsHomeGenius getSingleton(Context context) {
-        mContext = context;
+    public static RestfulToolsHomeGenius getSingleton() {
         if (singleton == null) {
             synchronized (RestfulToolsHomeGenius.class) {
                 if (singleton == null) {
@@ -80,8 +93,40 @@ public class RestfulToolsHomeGenius {
             }
             return null;
         }
-        Log.i(TAG, "addDevice:" + username);
+
         Call<JsonObject> call = apiService.addDevice(username, deviceAddBody, RestfulTools.getSingleton().getToken());
+        Log.i(TAG, "addDevice:" + username);
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> addVirtualDevice(String username, VirtualDeviceAddBody deviceAddBody, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "addDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.addVirtualDevice(username, deviceAddBody, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> cancelDeviceShare(String username, String  device_uid, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        ShareDeviceBody body=new ShareDeviceBody();
+        body.setUser_name(username);
+        body.setDevice_uid(device_uid);
+        Log.i(TAG, "cancelDeviceShare:" + username);
+        Call<DeviceOperationResponse> call = apiService.cancelDeviceShare(username, body, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
@@ -95,8 +140,41 @@ public class RestfulToolsHomeGenius {
             }
             return null;
         }
-        Log.i(TAG, "addDevice:" + username);
+        Log.i(TAG, "deleteDevice:" + username);
         Call<DeviceOperationResponse> call = apiService.deleteDevice(username, uid, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> deleteDoorBellVisitor(String username, String uid,String file, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "deleteDevice:" + username+"file name="+file);
+        Call<DeviceOperationResponse> call = apiService.deleteDoorBellVisitorImage(
+                username,
+                uid,
+                file,
+                RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+
+    public Call<DeviceOperationResponse> deleteVirtualDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "deleteVirtualDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.deleteVirtualDevice(username, uid, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
@@ -112,6 +190,34 @@ public class RestfulToolsHomeGenius {
         }
         Log.i(TAG, "alertDevice:" + username);
         Call<DeviceOperationResponse> call = apiService.alertDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> alertVirtualDevice(String username, VirtualDeviceAlertBody deviceprops, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "alertDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.alertVirtualDevice(username, deviceprops, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> alertUserInfo(String username, UserInfoAlertBody body, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "alertUserInfo:" + username);
+        Call<DeviceOperationResponse> call = apiService.alertUserInfo(username, body, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
@@ -156,6 +262,20 @@ public class RestfulToolsHomeGenius {
         }
         Log.i(TAG, "updateRoomName:" + username);
         Call<DeviceOperationResponse> call = apiService.updateRoomName(username, roomUpdateName, RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
+    public Call<DeviceOperationResponse> setLockUserIdName(String username, String device_uid, LockUserId userIdBody, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "setLockUserIdName:" + username);
+        Call<DeviceOperationResponse> call = apiService.setLockUserIdName(username, device_uid,userIdBody, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }

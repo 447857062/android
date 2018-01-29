@@ -1,8 +1,8 @@
 package com.deplink.homegenius.activity.personal.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +12,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -19,10 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -34,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -53,7 +57,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
     private ImageView imageview_eye;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private String newPassword;
     private Button button_login;
     private int time = Perfence.VERIFYCODE_TIME;
@@ -62,7 +66,6 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
     private String simCountryCode = "86";
     private TextView buton_get_verification_code;
     private EventHandler eh;
-    private String oldPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,11 +74,23 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
         initDatas();
         initEvents();
     }
+    private void showInputmothed() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+                           public void run() {
 
+                               InputMethodManager inputManager =
+                                       (InputMethodManager) edittext_input_phone_number.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                               inputManager.showSoftInput(edittext_input_phone_number, 0);
+                           }
+                       },
+                500);
+    }
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
+        showInputmothed();
     }
 
     @Override
@@ -85,8 +100,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
     }
 
     private void initDatas() {
-        textview_title.setText("找回密码");
-        oldPassword=Perfence.getPerfence(Perfence.USER_PASSWORD);
+        textview_title.setText("重置密码");
         SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
         eh = new EventHandler() {
             @Override
@@ -95,16 +109,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     switch (event) {
                         case SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE:
-                            if(oldPassword.equals("")){
-                                mhandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ToastSingleShow.showText(ForgetPasswordActivity.this,"用户未注册");
-                                    }
-                                });
-                                return;
-                            }
-                            manager.loginedAlertPassword(oldPassword, newPassword);
+                            manager.resetPassword(username, newPassword,verifycode);
                             break;
                         case SMSSDK.EVENT_GET_VERIFICATION_CODE:
                             break;
@@ -142,8 +147,8 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
             alhmCountries = Perfence.alhmCountries;
         }
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(ForgetPasswordActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(ForgetPasswordActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(ForgetPasswordActivity.this, LoginActivity.class));
@@ -155,10 +160,13 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
             @Override
             public void onSuccess(SDKAction action) {
                 switch (action) {
-                    case ALERTPASSWORD:
+                    case RESET_PASSWORD:
                         Perfence.setPerfence(Perfence.USER_PASSWORD, newPassword);
                         manager.login(Perfence.getPerfence(Perfence.PERFENCE_PHONE), newPassword);
-                        ToastSingleShow.showText(ForgetPasswordActivity.this, "更改密码成功");
+                        ToastSingleShow.showText(ForgetPasswordActivity.this, "重置密码成功");
+                        break;
+                    case LOGIN:
+                        startActivity(new Intent(ForgetPasswordActivity.this, SmartHomeMainActivity.class));
                         break;
                 }
             }
@@ -185,7 +193,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
     }

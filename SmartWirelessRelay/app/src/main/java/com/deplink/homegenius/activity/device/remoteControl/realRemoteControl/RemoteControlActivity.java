@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
@@ -29,13 +28,11 @@ import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -44,7 +41,6 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
-import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
@@ -53,7 +49,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class RemoteControlActivity extends Activity implements View.OnClickListener, RemoteControlListener, RoomListener {
+public class RemoteControlActivity extends Activity implements View.OnClickListener, RoomListener {
     private static final String TAG = "RemoteControlActivity";
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
@@ -76,11 +72,16 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private String deviceName;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private boolean isLogin;
     private RoomManager mRoomManager;
     private String selectGetwayName;
     private DeviceListener mDeviceListener;
+    private DeleteDeviceDialog deleteDialog;
+    private String deviceUid;
+    private Room room;
+    private GatwayDevice selectedGatway;
+    private String action;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-    private GatwayDevice selectedGatway;
-    private String action;
+
     private void initDatas() {
         deleteDialog = new DeleteDeviceDialog(this);
         mDeviceManager = DeviceManager.getInstance();
@@ -101,9 +101,9 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         textview_title.setText("万能遥控");
         textview_edit.setText("完成");
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, this);
-        connectLostDialog = new MakeSureDialog(RemoteControlActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        mRemoteControlManager.InitRemoteControlManager(this);
+        connectLostDialog = new DeleteDeviceDialog(RemoteControlActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(RemoteControlActivity.this, LoginActivity.class));
@@ -119,19 +119,16 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 selectGetwayName = mGetways.get(position).getName();
                 textview_select_getway_name.setText(selectGetwayName);
                 layout_getway_list.setVisibility(View.GONE);
-                action="alertgetway";
-                selectedGatway=mGetways.get(position);
-                deviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
-                mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
-
+                if (!isStartFromExperience) {
+                    action = "alertgetway";
+                    selectedGatway = mGetways.get(position);
+                    deviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+                    mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+                }
             }
         });
-        if (isStartFromExperience) {
-
-        } else {
-            mDeviceManager.InitDeviceManager(this);
-
-        }
+        mDeviceManager.InitDeviceManager(this);
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         ec = new EventCallback() {
             @Override
@@ -158,44 +155,33 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 isLogin = false;
+
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         mDeviceListener = new DeviceListener() {
             @Override
             public void responseBindDeviceResult(String result) {
                 super.responseBindDeviceResult(result);
-                Gson gson = new Gson();
-                boolean deleteSuccess = true;
-                DeviceList mDeviceList = gson.fromJson(result, DeviceList.class);
-                for (int i = 0; i < mDeviceList.getSmartDev().size(); i++) {
-                    if (mDeviceList.getSmartDev().get(i).getUid().equals(mDeviceManager.getCurrentSelectSmartDevice().getUid())) {
-                        deleteSuccess = false;
-                    }
-                }
-                DialogThreeBounce.hideLoading();
-                if (deleteSuccess) {
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-                } else {
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_FAILED);
-                }
+                //不处理本地删除设备的回应,远程http接口删除了就代表删除成功
+
             }
 
             @Override
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
-                switch (action){
+                switch (action) {
                     case "alertroom":
                         mRemoteControlManager.updateSmartDeviceInWhatRoom(room, deviceUid);
                         break;
                     case "alertname":
-                        boolean saveNameresult= mRemoteControlManager.saveCurrentSelectDeviceName(deviceName);
+                        boolean saveNameresult = mRemoteControlManager.saveCurrentSelectDeviceName(deviceName);
                         if (!saveNameresult) {
                             Toast.makeText(RemoteControlActivity.this, "更新智能设备名称失败", Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             startActivity(new Intent(RemoteControlActivity.this, DevicesActivity.class));
                         }
                         break;
@@ -206,7 +192,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                         }
                         break;
                 }
-                action="";
+                action = "";
             }
 
             @Override
@@ -214,11 +200,10 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 super.responseDeleteDeviceHttpResult(result);
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.deleteSmartDevice();
-                } else {
-                    DialogThreeBounce.hideLoading();
-                    mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-                    ToastSingleShow.showText(RemoteControlActivity.this, "无可用的网关");
                 }
+                DialogThreeBounce.hideLoading();
+                mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
+
             }
         };
     }
@@ -248,23 +233,24 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         deviceName = edittext_input_devie_name.getText().toString();
         if (!isStartFromExperience) {
             if (!isOnActivityResult) {
-                if (mRemoteControlManager.getmSelectRemoteControlDevice().getRooms() == null) {
+                SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
+                if (smartDev.getRooms() == null) {
                     textview_select_room_name.setText("全部");
                 } else {
-                    for (int i = 0; i < mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size(); i++) {
-                        Log.i(TAG, mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
-                    }
-                    if (mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().size() == 1) {
-                        textview_select_room_name.setText(mRemoteControlManager.getmSelectRemoteControlDevice().getRooms().get(0).getRoomName());
+                    if (smartDev.getRooms().size() == 1) {
+                        textview_select_room_name.setText(smartDev.getRooms().get(0).getRoomName());
                     } else {
                         textview_select_room_name.setText("全部");
                     }
                 }
-
-                SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
                 GatwayDevice temp = smartDev.getGetwayDevice();
                 if (temp == null) {
-                    textview_select_getway_name.setText("未设置网关");
+                    GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                    if (localDbGatwayDevice != null) {
+                        textview_select_getway_name.setText(localDbGatwayDevice.getName());
+                    } else {
+                        textview_select_getway_name.setText("未设置网关");
+                    }
                 } else {
                     textview_select_getway_name.setText(smartDev.getGetwayDevice().getName());
                 }
@@ -301,24 +287,27 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
     }
 
-    private DeleteDeviceDialog deleteDialog;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textview_edit:
-                action="alertname";
-                String changeDeviceName=edittext_input_devie_name.getText().toString();
-                if(changeDeviceName.equals("")){
-                    ToastSingleShow.showText(this,"请输入设备而名称");
+                action = "alertname";
+                String changeDeviceName = edittext_input_devie_name.getText().toString();
+                if (changeDeviceName.equals("")) {
+                    ToastSingleShow.showText(this, "请输入设备而名称");
                     return;
                 }
-                if (!changeDeviceName.equals(deviceName)) {
-                    mRemoteControlManager.saveCurrentSelectDeviceName(changeDeviceName);
-                }
-                if(isLogin){
-                    deviceName=changeDeviceName;
-                    mDeviceManager.alertDeviceHttp(deviceUid, changeDeviceName, null,null);
+                if (!isStartFromExperience) {
+                    if (!changeDeviceName.equals(deviceName)) {
+                        mRemoteControlManager.saveCurrentSelectDeviceName(changeDeviceName);
+                    }
+                    if (isLogin) {
+                        deviceUid = DeviceManager.getInstance().getCurrentSelectSmartDevice().getUid();
+                        deviceName = changeDeviceName;
+                        mDeviceManager.alertDeviceHttp(deviceUid, changeDeviceName, null, null);
+                    }
+                } else {
+                    startActivity(new Intent(this, ExperienceDevicesActivity.class));
                 }
 
                 break;
@@ -362,8 +351,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private String deviceUid;
-    private Room room;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -374,7 +361,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             Log.i(TAG, "roomName=" + roomName);
             if (!isStartFromExperience) {
                 if (isLogin) {
-                    action="alertroom";
+                    action = "alertroom";
                     room = RoomManager.getInstance().findRoom(roomName, true);
                     deviceUid = DeviceManager.getInstance().getCurrentSelectSmartDevice().getUid();
                     mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
@@ -387,16 +374,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     }
 
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
-
-    //设置结果:{ "OP": "REPORT", "Method": "Study", "Result": "err" }
-    @Override
-    public void responseQueryResult(String result) {
-        Log.i(TAG, "responseQueryResult :" + result);
-        Message msg = Message.obtain();
-        msg.obj = result;
-        mHandler.sendMessage(msg);
-    }
-
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
     private Handler mHandler = new Handler() {

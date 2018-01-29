@@ -17,13 +17,13 @@ public class RestfulToolsWeather {
     private static final String TAG="RestfulToolsWeather";
     private volatile static RestfulToolsWeather singleton;
     private volatile static RestfulServerWeather apiService;
-
+    private static final String APIKEY ="884fce7c4f484fcab3b32fec1447f01f";
     /**
      * 假设: Retrofit是线程安全的
      */
     private RestfulToolsWeather() {
 
-        Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://www.weather.com.cn/data/cityinfo/")
+        Retrofit.Builder builder = new Retrofit.Builder().baseUrl("https://free-api.heweather.com/")
                 .addConverterFactory(GsonConverterFactory.create());
 
 
@@ -48,16 +48,21 @@ public class RestfulToolsWeather {
         return singleton;
     }
 
-    public Call<JsonObject> getWeatherInfo(Callback<JsonObject> cll,String citycode) {
+    public Call<JsonObject> getWeatherInfo(Callback<JsonObject> cll,String city) {
 
-        Call<JsonObject> call = apiService.getWeatherInfo(citycode);
+        Call<JsonObject> call = apiService.getWeatherInfo("https://free-api.heweather.com/s6/weather/now?",city, APIKEY);
         if (cll != null) {
             call.enqueue(cll);
         }
         return call;
     }
+    public Call<JsonObject> getWeatherPm25(Callback<JsonObject> cll,String city) {
 
-
-
+        Call<JsonObject> call = apiService.getWeatherInfo("https://free-api.heweather.com/s6/air/now?",city, APIKEY);
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
 
 }

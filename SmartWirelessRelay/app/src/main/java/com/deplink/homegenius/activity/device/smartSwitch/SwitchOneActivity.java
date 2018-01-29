@@ -10,15 +10,23 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import com.deplink.homegenius.Protocol.json.OpResult;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchListener;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
-public class SwitchOneActivity extends Activity implements View.OnClickListener ,SmartSwitchListener{
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+
+public class SwitchOneActivity extends Activity implements View.OnClickListener, SmartSwitchListener {
     private static final String TAG = "SwitchTwoActivity";
     private FrameLayout image_back;
     private TextView textview_title;
@@ -26,6 +34,11 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
     private Button button_switch;
     private SmartSwitchManager mSmartSwitchManager;
     private boolean switch_one_open;
+    private SDKManager manager;
+    private EventCallback ec;
+    private boolean isUserLogin;
+    private DeleteDeviceDialog connectLostDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +47,19 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
         initDatas();
         initEvents();
     }
+
     private boolean isStartFromExperience;
+
     @Override
     protected void onResume() {
         super.onResume();
-        isStartFromExperience= DeviceManager.getInstance().isStartFromExperience();
-        if(isStartFromExperience){
-            switch_one_open=true;
-        }else{
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        manager.addEventCallback(ec);
+        mSmartSwitchManager.addSmartSwitchListener(this);
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        if (isStartFromExperience) {
+            switch_one_open = true;
+        } else {
             switch_one_open = mSmartSwitchManager.getCurrentSelectSmartDevice().isSwitch_one_open();
             mSmartSwitchManager.querySwitchStatus("query");
         }
@@ -50,8 +68,9 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        manager.removeEventCallback(ec);
         mSmartSwitchManager.removeSmartSwitchListener(this);
     }
 
@@ -76,6 +95,84 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
         mSmartSwitchManager = SmartSwitchManager.getInstance();
         mSmartSwitchManager.InitSmartSwitchManager(this);
         mSmartSwitchManager.addSmartSwitchListener(this);
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new DeleteDeviceDialog(SwitchOneActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(SwitchOneActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
+                Gson gson = new Gson();
+                OpResult mOpResult = gson.fromJson(result, OpResult.class);
+                if (mOpResult.getOP().equalsIgnoreCase("REPORT") && mOpResult.getMethod().equalsIgnoreCase("SmartWallSwitch")) {
+                    String mSwitchStatus = mOpResult.getSwitchStatus();
+                    String[] sourceStrArray = mSwitchStatus.split(" ", 4);
+                    Log.i(TAG, "sourceStrArray[0]" + sourceStrArray[0]);
+                    Log.i(TAG, "sourceStrArray[1]" + sourceStrArray[1]);
+                    Log.i(TAG, "sourceStrArray[2]" + sourceStrArray[2]);
+                    Log.i(TAG, "sourceStrArray[3]" + sourceStrArray[3]);
+                    if (sourceStrArray[0].equals("01")) {
+                        switch_one_open = true;
+                    } else if (sourceStrArray[0].equals("02")) {
+                        switch_one_open = false;
+                    }
+                    mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                    switch (mOpResult.getCommand()) {
+                        case "close1":
+                            switch_one_open = false;
+                            mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                            break;
+                        case "open1":
+                            switch_one_open = true;
+                            mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
+                            break;
+                    }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            setSwitchImageviewBackground();
+                            mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
     }
 
     private void initViews() {
@@ -93,15 +190,15 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
                 break;
             case R.id.button_switch:
                 Log.i(TAG, "switch_one_open=" + switch_one_open);
-                if(isStartFromExperience){
+                if (isStartFromExperience) {
 
                     if (switch_one_open) {
-                        switch_one_open=false;
+                        switch_one_open = false;
                     } else {
-                        switch_one_open=true;
+                        switch_one_open = true;
                     }
                     setSwitchImageviewBackground();
-                }else{
+                } else {
                     if (switch_one_open) {
                         mSmartSwitchManager.setSwitchCommand("close1");
                     } else {
@@ -117,19 +214,20 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener 
                 break;
         }
     }
+
     private Handler mHandler = new Handler();
 
     @Override
     public void responseResult(String result) {
         Gson gson = new Gson();
         OpResult mOpResult = gson.fromJson(result, OpResult.class);
-        String  mSwitchStatus=mOpResult.getSwitchStatus();
-        String[] sourceStrArray = mSwitchStatus.split(" ",1);
-        Log.i(TAG,"sourceStrArray[0]"+sourceStrArray[0]);
-        if(sourceStrArray[0].equals("01")){
-            switch_one_open=true;
-        }else if(sourceStrArray[0].equals("02")){
-            switch_one_open=false;
+        String mSwitchStatus = mOpResult.getSwitchStatus();
+        String[] sourceStrArray = mSwitchStatus.split(" ", 1);
+        Log.i(TAG, "sourceStrArray[0]" + sourceStrArray[0]);
+        if (sourceStrArray[0].equals("01")) {
+            switch_one_open = true;
+        } else if (sourceStrArray[0].equals("02")) {
+            switch_one_open = false;
         }
         mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
         switch (mOpResult.getCommand()) {

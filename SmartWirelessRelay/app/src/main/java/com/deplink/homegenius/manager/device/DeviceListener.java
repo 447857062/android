@@ -32,6 +32,9 @@ public abstract class DeviceListener {
     public  void responseAddDeviceHttpResult(DeviceOperationResponse deviceOperationResponse){
 
     };
+    public  void responseAddVirtualDeviceHttp(DeviceOperationResponse deviceOperationResponse){
+
+    };
     public  void responseDeleteDeviceHttpResult(DeviceOperationResponse result){
 
     };

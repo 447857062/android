@@ -211,7 +211,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
             smartDev.setUid(uid);
             smartDev.setOrg(device.getOrg());
             smartDev.setVer(device.getVer());
-            smartDev.setMac(device.getAd());
+            smartDev.setMac(device.getAd().toLowerCase());
             smartDev.setType(DeviceTypeConstant.TYPE.TYPE_SWITCH);
             smartDev.setName(device.getName());
             smartDev.setSubType(currentAddSwitchSubType);
@@ -274,7 +274,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
 
     @Override
     public void OnGetSetresult(String setResult) {
-        Log.i(TAG,"门锁控制结果返回="+setResult);
+        Log.i(TAG,"开关控制结果返回="+setResult);
         for (int i = 0; i < mSmartSwitchListenerList.size(); i++) {
             mSmartSwitchListenerList.get(i).responseResult(setResult);
         }

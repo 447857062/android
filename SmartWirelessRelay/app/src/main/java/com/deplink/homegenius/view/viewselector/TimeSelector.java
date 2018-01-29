@@ -11,15 +11,15 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.deplink.homegenius.view.viewselector.Utils.ScreenUtil;
+import com.deplink.homegenius.util.DateUtil;
+import com.deplink.homegenius.util.ScreenUtil;
+import com.deplink.homegenius.util.TextUtil;
 import com.deplink.homegenius.view.viewselector.view.PickerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.view.viewselector.Utils.DateUtil;
-import com.deplink.homegenius.view.viewselector.Utils.TextUtil;
 
 /**
  * Created by liuli on 2015/11/27.

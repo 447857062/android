@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
         android:background="@color/title_blue_bg">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
@@ -91,6 +90,7 @@
 
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/layout_getway"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height"

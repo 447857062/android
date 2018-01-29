@@ -12,18 +12,17 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvKeyCode;
 import com.deplink.homegenius.Protocol.json.device.remotecontrol.TvKeyLearnStatu;
+import com.deplink.homegenius.activity.device.remoteControl.LearnByHandActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.TvKeyNameConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
+import com.deplink.homegenius.view.dialog.KeynotlearnDialog;
+import com.deplink.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
 import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.device.remoteControl.LearnByHandActivity;
-import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
-import com.deplink.homegenius.view.dialog.KeynotlearnDialog;
-import com.deplink.homegenius.view.dialog.remotecontrol.RemoteControlMenuDialog;
 
 public class TvMainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "TvMainActivity";
@@ -129,6 +128,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
             mTvKeyCode =
                     DataSupport.where("mAirconditionUid = ?", currentDeviceUid).findFirst(TvKeyCode.class);
             if (mTvKeyCode != null) {
+                mRemoteControlManager.alertVirtualDevice(currentDeviceUid,null,mTvKeyCode.getKeycode(),null);
                 Log.i(TAG, "mAirconditionKeyCode=" + mTvKeyCode.toString());
             }
         }
@@ -366,7 +366,7 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
     private void initDatas() {
         mKeynotlearnDialog = new KeynotlearnDialog(this);
         mRemoteControlManager = RemoteControlManager.getInstance();
-        mRemoteControlManager.InitRemoteControlManager(this, null);
+        mRemoteControlManager.InitRemoteControlManager(this);
         textview_title.setText("电视遥控");
         menu_dialog = new RemoteControlMenuDialog(this, RemoteControlMenuDialog.TYPE_TV);
         menu_dialog.setmLearnHandClickListener(new RemoteControlMenuDialog.onLearnHandClickListener() {

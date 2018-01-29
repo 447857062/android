@@ -1,14 +1,14 @@
 package com.deplink.homegenius.Protocol.json;
 
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
+
 import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
-import com.deplink.homegenius.Protocol.json.device.SmartDev;
 
 
 /**
@@ -84,5 +84,15 @@ public class Room extends DataSupport implements Serializable{
         this.mDevices = mDevices;
     }
 
-
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomName='" + roomName + '\'' +
+                ", uid='" + uid + '\'' +
+                ", roomOrdinalNumber=" + roomOrdinalNumber +
+                ", roomType='" + roomType + '\'' +
+                ", mDevices=" + mDevices +
+                ", mGetwayDevices=" + mGetwayDevices +
+                '}';
+    }
 }

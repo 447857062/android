@@ -8,7 +8,11 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.sdk.android.sdk.json.homegenius.LockUserId;
 
 import java.util.ArrayList;
 
@@ -20,7 +24,9 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
     private TextView textview_edit;
     private FrameLayout image_back;
     private ListView listview_update_ids;
-
+    private UserIdAdapter mUserIdAdapter;
+    private ArrayList<String> mIds;
+    private SmartLockManager mSmartLockManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,32 +36,39 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
         initEvents();
     }
 
-    private UserIdAdapter mUserIdAdapter;
-    private ArrayList<String> mIds;
 
+    private String selfUserId;
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
         listview_update_ids.setAdapter(mUserIdAdapter);
     }
-
     private boolean isStartFromExperience;
-
+    private String userName;
     private void initDatas() {
         textview_title.setText("修改ID名称");
         textview_edit.setText("完成");
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        mSmartLockManager=SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this);
         mIds = new ArrayList<>();
         if (isStartFromExperience) {
             mIds.add("001");
             mIds.add("002");
             mIds.add("003");
         } else {
+            userName=  Perfence.getPerfence(Perfence.PERFENCE_PHONE);
             mIds = getIntent().getStringArrayListExtra("recordlistid");
         }
         Log.i(TAG,"isStartFromExperience="+isStartFromExperience);
         Log.i(TAG,"mIds="+mIds.size());
         mUserIdAdapter = new UserIdAdapter(this, mIds);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        selfUserId=Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
     }
 
     private void initViews() {
@@ -71,19 +84,15 @@ public class UpdateSmartLockUserIdActivity extends Activity implements View.OnCl
             case R.id.image_back:
                 onBackPressed();
                 break;
-
             case R.id.textview_edit:
-                if(isStartFromExperience){
-
-                }else{
-                    for(int i=0;i<mIds.size();i++){
-                        //TODO
-                    }
+                if(!Perfence.getPerfence(selfUserId).equalsIgnoreCase(selfUserId)){
+                    LockUserId userIdBody = new LockUserId();
+                    userIdBody.setUserid(selfUserId);
+                    userIdBody.setUsername(Perfence.getPerfence(selfUserId));
+                    mSmartLockManager.setLockUidNameHttp(mSmartLockManager.getCurrentSelectLock().getUid(), userIdBody);
+                    UpdateSmartLockUserIdActivity.this.finish();
                 }
-                finish();
                 break;
-
-
         }
     }
 }

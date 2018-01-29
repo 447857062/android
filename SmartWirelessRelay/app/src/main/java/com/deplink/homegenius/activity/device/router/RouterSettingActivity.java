@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
-import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity;
@@ -25,6 +24,7 @@ import com.deplink.homegenius.activity.device.router.wifi.WifiSetting24;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
@@ -33,7 +33,6 @@ import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.ConnectTypeLocalDialog;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.dialog.SelectConnectTypeLocalDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -69,19 +68,23 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private RouterManager mRouterManager;
     private TextView textview_room_select_2;
     private TextView textview_route_name_2;
-    private RouterDevice routerDevice;
     private boolean isUserLogin;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private SDKManager manager;
     private EventCallback ec;
     private boolean deviceOnline;
     private TextView textview_title;
     private DeleteDeviceDialog deleteDialog;
+    private DeleteDeviceDialog rebootDialog;
     private RelativeLayout layout_lan_setting_out;
     private RelativeLayout layout_update_out;
     private RelativeLayout layout_QOS_setting_out;
     private DeviceManager mDeviceManager;
     private DeviceListener mDeviceListener;
+    private HomeGenius mHomeGenius;
+    private String channels;
+    private boolean isStartFromExperience;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,11 +93,11 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
-    private boolean isStartFromExperience;
+
     @Override
     protected void onResume() {
         super.onResume();
-        isStartFromExperience=mDeviceManager.isStartFromExperience();
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         if (!isStartFromExperience) {
             textview_route_name_2.setText(mRouterManager.getCurrentSelectedRouter().getName());
             if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("离线")) {
@@ -112,28 +115,15 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             manager.addEventCallback(ec);
             mDeviceManager.addDeviceListener(mDeviceListener);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-            getCurrentSelectedDevice();
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         } else {
             textview_route_name_2.setText("体验路由器");
         }
+        mHomeGenius = new HomeGenius();
 
     }
 
-    /**
-     * 获取当前选种的路由器
-     */
-    private void getCurrentSelectedDevice() {
-        if (isUserLogin) {
-            try {
-                routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (routerDevice != null) {
-                deviceOnline = routerDevice.getOnline();
-            }
-        }
-    }
+
 
     private void initDatas() {
         textview_title.setText("路由器设置");
@@ -142,8 +132,8 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(RouterSettingActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(RouterSettingActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(RouterSettingActivity.this, LoginActivity.class));
@@ -162,7 +152,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             public void onBindSuccess(SDKAction action, String devicekey) {
 
             }
-
 
 
             @Override
@@ -184,12 +173,13 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 isUserLogin = false;
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
-        mDeviceListener=new DeviceListener() {
+        mDeviceListener = new DeviceListener() {
             @Override
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
@@ -202,7 +192,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                         Message msg = Message.obtain();
                         msg.what = MSG_UPDATE_ROOM_FAIL;
                         mHandler.sendMessage(msg);
-                        action="";
+                        action = "";
                     }
                 } else if (action.equalsIgnoreCase("alertname")) {
 
@@ -213,7 +203,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseDeleteDeviceHttpResult(result);
                 int affectColumn = DataSupport.deleteAll(SmartDev.class, "Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid());
-                DataSupport.deleteAll(Router.class, "routerDeviceKey = ?", mRouterManager.getCurrentSelectedRouter().getRouter().getRouterDeviceKey());
                 Log.i(TAG, "删除路由器设备=" + affectColumn);
                 ToastSingleShow.showText(RouterSettingActivity.this, "解除绑定成功");
                 RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
@@ -236,6 +225,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
 
     private void initViews() {
         deleteDialog = new DeleteDeviceDialog(this);
+        rebootDialog = new DeleteDeviceDialog(this);
         textview_title = findViewById(R.id.textview_title);
         buttton_delete_router = findViewById(R.id.buttton_delete_router);
         image_back = findViewById(R.id.image_back);
@@ -254,34 +244,30 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private String action;
     private String roomName;
     private Room room;
-    private  String deviceUid;
+    private String deviceUid;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            if (mDeviceManager.isStartFromExperience()) {
-
-            } else {
-                 roomName = data.getStringExtra("roomName");
-                 room = RoomManager.getInstance().findRoom(roomName, true);
-                 deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
+            if (!mDeviceManager.isStartFromExperience()) {
+                roomName = data.getStringExtra("roomName");
+                room = RoomManager.getInstance().findRoom(roomName, true);
+                deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
                 action = "alertroom";
                 mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
 
             }
         }
     }
-
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private ConnectTypeLocalDialog selectConnectTypeDialog;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
                 break;
-
             case R.id.layout_router_name_out:
                 startActivity(new Intent(this, RouterNameUpdateActivity.class));
                 break;
@@ -320,8 +306,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                         selectConnectTypeDialog.show();
                     }
                 }
-
-
                 break;
             case R.id.layout_wifi_setting_out:
                 startActivity(new Intent(this, WiFiSettingActivity.class));
@@ -336,28 +320,27 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 startActivity(new Intent(this, FirmwareUpdateActivity.class));
                 break;
             case R.id.layout_reboot_out:
-                MakeSureDialog rebootRightNow = new MakeSureDialog(this);
-                rebootRightNow.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                rebootDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                        ToastSingleShow.showText(RouterSettingActivity.this, "已重启设备");
-                        //TODO 本地远程重启路由器
                         ToastSingleShow.showText(RouterSettingActivity.this, "已重启设备");
                         if (!NetUtil.isNetAvailable(RouterSettingActivity.this)) {
                             ToastSingleShow.showText(RouterSettingActivity.this, "网络连接已断开");
                         } else {
                             if (isUserLogin && deviceOnline) {
-                                routerDevice.reboot();
+                                if(channels!=null){
+                                    mHomeGenius.reboot(channels);
+                                }
                             } else {
                                 RebootLocal();
                             }
                         }
-
-
                     }
                 });
-                rebootRightNow.show();
-                rebootRightNow.setTitleText("确定立即重启");
+                rebootDialog.show();
+                rebootDialog.setTitleText("重启设备");
+                rebootDialog.setContentText("确定立即重启?");
+
                 break;
             case R.id.buttton_delete_router:
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
@@ -505,11 +488,10 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             }
         }
     };
-
     @Override
     protected void onPause() {
         super.onPause();
-        if(!isStartFromExperience){
+        if (!isStartFromExperience) {
             mDeviceManager.removeDeviceListener(mDeviceListener);
             manager.removeEventCallback(ec);
         }

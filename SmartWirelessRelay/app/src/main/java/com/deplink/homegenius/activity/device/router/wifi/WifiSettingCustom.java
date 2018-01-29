@@ -13,23 +13,26 @@ import android.widget.TextView;
 
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.device.router.RouterDevice;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.json.VISITOR;
 import com.deplink.sdk.android.sdk.json.Wifi;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class WifiSettingCustom extends Activity implements View.OnClickListener{
+public class WifiSettingCustom extends Activity implements View.OnClickListener {
     private static final String TAG = "WifiSettingCustom";
     private RelativeLayout layout_encryption;
     private RelativeLayout layout_password;
@@ -45,11 +48,13 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
     private String wifiSwitch;
     private SDKManager manager;
     private EventCallback ec;
-    private RouterDevice routerDevice;
     private CheckBox checkbox_wifi_switch;
-  private TextView textview_edit;
-    private MakeSureDialog connectLostDialog;
+    private TextView textview_edit;
+    private DeleteDeviceDialog connectLostDialog;
     private RouterManager mRouterManager;
+    private HomeGenius mHomeGenius;
+    private String channels;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +69,11 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
     private void initDatas() {
         textview_title.setText("访客WIFI设置");
         textview_edit.setText("保存");
-        mRouterManager=RouterManager.getInstance();
+        mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
-        connectLostDialog = new MakeSureDialog(WifiSettingCustom.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(WifiSettingCustom.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(WifiSettingCustom.this, LoginActivity.class));
@@ -88,7 +93,6 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
             }
 
 
-
             @Override
             public void onFailure(SDKAction action, Throwable throwable) {
 
@@ -99,59 +103,18 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
                 super.deviceOpSuccess(op, deviceKey);
                 switch (op) {
                     case RouterDevice.OP_GET_WIFI:
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!isActivityResultSetWifiname) {
-                                    wifiName = routerDevice.getWifi().getVISITOR().getWifiSSID();
-                                }
-                                if (!isActivityResultSetEncryptType) {
-                                    encryptionType = routerDevice.getWifi().getVISITOR().getEncryption();
-                                }
 
-                                textview_wifi_name.setText(wifiName);
-
-                                if (encryptionType.equals("")) {
-                                    encryptionType = "--";
-                                }
-                                switch (encryptionType) {
-                                    case "none":
-                                        textview_encryption.setText("无加密");
-                                        break;
-                                    case "psk-mixed":
-                                        textview_encryption.setText("混合加密");
-                                        break;
-                                    case "psk2":
-                                        textview_encryption.setText("强加密");
-                                        break;
-                                }
-                                if(encryptionType.equalsIgnoreCase("none")){
-                                    password="";
-                                    textview_password.setText("");
-                                }else{
-                                    if (!isActivityResultSetWifiPassword) {
-                                        password = routerDevice.getWifi().getVISITOR().getWifiPassword();
-                                    }
-                                    textview_password.setText(password);
-                                }
-
-
-                                wifiSwitch = routerDevice.getWifi().getVISITOR().getWifiStatus();
-                                Log.i(TAG, "wifiSwitch=" + wifiSwitch);
-                                if (wifiSwitch.equalsIgnoreCase("ON")) {
-                                    checkbox_wifi_switch.setChecked(true);
-                                } else {
-                                    checkbox_wifi_switch.setChecked(false);
-                                }
-                            }
-                        });
                         break;
                     case RouterDevice.OP_SUCCESS:
-                        if (isSetWifiVisitor) {
-                            ToastSingleShow.showText(WifiSettingCustom.this, "设置成功");
-                        }
+
                         break;
                 }
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                parseDeviceReport(result);
             }
 
             @Override
@@ -160,25 +123,95 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
+    }
+
+    private void parseDeviceReport(String xmlStr) {
+        String op = "";
+        String method;
+        Gson gson = new Gson();
+        PERFORMANCE content = gson.fromJson(xmlStr, PERFORMANCE.class);
+        op = content.getOP();
+        method = content.getMethod();
+        Log.i(TAG, "op=" + op + "method=" + method + "result=" + content.getResult() + "xmlStr=" + xmlStr);
+
+        if (op == null) {
+            if (content.getResult().equalsIgnoreCase("OK")) {
+                Log.i(TAG, " mSDKCoordinator.notifyDeviceOpSuccess");
+                if (isSetWifiVisitor) {
+                    ToastSingleShow.showText(WifiSettingCustom.this, "设置成功");
+                }
+            }
+        } else {
+            if (op.equalsIgnoreCase("WIFI")) {
+                if (method.equalsIgnoreCase("REPORT")) {
+                    final Wifi wifi = gson.fromJson(xmlStr, Wifi.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isActivityResultSetWifiname) {
+                                wifiName = wifi.getVISITOR().getWifiSSID();
+                            }
+                            if (!isActivityResultSetEncryptType) {
+                                encryptionType = wifi.getVISITOR().getEncryption();
+                            }
+
+                            textview_wifi_name.setText(wifiName);
+
+                            if (encryptionType.equals("")) {
+                                encryptionType = "--";
+                            }
+                            switch (encryptionType) {
+                                case "none":
+                                    textview_encryption.setText("无加密");
+                                    break;
+                                case "psk-mixed":
+                                    textview_encryption.setText("混合加密");
+                                    break;
+                                case "psk2":
+                                    textview_encryption.setText("强加密");
+                                    break;
+                            }
+                            if (encryptionType.equalsIgnoreCase("none")) {
+                                password = "";
+                                textview_password.setText("");
+                            } else {
+                                if (!isActivityResultSetWifiPassword) {
+                                    password = wifi.getVISITOR().getWifiPassword();
+                                }
+                                textview_password.setText(password);
+                            }
+
+
+                            wifiSwitch = wifi.getVISITOR().getWifiStatus();
+                            Log.i(TAG, "wifiSwitch=" + wifiSwitch);
+                            if (wifiSwitch.equalsIgnoreCase("ON")) {
+                                checkbox_wifi_switch.setChecked(true);
+                            } else {
+                                checkbox_wifi_switch.setChecked(false);
+                            }
+                        }
+                    });
+
+                }
+            }
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if( DeviceManager.getInstance().isStartFromExperience()){
-
-        }else{
-            routerDevice = (RouterDevice) manager.getDevice(mRouterManager.getRouterDeviceKey());
+        if (!DeviceManager.getInstance().isStartFromExperience()) {
+            mHomeGenius = new HomeGenius();
+            channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
             manager.addEventCallback(ec);
             if (NetUtil.isNetAvailable(this)) {
-                try {
+                if (channels != null) {
                     Log.i(TAG, "onResume queryWifi");
-                    routerDevice.queryWifi();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    mHomeGenius.queryWifi(channels);
                 }
             } else {
                 ToastSingleShow.showText(this, "网络连接已断开");
@@ -224,8 +257,8 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
         textview_encryption = findViewById(R.id.textview_encryption);
         textview_wifi_name = findViewById(R.id.textview_wifi_name);
         textview_password = findViewById(R.id.textview_password);
-        textview_title= findViewById(R.id.textview_title);
-        image_back= findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
         checkbox_wifi_switch = findViewById(R.id.checkbox_wifi_switch);
         textview_edit = findViewById(R.id.textview_edit);
     }
@@ -260,9 +293,9 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
                 if (!password.equals("")) {
                     visitor.setWifiPassword(password);
                 }
-                if( checkbox_wifi_switch.isChecked()){
+                if (checkbox_wifi_switch.isChecked()) {
                     visitor.setWifiStatus("ON");
-                }else{
+                } else {
                     visitor.setWifiStatus("OFF");
                 }
 
@@ -271,10 +304,9 @@ public class WifiSettingCustom extends Activity implements View.OnClickListener{
                 }
                 content = new Wifi();
                 content.setVISITOR(visitor);
-                if (routerDevice != null) {
-                    isSetWifiVisitor = true;
-                    routerDevice.setWifi(content);
-                }
+
+                isSetWifiVisitor = true;
+                mHomeGenius.setWifi(content, channels);
 
 
                 break;

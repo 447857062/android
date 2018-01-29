@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.edittext.ClearEditText;
+
 import java.util.ArrayList;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.edittext.ClearEditText;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -45,33 +46,34 @@ public class UserIdAdapter extends BaseAdapter {
         return position;
     }
 
+    private ViewHolder vh;
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder vh;
         if (convertView == null) {
-            convertView =  LayoutInflater.from(mContext).inflate(R.layout.useridlistitem,null);
-            vh =new ViewHolder(convertView,position);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.useridlistitem, null);
+            vh = new ViewHolder(convertView, position);
             convertView.setTag(vh);
         } else {
             vh = (ViewHolder) convertView.getTag();
         }
-        Log.i(TAG, "mDatas:" + mDatas.size() + "" + (mDatas.get(position)));
         vh.textview_userid.setText(mDatas.get(position));
         vh.edittext_input_userid.setHint("请为" + (mDatas.get(position) + "命名"));
         return convertView;
     }
 
-    private  class ViewHolder {
+    private class ViewHolder {
         TextView textview_userid;
         ClearEditText edittext_input_userid;
-        public ViewHolder(View view,int pisition){
+
+        public ViewHolder(View view, int pisition) {
             textview_userid = view.findViewById(R.id.textview_userid);
-            edittext_input_userid= view.findViewById(R.id.edittext_input_userid);
+            edittext_input_userid = view.findViewById(R.id.edittext_input_userid);
             edittext_input_userid.setTag(pisition);//存tag值
             edittext_input_userid.addTextChangedListener(new TextSwitcher(this));
         }
     }
-     class TextSwitcher implements TextWatcher {
+    class TextSwitcher implements TextWatcher {
         private ViewHolder mHolder;
 
         public TextSwitcher(ViewHolder mHolder) {

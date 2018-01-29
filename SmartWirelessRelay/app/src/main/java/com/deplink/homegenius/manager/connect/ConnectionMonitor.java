@@ -8,13 +8,12 @@ import android.os.Build;
 import android.util.Log;
 
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.util.SharedPreference;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.deplink.homegenius.constant.AppConstant;
 
 /**
  * Created by Administrator on 2017/11/1.
@@ -27,7 +26,6 @@ public class ConnectionMonitor {
     private GeneralPacket packet;
     private boolean isServerClose;
     public ConnectionMonitor(Context context) {
-        Log.i(TAG,"ConnectionMonitor create");
         this.mContext = context;
         packet = new GeneralPacket(mContext);
     }
@@ -42,10 +40,7 @@ public class ConnectionMonitor {
                 public void run() {
                     SharedPreference sharedPreference = new SharedPreference(mContext, "heathswitch");
                     String open = sharedPreference.getString("heathswitch");
-                    Log.i(TAG, "发送心跳包开关 open=" + open);
-                  //  if (open != null && open.equals("open")) {
                         checkConnectionHealth();
-                  //  }
                 }
             };
         }
@@ -73,10 +68,8 @@ public class ConnectionMonitor {
      * 检查
      */
     public void checkConnectionHealth() {
-        Log.i(TAG, "checkConnectionHealth" + isNetworkAvailable(mContext));
         if (isNetworkAvailable(mContext)) {
             isServerClose = isServerClose();
-            Log.i(TAG, "===>check connect isServerClose=" + isServerClose);
         }
 
     }
@@ -92,7 +85,6 @@ public class ConnectionMonitor {
         try {
             packet.packHeathPacket();
             int clientStatus= LocalConnectmanager.getInstance().getOut(packet.data);
-            Log.i(TAG, "clientStatus=" + clientStatus);
             return clientStatus == -1;
         } catch (Exception se) {
             Log.i(TAG, "断开连接");

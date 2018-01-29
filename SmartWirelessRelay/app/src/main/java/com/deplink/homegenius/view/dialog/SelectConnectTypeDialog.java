@@ -6,17 +6,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
-import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 import com.deplink.homegenius.activity.device.router.connectType.DialConnectActivity;
 import com.deplink.homegenius.activity.device.router.connectType.DynamicsActivity;
 import com.deplink.homegenius.activity.device.router.connectType.StaticConnectActivity;
 import com.deplink.homegenius.activity.device.router.connectType.WirelessRelayActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.Perfence;
+
+import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
 
 /**
@@ -30,8 +34,6 @@ public class SelectConnectTypeDialog extends Dialog implements View.OnClickListe
     private RelativeLayout layout_static_ip;
     private RelativeLayout layout_wireless_relay;
     private RelativeLayout layout_cancel;
-
-
     public SelectConnectTypeDialog(Context context) {
         super(context, R.style.MakeSureDialog);
         mContext = context;
@@ -43,28 +45,22 @@ public class SelectConnectTypeDialog extends Dialog implements View.OnClickListe
         WindowManager.LayoutParams p = new WindowManager.LayoutParams();
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        int screenWidth = dm.widthPixels;
-        int screenHeigh = dm.heightPixels;
-        p.height = (int) (screenHeigh * 0.38);
-        p.width = (int) (screenWidth * 0.75);
-        View view = LayoutInflater.from(mContext).inflate(R.layout.select_connect_type_dialog, null);
+        p.width = (int) Perfence.dp2px(mContext,283);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.connecttype_local_dialog, null);
         setContentView(view, p);
         //初始化界面控件
         initView();
         //初始化界面控件的事件
         initEvent();
-
-
     }
 
 
     private void initView() {
-        layout_ppop = (RelativeLayout) findViewById(R.id.layout_ppop);
-        layout_dynamics_ip = (RelativeLayout) findViewById(R.id.layout_dynamics_ip);
-        layout_static_ip = (RelativeLayout) findViewById(R.id.layout_static_ip);
-        layout_wireless_relay = (RelativeLayout) findViewById(R.id.layout_wireless_relay);
-        layout_cancel = (RelativeLayout) findViewById(R.id.layout_cancel);
+        layout_ppop = findViewById(R.id.layout_ppop);
+        layout_dynamics_ip = findViewById(R.id.layout_dynamics_ip);
+        layout_static_ip = findViewById(R.id.layout_static_ip);
+        layout_wireless_relay = findViewById(R.id.layout_wireless_relay);
+        layout_cancel = findViewById(R.id.layout_cancel);
 
     }
 
@@ -110,8 +106,9 @@ public class SelectConnectTypeDialog extends Dialog implements View.OnClickListe
 
     @Override
     public void show() {
+        Window dialogWindow = this.getWindow();
+        dialogWindow.setGravity( Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
         super.show();
-
     }
 
 }

@@ -24,7 +24,7 @@ public class BasicPacket {
     public int port;
     public boolean isFinish;
     private Context mContext;
-
+    public long mac;
     public BasicPacket(Context context) {
         this.mContext = context;
         isFinish = false;
@@ -118,7 +118,6 @@ public class BasicPacket {
         Log.e(TAG, "打包数据长度data.length=" + data.length+"数据是："+DataExchange.byteArrayToHexString(data));
         return data.length;
     }
-
     /**
      * udp探测包
      **/
@@ -233,6 +232,12 @@ public class BasicPacket {
     public DatagramPacket getUdpData() {
         return new DatagramPacket(this.data, this.data.length, ip, port);
     }
-
-
+    public DatagramPacket getUdpData(InetAddress ip, int port) {
+        DatagramPacket packet = null;
+        if (data != null)
+            packet = new DatagramPacket(this.data, this.data.length, ip, port);
+        return packet;
+    }
+    public byte type;
+    public byte ver;
 }

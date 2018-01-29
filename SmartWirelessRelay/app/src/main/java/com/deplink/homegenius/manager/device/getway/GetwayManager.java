@@ -10,7 +10,6 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.json.wifi.AP_CLIENT;
 import com.deplink.homegenius.Protocol.json.wifi.Proto;
-import com.deplink.homegenius.Protocol.json.wifi.WifiRelaySet;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
@@ -68,14 +67,13 @@ public class GetwayManager implements LocalConnecteListener {
         Log.i(TAG, "删除设备uid=" + uid);
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         if (userName.equals("")) {
-            ToastSingleShow.showText(mContext, "用户未登录");
             return;
         }
         Deviceprops device = new Deviceprops();
         if (uid != null) {
             device.setUid(uid);
         }
-        RestfulToolsHomeGenius.getSingleton(mContext).deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
+        RestfulToolsHomeGenius.getSingleton().deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
                 Log.i(TAG, "" + response.code());
@@ -127,6 +125,7 @@ public class GetwayManager implements LocalConnecteListener {
         }
         addGetwayListener(listener);
     }
+
     private List<GetwayListener> mGetwayListenerList;
 
     public void addGetwayListener(GetwayListener listener) {
@@ -140,13 +139,16 @@ public class GetwayManager implements LocalConnecteListener {
             this.mGetwayListenerList.remove(listener);
         }
     }
+
     /**
      * 中继连接
      */
     public void setWifiRelay(AP_CLIENT paramas) {
         Log.i(TAG, "setWifiRelay");
         if (mLocalConnectmanager.isLocalconnectAvailable()) {
-            WifiRelaySet setCmd = new WifiRelaySet();
+            QueryOptions setCmd = new QueryOptions();
+            setCmd.setOP("WAN");
+            setCmd.setMethod("SET");
             setCmd.setTimestamp();
             Proto proto = new Proto();
             proto.setAP_CLIENT(paramas);
@@ -174,6 +176,7 @@ public class GetwayManager implements LocalConnecteListener {
             }
         }
     }
+
     /**
      * 绑定网关，中继器
      */
@@ -200,14 +203,12 @@ public class GetwayManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 if (device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.bindGetwayDevice(device.getTopic(), uuid, deviceUid);
-                }else{
-                    ToastSingleShow.showText(mContext, "本地网关不可用,远程网关也不可用,");
                 }
             }
         }
@@ -253,7 +254,6 @@ public class GetwayManager implements LocalConnecteListener {
 
             }
         }
-
     }
 
     //数据库操作函数
@@ -333,8 +333,6 @@ public class GetwayManager implements LocalConnecteListener {
         Log.i(TAG, "deleteGetwayDeviceInWhatRoom saveResult=" + saveResult);
     }
     //数据库操作函数-------------------------------------------------------end
-
-
 
 
     @Override

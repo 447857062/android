@@ -5,7 +5,46 @@
     android:layout_height="match_parent"
     android:background="@color/white_background"
     tools:context="com.deplink.homegenius.activity.room.ManageRoomActivity">
-    <include layout="@layout/layout_title_with_right_have_text_have_textbackground" android:id="@+id/layout_title"/>
+    <RelativeLayout
+        android:alpha="0.9"
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/title_blue_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
+            <!--扩大点击区域-->
+            <FrameLayout
+                android:id="@+id/image_back"
+                android:layout_width="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|left"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/returnicon" />
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+        </RelativeLayout>
+    </RelativeLayout>
    <com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout
        android:layout_width="match_parent"
        android:layout_below="@+id/layout_title"
@@ -14,7 +53,6 @@
            android:layout_width="match_parent"
            android:layout_height="match_parent">
            <RelativeLayout
-
                android:layout_width="match_parent"
                android:layout_height="match_parent">
                <RelativeLayout
@@ -64,6 +102,7 @@
                </RelativeLayout>
 
                <RelativeLayout
+                   android:visibility="gone"
                    android:id="@+id/layout_getway"
                    android:layout_width="match_parent"
                    android:layout_height="@dimen/layout_item_content_height"

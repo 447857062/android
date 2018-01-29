@@ -1,14 +1,18 @@
 package com.deplink.homegenius.Protocol.json.device.lock;
 
+import org.litepal.annotation.Column;
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/10/30.
  */
-public class Record implements Serializable{
+public class Record extends DataSupport implements Serializable{
+    @Column(unique = true, nullable = false)
+    private int recordIndex;
     private String Time;
     private String UserID;
-
     public String getTime() {
         return Time;
     }
@@ -25,11 +29,12 @@ public class Record implements Serializable{
         UserID = userID;
     }
 
-    @Override
-    public String toString() {
-        return "Record{" +
-                "Time='" + Time + '\'' +
-                ", UserID='" + UserID + '\'' +
-                '}';
+    public int getIndex() {
+        return recordIndex;
     }
+
+    public void setIndex(int index) {
+        this.recordIndex = index;
+    }
+
 }

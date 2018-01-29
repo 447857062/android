@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -33,7 +33,7 @@ public class BandwidthActivity extends Activity implements View.OnClickListener 
     private String currentBandwidth;
     private SDKManager manager;
     private EventCallback ec;
-    private MakeSureDialog connectLostDialog;
+    private DeleteDeviceDialog connectLostDialog;
     private TextView textview_title;
     private FrameLayout image_back;
     private TextView textview_edit;
@@ -53,8 +53,8 @@ public class BandwidthActivity extends Activity implements View.OnClickListener 
     private void initDatas() {
         textview_title.setText("频宽");
         textview_edit.setText("保存");
-        connectLostDialog = new MakeSureDialog(BandwidthActivity.this);
-        connectLostDialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+        connectLostDialog = new DeleteDeviceDialog(BandwidthActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
             public void onSureBtnClicked() {
                 startActivity(new Intent(BandwidthActivity.this, LoginActivity.class));
@@ -97,9 +97,10 @@ public class BandwidthActivity extends Activity implements View.OnClickListener 
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setMsg("当前账号已在其它设备上登录,是否重新登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
         };
         currentBandwidth = getIntent().getStringExtra(AppConstant.WIFISETTING.WIFI_BANDWIDTH);

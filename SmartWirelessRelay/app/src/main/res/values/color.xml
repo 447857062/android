@@ -44,4 +44,6 @@
     <color name="delete_button">#f55555</color>
     <color name="add_device_text_show_explan">#666666</color>
     <color name="line_clolor">#cccccc</color>
+    <!--蓝色-->
+    <color name="color_2B89F3">#2B89F3</color>
 </resources>

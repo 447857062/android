@@ -2,6 +2,8 @@ package com.deplink.sdk.android.sdk;
 
 import android.graphics.Bitmap;
 
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+
 /**
  * Created by huqs on 2016/7/1.
  */
@@ -24,6 +26,8 @@ public abstract class EventCallback {
     public  void onGetImageSuccess(SDKAction action,Bitmap bm){
 
     }
+    public  void onGetUserInfouccess(String info){}
+    public  void alertUserInfo(DeviceOperationResponse info){}
 
     /**
      * 请求失败

@@ -42,8 +42,8 @@ public class DeviceManager implements MqttListener {
     final static private String XML_FMT_IMAGE_UPGRADE = "xmlImageUpgrade";
 
     private SDKCoordinator mSDKCoordinator = null;
-    LinkedHashMap<String, BaseDevice> mDeviceMap = new LinkedHashMap<String, BaseDevice>();
-    LinkedHashMap<String, BaseDevice> mDeviceTopics = new LinkedHashMap<String, BaseDevice>();
+    LinkedHashMap<String, BaseDevice> mDeviceMap = new LinkedHashMap<>();
+    LinkedHashMap<String, BaseDevice> mDeviceTopics = new LinkedHashMap<>();
 
     public DeviceManager(SDKCoordinator coordinator) {
         mSDKCoordinator = coordinator;
@@ -113,19 +113,12 @@ public class DeviceManager implements MqttListener {
                                 } else {
                                     device.setName(deviceInfo.getDeviceName());
                                 }
-                                device.setProductKey(deviceInfo.getProduct_key());
-                                device.setDeviceKey(deviceInfo.getDevice_key());
                                 device.setDeviceSN(deviceInfo.getDeviceSn());
                                 device.setAutoUpgrade(0 != deviceInfo.getAuto_upgrade());
                                 if (deviceInfo.getChannels().getCommon() != null) {
                                     device.setCommonCh(deviceInfo.getChannels().getCommon());
                                 }
-                                Log.i(TAG,"通道Primary="+(deviceInfo.getChannels().getPrimary() != null)+"Secondary="+(deviceInfo.getChannels().getSecondary()));
-                                if (deviceInfo.getChannels().getPrimary() != null) {
-                                    Log.i(TAG,"设置通道getPrimary="+deviceInfo.getChannels().getPrimary());
-                                    device.setExclusiveCh(deviceInfo.getChannels().getPrimary());
-                                } else if (deviceInfo.getChannels().getSecondary() != null) {
-                                    Log.i(TAG,"getSecondary="+deviceInfo.getChannels().getSecondary());
+                                if (deviceInfo.getChannels().getSecondary() != null) {
                                     device.setExclusiveCh(deviceInfo.getChannels().getSecondary());
                                 }
                                 if (device.getCommonCh() != null) {
@@ -139,9 +132,8 @@ public class DeviceManager implements MqttListener {
                                 device.retrieveDeviceProperty();
                                 mDeviceMap.put(device.getDeviceKey(), device);
                             }
-
                             Iterator it = mDeviceTopics.keySet().iterator();
-                            List<String> topics = new ArrayList<String>();
+                            List<String> topics = new ArrayList<>();
                             while (it.hasNext()) {
                                 String key = it.next().toString();
                                 BaseDevice device = mDeviceTopics.get(key);
@@ -158,8 +150,6 @@ public class DeviceManager implements MqttListener {
                         }
                         String uuid=  DeplinkSDK.getSDKManager().getUserInfo().getUuid();
                         Log.i(TAG,"devicemanager uuid="+uuid);
-                       // MQTTController.getSingleton().subscribe("user/"+uuid+"/sub", DeviceManager.this);
-                        Log.i(TAG, "getBinding绑定的设备 mDeviceMap.size=" + mDeviceMap.size());
                         mSDKCoordinator.notifySuccess(SDKAction.GET_BINDING);
                         break;
                 }
@@ -174,7 +164,7 @@ public class DeviceManager implements MqttListener {
     }
 
     private List<BaseDevice> mapToList(LinkedHashMap<String, BaseDevice> map) {
-        List<BaseDevice> lis = new ArrayList<BaseDevice>();
+        List<BaseDevice> lis = new ArrayList<>();
         Iterator it = map.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next().toString();
@@ -247,16 +237,14 @@ public class DeviceManager implements MqttListener {
                     }
                     break;
             }
-
             return;
         }
-
+        processMqttMsg(message);
         //设备状态改变
         RouterDevice device = (RouterDevice) mDeviceTopics.get(topic);
         if (device == null) {
             return;
         }
-
         int update = device.processMqttMsg(topic, message);
         if (update != BaseDevice.MSG_DUMMY) {
             synchronized (mDeviceMap) {
@@ -269,7 +257,6 @@ public class DeviceManager implements MqttListener {
 
     private void processMqttMsg(MqttMessage message) {
         String jsonString = new String(message.getPayload());
-        Log.i(TAG,"处理智能家居的设备消息:"+jsonString);
         mSDKCoordinator.notifyHomeGeniusResult(jsonString);
     }
 

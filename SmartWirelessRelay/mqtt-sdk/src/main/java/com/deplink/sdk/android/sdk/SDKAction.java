@@ -26,6 +26,10 @@ public enum SDKAction {
      */
     GETIMAGE,
     /**
+     * 获取用户信息
+     */
+    GETUSERINFO,
+    /**
      * 注册
      */
     REGISTER,
