@@ -166,6 +166,11 @@ public class DeviceListAdapter extends BaseAdapter {
             }
             viewHolder.textview_device_status.setText(statu);
             viewHolder.imageview_device_type.setImageResource(R.drawable.gatewayicon);
+            if(statu.equalsIgnoreCase("在线")){
+                viewHolder.textview_device_status.setBackgroundResource(R.drawable.blue);
+            }else{
+                viewHolder.textview_device_status.setBackgroundResource(R.drawable.gray);
+            }
             String deviceName = listTop.get(position).getName();
             viewHolder.textview_device_name.setText(deviceName);
         } else {
