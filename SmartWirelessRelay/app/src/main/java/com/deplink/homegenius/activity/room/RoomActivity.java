@@ -16,7 +16,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.adapter.GridViewAdapter;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;

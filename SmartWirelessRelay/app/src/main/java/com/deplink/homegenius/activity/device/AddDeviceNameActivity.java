@@ -475,7 +475,8 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         SmartDev doorbeelDev = new SmartDev();
                         doorbeelDev.setUid(addDeviceUid);
                         doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
-                        dbSmartDev.setName(deviceName);
+                        doorbeelDev.setName(deviceName);
+                        dbSmartDev.setStatus("在线");
                         Message msg = Message.obtain();
                         boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
                         if (result) {

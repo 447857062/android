@@ -79,6 +79,7 @@ public class UpdateNicknameActivity extends Activity implements View.OnClickList
             public void alertUserInfo(DeviceOperationResponse info) {
                 super.alertUserInfo(info);
                 Log.i(TAG,"alertUserInfo:"+info.toString());
+                onBackPressed();
             }
             @Override
             public void connectionLost(Throwable throwable) {
@@ -128,8 +129,9 @@ public class UpdateNicknameActivity extends Activity implements View.OnClickList
                         manager.alertUserInfo(userName,body);
                     }
                 }else{
-                   onBackPressed();
+                    onBackPressed();
                 }
+
                 break;
             case R.id.image_back:
                 onBackPressed();

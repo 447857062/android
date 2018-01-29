@@ -138,7 +138,7 @@ public class DeviceManager implements LocalConnecteListener {
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        } else if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+        } else /*if (mRemoteConnectManager.isRemoteConnectAvailable())*/ {
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
             Log.i(TAG, "device.getTopic()=" + device.getTopic());

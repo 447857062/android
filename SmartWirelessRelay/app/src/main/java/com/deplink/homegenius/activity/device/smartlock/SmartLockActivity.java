@@ -191,8 +191,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         manager.addEventCallback(ec);
         selfUserId = Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
         if(!isStartFromExperience){
+            mSmartLockManager.queryLockStatu();
             mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
             statu=mSmartLockManager.getCurrentSelectLock().getStatus();
+
             Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid()+"状态="+statu);
         }
     }
@@ -291,6 +293,9 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                             startActivity(intentSetLockPwd);
                         }
                     } else {
+                        if(statu==null){
+                            statu="off";
+                        }
                         if(statu.equalsIgnoreCase("off")){
                             ToastSingleShow.showText(this,"设备已离线");
                             return;
@@ -362,6 +367,9 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void responseLockStatu(int RecondNum, int LockStatus) {
+        Log.i(TAG,"返回门锁状态结果="+LockStatus);
+        //状态不一致需要更新
+       //LockStatus 锁的打开状态
     }
 
     @Override

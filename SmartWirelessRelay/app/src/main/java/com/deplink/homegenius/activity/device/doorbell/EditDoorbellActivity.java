@@ -7,12 +7,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.packet.ellisdk.BasicPacket;
 import com.deplink.homegenius.Protocol.packet.ellisdk.EllESDK;
 import com.deplink.homegenius.Protocol.packet.ellisdk.EllE_Listener;
@@ -27,6 +31,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
@@ -38,6 +43,9 @@ import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
+import org.litepal.crud.DataSupport;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
@@ -67,6 +75,17 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     private String action;
     private EllESDK ellESDK;
     private TextView textview_select_getway_name;
+
+    private TextView textview_select_lock_name;
+    private RelativeLayout layout_lock_list;
+    private ListView listview_select_lock;
+    private RelativeLayout layout_lock_select;
+    private ImageView imageview_lock_arror_right;
+    private LockSelectListAdapter lockSelectListAdapter;
+    private List<SmartDev>mLockList;
+    private SmartLockManager mSmartLockManager;
+    private String selectLockName;
+    private SmartDev bindlock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,17 +126,19 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                             }else{
                                // textview_select_getway_name.setText("当前设备未配置WIFI");
                             }
-
                         }
                     },0);
                 }
             });
-            List<Room> rooms = mDoorbeelManager.getCurrentSelectedDoorbeel().getRooms();
-            if (rooms.size() == 1) {
-                textview_select_room_name.setText(rooms.get(0).getRoomName());
-            } else {
-                textview_select_room_name.setText("全部");
+            if(!isOnActivityResult){
+                List<Room> rooms = mDoorbeelManager.getCurrentSelectedDoorbeel().getRooms();
+                if (rooms.size() == 1) {
+                    textview_select_room_name.setText(rooms.get(0).getRoomName());
+                } else {
+                    textview_select_room_name.setText("全部");
+                }
             }
+
         }
     }
     private long maclong;
@@ -126,6 +147,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     @Override
     protected void onPause() {
         super.onPause();
+        isOnActivityResult=false;
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
@@ -136,6 +158,20 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         textview_edit.setOnClickListener(this);
         layout_room_select.setOnClickListener(this);
         layout_getway_select.setOnClickListener(this);
+        layout_lock_select.setOnClickListener(this);
+        listview_select_lock.setAdapter(lockSelectListAdapter);
+        listview_select_lock.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectLockName = mLockList.get(position).getName();
+                textview_select_lock_name.setText(selectLockName);
+                layout_lock_list.setVisibility(View.GONE);
+                if(mDoorbeelManager.getCurrentSelectedDoorbeel()!=null){
+                    mDoorbeelManager.getCurrentSelectedDoorbeel().setBindLockUid(mLockList.get(position).getBindLockUid());
+                    mDoorbeelManager.getCurrentSelectedDoorbeel().saveFast();
+                }
+            }
+        });
     }
 
     private void initMqtt() {
@@ -189,8 +225,11 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         textview_edit.setText("完成");
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
+        mSmartLockManager=SmartLockManager.getInstance();
+        mSmartLockManager.InitSmartLockManager(this);
         mDeviceListener = new DeviceListener() {
             @Override
             public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
@@ -213,6 +252,15 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
 
             }
         };
+        mLockList=new ArrayList<>();
+        mLockList.addAll(mSmartLockManager.getAllLock());
+        lockSelectListAdapter=new LockSelectListAdapter(this,mLockList);
+
+        if(!isStartFromExperience){
+            if(mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()!=null){
+                bindlock = DataSupport.where("Uid=?", mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()).findFirst(SmartDev.class, true);
+            }
+        }
         initMqtt();
     }
 
@@ -257,14 +305,20 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         textview_select_room_name = findViewById(R.id.textview_select_room_name);
         layout_getway_select = findViewById(R.id.layout_getway_select);
         textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
+        textview_select_lock_name = findViewById(R.id.textview_select_lock_name);
+        layout_lock_list = findViewById(R.id.layout_lock_list);
+        listview_select_lock = findViewById(R.id.listview_select_lock);
+        layout_lock_select = findViewById(R.id.layout_lock_select);
+        imageview_lock_arror_right = findViewById(R.id.imageview_lock_arror_right);
     }
 
-
+    private boolean isOnActivityResult;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
+            isOnActivityResult=true;
             String roomName = data.getStringExtra("roomName");
             Log.i(TAG, "isStartFromExperience=" + isStartFromExperience);
             if (!isStartFromExperience) {
@@ -316,6 +370,15 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                     mDeviceManager.alertDeviceHttp(deviceUid, null, devcienamechange, null);
                 } else {
                     onBackPressed();
+                }
+                break;
+            case R.id.layout_lock_select:
+                if (layout_lock_list.getVisibility() == View.VISIBLE) {
+                    layout_lock_list.setVisibility(View.GONE);
+                    imageview_lock_arror_right.setImageResource(R.drawable.directionicon);
+                } else {
+                    layout_lock_list.setVisibility(View.VISIBLE);
+                    imageview_lock_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
                 break;
         }

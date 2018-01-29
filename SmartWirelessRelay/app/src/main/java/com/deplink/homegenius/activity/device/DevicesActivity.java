@@ -37,7 +37,7 @@ import com.deplink.homegenius.activity.device.smartSwitch.SwitchTwoActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
@@ -138,7 +138,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isUserLogin) {
             mDeviceManager.queryDeviceListHttp();
-            mRemoteControlManager.queryVirtualDeviceList();
         }
         notifyDeviceListView();
     }
@@ -676,6 +675,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             Log.i(TAG, "保存设备:" + room.toString());
             rooms.add(room);
             dev.setRooms(rooms);
+        }else{
+            dev.setRooms(mRoomManager.queryRooms());
         }
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success);
@@ -734,8 +735,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     smartDeviceStatuUpdate(tempSmartDevice);
                     virtualDeviceUpdate();
                     smartDeviceBindLocal(tempSmartDevice);
-
-
+                    mRemoteControlManager.queryVirtualDeviceList();
                     break;
                 case MSG_GET_DEVS_HTTPS:
                     datasTop.clear();

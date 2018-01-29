@@ -105,7 +105,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                         User user = manager.getUserInfo();
                         //清除本地数据库
                         String lastLoginUser = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-                        Log.i(TAG,"lastLoginUser="+lastLoginUser);
+                        Log.i(TAG, "lastLoginUser=" + lastLoginUser);
                         if (lastLoginUser != null && !lastLoginUser.equalsIgnoreCase(user.getName())) {
                             DataSupport.deleteAll(SmartDev.class);
                             DataSupport.deleteAll(GatwayDevice.class);
@@ -122,8 +122,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                         LoginActivity.this.finish();
 
                         Perfence.setContext(getApplicationContext());
-                        String uuid= manager.getUserInfo().getUuid();
-                        Log.i(TAG, "点击登录 onSuccess login uuid="+uuid);
+                        String uuid = manager.getUserInfo().getUuid();
+                        Log.i(TAG, "点击登录 onSuccess login uuid=" + uuid);
                         XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
                             @Override
                             public void onSuccess(Object data, int i) {
@@ -131,11 +131,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                             }
 
                             @Override
-                            public void onFail(Object o, int i, String s) {
-
+                            public void onFail(Object data,  int errCode, String msg) {
+                                Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
                             }
                         });
-                        if(!uuid.equalsIgnoreCase("")){
+                       /* if(!uuid.equalsIgnoreCase("")){
+                            Log.i("TPush", "注册uuid：" +uuid );
                             XGPushManager.registerPush(getApplicationContext(),uuid,new XGIOperateCallback() {
                                 @Override
                                 public void onSuccess(Object data, int flag) {
@@ -146,7 +147,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                                     Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
                                 }
                             });
-                        }
+                        }*/
                         break;
                     default:
                         break;

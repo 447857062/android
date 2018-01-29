@@ -31,6 +31,7 @@ public class SmartDev extends DataSupport implements Serializable {
     private String bindLocal;
     /*绑定的网关*/
     private GatwayDevice getwayDevice;
+    private String bindLockUid;
     private String  getwayDeviceUid;
     private boolean switch_one_open;
     private boolean switch_two_open;
@@ -52,6 +53,15 @@ public class SmartDev extends DataSupport implements Serializable {
      */
     private String remotecontrolUid;
     private String lockPassword = "";
+
+    public String getBindLockUid() {
+        return bindLockUid;
+    }
+
+    public void setBindLockUid(String bindLockUid) {
+        this.bindLockUid = bindLockUid;
+    }
+
     private boolean remerberPassword = true;
     private List<Info> alarmInfo = new ArrayList<>();
 

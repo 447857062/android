@@ -1,4 +1,4 @@
-package com.deplink.homegenius.activity.personal.softupdate;
+package com.deplink.homegenius.activity.personal;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,9 +17,9 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
-import com.deplink.homegenius.activity.personal.HomeNetWorkActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.softupdate.UpdateImmediateActivity;
 import com.deplink.homegenius.activity.personal.usrinfo.UserinfoActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
@@ -228,6 +228,8 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                isUserLogin=false;
+                mLogoutDialog.setDialogTitleText("登录");
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");

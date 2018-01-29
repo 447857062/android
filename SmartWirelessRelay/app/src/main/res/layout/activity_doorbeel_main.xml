@@ -35,7 +35,7 @@
             android:layout_height="wrap_content" />
     </RelativeLayout>
     <Button
-        android:background="@drawable/radius22_bg_6c_background"
+        android:background="@drawable/radius22_bg_button_background"
         android:id="@+id/button_opendoor"
         android:layout_width="@dimen/add_doorbell_buttom_button_width"
         android:layout_centerHorizontal="true"

@@ -31,6 +31,9 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.ExperienceCenterDevice;
+import com.deplink.homegenius.Protocol.json.device.SmartDev;
+import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
+import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.http.weather.HeWeather6;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
@@ -38,15 +41,20 @@ import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
 import com.deplink.homegenius.activity.homepage.adapter.HomepageGridViewAdapter;
 import com.deplink.homegenius.activity.homepage.adapter.HomepageRoomShowTypeChangedViewAdapter;
+import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
 import com.deplink.homegenius.activity.room.DeviceNumberActivity;
 import com.deplink.homegenius.activity.room.RoomActivity;
 import com.deplink.homegenius.application.AppManager;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectService;
+import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
+import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
@@ -56,10 +64,14 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.bean.User;
+import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
+import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,18 +126,15 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private static final int MSG_SHOW_PM25_TEXT = 102;
     private static final int MSG_SHOW_WEATHER_TEXT = 103;
     private static final int MSG_INIT_LOCATIONSERVICE = 104;
+    private static final int MSG_GET_DEVS_HTTPS = 105;
+    private static final int MSG_GET_VIRTUAL_DEVS_HTTPS = 106;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_GET_ROOM:
-                    mRoomList.clear();
-                    mRoomList.addAll(mRoomManager.queryRooms());
-                    setRoomNormalLayout();
-                    Log.i(TAG, "mRoomList.size=" + mRoomList.size());
-                    mAdapter.notifyDataSetChanged();
-                    mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
+                    mDeviceManager.queryDeviceListHttp();
                     break;
                 case MSG_GET_WEATHER_PM25:
                     Log.i(TAG, "city.substring(city.length()-1,city.length())=" + city.substring(city.length() - 1, city.length()));
@@ -173,7 +182,18 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             mLocationClient.start();
                         }
                     }.start();
+                    break;
+                case MSG_GET_DEVS_HTTPS:
+                    mRemoteControlManager.queryVirtualDeviceList();
 
+                    break;
+                case MSG_GET_VIRTUAL_DEVS_HTTPS:
+                    mRoomList.clear();
+                    mRoomList.addAll(mRoomManager.queryRooms());
+                    setRoomNormalLayout();
+                    Log.i(TAG, "mRoomList.size=" + mRoomList.size());
+                    mAdapter.notifyDataSetChanged();
+                    mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
                     break;
             }
         }
@@ -314,11 +334,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         isLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-       /* long macl=71778318375177216L;
-        String macS= DataExchange.byteArrayToHexString( DataExchange.longToEightByte(macl));
-        macS=macS.replaceAll("0x","").trim();
-        macS=macS.replaceAll(" ","-");
-        Log.i(TAG,"savemac="+macS);*/
         manager.addEventCallback(ec);
         textview_home.setTextColor(getResources().getColor(R.color.title_blue_bg));
         textview_device.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -346,6 +361,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         if (isLogin) {
             mRoomManager.updateRooms();
         }
+        mDeviceManager.addDeviceListener(mDeviceListener);
+        mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         mRoomManager.addRoomListener(this);
     }
 
@@ -374,12 +391,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         manager.onDestroy();
     }
     private DeleteDeviceDialog connectLostDialog;
+    private DeviceManager mDeviceManager;
+    private RemoteControlManager mRemoteControlManager;
     private void initDatas() {
         Intent bindIntent = new Intent(SmartHomeMainActivity.this, LocalConnectService.class);
         startService(bindIntent);
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
-        mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, null);
+        initManager();
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
         mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);
         mExperienceCenterDeviceList = new ArrayList<>();
@@ -457,6 +475,228 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             Perfence.setPerfence(AppConstant.USER_LOGIN, false);
             manager.login(phoneNumber, password);
         }
+        initListener();
+    }
+    private DeviceListener mDeviceListener;
+    private RemoteControlListener mRemoteControlListener;
+    private void initListener() {
+        mDeviceListener = new DeviceListener() {
+            @Override
+            public void responseQueryHttpResult(List<Deviceprops> devices) {
+                super.responseQueryHttpResult(devices);
+                //保存设备列表
+                List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
+                for (int i = 0; i < devices.size(); i++) {
+                    boolean addToDb = true;
+                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")
+                            ) {
+                        addToDb = false;
+                    } else {
+                        for (int j = 0; j < dbSmartDev.size(); j++) {
+                            if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                addToDb = false;
+                            }
+                        }
+                    }
+                    if (addToDb) {
+                        Log.i(TAG, "http查询到智能设备,保存下来:");
+                        saveSmartDeviceToSqlite(devices, i);
+                    }
+                }
+                List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
+                for (int i = 0; i < devices.size(); i++) {
+                    boolean addToDb = true;
+                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                        for (int j = 0; j < dbGetwayDev.size(); j++) {
+                            if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                addToDb = false;
+                            }
+                        }
+                    } else {
+                        addToDb = false;
+                    }
+                    if (addToDb) {
+                        saveGetwayDeviceToSqlite(devices, i);
+                    }
+                }
+                mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);
+            }
+        };
+        mRemoteControlListener = new RemoteControlListener() {
+            @Override
+            public void responseQueryVirtualDevices(List<DeviceOperationResponse> result) {
+                super.responseQueryVirtualDevices(result);
+                //保存虚拟设备
+                for (int i = 0; i < result.size(); i++) {
+                    saveVirtualDeviceToSqlite(result, i);
+                }
+                mHandler.sendEmptyMessage(MSG_GET_VIRTUAL_DEVS_HTTPS);
+            }
+        };
+    }
+    /**
+     * 保存网关设备到本地数据库
+     *
+     * @param devices
+     * @param i
+     */
+    private void saveGetwayDeviceToSqlite(List<Deviceprops> devices, int i) {
+        GatwayDevice dev = new GatwayDevice();
+        String deviceType = devices.get(i).getDevice_type();
+        dev.setType(deviceType);
+        String deviceName = devices.get(i).getDevice_name();
+        if (deviceType.equalsIgnoreCase("LKSWG") || deviceType.equalsIgnoreCase("LKSGW")) {
+            if (deviceName == null || deviceName.equals("")) {
+                dev.setName("中继器");
+            } else {
+                deviceName = deviceName.replace("/路由器", "");
+                dev.setName(deviceName);
+            }
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SMART_GETWAY;
+            dev.setType(deviceType);
+        }
+        dev.setUid(devices.get(i).getUid());
+        dev.setOrg(devices.get(i).getOrg_code());
+        dev.setVer(devices.get(i).getVersion());
+        dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
+        List<Room> rooms = new ArrayList<>();
+        Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
+        Log.i(TAG, "添加中继器房间是:" + room.toString());
+        rooms.add(room);
+        dev.setRoomList(rooms);
+        boolean success = dev.save();
+        Log.i(TAG, "保存设备:" + success + "deviceName=" + deviceName);
+    }
+
+    private void saveSmartDeviceToSqlite(List<Deviceprops> devices, int i) {
+        SmartDev dev = new SmartDev();
+        String deviceType = devices.get(i).getDevice_type();
+        dev.setType(deviceType);
+        String deviceName = devices.get(i).getDevice_name();
+        if (deviceType.equalsIgnoreCase("SMART_LOCK")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_LOCK;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+        } else if (deviceType.equalsIgnoreCase("IRMOTE_V2")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_REMOTECONTROL;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch1")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_ONEWAY);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch2")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_TWOWAY);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch3")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_THREEWAY);
+        } else if (deviceType.equalsIgnoreCase("SmartWallSwitch4")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_SWITCH;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+            dev.setSubType(DeviceTypeConstant.TYPE_SWITCH_SUBTYPE.SUB_TYPE_SWITCH_FOURWAY);
+        } else if (deviceType.equalsIgnoreCase("YWLIGHTCONTROL")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_LIGHT;
+            dev.setType(deviceType);
+            dev.setName(deviceName);
+        } else if (deviceType.equalsIgnoreCase("SMART_BELL")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_MENLING;
+            dev.setType(deviceType);
+            dev.setStatus("在线");
+            dev.setName(deviceName);
+        } else if (deviceType.equalsIgnoreCase("LKRT")) {
+            deviceType = DeviceTypeConstant.TYPE.TYPE_ROUTER;
+            dev.setType(deviceType);
+            Router router = new Router();
+            Log.i(TAG, "获取绑定的设备" + manager.getDeviceList().size());
+            if (deviceName == null || deviceName.equals("")) {
+                dev.setName("路由器");
+            } else {
+                dev.setName(deviceName);
+            }
+            router.setSign_seed(devices.get(i).getSign_seed());
+            router.setSignature(devices.get(i).getSignature());
+            router.setChannels(devices.get(i).getChannels().getSecondary().getSub());
+            router.setReceveChannels(devices.get(i).getChannels().getSecondary().getPub());
+            router.setSmartDev(dev);
+            router.save();
+            dev.setRouter(router);
+        }
+        GatwayDevice addGatwayDevice = null;
+        String gw_uid = devices.get(i).getGw_uid();
+        if (gw_uid != null) {
+            dev.setGetwayDeviceUid(gw_uid);
+            addGatwayDevice = DataSupport.where("uid=?", gw_uid).findFirst(GatwayDevice.class);
+        }
+        Log.i(TAG, "gw_uid=" + gw_uid + "addGatwayDevice" + (addGatwayDevice != null));
+        if (addGatwayDevice != null) {
+            dev.setGetwayDevice(addGatwayDevice);
+        }
+
+        dev.setUid(devices.get(i).getUid());
+        dev.setOrg(devices.get(i).getOrg_code());
+        dev.setVer(devices.get(i).getVersion());
+        dev.setMac(devices.get(i).getMac().toLowerCase());
+        List<Room> rooms = new ArrayList<>();
+        Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
+        if (room != null) {
+            Log.i(TAG, "保存设备:" + room.toString());
+            rooms.add(room);
+            dev.setRooms(rooms);
+        }else{
+            dev.setRooms(mRoomManager.queryRooms());
+        }
+        boolean success = dev.save();
+        Log.i(TAG, "保存设备:" + success);
+    }
+
+    private void saveVirtualDeviceToSqlite(List<DeviceOperationResponse> devices, int i) {
+        SmartDev dev = DataSupport.where("Uid=?", devices.get(i).getUid()).findFirst(SmartDev.class);
+        if (dev == null) {
+            dev = new SmartDev();
+        }
+        String deviceType = devices.get(i).getDevice_type();
+        switch (deviceType) {
+            case "IREMOTE_V2_AC":
+                deviceType = DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL;
+                break;
+            case "IREMOTE_V2_TV":
+                deviceType = DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL;
+                break;
+            case "IREMOTE_V2_STB":
+                deviceType = DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL;
+                break;
+        }
+        dev.setType(deviceType);
+        String deviceName = devices.get(i).getDevice_name();
+        dev.setName(deviceName);
+        dev.setUid(devices.get(i).getUid());
+        SmartDev realRc = DataSupport.where("Uid=?", devices.get(i).getIrmote_uid()).findFirst(SmartDev.class, true);
+        Log.i(TAG, "物理遥控器uid=" + devices.get(i).getIrmote_uid());
+        if (realRc != null && realRc.getRooms() != null) {
+            dev.setRooms(realRc.getRooms());
+        }
+        dev.setRemotecontrolUid(devices.get(i).getIrmote_uid());
+        dev.setMac(devices.get(i).getIrmote_mac());
+        String key_codes = devices.get(i).getKey_codes();
+        if (key_codes != null) {
+            dev.setKey_codes(key_codes);
+        }
+        dev.save();
+    }
+    private void initManager() {
+        mRoomManager = RoomManager.getInstance();
+        mRoomManager.initRoomManager(this, null);
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
+        mRemoteControlManager = RemoteControlManager.getInstance();
+        mRemoteControlManager.InitRemoteControlManager(this);
     }
 
     private AdapterView.OnItemClickListener mExperienceCenterListClickListener = new AdapterView.OnItemClickListener() {
@@ -531,6 +771,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         mRoomManager.removeRoomListener(this);
+        mDeviceManager.removeDeviceListener(mDeviceListener);
+        mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
         manager.removeEventCallback(ec);
     }
 

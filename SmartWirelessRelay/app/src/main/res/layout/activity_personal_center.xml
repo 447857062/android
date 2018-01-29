@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    tools:context="com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity">
+    tools:context="com.deplink.homegenius.activity.personal.PersonalCenterActivity">
 
     <RelativeLayout
         android:id="@+id/layout_title"
@@ -57,7 +57,7 @@
             android:layout_marginTop="0dp"
             android:textSize="@dimen/text_size_small"
             android:gravity="center_horizontal"
-            android:text="Clamdown"
+            android:text=""
             android:textColor="@color/white" />
     </RelativeLayout>
     <com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout

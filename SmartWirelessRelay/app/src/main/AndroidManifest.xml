@@ -85,7 +85,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/noAnimTheme" />
         <activity
-            android:name="com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity"
+            android:name="com.deplink.homegenius.activity.personal.PersonalCenterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/noAnimTheme" />

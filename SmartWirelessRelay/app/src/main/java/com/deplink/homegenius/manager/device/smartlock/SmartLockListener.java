@@ -18,6 +18,6 @@ public interface SmartLockListener {
      *返回智能锁绑定结果
      */
     void responseBind(String result);
-    void responseLockStatu(int RecondNum,int LockStatus);
+    void responseLockStatu(int RecondNum,int LockStatus );
     void responseUserIdInfo(UserIdInfo userIdInfo);
 }

@@ -22,7 +22,7 @@ import com.deplink.homegenius.activity.device.smartSwitch.SwitchOneActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
-import com.deplink.homegenius.activity.personal.softupdate.PersonalCenterActivity;
+import com.deplink.homegenius.activity.personal.PersonalCenterActivity;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 

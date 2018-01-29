@@ -288,9 +288,14 @@ public class DoorbeelManager {
         SmartDev smartDev = DataSupport.where("Uid=?", uid).findFirst(SmartDev.class, true);
         //找到要更行的设备,设置关联的房间
         List<Room> rooms = new ArrayList<>();
-        rooms.add(room);
+        if(room!=null){
+            rooms.add(room);
+        }else{
+            rooms.addAll( DataSupport.findAll(Room.class, true));
+        }
         smartDev.setRooms(rooms);
         boolean saveResult = smartDev.save();
+        getCurrentSelectedDoorbeel().setRooms(rooms);
         Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
         return saveResult;
     }

@@ -15,6 +15,7 @@ import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
 import com.deplink.homegenius.Protocol.json.device.lock.alertreport.Info;
 import com.deplink.homegenius.Protocol.packet.GeneralPacket;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnecteListener;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
@@ -159,9 +160,42 @@ public class SmartLockManager implements LocalConnecteListener {
         });
 
     }
-
     /**
-     * 查询设备列表
+     * 更新设备所在房间
+     */
+    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid) {
+        Log.i(TAG, "更新智能设备所在的房间=start");
+        //保存所在的房间
+        //查询设备
+        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        //找到要更行的设备,设置关联的房间
+        List<Room> rooms = new ArrayList<>();
+        if (room != null) {
+            rooms.add(room);
+        } else {
+            rooms.addAll(RoomManager.getInstance().getmRooms());
+        }
+        currentSelectLock.setRooms(rooms);
+        smartDev.setRooms(rooms);
+        boolean saveResult = smartDev.save();
+        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
+    }
+
+    public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
+        Log.i(TAG, "更新智能设备所在的网关=start");
+        currentSelectLock.setGetwayDevice(getwayDevice);
+        boolean saveResult = currentSelectLock.save();
+        Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
+        return saveResult;
+    }
+    public List<SmartDev> getAllLock() {
+        List<SmartDev>locklist=DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_LOCK).find(SmartDev.class);
+        Log.i(TAG,"门锁设备列表大小="+locklist.size());
+        return locklist;
+    }
+    //数据库操作函数-----------------------------------------------------------end
+    /**
+     * 查询锁设备uid
      */
     public void queryLockUidHttp(String deviceUid) {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
@@ -232,35 +266,7 @@ public class SmartLockManager implements LocalConnecteListener {
         });
     }
 
-    /**
-     * 更新设备所在房间
-     */
-    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid) {
-        Log.i(TAG, "更新智能设备所在的房间=start");
-        //保存所在的房间
-        //查询设备
-        SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
-        //找到要更行的设备,设置关联的房间
-        List<Room> rooms = new ArrayList<>();
-        if (room != null) {
-            rooms.add(room);
-        } else {
-            rooms.addAll(RoomManager.getInstance().getmRooms());
-        }
-        currentSelectLock.setRooms(rooms);
-        smartDev.setRooms(rooms);
-        boolean saveResult = smartDev.save();
-        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
-    }
 
-    public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
-        Log.i(TAG, "更新智能设备所在的网关=start");
-        currentSelectLock.setGetwayDevice(getwayDevice);
-        boolean saveResult = currentSelectLock.save();
-        Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
-        return saveResult;
-    }
-    //数据库操作函数-----------------------------------------------------------end
 
     /**
      * 报警记录设备上报，没有查询接口，所以保存在数据库中，需要去数据库获取
