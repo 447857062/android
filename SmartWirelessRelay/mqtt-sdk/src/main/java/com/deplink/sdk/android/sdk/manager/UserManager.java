@@ -299,6 +299,7 @@ public class UserManager implements MqttListener {
      * @param imagePath
      */
     public void uploadImage(String imagePath) {
+        Log.i(TAG, "uploadImage:" + imagePath);
         RestfulTools.getSingleton().uploadImage(imagePath, new Callback<UserSession>() {
             @Override
             public void onResponse(Call<UserSession> call, Response<UserSession> response) {
