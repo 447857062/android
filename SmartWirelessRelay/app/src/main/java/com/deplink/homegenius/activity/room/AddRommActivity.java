@@ -36,7 +36,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class AddRommActivity extends Activity implements View.OnClickListener, RoomListener {
+public class AddRommActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "AddRommActivity";
     private TextView textview_add_room_complement;
     private ImageView image_back;
@@ -64,10 +64,10 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
 
     private boolean fromAddDevice;
     private String selectGetwayName;
-
+    private RoomListener mRoomListener;
     private void initDatas() {
         roomManager = RoomManager.getInstance();
-        roomManager.initRoomManager(this, this);
+        roomManager.initRoomManager(this);
         mGridViewRommTypeAdapter = new GridViewRommTypeAdapter(this);
         listTop.add(RoomConstant.ROOMTYPE.TYPE_LIVING);
         listTop.add(RoomConstant.ROOMTYPE.TYPE_BED);
@@ -97,6 +97,19 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
                 layout_getway_list.setVisibility(View.GONE);
             }
         });
+        mRoomListener=new RoomListener() {
+            @Override
+            public void responseAddRoomResult(String result) {
+                super.responseAddRoomResult(result);
+                boolean addDbResult = roomManager.addRoom(roomType, roomName, result, currentSelectGetway);
+                if (addDbResult) {
+                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
+                    finish();
+                } else {
+                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
+                }
+            }
+        };
     }
 
     private void initEvents() {
@@ -145,6 +158,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
                     if (fromAddDevice) {
                         RoomManager.getInstance().setCurrentSelectedRoom(null);
                         Intent intent = new Intent(AddRommActivity.this, AddDeviceActivity.class);
+                        intent.putExtra("addDeviceSelectRoom", true);
                         startActivity(intent);
                     }
                     break;
@@ -158,10 +172,17 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
     @Override
     protected void onResume() {
         super.onResume();
+        roomManager.addRoomListener(mRoomListener);
         userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
     }
 
     private String roomName;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        roomManager.removeRoomListener(mRoomListener);
+    }
 
     @Override
     public void onClick(View v) {
@@ -200,36 +221,14 @@ public class AddRommActivity extends Activity implements View.OnClickListener, R
         }
     }
 
-    @Override
-    public void responseQueryResultHttps(List<Room> result) {
 
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        roomManager.removeRoomListener(this);
     }
 
-    @Override
-    public void responseAddRoomResult(String result) {
-        boolean addDbResult = roomManager.addRoom(roomType, roomName, result, currentSelectGetway);
-        if (addDbResult) {
-            mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
-            finish();
-        } else {
-            mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
-        }
 
-    }
 
-    @Override
-    public void responseDeleteRoomResult() {
 
-    }
-
-    @Override
-    public void responseUpdateRoomNameResult() {
-
-    }
 }

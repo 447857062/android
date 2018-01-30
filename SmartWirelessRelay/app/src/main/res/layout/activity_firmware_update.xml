@@ -61,7 +61,6 @@
             android:layout_width="match_parent"
             android:background="@color/white"
             android:layout_height="@dimen/layout_item_content_height"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
             <RelativeLayout
@@ -77,7 +76,6 @@
                     android:text="自动升级"
                     android:textColor="@color/room_type_text"
                     android:textSize="@dimen/text_size_small" />
-
                 <CheckBox
                     android:id="@+id/checkbox_auto_update"
                     android:layout_width="wrap_content"
@@ -86,17 +84,7 @@
                     android:layout_centerVertical="true"
                     android:button="@drawable/checkbox_wifi_selector" />
             </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
-
-
         </RelativeLayout>
-
-
     </RelativeLayout>
 
 </RelativeLayout>

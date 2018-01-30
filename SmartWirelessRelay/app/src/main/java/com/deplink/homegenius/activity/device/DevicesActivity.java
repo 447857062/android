@@ -136,9 +136,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         setButtomBarImageResource();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
-        if (isUserLogin) {
-            mDeviceManager.queryDeviceListHttp();
-        }
         notifyDeviceListView();
     }
 
@@ -381,7 +378,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, null);
+        mRoomManager.initRoomManager(this);
         mRouterManager = RouterManager.getInstance();
         mRouterManager.InitRouterManager(DevicesActivity.this);
         mGetwayManager = GetwayManager.getInstance();

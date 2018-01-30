@@ -191,18 +191,23 @@ public class EditActivity extends Activity implements View.OnClickListener {
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
                 deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
-                if (action.equals("alertroom")) {
-                    mSmartSwitchManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
-                } else if (action.equals("alertname")) {
-                    boolean saveResult = mSmartSwitchManager.updateSmartDeviceName(deviceUid, deviceName);
-                    if (saveResult) {
-                        onBackPressed();
-                    }
-                } else if (action.equals("alertgetway")) {
-                    boolean saveDbResult = mSmartSwitchManager.updateSmartDeviceGetway(selectedGatway);
-                    if (!saveDbResult) {
-                        Toast.makeText(EditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
-                    }
+                switch (action) {
+                    case "alertroom":
+                        mSmartSwitchManager.updateSmartDeviceInWhatRoom(room, deviceUid, deviceName);
+                        break;
+                    case "alertname":
+                        boolean saveResult = mSmartSwitchManager.updateSmartDeviceName(deviceUid, deviceName);
+                        Log.i(TAG,"修改开关名称:"+deviceName+"修改结果:"+saveResult);
+                        if (saveResult) {
+                            onBackPressed();
+                        }
+                        break;
+                    case "alertgetway":
+                        boolean saveDbResult = mSmartSwitchManager.updateSmartDeviceGetway(selectedGatway);
+                        if (!saveDbResult) {
+                            Toast.makeText(EditActivity.this, "更新智能设备所属网关失败", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
                 }
                 action = "";
             }
@@ -282,7 +287,6 @@ public class EditActivity extends Activity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
             String roomName = data.getStringExtra("roomName");
-            Log.i(TAG, "isStartFromExperience=" + isStartFromExperience);
             isOnActivityResult = true;
             if (!isStartFromExperience) {
                 action = "alertroom";

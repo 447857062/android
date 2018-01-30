@@ -78,6 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/arror_right_left_textview_margin_right"
+                android:textColor="@color/huise"
                 android:layout_toLeftOf="@+id/imageview_roomname_arror_right"
                 android:gravity="center_vertical"
                 android:text="全部" />

@@ -93,7 +93,6 @@ public class DeviceManager implements LocalConnecteListener {
     public void setStartFromHomePage(boolean startFromHomePage) {
         isStartFromHomePage = startFromHomePage;
     }
-
     public static synchronized DeviceManager getInstance() {
         if (instance == null) {
             instance = new DeviceManager();
@@ -138,17 +137,15 @@ public class DeviceManager implements LocalConnecteListener {
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        } else /*if (mRemoteConnectManager.isRemoteConnectAvailable())*/ {
+        } else if (mRemoteConnectManager.isRemoteConnectAvailable()) {
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-            Log.i(TAG, "device.getTopic()=" + device.getTopic());
-            if (device.getTopic() != null && !device.getTopic().equals("")) {
+            if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 mHomeGenius.queryDeviceList(device.getTopic(), uuid);
             }
         }
-
     }
-
     /**
      * 查询设备列表
      */

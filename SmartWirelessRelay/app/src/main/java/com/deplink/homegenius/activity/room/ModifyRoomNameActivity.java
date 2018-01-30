@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.room.RoomListener;
@@ -23,11 +22,9 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
-import java.util.List;
-
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class ModifyRoomNameActivity extends Activity implements View.OnClickListener, RoomListener {
+public class ModifyRoomNameActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ModifyRoomNameActivity";
     private ClearEditText clearEditText;
     private TextView textview_title;
@@ -57,19 +54,21 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
         clearEditText.setText(orgRoomName);
         clearEditText.setSelection(orgRoomName.length());
         manager.addEventCallback(ec);
+        mRoomManager.addRoomListener(mRoomListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
+        mRoomManager.removeRoomListener(mRoomListener);
     }
-
+    private RoomListener mRoomListener;
     private void initDatas() {
         textview_title.setText("修改房间名称");
         textview_edit.setText("完成");
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, this);
+        mRoomManager.initRoomManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
         connectLostDialog = new DeleteDeviceDialog(ModifyRoomNameActivity.this);
@@ -109,6 +108,20 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+        mRoomListener=new RoomListener() {
+            @Override
+            public void responseUpdateRoomNameResult() {
+                super.responseUpdateRoomNameResult();
+                int result = RoomManager.getInstance().updateRoomName(orgRoomName, roomName);
+                if (result != 1) {
+                    Toast.makeText(ModifyRoomNameActivity.this, "修改房间名称失败", Toast.LENGTH_SHORT).show();
+                } else {
+                    mRoomManager.getCurrentSelectedRoom().setRoomName(roomName);
+                    Intent intent = new Intent(ModifyRoomNameActivity.this, ManageRoomActivity.class);
+                    startActivity(intent);
+                }
             }
         };
     }
@@ -157,30 +170,4 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
         }
     }
 
-    @Override
-    public void responseQueryResultHttps(List<Room> result) {
-
-    }
-
-    @Override
-    public void responseAddRoomResult(String result) {
-
-    }
-
-    @Override
-    public void responseDeleteRoomResult() {
-
-    }
-
-    @Override
-    public void responseUpdateRoomNameResult() {
-        int result = RoomManager.getInstance().updateRoomName(orgRoomName, roomName);
-        if (result != 1) {
-            Toast.makeText(this, "修改房间名称失败", Toast.LENGTH_SHORT).show();
-        } else {
-            mRoomManager.getCurrentSelectedRoom().setRoomName(roomName);
-            Intent intent = new Intent(ModifyRoomNameActivity.this, ManageRoomActivity.class);
-            startActivity(intent);
-        }
-    }
 }

@@ -108,7 +108,7 @@ public class QueryOptions implements Serializable {
     }
 
     public void setTimestamp() {
-        this.timestamp = System.currentTimeMillis();
+        this.timestamp = System.currentTimeMillis()/1000;
     }
 
     public String getAuthId() {

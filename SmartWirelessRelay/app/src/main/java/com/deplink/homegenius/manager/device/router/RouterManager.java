@@ -34,6 +34,15 @@ public class RouterManager {
      */
     private static RouterManager instance;
     private SmartDev currentSelectedRouter;
+    private boolean isEditRouter;
+
+    public boolean isEditRouter() {
+        return isEditRouter;
+    }
+
+    public void setEditRouter(boolean editRouter) {
+        isEditRouter = editRouter;
+    }
 
     public SmartDev getCurrentSelectedRouter() {
         Log.i(TAG, "设置当前选中的路由器 router!=null" + (currentSelectedRouter.getRouter() != null));

@@ -150,7 +150,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-
                 isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
@@ -248,7 +247,6 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                     }else{
                         startActivity(new Intent(this,ExperienceDevicesActivity.class));
                     }
-
                 } else {
                     if (isUserLogin) {
                         inputDeviceName = edittext_input_devie_name.getText().toString();
@@ -256,9 +254,11 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                             String deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
                             mDeviceManager.alertDeviceHttp(deviceUid, null, inputDeviceName, null);
                             action = "alertname";
+                        }else{
+                            onBackPressed();
                         }
                     } else {
-                        ToastSingleShow.showText(this, "未登录,登录后才能操作");
+                       onBackPressed();
                     }
                 }
                 break;

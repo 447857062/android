@@ -7,12 +7,20 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/11/9.
  */
-public interface RoomListener {
+public  abstract class RoomListener {
     /**
      *返回查询结果
      */
-    void responseQueryResultHttps(List<Room> result);
-    void responseAddRoomResult(String result);
-    void responseDeleteRoomResult();
-    void responseUpdateRoomNameResult();
+    public void responseQueryResultHttps(List<Room> result){
+
+    };
+    public void responseAddRoomResult(String result){
+
+    };
+    public void responseDeleteRoomResult(){
+
+    };
+    public void responseUpdateRoomNameResult(){
+
+    };
 }

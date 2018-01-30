@@ -1,8 +1,11 @@
 package com.deplink.homegenius.activity.homepage;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +39,7 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.http.weather.HeWeather6;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
@@ -70,6 +74,8 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushManager;
 
 import org.litepal.crud.DataSupport;
 
@@ -84,7 +90,7 @@ import retrofit2.Response;
 /**
  * 智能家居主页
  */
-public class SmartHomeMainActivity extends Activity implements View.OnClickListener, RoomListener {
+public class SmartHomeMainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "SmartHomeMainActivity";
     private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
@@ -120,9 +126,25 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private NonScrollableListView layout_roomselect_changed_ype;
     private ScrollView scrollview_root;
     private boolean isLogin;
-    private String cityCode = null;
+    private String province;
+    private String city;
+    private String district;
+    private DeviceListener mDeviceListener;
+    private RemoteControlListener mRemoteControlListener;
+    private DeleteDeviceDialog connectLostDialog;
+    private DeviceManager mDeviceManager;
+    private RemoteControlManager mRemoteControlManager;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG, "onServiceConnected");
+        }
+    };
     private static final int MSG_GET_ROOM = 100;
-    private static final int MSG_GET_WEATHER_PM25 = 101;
+    private static final int MSG_QUERY_WEATHER_PM25 = 101;
     private static final int MSG_SHOW_PM25_TEXT = 102;
     private static final int MSG_SHOW_WEATHER_TEXT = 103;
     private static final int MSG_INIT_LOCATIONSERVICE = 104;
@@ -136,15 +158,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 case MSG_GET_ROOM:
                     mDeviceManager.queryDeviceListHttp();
                     break;
-                case MSG_GET_WEATHER_PM25:
-                    Log.i(TAG, "city.substring(city.length()-1,city.length())=" + city.substring(city.length() - 1, city.length()));
+                case MSG_QUERY_WEATHER_PM25:
                     if (city.substring(city.length() - 1, city.length()).equals("市")) {
                         city = city.substring(0, city.length() - 1);
                     }
                     if (province.substring(province.length() - 1, province.length()).equals("省")) {
                         province = province.substring(0, province.length() - 1);
                     }
-                    Log.i(TAG, "city=" + city);
                     textview_city.setText(city + "/" + district);
                     initWaetherData();
                     sendRequestWithHttpClient(city);
@@ -156,7 +176,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     String temp = (String) msg.obj;
                     try {
                         temp = temp.split("℃")[0];
-                        Log.i(TAG, "tempture=" + temp);
                         textview_tempature.setText(temp);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -185,7 +204,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     break;
                 case MSG_GET_DEVS_HTTPS:
                     mRemoteControlManager.queryVirtualDeviceList();
-
                     break;
                 case MSG_GET_VIRTUAL_DEVS_HTTPS:
                     mRoomList.clear();
@@ -198,44 +216,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         }
     };
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.i(TAG, "onServiceConnected");
 
-        }
-    };
-
-    @Override
-    public void responseQueryResultHttps(List<Room> result) {
-        Log.i(TAG, "主页获取到房间列表=" + result);
-        Message msg = Message.obtain();
-        msg.what = MSG_GET_ROOM;
-        mHandler.sendMessage(msg);
-    }
-
-    @Override
-    public void responseAddRoomResult(String result) {
-
-    }
-
-    @Override
-    public void responseDeleteRoomResult() {
-
-    }
-
-    @Override
-    public void responseUpdateRoomNameResult() {
-
-    }
-
-    private String province;
-    private String city;
-    private String district;
 
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
@@ -249,25 +231,44 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             city = location.getCity();    //获取城市
             district = location.getDistrict();    //获取区县
             // String street = location.getStreet();    //获取街道信息
-            Log.i(TAG, "city=" + city + "province=" + province);
             if (city != null && province != null) {
                 Message msg = Message.obtain();
-                msg.what = MSG_GET_WEATHER_PM25;
+                msg.what = MSG_QUERY_WEATHER_PM25;
                 mHandler.sendMessage(msg);
             }
         }
     }
 
+    public class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            //  allRecorders = notificationService.getCount();
+            // getNotificationswithouthint(id);
+            Bundle pushMessageBundle = intent.getBundleExtra("message");
+            intent = new Intent(context, DoorbeelMainActivity.class);
+            if (pushMessageBundle != null) {
+                Log.i(TAG,"通知的点击后,去到门铃界面");
+                intent.putExtra("message", pushMessageBundle);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+            }
+        }
+    }
+    private MsgReceiver updateListViewReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_home_main);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.qq.xgdemo.activity.UPDATE_LISTVIEW");
+        updateListViewReceiver = new MsgReceiver();
+        registerReceiver(updateListViewReceiver, intentFilter);
         initViews();
         initDatas();
         initEvents();
     }
-
     /**
      * 获取pm2.5
      *
@@ -282,7 +283,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         if (response.code() == 200) {
                             JsonObject jsonObjectGson = response.body();
-                            Log.i(TAG, "jsonObjectGson=" + jsonObjectGson.toString());
                             Gson gson = new Gson();
                             HeWeather6 weatherObject = gson.fromJson(jsonObjectGson.toString(), HeWeather6.class);
                             Message message = new Message();
@@ -305,13 +305,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG, "cityCode=" + cityCode);
                 RestfulToolsWeather.getSingleton().getWeatherInfo(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         if (response.code() == 200) {
                             JsonObject jsonObjectGson = response.body();
-                            Log.i(TAG, "jsonObjectGson=" + jsonObjectGson.toString());
                             Gson gson = new Gson();
                             HeWeather6 weatherObject = gson.fromJson(jsonObjectGson.toString(), HeWeather6.class);
                             Message message = new Message();
@@ -329,7 +327,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             }
         }).start();
     }
-
+    private RoomListener mRoomListener;
     @Override
     protected void onResume() {
         super.onResume();
@@ -363,7 +361,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         mDeviceManager.addDeviceListener(mDeviceListener);
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
-        mRoomManager.addRoomListener(this);
+        mRoomManager.addRoomListener(mRoomListener);
     }
 
     private void setRoomNormalLayout() {
@@ -389,10 +387,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         super.onDestroy();
         manager.removeEventCallback(ec);
         manager.onDestroy();
+        unregisterReceiver(updateListViewReceiver);
     }
-    private DeleteDeviceDialog connectLostDialog;
-    private DeviceManager mDeviceManager;
-    private RemoteControlManager mRemoteControlManager;
+
+
+
     private void initDatas() {
         Intent bindIntent = new Intent(SmartHomeMainActivity.this, LocalConnectService.class);
         startService(bindIntent);
@@ -426,17 +425,31 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 switch (action) {
                     case LOGIN:
                         manager.connectMQTT(SmartHomeMainActivity.this);
-                        Log.i(TAG, "LOGIN success uuid=" + manager.getUserInfo().getUuid());
+                        Log.i(TAG, "login mqtt success uuid=" + manager.getUserInfo().getUuid());
                         Perfence.setPerfence(AppConstant.PERFENCE_BIND_APP_UUID, manager.getUserInfo().getUuid());
                         User user = manager.getUserInfo();
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
-                        Log.i(TAG, "CONNECTED mqtt");
                         mRoomManager.updateRooms();
+                        Perfence.setContext(getApplicationContext());
+                        String uuid = manager.getUserInfo().getUuid();
+                        if (!uuid.equalsIgnoreCase("")) {
+                            Log.i("TPush", "注册uuid：" + uuid);
+                            XGPushManager.registerPush(getApplicationContext(), uuid, new XGIOperateCallback() {
+                                @Override
+                                public void onSuccess(Object data, int flag) {
+                                    Log.i("TPush", "注册成功，设备token为：" + data);
+                                }
+
+                                @Override
+                                public void onFail(Object data, int errCode, String msg) {
+                                    Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
+                                }
+                            });
+                        }
                         break;
                     case CONNECTED:
-
                         break;
                 }
             }
@@ -459,9 +472,8 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                isLogin=false;
+                isLogin = false;
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
@@ -477,8 +489,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         initListener();
     }
-    private DeviceListener mDeviceListener;
-    private RemoteControlListener mRemoteControlListener;
+
     private void initListener() {
         mDeviceListener = new DeviceListener() {
             @Override
@@ -533,7 +544,18 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                 mHandler.sendEmptyMessage(MSG_GET_VIRTUAL_DEVS_HTTPS);
             }
         };
+        mRoomListener=new RoomListener() {
+            @Override
+            public void responseQueryResultHttps(List<Room> result) {
+                super.responseQueryResultHttps(result);
+                Log.i(TAG, "主页获取到房间列表=" + result);
+                Message msg = Message.obtain();
+                msg.what = MSG_GET_ROOM;
+                mHandler.sendMessage(msg);
+            }
+        };
     }
+
     /**
      * 保存网关设备到本地数据库
      *
@@ -561,11 +583,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
-        Log.i(TAG, "添加中继器房间是:" + room.toString());
         rooms.add(room);
         dev.setRoomList(rooms);
         boolean success = dev.save();
-        Log.i(TAG, "保存设备:" + success + "deviceName=" + deviceName);
+        Log.i(TAG, "添加中继器房间是:" + room.toString()+"保存设备:" + success + "deviceName=" + deviceName);
     }
 
     private void saveSmartDeviceToSqlite(List<Deviceprops> devices, int i) {
@@ -646,14 +667,12 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
         if (room != null) {
-            Log.i(TAG, "保存设备:" + room.toString());
             rooms.add(room);
             dev.setRooms(rooms);
-        }else{
+        } else {
             dev.setRooms(mRoomManager.queryRooms());
         }
         boolean success = dev.save();
-        Log.i(TAG, "保存设备:" + success);
     }
 
     private void saveVirtualDeviceToSqlite(List<DeviceOperationResponse> devices, int i) {
@@ -678,7 +697,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         dev.setName(deviceName);
         dev.setUid(devices.get(i).getUid());
         SmartDev realRc = DataSupport.where("Uid=?", devices.get(i).getIrmote_uid()).findFirst(SmartDev.class, true);
-        Log.i(TAG, "物理遥控器uid=" + devices.get(i).getIrmote_uid());
         if (realRc != null && realRc.getRooms() != null) {
             dev.setRooms(realRc.getRooms());
         }
@@ -690,9 +708,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
         dev.save();
     }
+
     private void initManager() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, null);
+        mRoomManager.initRoomManager(this);
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
         mRemoteControlManager = RemoteControlManager.getInstance();
@@ -738,7 +757,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         Message msg = Message.obtain();
         msg.what = MSG_INIT_LOCATIONSERVICE;
         mHandler.sendMessage(msg);
-
     }
 
     private void initViews() {
@@ -770,7 +788,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        mRoomManager.removeRoomListener(this);
+        mRoomManager.removeRoomListener(mRoomListener);
         mDeviceManager.removeDeviceListener(mDeviceListener);
         mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
         manager.removeEventCallback(ec);

@@ -22,6 +22,17 @@ public class StringValidatorUtil {
         Matcher m = p.matcher(mobiles);
         return m.matches();
     }
+    /**
+     * 该方法主要使用正则表达式来判断字符串中是否包含字母
+     * @author fenggaopan 2015年7月21日 上午9:49:40
+     * @param cardNum 待检验的原始卡号
+     * @return 返回是否包含
+     */
+    public static boolean judgeContainsStr(String cardNum) {
+        String regex=".*[a-zA-Z]+.*";
+        Matcher m=Pattern.compile(regex).matcher(cardNum);
+        return m.matches();
+    }
     public static boolean isNumeric(String str){
         for (int i = 0; i < str.length(); i++){
             System.out.println(str.charAt(i));

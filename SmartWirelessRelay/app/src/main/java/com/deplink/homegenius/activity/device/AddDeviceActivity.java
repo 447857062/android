@@ -12,10 +12,12 @@ import android.widget.TextView;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.device.adapter.AddDeviceGridViewAdapter;
 import com.deplink.homegenius.activity.device.light.LightEditActivity;
+import com.deplink.homegenius.activity.device.router.RouterSettingActivity;
 import com.deplink.homegenius.activity.device.smartlock.EditSmartLockActivity;
 import com.deplink.homegenius.activity.room.AddRommActivity;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 
@@ -42,6 +44,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
         initDatas();
         initEvents();
     }
+
     /**
      * startactivityforresult中结束后应该返回的界面
      */
@@ -50,7 +53,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
 
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, null);
+        mRoomManager.initRoomManager(this);
         addDeviceSelectRoom = getIntent().getBooleanExtra("addDeviceSelectRoom", false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         if (addDeviceSelectRoom) {
@@ -94,15 +97,22 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                             intentSeleteedRoom.putExtra("isupdateroom", true);
                             startActivity(intentSeleteedRoom);
                         } else {
-                            if(SmartLightManager.getInstance().isEditSmartLight()){
+                            if (SmartLightManager.getInstance().isEditSmartLight()) {
                                 SmartLockManager.getInstance().setEditSmartLock(false);
                                 Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, LightEditActivity.class);
                                 intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intentSeleteedRoom.putExtra("roomName", currentAddRomm);
                                 intentSeleteedRoom.putExtra("isupdateroom", true);
                                 startActivity(intentSeleteedRoom);
-                            }else{
-                                if (addDeviceSelectRoom) {
+                            } else {
+                                if(RouterManager.getInstance().isEditRouter()){
+                                    RouterManager.getInstance().setEditRouter(false);
+                                    Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, RouterSettingActivity.class);
+                                    intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                                    intentSeleteedRoom.putExtra("isupdateroom", true);
+                                    startActivity(intentSeleteedRoom);
+                                }else  if (addDeviceSelectRoom) {
                                     Intent intentSeleteedRoom = new Intent();
                                     intentSeleteedRoom.putExtra("roomName", currentAddRomm);
                                     AddDeviceActivity.this.setResult(RESULT_OK, intentSeleteedRoom);

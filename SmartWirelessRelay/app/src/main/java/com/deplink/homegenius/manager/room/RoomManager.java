@@ -198,6 +198,14 @@ public class RoomManager {
                         }
                         List<Room> rooms = sortRooms();
                         Log.i(TAG, "查询https 房间返回房间列表大小:" + rooms.size());
+                        //查询数据库,删除没有uid的房间,
+                        // 这是因为有些房间本地有三个默认的房间没有uid,远程没有这3个默认的房间
+                        mRooms = DataSupport.findAll(Room.class);
+                        for(int i=0;i<mRooms.size();i++){
+                            if(mRooms.get(i).getUid()==null){
+                                DataSupport.deleteAll(Room.class, "roomName = ? ", mRooms.get(i).getRoomName());
+                            }
+                        }
                         for (int i = 0; i < mRoomListenerList.size(); i++) {
                             mRoomListenerList.get(i).responseQueryResultHttps(rooms);
                         }
@@ -359,19 +367,15 @@ public class RoomManager {
     /**
      * 初始化本地连接管理器
      */
-    public void initRoomManager(Context context, RoomListener listener) {
+    public void initRoomManager(Context context) {
         cachedThreadPool = Executors.newCachedThreadPool();
         this.mContext = context;
         this.mRoomListenerList = new ArrayList<>();
-        if (listener != null) {
-            addRoomListener(listener);
-        }
         if (roomNames == null) {
             roomNames = new ArrayList<>();
             roomNames.add("全部");
         }
     }
-
     /**
      * 查询数据库获取房间列表
      */

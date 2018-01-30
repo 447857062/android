@@ -45,10 +45,10 @@ import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.StringValidatorUtil;
 import com.deplink.homegenius.view.dialog.ConfigGetwayDialog;
 import com.deplink.homegenius.view.dialog.ConfigRemoteControlDialog;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -207,7 +207,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         mDeviceManager = DeviceManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, null);
+        mRoomManager.initRoomManager(this);
         mGetwayManager = GetwayManager.getInstance();
         mGetwayManager.InitGetwayManager(this, this);
         mRouterManager = RouterManager.getInstance();
@@ -476,7 +476,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         doorbeelDev.setUid(addDeviceUid);
                         doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
                         doorbeelDev.setName(deviceName);
-                        dbSmartDev.setStatus("在线");
+                        doorbeelDev.setStatus("在线");
                         Message msg = Message.obtain();
                         boolean result = mDoorbeelManager.saveDoorbeel(doorbeelDev);
                         if (result) {
@@ -494,7 +494,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                             mHandler.sendMessage(msg);
                         }
                     } else {
-                        DialogThreeBounce.hideLoading();
                         switch (deviceType) {
                             case DeviceTypeConstant.TYPE.TYPE_LOCK:
                                 device.setTp(DeviceTypeConstant.TYPE.TYPE_LOCK);
@@ -716,7 +715,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     private static final int MSG_FINISH_ACTIVITY = 101;
     private static final int MSG_UPDATE_ROOM_FAIL = 102;
     private static final int MSG_ADD_DOORBEEL_FAIL = 103;
-    private static final int MSG_HIDE_DIALOG = 104;
     private static final int MSG_BIND_DEVICE_RESPONSE = 105;
     public static final int MSG_ADD_ROUTER_SUCCESS = 106;
     private Intent deviceIntent;
@@ -739,11 +737,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                 case MSG_ADD_DOORBEEL_FAIL:
                     Toast.makeText(AddDeviceNameActivity.this, "添加智能门铃失败", Toast.LENGTH_SHORT).show();
                     break;
-                case MSG_HIDE_DIALOG:
-                    DialogThreeBounce.hideLoading();
-                    break;
                 case MSG_BIND_DEVICE_RESPONSE:
-                    DialogThreeBounce.hideLoading();
                     startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
                     Toast.makeText(AddDeviceNameActivity.this, "添加中继器成功", Toast.LENGTH_SHORT).show();
                     break;
@@ -938,10 +932,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             ToastSingleShow.showText(this,"网络连接不可用,请重新连接上网络");
             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
         }
-        DialogThreeBounce.showLoading(this);
-        Message msg = Message.obtain();
-        msg.what = MSG_HIDE_DIALOG;
-        mHandler.sendMessageDelayed(msg, 3000);
         deviceAddBody.setDevice_name(deviceName);
         if (mRoomManager.getCurrentSelectedRoom() != null) {
             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
@@ -962,10 +952,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         device = gson.fromJson(currentAddDevice, QrcodeSmartDevice.class);
         Log.i(TAG, "deviceType=" + deviceType + "device=" + (device != null));
         device.setName(deviceName);
-        DialogThreeBounce.showLoading(this);
-        Message msg = Message.obtain();
-        msg.what = MSG_HIDE_DIALOG;
-        mHandler.sendMessageDelayed(msg, 3000);
         deviceAddBody.setDevice_name(deviceName);
         if (mRoomManager.getCurrentSelectedRoom() != null) {
             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
@@ -1024,7 +1010,12 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         if (mRoomManager.getCurrentSelectedRoom() != null) {
             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
         }
-        deviceAddBody.setSn(currentAddDevice);
+        if(StringValidatorUtil.judgeContainsStr(currentAddDevice)){
+            deviceAddBody.setMac(currentAddDevice);
+        }else{
+            deviceAddBody.setSn(currentAddDevice);
+        }
+
         mDeviceManager.addDeviceHttp(deviceAddBody);
     }
 

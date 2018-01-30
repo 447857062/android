@@ -248,10 +248,9 @@ public class SmartSwitchManager implements LocalConnecteListener{
         //保存所在的房间
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
+        setCurrentSelectSmartDevice(smartDev);
         smartDev.setName(deviceName);
-        boolean saveResult = smartDev.save();
-        Log.i(TAG, "更新智能设备所在的房间=" + saveResult);
-        return saveResult;
+        return smartDev.save();
     }
     /**
      * 删除数据库中的一个智能设备

@@ -96,7 +96,6 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
 
 
             }
-
             @Override
             public void onGetImageSuccess(SDKAction action, final Bitmap bm) {
                 //保存到本地
@@ -161,21 +160,25 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if (isUserLogin) {
             hasGetUserImage = Perfence.getBooleanPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE);
-            if (!hasGetUserImage) {
-                Perfence.setPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE, true);
-                manager.getImage(Perfence.getPerfence(Perfence.PERFENCE_PHONE));
-            } else {
-                setLocalImage(user_head_portrait);
+            if (!isOnActivityResult) {
+                if (!hasGetUserImage) {
+                    Perfence.setPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE, true);
+                    manager.getImage(Perfence.getPerfence(Perfence.PERFENCE_PHONE));
+                } else {
+                    setLocalImage(user_head_portrait);
+                }
+                userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+                manager.getUserInfo(userName);
             }
-            userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-            manager.getUserInfo(userName);
+
         }
     }
-
+    private boolean isOnActivityResult;
     @Override
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
+        isOnActivityResult = false;
     }
 
     private void setLocalImage(CircleImageView user_head_portrait) {
@@ -286,13 +289,11 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                             body.setBirthday(time);
                             manager.alertUserInfo(userName, body);
                         }
-                    }, "1900-11-22");
+                    }, "1900-1-1");
                     timeSelector.show();
                 }else{
                     ToastSingleShow.showText(this,"未登录,登录后操作");
                 }
-
-
                 break;
             case R.id.layout_user_header_image:
                 PictureSelectDialog dialog = new PictureSelectDialog(this);
@@ -328,15 +329,16 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Perfence.setPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE, false);
+        isOnActivityResult = true;
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case CROP_CODE:
-                    isSelectPhoto = true;
+                    Log.i(TAG,"照片裁剪"+(data==null));
                     if (data == null) {
                         return;
                     } else {
                         Bundle extras = data.getExtras();
-
                         if (extras != null) {
                             //获取到裁剪后的图像
                             Bitmap bm = extras.getParcelable("data");
@@ -354,12 +356,10 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                     }
                     break;
                 case CAMERA_CODE:
-                    isSelectPhoto = true;
                     //用户点击了取消
                     if (data == null) {
                         return;
                     } else {
-
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             //获得拍的照片
@@ -373,7 +373,6 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
                     }
                     break;
                 case 100:
-                    isSelectPhoto = true;
                     if (data == null) {
                         Toast.makeText(getApplicationContext(), "Unable to pick image", Toast.LENGTH_LONG).show();
                         return;
@@ -447,8 +446,6 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
         intent.putExtra("uri", uri);
         startActivityForResult(intent, CROP_CODE);
     }
-
-    private boolean isSelectPhoto = false;
     private String path = "";
 
     /**
@@ -459,12 +456,12 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
      * @return
      */
     private Uri saveBitmap(Bitmap bm, String dirPath) {
+        Log.i(TAG,"保存照片:"+dirPath);
         //新建文件夹用于存放裁剪后的图片
         File tmpDir = new File(Environment.getExternalStorageDirectory() + "/" + dirPath);
         if (!tmpDir.exists()) {
             tmpDir.mkdir();
         }
-
         //新建文件存储裁剪后的图片
         File img = new File(tmpDir.getAbsolutePath() + "/avator.png");
         path = img.getPath();
@@ -478,7 +475,6 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
             //关闭输出流
             fos.close();
             //返回File类型的Uri
-
             return Uri.fromFile(img);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

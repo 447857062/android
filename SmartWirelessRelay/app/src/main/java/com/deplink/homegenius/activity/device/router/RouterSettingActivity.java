@@ -208,6 +208,17 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
             }
         };
+        if(getIntent().getBooleanExtra("isupdateroom",false)){
+            String roomName = getIntent().getStringExtra("roomName");
+            if (!mDeviceManager.isStartFromExperience()) {
+                room = RoomManager.getInstance().findRoom(roomName, true);
+                deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
+                action = "alertroom";
+                mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
+
+            }
+            textview_room_select_2.setText(roomName);
+        }
     }
 
     private void initEvents() {
@@ -246,21 +257,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private Room room;
     private String deviceUid;
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            if (!mDeviceManager.isStartFromExperience()) {
-                roomName = data.getStringExtra("roomName");
-                room = RoomManager.getInstance().findRoom(roomName, true);
-                deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
-                action = "alertroom";
-                mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
-
-            }
-        }
-    }
-    private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private ConnectTypeLocalDialog selectConnectTypeDialog;
     @Override
     public void onClick(View v) {
@@ -274,7 +270,8 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             case R.id.layout_room_select_out:
                 Intent intent = new Intent(this, AddDeviceActivity.class);
                 intent.putExtra("addDeviceSelectRoom", true);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM);
+                RouterManager.getInstance().setEditRouter(true);
+                startActivity(intent);
                 break;
             case R.id.layout_connect_type_select_out:
                 if (DeviceManager.getInstance().isStartFromExperience()) {

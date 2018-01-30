@@ -25,6 +25,7 @@ import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.device.DeviceManager;
+import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
@@ -165,6 +166,7 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         mHomeGenius = new HomeGenius();
+        SmartLightManager.getInstance().setEditSmartLight(false);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_connected_devices.setTextColor(getResources().getColor(R.color.title_blue_bg));
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);

@@ -4,11 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.deplink.homegenius.activity.device.router.lan.LanSettingActivity">
-
     <include
         android:id="@+id/layout_topbar"
         layout="@layout/layout_title_with_right_have_text_have_textbackground" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +14,6 @@
         android:background="@color/white_background">
         <!--IP地址-->
         <RelativeLayout
-
             android:id="@+id/layout_ip_address"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
@@ -70,7 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_ip_address"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -106,11 +102,6 @@
 
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
 
 
         </RelativeLayout>
@@ -120,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_submask"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -171,7 +162,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_ip_addrss_start"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -208,11 +198,6 @@
 
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
 
 
         </RelativeLayout>
@@ -222,7 +207,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_ip_address_end"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -249,12 +234,6 @@
                     android:layout_centerVertical="true"
                     android:button="@drawable/checkbox_wifi_selector" />
             </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
         </RelativeLayout>
     </RelativeLayout>
 

@@ -29,7 +29,6 @@ import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
-import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
@@ -49,7 +48,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class RemoteControlActivity extends Activity implements View.OnClickListener, RoomListener {
+public class RemoteControlActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "RemoteControlActivity";
     private RemoteControlManager mRemoteControlManager;
     private TextView textview_title;
@@ -96,7 +95,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         deleteDialog = new DeleteDeviceDialog(this);
         mDeviceManager = DeviceManager.getInstance();
         mRoomManager = RoomManager.getInstance();
-        mRoomManager.initRoomManager(this, this);
+        mRoomManager.initRoomManager(this);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         textview_title.setText("万能遥控");
         textview_edit.setText("完成");
@@ -393,24 +392,4 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             }
         }
     };
-
-    @Override
-    public void responseQueryResultHttps(List<Room> result) {
-
-    }
-
-    @Override
-    public void responseAddRoomResult(String result) {
-
-    }
-
-    @Override
-    public void responseDeleteRoomResult() {
-
-    }
-
-    @Override
-    public void responseUpdateRoomNameResult() {
-
-    }
 }

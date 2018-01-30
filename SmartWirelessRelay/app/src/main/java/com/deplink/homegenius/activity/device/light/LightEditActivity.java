@@ -212,7 +212,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 isLogin = false;
                 connectLostDialog.show();
@@ -325,7 +324,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                 } else {
                     if (isLogin) {
                         String lightnameChange = edittext_input_devie_name.getText().toString();
-                        if (lightName.equals("")) {
+                        if (lightnameChange.equals("")) {
                             ToastSingleShow.showText(this, "请输入设备名称");
                             return;
                         }

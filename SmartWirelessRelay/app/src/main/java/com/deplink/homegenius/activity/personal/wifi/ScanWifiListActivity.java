@@ -209,9 +209,12 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                     msg.obj = wifiListResult.getSSIDList();
                     mHandler.sendMessage(msg);
                 }else if(wifiListResult.getOP().equalsIgnoreCase("REPORT")&& wifiListResult.getMethod().equalsIgnoreCase("WIFI")){
-                    mHandler.sendEmptyMessage(MSG_GET_WIFILIST_SET_RESULT);
+                    if(wifiListResult.getResult()!=-1){
+                        mHandler.sendEmptyMessage(MSG_GET_WIFILIST_SET_RESULT);
+                    }else{
+                        ToastSingleShow.showText(ScanWifiListActivity.this,"设置wifi中继失败");
+                    }
                 }
-
             }
         };
         mDeviceListener = new DeviceListener() {
@@ -248,7 +251,12 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
     @Override
     public void responseSetWifirelayResult(int result) {
         Log.i(TAG, "responseSetWifirelayResult=" + result);
-        mHandler.sendEmptyMessage(MSG_GET_WIFILIST_SET_RESULT);
+        if(result!=-1){
+            mHandler.sendEmptyMessage(MSG_GET_WIFILIST_SET_RESULT);
+        }else{
+            ToastSingleShow.showText(ScanWifiListActivity.this,"设置wifi中继失败");
+        }
+
     }
 
 

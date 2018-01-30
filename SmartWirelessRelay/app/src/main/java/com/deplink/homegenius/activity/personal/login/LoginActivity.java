@@ -124,18 +124,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                         Perfence.setContext(getApplicationContext());
                         String uuid = manager.getUserInfo().getUuid();
                         Log.i(TAG, "点击登录 onSuccess login uuid=" + uuid);
-                        XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
-                            @Override
-                            public void onSuccess(Object data, int i) {
-                                Log.i("TPush", "注册成功，设备token为：" + data);
-                            }
-
-                            @Override
-                            public void onFail(Object data,  int errCode, String msg) {
-                                Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
-                            }
-                        });
-                       /* if(!uuid.equalsIgnoreCase("")){
+                      if(!uuid.equalsIgnoreCase("")){
                             Log.i("TPush", "注册uuid：" +uuid );
                             XGPushManager.registerPush(getApplicationContext(),uuid,new XGIOperateCallback() {
                                 @Override
@@ -147,7 +136,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                                     Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
                                 }
                             });
-                        }*/
+                        }
                         break;
                     default:
                         break;

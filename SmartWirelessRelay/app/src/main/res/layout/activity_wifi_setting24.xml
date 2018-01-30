@@ -22,12 +22,10 @@
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingRight="@dimen/layout_content_margin_left_right">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -36,7 +34,6 @@
                     android:text="无线WIFI"
                     android:textColor="@color/room_type_text"
                     android:textSize="@dimen/text_size_small" />
-
                 <CheckBox
                     android:id="@+id/checkbox_wireless_wifi"
                     android:layout_width="wrap_content"
@@ -61,7 +58,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_wireless_wifi"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
             <RelativeLayout
@@ -87,13 +83,6 @@
                     android:button="@drawable/checkbox_wifi_selector" />
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
-
-
         </RelativeLayout>
         <!--WIFI名称-->
         <RelativeLayout
@@ -101,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_hide_net"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -152,7 +141,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_wifiname_setting"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -203,7 +191,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_encryption"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -231,12 +218,6 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/directionicon" />
             </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
-
         </RelativeLayout>
         <!--模式-->
         <RelativeLayout
@@ -244,11 +225,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_password"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
+            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
-
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -296,7 +275,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_mode"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -347,7 +325,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"
             android:layout_below="@+id/layout_channel"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/white"
             android:paddingLeft="@dimen/layout_content_margin_left_right">
 
@@ -385,14 +362,7 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/directionicon" />
             </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/router_line_dirver" />
         </RelativeLayout>
-
-
     </RelativeLayout>
 
 </RelativeLayout>
