@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.room.RoomListener;
@@ -21,6 +22,8 @@ import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+
+import org.litepal.crud.DataSupport;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -36,7 +39,6 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
     private SDKManager manager;
     private EventCallback ec;
     private DeleteDeviceDialog connectLostDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,6 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
         initDatas();
         initEvents();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -153,10 +154,17 @@ public class ModifyRoomNameActivity extends Activity implements View.OnClickList
                 if (isLogin) {
                     if (!roomName.equalsIgnoreCase("")  ) {
                         if(!roomName.equals(orgRoomName)){
-                            String roomUid = mRoomManager.getCurrentSelectedRoom().getUid();
-                            int roomOrdinalNumber=mRoomManager.getCurrentSelectedRoom().getRoomOrdinalNumber();
-                            Log.i(TAG, "roomUid=" + roomUid);
-                            mRoomManager.updateRoomNameHttp(roomUid, roomName,roomOrdinalNumber);
+                            //查询看看有没有重名的
+                            Room room = DataSupport.where("roomName = ?", roomName).findFirst(Room.class);
+                            if(room!=null){
+                                ToastSingleShow.showText(this,"已存在同名的房间,修改房间名称失败");
+                                return;
+                            }else{
+                                String roomUid = mRoomManager.getCurrentSelectedRoom().getUid();
+                                int roomOrdinalNumber=mRoomManager.getCurrentSelectedRoom().getRoomOrdinalNumber();
+                                Log.i(TAG, "roomUid=" + roomUid);
+                                mRoomManager.updateRoomNameHttp(roomUid, roomName,roomOrdinalNumber);
+                            }
                         }else{
                             this.finish();
                         }

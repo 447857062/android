@@ -202,7 +202,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 }
                 DialogThreeBounce.hideLoading();
                 mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
-
             }
         };
     }
@@ -222,7 +221,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         manager.removeEventCallback(ec);
         mDeviceManager.removeDeviceListener(mDeviceListener);
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -243,7 +241,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                     }
                 }
                 GatwayDevice temp = smartDev.getGetwayDevice();
-                if (temp == null) {
+                if (temp == null && smartDev.getGetwayDeviceUid() != null) {
                     GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
                     if (localDbGatwayDevice != null) {
                         textview_select_getway_name.setText(localDbGatwayDevice.getName());
@@ -260,6 +258,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             String deviceName = mDeviceManager.getCurrentSelectSmartDevice().getName();
             edittext_input_devie_name.setText(deviceName);
             edittext_input_devie_name.setSelection(deviceName.length());
+            mRemoteControlManager.queryStatu();
         } else {
             if (!isOnActivityResult) {
                 textview_select_room_name.setText("全部");
@@ -285,7 +284,6 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
         edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

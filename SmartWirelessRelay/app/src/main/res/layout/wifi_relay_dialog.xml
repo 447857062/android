@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:alpha="1"
-    android:background="@drawable/addtoblack_dialog_background">
+    android:background="@drawable/radius8_bg_white_layout_background">
 
     <TextView
         android:id="@+id/textview_unbind_device_type"
@@ -18,6 +18,7 @@
         android:id="@+id/layout_input_password_out"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_item_content_height"
+        android:layout_centerVertical="true"
         android:layout_below="@+id/textview_unbind_device_type"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right">
@@ -61,8 +62,7 @@
 
     <RelativeLayout
         android:layout_below="@+id/layout_input_password_out"
-        android:layout_marginTop="@dimen/wifirelay_connect_button_margintop"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/router_wifirelay_connectdialogs_button_height"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
@@ -71,7 +71,7 @@
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="@dimen/router_wifirelay_connectdialogs_button_width"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@drawable/wifirelay_connect_button_ng_bg"
@@ -83,7 +83,7 @@
         <Button
             android:id="@+id/btn_sure"
             android:layout_width="@dimen/router_wifirelay_connectdialogs_button_width"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/wifirelay_connect_button_yes_bg"

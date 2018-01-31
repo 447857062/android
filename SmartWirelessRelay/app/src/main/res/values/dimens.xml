@@ -205,7 +205,7 @@
     <dimen name="add_router_button_sure_margintop">48dp</dimen>
     <dimen name="router_connect_setting_edit_marginleft">10dp</dimen>
     <dimen name="router_connect_setting_left_textview_minwidth">60dp</dimen>
-    <dimen name="router_wifirelay_connectdialogs_button_height">40dp</dimen>
+    <dimen name="router_wifirelay_connectdialogs_button_height">30dp</dimen>
     <dimen name="router_wifirelay_connectdialogs_button_width">120dp</dimen>
     <!--路由器cpu使用距离顶部-->
     <dimen name="router_device_cpu_use_layout_margin_top">88dp</dimen>

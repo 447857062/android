@@ -65,7 +65,6 @@ public class ConfirmDialog extends Dialog implements View.OnClickListener {
     }
     public void setDialogTitleText(String text) {
         textview_title.setText(text);
-
     }
     public void setDialogMsgText(String text) {
         textview_makesure.setText(text);

@@ -53,6 +53,33 @@ public class SmartDev extends DataSupport implements Serializable {
      */
     private String remotecontrolUid;
     private String lockPassword = "";
+    private int lightIsOpen;
+    private int whiteValue;
+    private int yellowValue;
+
+    public int getLightIsOpen() {
+        return lightIsOpen;
+    }
+
+    public void setLightIsOpen(int lightIsOpen) {
+        this.lightIsOpen = lightIsOpen;
+    }
+
+    public int getWhiteValue() {
+        return whiteValue;
+    }
+
+    public void setWhiteValue(int whiteValue) {
+        this.whiteValue = whiteValue;
+    }
+
+    public int getYellowValue() {
+        return yellowValue;
+    }
+
+    public void setYellowValue(int yellowValue) {
+        this.yellowValue = yellowValue;
+    }
 
     public String getBindLockUid() {
         return bindLockUid;

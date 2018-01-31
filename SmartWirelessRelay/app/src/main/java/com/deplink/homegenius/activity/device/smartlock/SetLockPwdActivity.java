@@ -111,10 +111,7 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     private void initData() {
         mSmartLockManager = SmartLockManager.getInstance();
         isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
-        if (isStartFromExperience) {
-
-        } else {
-
+        if (!isStartFromExperience) {
             mSmartLockManager.InitSmartLockManager(this);
             mSmartLockManager.addSmartLockListener(this);
         }
@@ -195,11 +192,13 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
                             break;
                     }
                 }
-
                 Message msg = Message.obtain();
                 msg.what = MSG_SHOW_TOAST;
-                msg.obj = setResult;
-                mHandler.sendMessage(msg);
+                if(setResult.length()==4){
+                    msg.obj = setResult;
+                    mHandler.sendMessage(msg);
+                }
+
             }
 
             @Override
@@ -284,7 +283,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     public void responseSetResult(String result) {
         Log.i(TAG, "设置管理密码=" + result);
         //密码正确才能保存，消失界面显示
-        Log.i(TAG, "result=" + result);
         if ("开锁成功".equals(result)) {
             if (currentImageLevel == 1) {
                 mSmartLockManager.getCurrentSelectLock().setLockPassword(currentPassword);

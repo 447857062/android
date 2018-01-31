@@ -42,23 +42,21 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         p.width = (int) Perfence.dp2px(mContext,283);
-        p.height = (int) Perfence.dp2px(mContext,185);
+        p.height = (int) Perfence.dp2px(mContext,165);
         View view = LayoutInflater.from(mContext).inflate(R.layout.wifi_relay_dialog, null);
         setContentView(view, p);
         //初始化界面控件
         initView();
         //初始化界面控件的事件
         initEvent();
-
-
     }
 
 
     private void initView() {
-        btn_sure = (Button) findViewById(R.id.btn_sure);
-        btn_cancel = (Button) findViewById(R.id.btn_cancel);
-        textview_unbind_device_type = (TextView) findViewById(R.id.textview_unbind_device_type);
-        edittext_input_password = (EditText) findViewById(R.id.edittext_input_password);
+        btn_sure = findViewById(R.id.btn_sure);
+        btn_cancel = findViewById(R.id.btn_cancel);
+        textview_unbind_device_type = findViewById(R.id.textview_unbind_device_type);
+        edittext_input_password = findViewById(R.id.edittext_input_password);
 
 
     }
@@ -98,7 +96,6 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
     @Override
     public void show() {
         super.show();
-
     }
 
     public void setSureBtnClickListener(onSureBtnClickListener mOnSureBtnClickListener) {

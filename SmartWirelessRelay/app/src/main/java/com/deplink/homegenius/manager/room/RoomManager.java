@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,10 +38,6 @@ public class RoomManager {
      */
     private static RoomManager instance;
     private List<Room> mRooms;
-    /**
-     * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
-     */
-    private ExecutorService cachedThreadPool;
     private Room currentSelectedRoom;
     private Context mContext;
 
@@ -90,7 +84,6 @@ public class RoomManager {
     }
 
     public boolean updateGetway(GatwayDevice getwayDevice) {
-        Log.i(TAG, "更新网关=start");
         List<GatwayDevice> getways = new ArrayList<>();
         getways.add(getwayDevice);
         currentSelectedRoom.setmGetwayDevices(getways);
@@ -119,6 +112,10 @@ public class RoomManager {
                 return 0;
             }
         });
+        roomNames.clear();
+        if (!roomNames.contains("全部")) {
+            roomNames.add("全部");
+        }
         for (int i = 0; i < mRooms.size(); i++) {
             addRoomNames(mRooms.get(i).getRoomName());
         }
@@ -188,11 +185,23 @@ public class RoomManager {
                                 }
                             }
                             if (addToDb) {
-                                temp.setRoomName(CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
-                                temp.setRoomOrdinalNumber(i);
-                                temp.setRoomType(CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
-                                temp.setUid(list.get(i).getUid());
-                                temp.save();
+                                //如果数据库中有就更新
+                                if (CharSetUtil.decodeUnicode(list.get(i).getRoom_name()) != null) {
+                                    Room room =
+                                            DataSupport.where("roomName = ?", CharSetUtil.decodeUnicode(list.get(i).getRoom_name())).findFirst(Room.class);
+                                    if (room != null) {
+                                        room.setRoomOrdinalNumber(i);
+                                        room.setRoomType(CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
+                                        room.setUid(list.get(i).getUid());
+                                        room.save();
+                                    } else {
+                                        temp.setRoomName(CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
+                                        temp.setRoomOrdinalNumber(i);
+                                        temp.setRoomType(CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
+                                        temp.setUid(list.get(i).getUid());
+                                        temp.save();
+                                    }
+                                }
                                 mRooms.add(temp);
                             }
                         }
@@ -201,8 +210,8 @@ public class RoomManager {
                         //查询数据库,删除没有uid的房间,
                         // 这是因为有些房间本地有三个默认的房间没有uid,远程没有这3个默认的房间
                         mRooms = DataSupport.findAll(Room.class);
-                        for(int i=0;i<mRooms.size();i++){
-                            if(mRooms.get(i).getUid()==null){
+                        for (int i = 0; i < mRooms.size(); i++) {
+                            if (mRooms.get(i).getUid() == null) {
                                 DataSupport.deleteAll(Room.class, "roomName = ? ", mRooms.get(i).getRoomName());
                             }
                         }
@@ -368,7 +377,6 @@ public class RoomManager {
      * 初始化本地连接管理器
      */
     public void initRoomManager(Context context) {
-        cachedThreadPool = Executors.newCachedThreadPool();
         this.mContext = context;
         this.mRoomListenerList = new ArrayList<>();
         if (roomNames == null) {
@@ -376,6 +384,7 @@ public class RoomManager {
             roomNames.add("全部");
         }
     }
+
     /**
      * 查询数据库获取房间列表
      */

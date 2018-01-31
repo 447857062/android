@@ -254,6 +254,35 @@ public class RemoteControlManager implements LocalConnecteListener {
             }
         }
     }
+    public void queryStatu() {
+        Log.i(TAG, "查询锁设备状态");
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            QueryOptions queryCmd = new QueryOptions();
+            queryCmd.setOP("SET");
+            queryCmd.setMethod("IrmoteV2");
+            queryCmd.setCommand("query");
+            queryCmd.setSmartUid(mSelectRemoteControlDevice.getMac());
+            queryCmd.setTimestamp();
+            Gson gson = new Gson();
+            String text = gson.toJson(queryCmd);
+            packet.packOpenLockListData(text.getBytes(), mSelectRemoteControlDevice.getUid());
+            cachedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocalConnectmanager.getOut(packet.data);
+                }
+            });
+        } else {
+            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.queryRemoteControlStatu(mSelectRemoteControlDevice, device.getTopic(), uuid);
+                }
+            }
+        }
+    }
 
     public void sendData(String data) {
         if (mLocalConnectmanager.isLocalconnectAvailable()) {

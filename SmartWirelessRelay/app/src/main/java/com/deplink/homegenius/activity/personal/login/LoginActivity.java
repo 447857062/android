@@ -70,19 +70,24 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
                            public void run() {
-
                                InputMethodManager inputManager =
                                        (InputMethodManager) edittext_input_phone_number.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                                inputManager.showSoftInput(edittext_input_phone_number, 0);
                            }
                        },
                 500);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
+       String  userName=  Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if(!userName.equalsIgnoreCase("")){
+            edittext_input_phone_number.setText(userName);
+            edittext_input_phone_number.setSelection(userName.length());
+        }
         showInputmothed();
     }
 
@@ -112,8 +117,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                             DataSupport.deleteAll(Room.class);
                             DataSupport.deleteAll(Record.class);
                             DataSupport.deleteAll(Router.class);
-
                         }
+                        Perfence.setPerfence(AppConstant.USER.USER_GETIMAGE_FROM_SERVICE, false);
                         Perfence.setPerfence(Perfence.USER_PASSWORD, user.getPassword());
                         Perfence.setPerfence(Perfence.PERFENCE_PHONE, user.getName());
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);

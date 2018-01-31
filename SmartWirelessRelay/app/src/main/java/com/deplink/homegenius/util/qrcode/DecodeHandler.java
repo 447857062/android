@@ -93,8 +93,13 @@ final class DecodeHandler extends Handler {
         } finally {
             multiFormatReader.reset();
         }
-        if (rawResult != null && !rawResult.getText().contains("http://")
-                && (!rawResult.getText().contains("{") && rawResult.getText().length()==12)) {
+        boolean trueDevice=true;
+        if(rawResult != null && !rawResult.getText().contains("{")){
+            if( rawResult.getText().length()!=12){
+                trueDevice=false;
+            }
+        }
+        if (rawResult != null && !rawResult.getText().contains("http://")&& trueDevice) {
             long end = System.currentTimeMillis();
             Log.d(TAG, "扫到二维码 (" + (end - start) + " ms):\n" + rawResult.toString());
             Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);

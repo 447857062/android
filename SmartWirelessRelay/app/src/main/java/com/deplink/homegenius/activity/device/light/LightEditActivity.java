@@ -120,7 +120,10 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             }
             GatwayDevice temp = smartDev.getGetwayDevice();
             if (temp == null) {
-                GatwayDevice localDbGatwayDevice= DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                GatwayDevice localDbGatwayDevice = null;
+                if(smartDev.getGetwayDeviceUid()!=null){
+                     localDbGatwayDevice= DataSupport.where("uid=?", smartDev.getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                }
                if(localDbGatwayDevice!=null){
                    textview_select_getway_name.setText(localDbGatwayDevice.getName());
                }else{
@@ -132,7 +135,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             }
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -208,7 +210,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
             public void onFailure(SDKAction action, Throwable throwable) {
 
             }
-
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);

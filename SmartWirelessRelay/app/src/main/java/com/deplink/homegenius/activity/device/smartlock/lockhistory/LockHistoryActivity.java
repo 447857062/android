@@ -14,12 +14,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.device.lock.LockHistorys;
 import com.deplink.homegenius.Protocol.json.device.lock.Record;
 import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
 import com.deplink.homegenius.activity.device.smartlock.userid.UpdateSmartLockUserIdActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
@@ -135,6 +137,47 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             }
 
             @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Gson gson=new Gson();
+                OpResult type = gson.fromJson(result, OpResult.class);
+                Log.i(TAG,"门锁管理器查询结果返回:"+result);
+                if (type != null && type.getOP().equalsIgnoreCase("REPORT") &&
+                        (type.getMethod().equalsIgnoreCase("SMART_LOCK")|| type.getMethod().equalsIgnoreCase("SmartLock"))) {
+
+                    switch (type.getCommand()) {
+                        case SmartLockConstant.CMD.QUERY:
+                            int RecondNum=type.getRecordNum();
+                            if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
+                                Message msg = Message.obtain();
+                                msg.what = MSG_GET_HISRECORD;
+                                mHandler.sendMessageDelayed(msg, 2000);
+                                if (mRecordList.size() == 0) {
+                                    mSmartLockManager.queryLockHistory(true, RecondNum,userId);
+                                } else {
+                                    mSmartLockManager.queryLockHistory(true, 5,userId);
+                                }
+                            } else {
+                                if (isLogin) {
+                                    Message msg = Message.obtain();
+                                    msg.what = MSG_GET_HISRECORD;
+                                    mHandler.sendMessageDelayed(msg, 2000);
+                                    if (mRecordList.size() == 0) {
+                                        mSmartLockManager.queryLockHistory(false, RecondNum,userId);
+                                    } else {
+                                        mSmartLockManager.queryLockHistory(false, 5,userId);
+                                    }
+
+                                } else {
+                                    Toast.makeText(LockHistoryActivity.this, "未登录,并且本地网关也不可用", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
+            @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
@@ -218,9 +261,12 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                         } else {
                             String findindex = "" + insertIndex;
                             Record findIndexRecord = DataSupport.where("recordIndex = ?", findindex).findFirst(Record.class);
-                            findIndexRecord.setTime(aDeviceList.getRecord().get(i).getTime());
-                            findIndexRecord.setUserID(aDeviceList.getRecord().get(i).getUserID());
-                            findIndexRecord.saveFast();
+                            if(findIndexRecord!=null){
+                                findIndexRecord.setTime(aDeviceList.getRecord().get(i).getTime());
+                                findIndexRecord.setUserID(aDeviceList.getRecord().get(i).getUserID());
+                                findIndexRecord.saveFast();
+                            }
+
                         }
                     }
                     if (mRecordList.size() < recordNumTotal) {
@@ -333,7 +379,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             }
         } else {
             if (isLogin) {
-
                 Message msg = Message.obtain();
                 msg.what = MSG_GET_HISRECORD;
                 mHandler.sendMessageDelayed(msg, 2000);

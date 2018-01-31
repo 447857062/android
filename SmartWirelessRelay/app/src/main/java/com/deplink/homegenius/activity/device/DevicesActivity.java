@@ -136,6 +136,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         setButtomBarImageResource();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        if(isUserLogin){
+            mDeviceManager.queryDeviceListHttp();
+            mRoomManager.queryRooms();
+        }
         notifyDeviceListView();
     }
 
@@ -465,7 +469,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                 break;
         }
     }
-
     /**
      * 按照房间过滤设备对话框
      */
@@ -475,6 +478,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             public void onItemClicked(int position) {
                 datasTop.clear();
                 datasBottom.clear();
+                mRooms.clear();
+                mRoomManager.queryRooms();
+                mRooms.addAll(mRoomManager.getRoomNames());
                 if (mRooms.get(position).equals("全部")) {
                     layout_root.setBackgroundResource(R.drawable.equipmentbackground);
                     layout_title.setBackgroundResource(R.color.title_blue_bg);
@@ -492,7 +498,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     mDeviceAdapter.setTopList(datasTop);
                     mDeviceAdapter.setBottomList(datasBottom);
                 }
-
                 mDeviceAdapter.notifyDataSetChanged();
                 textview_room_name.setText(mRooms.get(position));
                 roomTypeDialog.dismiss();
@@ -584,8 +589,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
-        Log.i(TAG, "添加中继器房间是:" + room.toString());
-        rooms.add(room);
+        if(room!=null){
+            Log.i(TAG, "添加中继器房间是:" + room.toString());
+            rooms.add(room);
+        }
         dev.setRoomList(rooms);
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success + "deviceName=" + deviceName);

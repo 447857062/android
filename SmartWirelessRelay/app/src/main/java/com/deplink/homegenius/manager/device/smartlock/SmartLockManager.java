@@ -103,6 +103,7 @@ public class SmartLockManager implements LocalConnecteListener {
      */
     public void InitSmartLockManager(Context context) {
         this.mContext = context;
+        Perfence.setContext(context);
         this.mSmartLockListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();

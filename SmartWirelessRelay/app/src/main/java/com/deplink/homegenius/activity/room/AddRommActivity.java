@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -19,15 +18,22 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.activity.room.adapter.GridViewRommTypeAdapter;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.RoomConstant;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import org.litepal.crud.DataSupport;
 
@@ -52,7 +58,11 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private List<GatwayDevice> mGetways;
     private ListView listview_select_getway;
     private ImageView imageview_getway_arror_right;
-
+    private SDKManager manager;
+    private EventCallback ec;
+    private DeleteDeviceDialog connectLostDialog;
+    private GatwayDevice currentSelectGetway;
+    private boolean isUserLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private boolean fromAddDevice;
     private String selectGetwayName;
     private RoomListener mRoomListener;
+
     private void initDatas() {
         roomManager = RoomManager.getInstance();
         roomManager.initRoomManager(this);
@@ -85,7 +96,6 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
         if (mGetways.size() > 0) {
             currentSelectGetway = mGetways.get(0);
         }
-
         selectGetwayAdapter = new GetwaySelectListAdapter(this, mGetways);
         listview_select_getway.setAdapter(selectGetwayAdapter);
         listview_select_getway.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -97,7 +107,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 layout_getway_list.setVisibility(View.GONE);
             }
         });
-        mRoomListener=new RoomListener() {
+        mRoomListener = new RoomListener() {
             @Override
             public void responseAddRoomResult(String result) {
                 super.responseAddRoomResult(result);
@@ -105,9 +115,43 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 if (addDbResult) {
                     mHandler.sendEmptyMessage(MSG_ADD_ROOM_SUCCESS);
                     finish();
-                } else {
-                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
                 }
+
+
+            }
+        };
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new DeleteDeviceDialog(AddRommActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(AddRommActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+
+            @Override
+            public void onSuccess(SDKAction action) {
+
+            }
+
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+
+
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+
+
+            }
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                mHandler.sendEmptyMessage(MSG_SHOW_CONNECT_LOST);
+
             }
         };
     }
@@ -145,6 +189,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private String roomType;
     private static final int MSG_ADD_ROOM_FAILED = 100;
     private static final int MSG_ADD_ROOM_SUCCESS = 101;
+    private static final int MSG_SHOW_CONNECT_LOST=102;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -162,18 +207,24 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                         startActivity(intent);
                     }
                     break;
+                case MSG_SHOW_CONNECT_LOST:
+                    Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                    isUserLogin=false;
+                    connectLostDialog.show();
+                    connectLostDialog.setTitleText("账号异地登录");
+                    connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+                    break;
             }
 
         }
     };
-    private GatwayDevice currentSelectGetway;
-    private String userName;
 
     @Override
     protected void onResume() {
         super.onResume();
+        manager.addEventCallback(ec);
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         roomManager.addRoomListener(mRoomListener);
-        userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
     }
 
     private String roomName;
@@ -181,6 +232,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onPause() {
         super.onPause();
+        manager.removeEventCallback(ec);
         roomManager.removeRoomListener(mRoomListener);
     }
 
@@ -194,7 +246,7 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                     ToastSingleShow.showText(this, "无可用网络连接,请检查网络");
                     return;
                 }
-                if (userName.equals("")) {
+                if (!isUserLogin) {
                     ToastSingleShow.showText(this, "用户未登录");
                     return;
                 }
@@ -203,8 +255,13 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                     return;
                 }
                 int sort_num = DataSupport.findAll(Room.class, true).size();
-                Log.i(TAG,"sort_num="+sort_num);
-                roomManager.addRoomHttp(roomName, roomType, sort_num - 1);
+                Room room = DataSupport.where("roomName = ?", roomName).findFirst(Room.class);
+                if(room!=null){
+                    mHandler.sendEmptyMessage(MSG_ADD_ROOM_FAILED);
+                    return;
+                }else{
+                    roomManager.addRoomHttp(roomName, roomType, sort_num - 1);
+                }
                 break;
             case R.id.image_back:
                 onBackPressed();
@@ -220,15 +277,5 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
-
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-
 
 }

@@ -163,8 +163,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                     }
                     Message msg = Message.obtain();
                     msg.what = MSG_SHOW_TOAST;
-                    msg.obj = setResult;
-                    mHandler.sendMessage(msg);
+                    if(setResult.length()==4){
+                        msg.obj = setResult;
+                        mHandler.sendMessage(msg);
+                    }
                 }
             }
 
@@ -194,7 +196,6 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
             mSmartLockManager.queryLockStatu();
             mSmartLockManager.queryLockUidHttp(mSmartLockManager.getCurrentSelectLock().getUid());
             statu=mSmartLockManager.getCurrentSelectLock().getStatus();
-
             Log.i(TAG, "当前设备uid=" + mSmartLockManager.getCurrentSelectLock().getUid()+"状态="+statu);
         }
     }
@@ -226,9 +227,6 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         imageview_unlock = findViewById(R.id.imageview_unlock);
         image_back = findViewById(R.id.image_back);
     }
-
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -262,9 +260,30 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                 dialog.show();
                 break;
             case R.id.layout_auth:
-                mAuthoriseDialog = new AuthoriseDialog(this);
-                mAuthoriseDialog.setGetDialogAuthtTypeTimeListener(this);
-                mAuthoriseDialog.show();
+                if(statu==null){
+                    statu="off";
+                }
+                if(isStartFromExperience){
+                    mAuthoriseDialog = new AuthoriseDialog(this);
+                    mAuthoriseDialog.setGetDialogAuthtTypeTimeListener(this);
+                    mAuthoriseDialog.show();
+                }else{
+                    if(statu.equalsIgnoreCase("off")){
+                        ToastSingleShow.showText(this,"设备已离线");
+                        return;
+                    }else{
+                        saveManagetPassword = (mSmartLockManager.getCurrentSelectLock().isRemerberPassword());
+                        savedManagePassword = mSmartLockManager.getCurrentSelectLock().getLockPassword();
+                        if (saveManagetPassword && !savedManagePassword.equals("")) {
+                            mAuthoriseDialog = new AuthoriseDialog(this);
+                            mAuthoriseDialog.setGetDialogAuthtTypeTimeListener(this);
+                            mAuthoriseDialog.show();
+                        }else{
+                            ToastSingleShow.showText(this,"没有记住开锁密码,请在开锁后记住开锁密码,才能授权");
+                        }
+                    }
+                }
+
                 break;
             case R.id.image_back:
                 Intent intentBack;
@@ -319,7 +338,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                                         startActivity(intentSetLockPwd);
                                     }
                                 } else {
-                                    ToastSingleShow.showText(SmartLockActivity.this, "未找到可用网关,未登录");
+                                    ToastSingleShow.showText(SmartLockActivity.this, "未登录");
                                 }
                             }
                         }

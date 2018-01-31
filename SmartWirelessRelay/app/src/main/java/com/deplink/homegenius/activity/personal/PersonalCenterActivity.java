@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -157,7 +159,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             public void onSuccess(SDKAction action) {
                 switch (action){
                     case LOGOUT:
-
                         Perfence.setPerfence(AppConstant.USER_LOGIN,false);
                         startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
                         break;
@@ -218,24 +219,35 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 switch (action){
                     case LOGOUT:
                         Log.i(TAG, "退出登录失败");
-                        ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败，请检查网络连接");
+                        ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败");
                         break;
                 }
 
             }
-
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                isUserLogin=false;
-                mLogoutDialog.setDialogTitleText("登录");
-                connectLostDialog.show();
-                connectLostDialog.setTitleText("账号异地登录");
-                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+                mHandler.sendEmptyMessage(MSG_SHOW_CONNECT_LOST);
+
             }
         };
     }
+    private static final int MSG_SHOW_CONNECT_LOST=100;
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case MSG_SHOW_CONNECT_LOST:
+                    Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                    isUserLogin=false;
+                    connectLostDialog.show();
+                    connectLostDialog.setTitleText("账号异地登录");
+                    connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+                    break;
+            }
+        }
+    };
     private void saveToSDCard(Bitmap bitmap) {
         String path = this.getFilesDir().getAbsolutePath();
         path = path + File.separator + "userIcon" + "userIcon.png";
@@ -262,7 +274,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
     }
 
     private void initViews() {
-
         textview_home = findViewById(R.id.textview_home);
         textview_device = findViewById(R.id.textview_device);
         textview_room = findViewById(R.id.textview_room);
@@ -284,7 +295,6 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         layout_update_soft = findViewById(R.id.layout_update_soft);
         textview_current_version = findViewById(R.id.textview_current_version);
     }
-
     /**
      * 再按一次退出应用
      */

@@ -164,6 +164,18 @@ public class HomeGenius {
         String text = gson.toJson(queryCmd);
         MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
     }
+    public void queryRemoteControlStatu(SmartDev currentSelectLock, String topic, String userUuid) {
+        com.deplink.homegenius.Protocol.json.QueryOptions queryCmd = new com.deplink.homegenius.Protocol.json.QueryOptions();
+        queryCmd.setOP("SET");
+        queryCmd.setMethod("IrmoteV2");
+        queryCmd.setCommand("query");
+        queryCmd.setSenderId(userUuid);
+        queryCmd.setSmartUid(currentSelectLock.getMac());
+        queryCmd.setTimestamp();
+        Gson gson = new Gson();
+        String text = gson.toJson(queryCmd);
+        MQTTController.getSingleton().publish(topic, text, new MqttActionHandler(""));
+    }
 
     /**
      * 设置SamrtLock参数

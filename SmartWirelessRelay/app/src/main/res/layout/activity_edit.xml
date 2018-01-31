@@ -138,7 +138,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_getway_select"
-            android:layout_marginTop="@dimen/list_item_textview_margin_top"
             android:background="@color/transparent"
             android:visibility="gone">
 
