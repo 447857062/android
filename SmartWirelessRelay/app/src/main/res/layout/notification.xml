@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.deplink.homegenius.activity.device.AddDeviceActivity">
+
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/title_blue_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+            android:layout_marginRight="@dimen/layout_content_margin_left_right"
+
+            android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
+            <FrameLayout
+                android:id="@+id/image_back"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <ImageView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/returnicon" />
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="选择房间"
+                android:textColor="@color/white"
+                android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+            <TextView
+                android:id="@+id/textview_skip_this_option"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical|right"
+                android:text="跳过"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_small" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/textview_show_select_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:paddingLeft="@dimen/layout_content_margin_left_right"
+        android:text="请选择设备所在的房间,跳过设备默认分类为全部"
+        android:textColor="@color/add_device_text_show_explan"
+        android:textSize="@dimen/text_size_small" />
+
+    <GridView
+        android:id="@+id/dragGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textview_show_select_room"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:cacheColorHint="@android:color/transparent"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/layout_addroom_horizontalSpacing"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="@dimen/layout_addroom_Vertical_Spacing" />
+</RelativeLayout>

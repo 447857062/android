@@ -10,6 +10,7 @@ import com.deplink.sdk.android.sdk.utlis.SslUtil;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -42,9 +43,19 @@ public class RestfulToolsHomeGeniusString {
                 "gtPeEexrQAoohDEi0FgAEoMS7OlCvRRVBXZ66VkA6yH2uvr9G5qmEBbMOCpq/z+J\n" +
                 "NkX8gffeUmw2VqA/7adjNLdZg3Zs8rJncgz9ooXcpdXL/+tbuQ==\n" +
                 "-----END CERTIFICATE-----";
+        HttpLoggingInterceptor.Level level= HttpLoggingInterceptor.Level.BODY;
+        //新建log拦截器
+        HttpLoggingInterceptor loggingInterceptor=new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                Log.d("OkHttpClient","OkHttpMessage:"+message);
+            }
+        });
+        loggingInterceptor.setLevel(level);
         builder = new Retrofit.Builder().baseUrl(baseUrl).
                 addConverterFactory(StringConvertFactory.create());
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        clientBuilder.addInterceptor(loggingInterceptor);
         clientBuilder.connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(SslUtil.getSocketFactory(ca))
                 .readTimeout(20 * 1000, TimeUnit.MILLISECONDS);
