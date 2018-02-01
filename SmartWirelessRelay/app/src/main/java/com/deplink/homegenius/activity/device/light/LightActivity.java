@@ -84,7 +84,8 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                 if (isStartFromExperience) {
                     button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
                     float alpha = (float) (lightColorProgress / 200.0);
-                    button_switch_light.setAlpha(alpha);
+                  //  button_switch_light.setAlpha(alpha);
+                    imageview_switch_bg.setAlpha(alpha);
                 }
             }
 
@@ -104,8 +105,8 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 lightBrightnessProgress = progress * 2;
-                Log.i(TAG, "lightColorProgress=" + lightColorProgress + "lightBrightnessProgress=" + lightBrightnessProgress);
                 if (isStartFromExperience) {
+                    button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
                     float alpha = (float) (lightBrightnessProgress / 200.0);
                     Log.i(TAG, "alpha=" + alpha);
                     imageview_switch_bg.setAlpha(alpha);
@@ -217,9 +218,12 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         manager.addEventCallback(ec);
         if (isStartFromExperience) {
+            iamgeview_switch.setBackgroundResource(R.drawable.ovel_110_bg);
+            imageview_switch_bg.setBackgroundResource(R.color.room_type_text);
+            textview_switch_tips.setText("点击开启");
+            button_switch_light.setBackgroundResource(R.drawable.lightwhitelight);
             layout_lightcolor_control.setVisibility(View.GONE);
             layout_brightness_control.setVisibility(View.GONE);
-            textview_switch_tips.setText("点击开启");
         } else {
             currentSelectLight = mSmartLightManager.getCurrentSelectLight();
             mSmartLightManager.queryLightStatus();

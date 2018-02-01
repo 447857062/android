@@ -293,6 +293,19 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                         saveSmartDeviceToSqlite(devices, i);
                     }
                 }
+
+                //本地数据库中有,http返回没有(设备在其他地方删除了,在这个设备需要同步服务器的)
+                for (int j = 0; j < dbSmartDev.size(); j++) {
+                    boolean deleteDevice=true;
+                    for (int i = 0; i < devices.size(); i++) {
+                        if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                            deleteDevice=false;
+                        }
+                    }
+                    if(deleteDevice){
+                        DataSupport.deleteAll(SmartDev.class, "Uid = ? ", dbSmartDev.get(j).getUid());
+                    }
+                }
                 List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
                 for (int i = 0; i < devices.size(); i++) {
                     boolean addToDb = true;
@@ -307,6 +320,22 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     }
                     if (addToDb) {
                         saveGetwayDeviceToSqlite(devices, i);
+                    }
+                }
+                //本地数据库中有,http返回没有(设备在其他地方删除了,在这个设备需要同步服务器的)
+                for (int j = 0; j < dbGetwayDev.size(); j++) {
+                    boolean deleteDevice=true;
+                    for (int i = 0; i < devices.size(); i++) {
+                        if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                            if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                deleteDevice=false;
+                            }
+                        }else{
+                            deleteDevice=false;
+                        }
+                    }
+                    if(deleteDevice){
+                        DataSupport.deleteAll(GatwayDevice.class, "Uid = ? ", dbGetwayDev.get(j).getUid());
                     }
                 }
                 mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);

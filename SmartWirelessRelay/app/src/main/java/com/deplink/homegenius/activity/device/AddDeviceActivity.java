@@ -3,6 +3,7 @@ package com.deplink.homegenius.activity.device;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -82,11 +83,21 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                     String currentAddRomm = currentSelectedRoom.getRoomName();
                     RoomManager.getInstance().setCurrentSelectedRoom(currentSelectedRoom);
                     if (isStartFromExperience) {
-                        Intent mIntent = new Intent();
-                        mIntent.putExtra("roomName", currentAddRomm);
-                        // 设置结果，并进行传送
-                        setResult(RESULT_OK, mIntent);
-                        finish();
+                        if(RouterManager.getInstance().isEditRouter()){
+                            RouterManager.getInstance().setEditRouter(false);
+                            Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, RouterSettingActivity.class);
+                            intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intentSeleteedRoom.putExtra("roomName", currentAddRomm);
+                            intentSeleteedRoom.putExtra("isupdateroom", true);
+                            startActivity(intentSeleteedRoom);
+                        }else{
+                            Intent mIntent = new Intent();
+                            mIntent.putExtra("roomName", currentAddRomm);
+                            // 设置结果，并进行传送
+                            setResult(RESULT_OK, mIntent);
+                            finish();
+                        }
+
                     } else {
                         if (SmartLockManager.getInstance().isEditSmartLock()) {
                             SmartLockManager.getInstance().setEditSmartLock(false);
@@ -105,6 +116,7 @@ public class AddDeviceActivity extends Activity implements View.OnClickListener 
                                 intentSeleteedRoom.putExtra("isupdateroom", true);
                                 startActivity(intentSeleteedRoom);
                             } else {
+                                Log.i(TAG,"修改路由器房间"+RouterManager.getInstance().isEditRouter());
                                 if(RouterManager.getInstance().isEditRouter()){
                                     RouterManager.getInstance().setEditRouter(false);
                                     Intent intentSeleteedRoom = new Intent(AddDeviceActivity.this, RouterSettingActivity.class);

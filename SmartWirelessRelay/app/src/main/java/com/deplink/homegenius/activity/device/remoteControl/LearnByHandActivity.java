@@ -22,6 +22,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.constant.TvBoxNameConstant;
 import com.deplink.homegenius.constant.TvKeyNameConstant;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.util.Perfence;
@@ -56,12 +57,17 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
         initDatas();
         initEvents();
     }
-
+    private boolean isStartFromExperience;
+    private DeviceManager mDeviceManager;
     private void initDatas() {
-
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this);
-        currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
+        if(!isStartFromExperience){
+            currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        }
         mRemoteControlListener=new RemoteControlListener() {
             @Override
             public void responseQueryResult(String result) {
@@ -1265,16 +1271,21 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         manager.addEventCallback(ec);
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
-        mRemoteControlManager.study();
+        if(!isStartFromExperience){
+            mRemoteControlManager.study();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         manager.removeEventCallback(ec);
-        mRemoteControlManager.stopStudy();
+        if(!isStartFromExperience){
+            mRemoteControlManager.stopStudy();
+        }
         mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
     }
     private void initEvents() {

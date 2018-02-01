@@ -244,7 +244,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             refreshTimer.schedule(refreshTask, 0, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
         }
     }
-
     private void queryRouterInfo() {
         if (refreshCount > TIME_OUT_WATCHDOG_MAXCOUNT) {
             Log.i(TAG, "设备离线了");
@@ -265,7 +264,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
             queryDevices();
         }
     }
-
     /**
      * 查询已挂载到当前路由器的设备
      */
@@ -742,15 +740,14 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 if (isStartFromExperience) {
                     startActivity(new Intent(this, RouterSettingActivity.class));
                 } else {
-                    if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
+                    startActivity(new Intent(this, RouterSettingActivity.class));
+                   /* if (mRouterManager.getCurrentSelectedRouter().getStatus().equals("在线")) {
                         startActivity(new Intent(this, RouterSettingActivity.class));
                     } else {
                         //本地配置先连路由器
                         checkRouter();
-                    }
+                    }*/
                 }
-
-
                 break;
         }
     }

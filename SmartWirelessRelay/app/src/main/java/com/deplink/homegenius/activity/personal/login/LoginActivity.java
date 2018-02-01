@@ -65,7 +65,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
         initDatas();
         initEvents();
     }
-
     private void showInputmothed() {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -83,8 +82,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
     protected void onResume() {
         super.onResume();
         manager.addEventCallback(ec);
-       String  userName=  Perfence.getPerfence(Perfence.PERFENCE_PHONE);
-        if(!userName.equalsIgnoreCase("")){
+        String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        if (!userName.equalsIgnoreCase("")) {
             edittext_input_phone_number.setText(userName);
             edittext_input_phone_number.setSelection(userName.length());
         }
@@ -129,18 +128,44 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                         Perfence.setContext(getApplicationContext());
                         String uuid = manager.getUserInfo().getUuid();
                         Log.i(TAG, "点击登录 onSuccess login uuid=" + uuid);
-                      if(!uuid.equalsIgnoreCase("")){
-                            Log.i("TPush", "注册uuid：" +uuid );
-                            XGPushManager.registerPush(getApplicationContext(),uuid,new XGIOperateCallback() {
+                        if (!uuid.equalsIgnoreCase("")) {
+                            Log.i("TPush", "注册uuid：" + uuid);
+                            XGPushManager.registerPush(getApplicationContext(), uuid, new XGIOperateCallback() {
                                 @Override
                                 public void onSuccess(Object data, int flag) {
                                     Log.i("TPush", "注册成功，设备token为：" + data);
                                 }
+
                                 @Override
                                 public void onFail(Object data, int errCode, String msg) {
                                     Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
                                 }
                             });
+                            XGPushManager.enableService(LoginActivity.this,true);
+                           /* XGCustomPushNotificationBuilder build = new XGCustomPushNotificationBuilder();
+                            build.setSound(
+                                    RingtoneManager.getActualDefaultRingtoneUri(
+                                            getApplicationContext(), RingtoneManager.TYPE_ALARM))
+                                    .setDefaults(Notification.DEFAULT_VIBRATE) // 振动
+                                    .setFlags(Notification.FLAG_NO_CLEAR); // 是否可清除
+                            // 设置自定义通知layout,通知背景等可以在layout里设置
+                            build.setLayoutId(R.layout.notification);
+                            // 设置自定义通知内容id
+                            build.setLayoutTextId(R.id.content);
+                            // 设置自定义通知标题id
+                            build.setLayoutTitleId(R.id.title);
+                            // 设置自定义通知图片资源
+                            build.setLayoutIconDrawableId(R.drawable.equipmentbackground);
+                            // 设置状态栏的通知小图标
+                            build.setIcon(R.drawable.arror_setting);
+                            // 设置时间id
+                            build.setLayoutTimeId(R.id.time);
+                            // 若不设定以上自定义layout，又想简单指定通知栏图片资源
+                            build.setNotificationLargeIcon(R.drawable.addicon);
+                            // 客户端保存build_id
+                            XGPushManager.setPushNotificationBuilder(LoginActivity.this, 4095, build);
+                            XGLocalMessage localMessage = new XGLocalMessage();
+                            XGPushManager.addLocalNotification(LoginActivity.this, localMessage);*/
                         }
                         break;
                     default:

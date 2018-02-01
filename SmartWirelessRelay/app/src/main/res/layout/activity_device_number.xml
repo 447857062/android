@@ -73,5 +73,17 @@
             android:listSelector="@color/transparent"
             android:scrollbars="none" />
     </com.deplink.homegenius.view.scrollview.ListViewLinearLayout>
-
+    <ScrollView
+        android:id="@+id/layout_empty_view_scroll"
+        android:layout_below="@+id/layout_title"
+        android:layout_above="@+id/layout_buttom_bar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imageview_empty_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/equipmentemptystate" />
+    </ScrollView>
 </RelativeLayout>

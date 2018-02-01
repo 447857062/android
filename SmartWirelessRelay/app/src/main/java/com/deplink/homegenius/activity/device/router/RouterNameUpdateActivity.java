@@ -160,7 +160,6 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.image_back:
                 onBackPressed();
                 break;
@@ -169,7 +168,12 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
                 routerName = edittext_router_name.getText().toString();
                 if (!routerName.equals("")) {
                     if (mDeviceManager.isStartFromExperience()) {
-
+                        Intent intentSeleteedRoom = new Intent();
+                        intentSeleteedRoom.setClass(RouterNameUpdateActivity.this, RouterSettingActivity.class);
+                        intentSeleteedRoom.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentSeleteedRoom.putExtra("routerName", routerName);
+                        intentSeleteedRoom.putExtra("isupdaterouter", true);
+                        startActivity(intentSeleteedRoom);
                     } else {
                         if (isUserLogin) {
                             mDeviceManager.alertDeviceHttp(
@@ -181,9 +185,7 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
                         } else {
                             ToastSingleShow.showText(this, "登录后才能操作");
                         }
-
                     }
-
                 } else {
                     Toast.makeText(this, "请输入路由器名称", Toast.LENGTH_SHORT).show();
                 }

@@ -295,7 +295,9 @@ public class DoorbeelManager {
         }
         smartDev.setRooms(rooms);
         boolean saveResult = smartDev.save();
-        getCurrentSelectedDoorbeel().setRooms(rooms);
+        if(getCurrentSelectedDoorbeel()!=null){
+            getCurrentSelectedDoorbeel().setRooms(rooms);
+        }
         Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
         return saveResult;
     }

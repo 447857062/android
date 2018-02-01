@@ -106,7 +106,6 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 layout_QOS_setting_out.setVisibility(View.GONE);
             }
             List<Room> rooms = mRouterManager.getRouterAtRooms();
-            ;
             if (rooms.size() == 1) {
                 textview_room_select_2.setText(rooms.get(0).getRoomName());
             } else {
@@ -117,14 +116,12 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
         } else {
-            textview_route_name_2.setText("体验路由器");
+            if(textview_route_name_2.getText().toString().equalsIgnoreCase("")){
+                textview_route_name_2.setText("体验路由器");
+            }
         }
         mHomeGenius = new HomeGenius();
-
     }
-
-
-
     private void initDatas() {
         textview_title.setText("路由器设置");
         mRouterManager = RouterManager.getInstance();
@@ -187,7 +184,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                     String deviceName = mRouterManager.getCurrentSelectedRouter().getName();
                     boolean saveResult = mRouterManager.updateDeviceInWhatRoom(room, deviceUid, deviceName);
                     if (saveResult) {
-                        textview_room_select_2.setText(roomName);
+                        textview_room_select_2.setText(room.getRoomName());
                     } else {
                         Message msg = Message.obtain();
                         msg.what = MSG_UPDATE_ROOM_FAIL;
@@ -208,6 +205,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 RouterSettingActivity.this.startActivity(new Intent(RouterSettingActivity.this, DevicesActivity.class));
             }
         };
+        Log.i(TAG,"roomName update="+getIntent().getBooleanExtra("isupdateroom",false));
         if(getIntent().getBooleanExtra("isupdateroom",false)){
             String roomName = getIntent().getStringExtra("roomName");
             if (!mDeviceManager.isStartFromExperience()) {
@@ -215,12 +213,15 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
                 deviceUid = mRouterManager.getCurrentSelectedRouter().getUid();
                 action = "alertroom";
                 mDeviceManager.alertDeviceHttp(deviceUid, room.getUid(), null, null);
-
             }
+            Log.i(TAG,"roomName="+roomName);
             textview_room_select_2.setText(roomName);
         }
+        if(getIntent().getBooleanExtra("isupdaterouter",false)){
+            String routerName = getIntent().getStringExtra("routerName");
+            textview_route_name_2.setText(routerName);
+        }
     }
-
     private void initEvents() {
         image_back.setOnClickListener(this);
         layout_router_name_out.setOnClickListener(this);

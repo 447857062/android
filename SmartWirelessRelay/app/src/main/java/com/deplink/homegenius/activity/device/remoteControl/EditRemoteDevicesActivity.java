@@ -234,7 +234,6 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-
                 isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();
@@ -277,6 +276,8 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
                     } else {
                         ToastSingleShow.showText(EditRemoteDevicesActivity.this, "未登录,登录后才能删除设备");
                     }
+                }else{
+                    onBackPressed();
                 }
                 break;
             case R.id.layout_remotecontrol_select:

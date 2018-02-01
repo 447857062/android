@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.Room;
@@ -69,6 +70,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     private DeviceManager mDeviceManager;
     private GetwayManager mGetwayManager;
     private TextView textview_title;
+    private ScrollView layout_empty_view_scroll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,11 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         mDeviceAdapter.setBottomList(datasBottom);
         listview_devies.setAdapter(mDeviceAdapter);
         isStartFromExperience = mDeviceManager.isStartFromExperience();
+       /* if(datasTop.size()==0 && datasBottom.size()==0){
+            layout_empty_view_scroll.setVisibility(View.VISIBLE);
+        }else{
+            layout_empty_view_scroll.setVisibility(View.GONE);
+        }*/
     }
     private void initDatas() {
         mRoomManager = RoomManager.getInstance();
@@ -229,6 +236,7 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
         layout_device_number_root= findViewById(R.id.layout_device_number_root);
         textview_title= findViewById(R.id.textview_title);
         layout_title= findViewById(R.id.layout_title);
+        layout_empty_view_scroll= findViewById(R.id.layout_empty_view_scroll);
     }
 
     @Override

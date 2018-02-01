@@ -29,6 +29,7 @@ import com.deplink.homegenius.activity.device.remoteControl.topBox.TvBoxMainActi
 import com.deplink.homegenius.activity.device.remoteControl.tv.TvMainActivity;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.connect.remote.https.RestfulTools;
+import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.util.DataExchange;
@@ -237,8 +238,11 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                                 }
                                 break;
                         }
-                        mRemoteControlManager.sendData(testCodes.get(currentTestCodeIndex).getCodeData());
-                        startSend();
+                        if(!isStartFromExperience){
+                            mRemoteControlManager.sendData(testCodes.get(currentTestCodeIndex).getCodeData());
+                            startSend();
+                        }
+
                     }
                     break;
 
@@ -254,6 +258,7 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
     @Override
     protected void onResume() {
         super.onResume();
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         isSendFirst = true;
         Log.i(TAG, "onResume type=" + type);
@@ -362,7 +367,10 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
         type = getIntent().getStringExtra("type");
         mRemoteControlManager = RemoteControlManager.getInstance();
         mRemoteControlManager.InitRemoteControlManager(this);
-        currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        if(mRemoteControlManager.getmSelectRemoteControlDevice()!=null){
+            currentSelectDeviceUid = mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        }
+
         testCodes = new ArrayList<>();
         mRemoteControlListener=new RemoteControlListener() {
             @Override
@@ -378,7 +386,7 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
     }
 
     private int currentButtonStage = 1;
-
+    private boolean isStartFromExperience;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -406,27 +414,30 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
             case R.id.button_test_consecutively:
                 //TODO 没有调试的时候注释去掉
                 //发送测试码
-                if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
-                    if (currentButtonStage == 1) {
-                        currentButtonStage = 2;
-                        button_test_consecutively.setText("暂停测试");
-                        button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_red_background);
 
-                        startSend();
-                    } else if (currentButtonStage == 2) {
-                        currentButtonStage = 3;
-                        iscanceled = true;
-                        layout_device_response.setVisibility(View.VISIBLE);
-                        button_test_consecutively.setText("继续测试");
-                        button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_button_background);
-                    } else if (currentButtonStage == 3) {
-                        //TODO 继续测试
-                        iscanceled = false;
-                        layout_device_response.setVisibility(View.GONE);
+                    if (LocalConnectmanager.getInstance().isLocalconnectAvailable() ||isStartFromExperience) {
+                        if (currentButtonStage == 1) {
+                            currentButtonStage = 2;
+                            button_test_consecutively.setText("暂停测试");
+                            button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_red_background);
+
+                            startSend();
+                        } else if (currentButtonStage == 2) {
+                            currentButtonStage = 3;
+                            iscanceled = true;
+                            layout_device_response.setVisibility(View.VISIBLE);
+                            button_test_consecutively.setText("继续测试");
+                            button_test_consecutively.setBackgroundResource(R.drawable.radius22_bg_button_background);
+                        } else if (currentButtonStage == 3) {
+                            //TODO 继续测试
+                            iscanceled = false;
+                            layout_device_response.setVisibility(View.GONE);
+                        }
+                    } else {
+                        ToastSingleShow.showText(this, "没有活动网关,请检查网络");
                     }
-                } else {
-                    ToastSingleShow.showText(this, "没有活动网关,请检查网络");
-                }
+
+
 
                 break;
             case R.id.button_ng:
@@ -445,8 +456,10 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载电视码表=" + response.body().getValue().getCode() + "组号：" + response.body().getValue().getGroup());
-                                saveTvKeyCode(response);
-                                saveTvKeyLearnStatu();
+                               if(!isStartFromExperience){
+                                   saveTvKeyCode(response);
+                                   saveTvKeyLearnStatu();
+                               }
                                 switchActivity();
                             }
                             @Override
@@ -460,8 +473,10 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载空调码表=" + response.body().getValue().getCode() + "组号：" + response.body().getValue().getGroup());
-                                saveAirConditionKeycode(response);
-                                saveAirRemoteControlLearnStatus();
+                              if(!isStartFromExperience){
+                                  saveAirConditionKeycode(response);
+                                  saveAirRemoteControlLearnStatus();
+                              }
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
                                     if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
                                         mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
@@ -493,8 +508,10 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                             @Override
                             public void onResponse(Call<QueryRCCodeResponse> call, Response<QueryRCCodeResponse> response) {
                                 Log.i(TAG, "下载码表 code=" + response.body().getValue().getCode() + "group=" + response.body().getValue().getGroup());
-                                saveTvBoxKeycode(response);
-                                saveTvBoxKeyLearnStatus();
+                               if(!isStartFromExperience){
+                                   saveTvBoxKeycode(response);
+                                   saveTvBoxKeyLearnStatus();
+                               }
                                 if (mRemoteControlManager.isCurrentActionIsAddDevice()) {
                                     if(mRemoteControlManager.isCurrentActionIsAddactionQuickLearn()){
                                         mRemoteControlManager.setCurrentActionIsAddactionQuickLearn(false);
@@ -512,9 +529,7 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                 }
-
                             }
-
                             @Override
                             public void onFailure(Call<QueryRCCodeResponse> call, Throwable t) {
 
@@ -522,13 +537,9 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                         });
                         break;
                 }
-
                 break;
-
-
         }
     }
-
     private void saveAirConditionKeycode(Response<QueryRCCodeResponse> response) {
         AirconditionKeyCode mAirconditionKeyCode = DataSupport.where("mAirconditionUid = ?", currentSelectDeviceUid).findFirst(AirconditionKeyCode.class);
         if (mAirconditionKeyCode == null) {

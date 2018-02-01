@@ -3,22 +3,26 @@ package com.deplink.homegenius.activity.device.doorbell;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
 import com.deplink.homegenius.Protocol.json.device.lock.UserIdPairs;
-import com.deplink.homegenius.Protocol.packet.ellisdk.Handler_UiThread;
+import com.deplink.homegenius.broadcast.PushMessage;
 import com.deplink.homegenius.constant.SmartLockConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorBellListener;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.doorbeel.Doorbeel_menu_Dialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 
@@ -27,8 +31,10 @@ import org.litepal.crud.DataSupport;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-public class DoorbeelMainActivity extends Activity implements View.OnClickListener,SmartLockListener{
+public class DoorbeelMainActivity extends Activity implements View.OnClickListener, SmartLockListener {
+    private static final String TAG = "DoorbeelMainActivity";
     private FrameLayout image_back;
     private ImageView image_setting;
     private TextView textview_title;
@@ -38,6 +44,9 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     private DoorBellListener mDoorBellListener;
     private Button button_opendoor;
     private SmartLockManager mSmartLockManager;
+    private ImageView imageview_visitor;
+    private RelativeLayout layout_no_vistor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,36 +55,51 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         initEvents();
         initDatas();
     }
+
     private void initEvents() {
         image_back.setOnClickListener(this);
         image_setting.setOnClickListener(this);
         frame_setting.setOnClickListener(this);
         button_opendoor.setOnClickListener(this);
     }
+
     private String filename;
+
     private void initDatas() {
         textview_title.setText("智能门铃");
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDoorbeelManager.InitDoorbeelManager(this);
-        mSmartLockManager=SmartLockManager.getInstance();
+        mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
         image_setting.setImageResource(R.drawable.menuicon);
-        doorbeelMenuDialog=new Doorbeel_menu_Dialog(this);
-        filename=getIntent().getStringExtra("file");
+        doorbeelMenuDialog = new Doorbeel_menu_Dialog(this);
+        filename = getIntent().getStringExtra("file");
         mDoorBellListener = new DoorBellListener() {
-
-
-            @Override
             public void responseVisitorImage(final Bitmap bitmap, int count) {
                 super.responseVisitorImage(bitmap, count);
-                Handler_UiThread.runTask("", new Runnable() {
-                    @Override
-                    public void run() {
-                        image_snap.setImageBitmap(bitmap);
-                    }
-                },0);
+
             }
         };
+        Bundle bundle = getIntent().getBundleExtra("message");
+        if (bundle != null) {
+            PushMessage mesage = bundle.getParcelable("message");
+            filename = mesage.getFile();
+            Log.i(TAG, "filename=" + filename);
+            if (filename != null && !filename.equalsIgnoreCase("")) {
+                String username = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+                String uid = mDoorbeelManager.getCurrentSelectedDoorbeel().getUid();
+                mDoorbeelManager.getDoorbellVistorImage(filename, 0);
+                imageview_visitor.setVisibility(View.VISIBLE);
+                layout_no_vistor.setVisibility(View.GONE);
+                String url = "https://api.deplink.net/user/" + username + "/doorbell/" + uid + "/snapshot/" + filename;
+                Glide.with(DoorbeelMainActivity.this)
+                        .load(url)
+                        .bitmapTransform(new RoundedCornersTransformation(this, 8, 0, RoundedCornersTransformation.CornerType.ALL))
+                        .crossFade(1000)
+                        .into(imageview_visitor);
+                //  imageview_visitor.setImageBitmap(imageview_visitor.getRoundBitmap(bitmap, 8));
+            }
+        }
     }
 
     @Override
@@ -83,21 +107,19 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         super.onResume();
         mDoorbeelManager.addDeviceListener(mDoorBellListener);
 
-        isStartFromExperience =  DeviceManager.getInstance().isStartFromExperience();
-        if(!isStartFromExperience){
-            if(mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()!=null){
+        isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
+        if (!isStartFromExperience) {
+            if (mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid() != null) {
                 mSmartLockManager.queryLockUidHttp(mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid());
-                String lockuid= mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid();
-                lockDevice = DataSupport.where("Uid=?",lockuid).findFirst(SmartDev.class, true);
+                String lockuid = mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid();
+                lockDevice = DataSupport.where("Uid=?", lockuid).findFirst(SmartDev.class, true);
             }
-            if(lockDevice!=null && lockDevice.getStatus().equalsIgnoreCase("在线")){
+            if (lockDevice != null && lockDevice.getStatus().equalsIgnoreCase("在线")) {
                 button_opendoor.setBackgroundResource(R.drawable.radius22_bg_button_background);
-            }else{
+            } else {
                 button_opendoor.setBackgroundResource(R.drawable.radius22_bg_6c_background);
             }
-            //TODO 这里显示访问者的大图片
-            //   mDoorbeelManager.getDoorbellVistorImage(filename, 0);
-        }else{
+        } else {
             button_opendoor.setBackgroundResource(R.drawable.radius22_bg_button_background);
         }
     }
@@ -105,6 +127,8 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     @Override
     protected void onPause() {
         super.onPause();
+        imageview_visitor.setVisibility(View.GONE);
+        layout_no_vistor.setVisibility(View.VISIBLE);
         mDoorbeelManager.removeDeviceListener(mDoorBellListener);
     }
 
@@ -115,15 +139,19 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         frame_setting = findViewById(R.id.frame_setting);
         image_snap = findViewById(R.id.image_snap);
         button_opendoor = findViewById(R.id.button_opendoor);
+        layout_no_vistor = findViewById(R.id.layout_no_vistor);
+        imageview_visitor = findViewById(R.id.imageview_visitor);
     }
+
     private Doorbeel_menu_Dialog doorbeelMenuDialog;
     private boolean isStartFromExperience;
     private String savedManagePassword;
     private String selfUserId;
-    private   SmartDev lockDevice;
+    private SmartDev lockDevice;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.image_setting:
                 doorbeelMenuDialog.show();
                 break;
@@ -131,10 +159,10 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 onBackPressed();
                 break;
             case R.id.button_opendoor:
-                if(isStartFromExperience){
-                    ToastSingleShow.showText(this,"门锁已开");
-                }else{
-                    if(lockDevice!=null && selfUserId!=null){
+                if (isStartFromExperience) {
+                    ToastSingleShow.showText(this, "门锁已开");
+                } else {
+                    if (lockDevice != null && selfUserId != null) {
                         savedManagePassword = mSmartLockManager.getCurrentSelectLock().getLockPassword();
                         mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, selfUserId, savedManagePassword, null, null);
                     }
@@ -179,6 +207,6 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 addUserIdPair.saveFast();
             }
         }
-        selfUserId=userIdInfo.getSelfid();
+        selfUserId = userIdInfo.getSelfid();
     }
 }

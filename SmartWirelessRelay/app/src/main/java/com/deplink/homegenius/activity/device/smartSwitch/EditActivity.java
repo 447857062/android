@@ -18,6 +18,7 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceListener;
@@ -116,9 +117,10 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 layout_getway_list.setVisibility(View.GONE);
                 action = "alertgetway";
                 selectedGatway = mGetways.get(position);
-                deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
-                mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
-
+                if(!isStartFromExperience){
+                    deviceUid = mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
+                    mDeviceManager.alertDeviceHttp(deviceUid, null, null, selectedGatway.getUid());
+                }
             }
         });
         connectLostDialog = new DeleteDeviceDialog(EditActivity.this);
@@ -242,17 +244,19 @@ public class EditActivity extends Activity implements View.OnClickListener {
                     textview_select_room_name.setText("全部");
                 }
             }
-            GatwayDevice temp = mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice();
-            if (temp == null) {
-                GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDeviceUid()).findFirst(GatwayDevice.class);
-                if (localDbGatwayDevice != null) {
-                    textview_select_getway_name.setText(localDbGatwayDevice.getName());
-                } else {
-                    textview_select_getway_name.setText("未设置网关");
-                }
+            if( mSmartSwitchManager.getCurrentSelectSmartDevice()!=null){
+                GatwayDevice temp = mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice();
+                if (temp == null) {
+                    GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDeviceUid()).findFirst(GatwayDevice.class);
+                    if (localDbGatwayDevice != null) {
+                        textview_select_getway_name.setText(localDbGatwayDevice.getName());
+                    } else {
+                        textview_select_getway_name.setText("未设置网关");
+                    }
 
-            } else {
-                textview_select_getway_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice().getName());
+                } else {
+                    textview_select_getway_name.setText(mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice().getName());
+                }
             }
         }
         mDeviceManager.addDeviceListener(mDeviceListener);
@@ -339,11 +343,16 @@ public class EditActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onSureBtnClicked() {
                         DialogThreeBounce.showLoading(EditActivity.this);
-                        if (isLogin) {
-                            mDeviceManager.deleteDeviceHttp();
-                        } else {
-                            ToastSingleShow.showText(EditActivity.this, "未登录,登录后操作");
+                        if(isStartFromExperience){
+                            startActivity(new Intent(EditActivity.this, ExperienceDevicesActivity.class));
+                        }else{
+                            if (isLogin) {
+                                mDeviceManager.deleteDeviceHttp();
+                            } else {
+                                ToastSingleShow.showText(EditActivity.this, "未登录,登录后操作");
+                            }
                         }
+
                     }
                 });
                 deleteDialog.show();

@@ -74,8 +74,6 @@ import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsWeather;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushManager;
 
 import org.litepal.crud.DataSupport;
 
@@ -242,13 +240,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     public class MsgReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
-            //  allRecorders = notificationService.getCount();
-            // getNotificationswithouthint(id);
             Bundle pushMessageBundle = intent.getBundleExtra("message");
             intent = new Intent(context, DoorbeelMainActivity.class);
             if (pushMessageBundle != null) {
-                Log.i(TAG,"通知的点击后,去到门铃界面");
+                Log.i(TAG,"通知的点击后,去到门铃界面 ");
                 intent.putExtra("message", pushMessageBundle);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
@@ -433,7 +428,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
                         mRoomManager.updateRooms();
                         Perfence.setContext(getApplicationContext());
-                        String uuid = manager.getUserInfo().getUuid();
+                      /*  String uuid = manager.getUserInfo().getUuid();
                         if (!uuid.equalsIgnoreCase("")) {
                             Log.i("TPush", "注册uuid：" + uuid);
                             XGPushManager.registerPush(getApplicationContext(), uuid, new XGIOperateCallback() {
@@ -447,7 +442,7 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                                     Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
                                 }
                             });
-                        }
+                        }*/
                         break;
                     case CONNECTED:
                         break;
@@ -583,10 +578,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         dev.setTopic("device/" + devices.get(i).getUid() + "/sub");
         List<Room> rooms = new ArrayList<>();
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
+        if(room!=null){
+            Log.i(TAG, "添加中继器房间是:" + room.toString());
+        }
         rooms.add(room);
         dev.setRoomList(rooms);
         boolean success = dev.save();
-        Log.i(TAG, "添加中继器房间是:" + room.toString()+"保存设备:" + success + "deviceName=" + deviceName);
+        Log.i(TAG, "保存设备:" + success + "deviceName=" + deviceName);
     }
 
     private void saveSmartDeviceToSqlite(List<Deviceprops> devices, int i) {
