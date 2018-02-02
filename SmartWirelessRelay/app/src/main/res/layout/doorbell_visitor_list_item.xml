@@ -10,7 +10,6 @@
             android:layout_marginTop="5dp"
             android:id="@+id/image_snap"
             android:layout_width="45dp"
-            android:scaleType="centerCrop"
             android:layout_height="45dp"
             android:layout_marginLeft="15dp" />
         <RelativeLayout

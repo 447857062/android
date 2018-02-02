@@ -1,11 +1,8 @@
 package com.deplink.homegenius.activity.homepage;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,7 +36,6 @@ import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.http.weather.HeWeather6;
 import com.deplink.homegenius.activity.device.DevicesActivity;
-import com.deplink.homegenius.activity.device.doorbell.DoorbeelMainActivity;
 import com.deplink.homegenius.activity.device.getway.GetwayDeviceActivity;
 import com.deplink.homegenius.activity.device.smartlock.SmartLockActivity;
 import com.deplink.homegenius.activity.homepage.adapter.ExperienceCenterListAdapter;
@@ -237,29 +233,13 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         }
     }
 
-    public class MsgReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle pushMessageBundle = intent.getBundleExtra("message");
-            intent = new Intent(context, DoorbeelMainActivity.class);
-            if (pushMessageBundle != null) {
-                Log.i(TAG,"通知的点击后,去到门铃界面 ");
-                intent.putExtra("message", pushMessageBundle);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-            }
-        }
-    }
-    private MsgReceiver updateListViewReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_home_main);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.qq.xgdemo.activity.UPDATE_LISTVIEW");
-        updateListViewReceiver = new MsgReceiver();
-        registerReceiver(updateListViewReceiver, intentFilter);
+
         initViews();
         initDatas();
         initEvents();
@@ -382,7 +362,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         super.onDestroy();
         manager.removeEventCallback(ec);
         manager.onDestroy();
-        unregisterReceiver(updateListViewReceiver);
     }
 
 
@@ -428,21 +407,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         Perfence.setPerfence(AppConstant.USER_LOGIN, true);
                         mRoomManager.updateRooms();
                         Perfence.setContext(getApplicationContext());
-                      /*  String uuid = manager.getUserInfo().getUuid();
-                        if (!uuid.equalsIgnoreCase("")) {
-                            Log.i("TPush", "注册uuid：" + uuid);
-                            XGPushManager.registerPush(getApplicationContext(), uuid, new XGIOperateCallback() {
-                                @Override
-                                public void onSuccess(Object data, int flag) {
-                                    Log.i("TPush", "注册成功，设备token为：" + data);
-                                }
-
-                                @Override
-                                public void onFail(Object data, int errCode, String msg) {
-                                    Log.i("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
-                                }
-                            });
-                        }*/
                         break;
                     case CONNECTED:
                         break;

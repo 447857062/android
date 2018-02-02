@@ -17,6 +17,7 @@ import com.deplink.homegenius.activity.device.smartSwitch.add.SelectSwitchTypeAc
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
+import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.Perfence;
@@ -194,6 +195,7 @@ public class AddDeviceQRcodeActivity extends Activity implements AdapterView.OnI
                     startActivity(new Intent(AddDeviceQRcodeActivity.this, SelectSwitchTypeActivity.class));
                     break;
                 case DeviceTypeConstant.TYPE.TYPE_MENLING:
+                    DoorbeelManager.getInstance().setConfigWifi(false);
                     startActivity(new Intent(AddDeviceQRcodeActivity.this, WifipasswordInputActivity.class));
                     break;
                 default:

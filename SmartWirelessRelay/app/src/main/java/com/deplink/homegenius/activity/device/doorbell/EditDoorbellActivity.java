@@ -50,7 +50,7 @@ import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class EditDoorbellActivity extends Activity implements View.OnClickListener , EllE_Listener {
+public class EditDoorbellActivity extends Activity implements View.OnClickListener, EllE_Listener {
     private static final String TAG = "EditDoorbellActivity";
     private TextView button_delete_device;
     private DeleteDeviceDialog deleteDialog;
@@ -75,17 +75,17 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     private String action;
     private EllESDK ellESDK;
     private TextView textview_select_getway_name;
-
     private TextView textview_select_lock_name;
     private RelativeLayout layout_lock_list;
     private ListView listview_select_lock;
     private RelativeLayout layout_lock_select;
     private ImageView imageview_lock_arror_right;
     private LockSelectListAdapter lockSelectListAdapter;
-    private List<SmartDev>mLockList;
+    private List<SmartDev> mLockList;
     private SmartLockManager mSmartLockManager;
     private String selectLockName;
     private SmartDev bindlock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +94,9 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         initDatas();
         initEvents();
     }
+
     private WIFIData wifiData;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -117,20 +119,20 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 @Override
                 public void run() {
                     ellESDK.stopSearchDevs();
-                    wifiData= ellESDK.getDevWiFiConfigWithMac(maclong,type,ver);
+                    wifiData = ellESDK.getDevWiFiConfigWithMac(maclong, type, ver);
                     Handler_UiThread.runTask("", new Runnable() {
                         @Override
                         public void run() {
-                            if(wifiData!=null){
-                                textview_select_getway_name.setText("当前配置的WIFI:"+wifiData.ssid);
-                            }else{
-                               // textview_select_getway_name.setText("当前设备未配置WIFI");
+                            if (wifiData != null) {
+                                textview_select_getway_name.setText("当前配置的WIFI:" + wifiData.ssid);
+                            } else {
+                                // textview_select_getway_name.setText("当前设备未配置WIFI");
                             }
                         }
-                    },0);
+                    }, 0);
                 }
             });
-            if(!isOnActivityResult){
+            if (!isOnActivityResult) {
                 List<Room> rooms = mDoorbeelManager.getCurrentSelectedDoorbeel().getRooms();
                 if (rooms.size() == 1) {
                     textview_select_room_name.setText(rooms.get(0).getRoomName());
@@ -141,13 +143,15 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
 
         }
     }
+
     private long maclong;
     private byte ver;
     private byte type;
+
     @Override
     protected void onPause() {
         super.onPause();
-        isOnActivityResult=false;
+        isOnActivityResult = false;
         mDeviceManager.removeDeviceListener(mDeviceListener);
         manager.removeEventCallback(ec);
     }
@@ -166,7 +170,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 selectLockName = mLockList.get(position).getName();
                 textview_select_lock_name.setText(selectLockName);
                 layout_lock_list.setVisibility(View.GONE);
-                if(mDoorbeelManager.getCurrentSelectedDoorbeel()!=null){
+                if (mDoorbeelManager.getCurrentSelectedDoorbeel() != null) {
                     mDoorbeelManager.getCurrentSelectedDoorbeel().setBindLockUid(mLockList.get(position).getBindLockUid());
                     mDoorbeelManager.getCurrentSelectedDoorbeel().saveFast();
                 }
@@ -228,7 +232,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDeviceManager.InitDeviceManager(this);
-        mSmartLockManager=SmartLockManager.getInstance();
+        mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
         mDeviceListener = new DeviceListener() {
             @Override
@@ -237,6 +241,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 DialogThreeBounce.hideLoading();
                 mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
             }
+
             @Override
             public void responseAlertDeviceHttpResult(DeviceOperationResponse result) {
                 super.responseAlertDeviceHttpResult(result);
@@ -248,16 +253,16 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                         mHandler.sendEmptyMessage(MSG_ALERT_DEVICEROOM_RESULT);
                         break;
                 }
-                action="";
+                action = "";
 
             }
         };
-        mLockList=new ArrayList<>();
+        mLockList = new ArrayList<>();
         mLockList.addAll(mSmartLockManager.getAllLock());
-        lockSelectListAdapter=new LockSelectListAdapter(this,mLockList);
+        lockSelectListAdapter = new LockSelectListAdapter(this, mLockList);
 
-        if(!isStartFromExperience){
-            if(mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()!=null){
+        if (!isStartFromExperience) {
+            if (mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid() != null) {
                 bindlock = DataSupport.where("Uid=?", mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()).findFirst(SmartDev.class, true);
             }
         }
@@ -283,7 +288,9 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 case MSG_ALERT_DEVICENAME_RESULT:
                     Log.i(TAG, "修改设备名称 handler msg");
                     mDoorbeelManager.updateDoorbeelName(devicename);
-                    startActivity(new Intent(EditDoorbellActivity.this, DoorbeelMainActivity.class));
+                     intent = new Intent(EditDoorbellActivity.this, DoorbeelMainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     break;
                 case MSG_ALERT_DEVICEROOM_RESULT:
                     Log.i(TAG, "修改设备房间 handler msg");
@@ -318,7 +325,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM && resultCode == RESULT_OK) {
-            isOnActivityResult=true;
+            isOnActivityResult = true;
             String roomName = data.getStringExtra("roomName");
             Log.i(TAG, "isStartFromExperience=" + isStartFromExperience);
             if (!isStartFromExperience) {
@@ -369,7 +376,9 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                     devicename = devcienamechange;
                     mDeviceManager.alertDeviceHttp(deviceUid, null, devcienamechange, null);
                 } else {
-                    onBackPressed();
+                    Intent intent = new Intent(EditDoorbellActivity.this, DoorbeelMainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
                 break;
             case R.id.layout_lock_select:
@@ -392,8 +401,8 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     @Override
     public void searchDevCBS(long mac, byte type, byte ver) {
         Log.e(TAG, "mac:" + mac + "type:" + type + "ver:" + ver);
-        maclong=mac;
-        this.type=type;
-        this.ver=ver;
+        maclong = mac;
+        this.type = type;
+        this.ver = ver;
     }
 }

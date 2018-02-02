@@ -2,12 +2,8 @@ package com.deplink.homegenius.application;
 
 import android.content.Context;
 import android.support.multidex.MultiDex;
-import android.util.Log;
 
-import com.deplink.homegenius.constant.AppConstant;
-import com.deplink.homegenius.util.Perfence;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushManager;
+import com.mob.MobSDK;
 
 import org.litepal.LitePalApplication;
 
@@ -21,8 +17,7 @@ public class AppDelegate extends LitePalApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
-
+        MobSDK.init(this);
     }
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);

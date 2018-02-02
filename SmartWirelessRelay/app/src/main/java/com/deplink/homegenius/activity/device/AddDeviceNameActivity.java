@@ -376,9 +376,16 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         router.setSmartDev(currentAddRouter);
                         router.setSign_seed(responseBody.getSign_seed());
                         router.setSignature(responseBody.getSignature());
-                        router.setChannels(responseBody.getChannels().getSecondary().getSub());
-                        router.setReceveChannels(responseBody.getChannels().getSecondary().getPub());
-                        router.save();
+                        if(responseBody.getChannels().getPrimary()!=null){
+                            router.setChannels(responseBody.getChannels().getPrimary().getSub());
+                            router.setReceveChannels(responseBody.getChannels().getPrimary().getPub());
+                            router.save();
+                        }
+                        if(responseBody.getChannels().getSecondary()!=null){
+                            router.setChannels(responseBody.getChannels().getSecondary().getSub());
+                            router.setReceveChannels(responseBody.getChannels().getSecondary().getPub());
+                            router.save();
+                        }
                         currentAddRouter.setRouter(router);
                         boolean saveResult = mRouterManager.saveRouter(currentAddRouter);
                         if (saveResult) {

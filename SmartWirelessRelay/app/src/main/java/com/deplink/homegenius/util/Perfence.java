@@ -19,10 +19,10 @@ public class Perfence extends Application {
     private static final String TAG="Perfence";
     public static int VERIFYCODE_TIME = 60;
     public static int DELAY_VERIFYCODE = 1000;
-    public static ArrayList<HashMap<String,Object>> alhmCountries = new ArrayList<HashMap<String,Object>>();
+    public static ArrayList<HashMap<String,Object>> alhmCountries = new ArrayList<>();
     public static String SDK_APP_KEY = "c58a079f58be73b12f59cb4e74605044";
-    public static String SMSSDK_APPKEY = "162420aac5f2c";
-    public static String SMSSDK_APPSECRET = "17a65cea59d991725328bac31f1f81c9";
+    public static String SMSSDK_APPKEY = "2414a79b72e76";
+    public static String SMSSDK_APPSECRET = "4e0c474b46d51bf67eb858cf9447f684";
     public static String PERFENCE_NAME = "PERFENCE_NAME";
     //电话
     public static String PERFENCE_PHONE = "PERFENCE_PHONE";
@@ -41,8 +41,6 @@ public class Perfence extends Application {
             }
         };
     }
-
-
     public static float dp2px(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density;
         return dpValue * scale + 0.5f;

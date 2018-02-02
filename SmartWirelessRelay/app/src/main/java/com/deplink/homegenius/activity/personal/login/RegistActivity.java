@@ -192,7 +192,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
             }
 
         };
-        SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
+      //  SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
         SMSSDK.registerEventHandler(eh);
         if (Perfence.alhmCountries == null || Perfence.alhmCountries.size() == 0)
             SMSSDK.getSupportedCountries();

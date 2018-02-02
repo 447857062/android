@@ -75,7 +75,6 @@
         android:background="@color/white_background">
 
         <RelativeLayout
-
             android:id="@+id/layout_select_show_current_list"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_item_content_height"

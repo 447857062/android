@@ -8,20 +8,22 @@
     <include
         android:id="@+id/layout_title"
         layout="@layout/layout_title_with_right_have_image_have_textbackground" />
+
     <FrameLayout
         android:id="@+id/layout_frame"
-        android:layout_below="@+id/layout_title"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/doorbell_mainview_imageview_height"
+        android:layout_below="@+id/layout_title"
         android:layout_marginLeft="@dimen/layout_content_margin_left_right"
         android:layout_marginRight="@dimen/layout_content_margin_left_right"
-        android:layout_marginTop="@dimen/layout_room_content_margin_top"
-        android:layout_height="@dimen/doorbell_mainview_imageview_height">
+        android:layout_marginTop="@dimen/layout_room_content_margin_top">
+
         <RelativeLayout
             android:id="@+id/layout_no_vistor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:background="@drawable/radius8_bg_blue_layout_background">
+            android:background="@drawable/radius8_bg_blue_layout_background"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/imageview_empty"
@@ -41,14 +43,12 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_small" />
         </RelativeLayout>
-
         <ImageView
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/layout_room_content_margin_top"
             android:id="@+id/imageview_visitor"
             android:layout_width="match_parent"
-            android:src="@drawable/equipmentemptystate"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
     </FrameLayout>
 
 

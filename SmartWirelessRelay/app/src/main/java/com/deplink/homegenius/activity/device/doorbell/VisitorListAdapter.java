@@ -2,6 +2,7 @@ package com.deplink.homegenius.activity.device.doorbell;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deplink.homegenius.util.DateUtil;
+import com.deplink.homegenius.util.bitmap.BitmapHandler;
 import com.deplink.homegenius.view.listview.swipemenulistview.BaseSwipListAdapter;
 import com.deplink.sdk.android.sdk.json.homegenius.DoorBellItem;
 
@@ -58,7 +60,8 @@ public class VisitorListAdapter extends BaseSwipListAdapter {
         }
         try {
             if(mListDataImage.size()>0 && position-1<=mListDataImage.size()){
-                vh.image_snap.setImageBitmap(mListDataImage.get(position));
+                BitmapDrawable bbb = new BitmapDrawable(BitmapHandler.toRoundCorner(mListDataImage.get(position), 30));
+                vh.image_snap.setBackgroundDrawable(bbb);
             }
         } catch (Exception e) {
             e.printStackTrace();

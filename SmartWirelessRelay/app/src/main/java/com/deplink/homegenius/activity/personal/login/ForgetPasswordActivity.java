@@ -101,7 +101,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
 
     private void initDatas() {
         textview_title.setText("重置密码");
-        SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
+      //  SMSSDK.initSDK(getApplicationContext(), Perfence.SMSSDK_APPKEY, Perfence.SMSSDK_APPSECRET);
         eh = new EventHandler() {
             @Override
             public void afterEvent(int event, int result, Object data) {

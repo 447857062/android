@@ -54,12 +54,13 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_no_visitor;
     private Timer refreshTimer = null;
     private TimerTask refreshTask = null;
-    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 5000;
+    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 10000;
     private SDKManager manager;
     private EventCallback ec;
     private boolean isUserLogin;
     private DeleteDeviceDialog connectLostDialog;
     private TextView textview_edit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +69,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
         initDatas();
         initEvents();
     }
+
     private void stopTimer() {
         if (refreshTask != null) {
             refreshTask.cancel();
@@ -101,18 +103,19 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             refreshTimer.schedule(refreshTask, 0, TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS);
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        isUserLogin=Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         mDoorbeelManager.addDeviceListener(mDoorBellListener);
         manager.addEventCallback(ec);
         if (!isStartFromExperience) {
-            if(isUserLogin){
+            if (isUserLogin) {
                 startTimer();
-            }else{
-                ToastSingleShow.showText(this,"未登录");
+            } else {
+                ToastSingleShow.showText(this, "未登录");
             }
         } else {
             layout_no_visitor.setVisibility(View.VISIBLE);
@@ -130,6 +133,7 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private void initEvents() {
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
+        textview_edit.setVisibility(View.GONE);
         if (!isStartFromExperience) {
             listview_vistor_list.setAdapter(mAdapter);
             SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -210,12 +214,13 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private AdapterView.OnItemClickListener deviceItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-           // Intent intent = new Intent(VistorHistoryActivity.this, DoorbeelMainActivity.class);
-           // intent.putExtra("file", visitorList.get(position).getFile());
-           // startActivity(intent);
+            Intent intent = new Intent(VistorHistoryActivity.this, DoorbellLargeImage.class);
+            intent.putExtra("file", visitorList.get(position).getFile());
+            startActivity(intent);
         }
     };
     private int count;
+
     private void initDatas() {
         textview_title.setText("访客记录");
         mDoorbeelManager = DoorbeelManager.getInstance();

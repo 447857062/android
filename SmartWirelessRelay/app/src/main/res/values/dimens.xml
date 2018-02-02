@@ -146,8 +146,8 @@
     <dimen name="doorlock_unlock_image_width_height">96dp</dimen>
     <dimen name="doorlock_option_item_width_height">57dp</dimen>
     <dimen name="doorlock_clear_record_dialog_makesure_button_height">55dp</dimen>
-    <dimen name="doorlock_top_framelayout_height">398dp</dimen>
-    <dimen name="doorlock_top_framelayout_inner_bg_height">350dp</dimen>
+    <dimen name="doorlock_top_framelayout_height">358dp</dimen>
+    <dimen name="doorlock_top_framelayout_inner_bg_height">310dp</dimen>
     <dimen name="doorlock_auth_dialog_input_password_layout_width">260dp</dimen>
     <dimen name="point_black_width_height">15dp</dimen>
     <dimen name="keybord_icon_size">72dp</dimen>
@@ -180,7 +180,7 @@
     <!--空调界面尺寸-->
     <!--size-->
     <dimen name="startthetestbutton_size">96dp</dimen>
-    <dimen name="aircondition_open_background_height">427dp</dimen>
+    <dimen name="aircondition_open_background_height">387dp</dimen>
     <dimen name="aircondition_circle_width_height">221dp</dimen>
     <dimen name="aircondition_control_reduce_plus_width_height">38dp</dimen>
     <dimen name="aircondition_control_buttom_control_icon_width_height">58dp</dimen>

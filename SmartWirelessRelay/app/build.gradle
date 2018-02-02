@@ -54,23 +54,17 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-   // jcenter()
-   // mavenCentral()  // GPUImage for Android
+    mavenCentral()
+    maven {
+        url "http://mvn.mob.com/android"
+    }
     maven { url "https://jitpack.io" }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
-    compile 'jp.wasabeef:glide-transformations:2.0.1'
-    // If you want to use the GPU Filters
-    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.3.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-   // compile 'com.github.bumptech.glide:volley-integration:1.2.2'
-   // compile 'com.github.bumptech.glide:okhttp-integration:1.2.2'
-    //compile 'com.mcxiaoke.volley:library:1.0.5'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.google.code.gson:gson:2.7'
@@ -89,9 +83,10 @@ dependencies {
     compile project(path: ':mqtt-sdk')
     compile project(':pullToRefresh')
     compile files('libs/BaiduLBS_Android.jar')
-    compile name: 'SMSSDK-2.1.1', ext: 'aar'
-    compile files('libs/MobCommons-2016.0928.1455.jar')
-    compile files('libs/MobTools-2016.0928.1455.jar')
+    //compile name: 'SMSSDK-2.1.1', ext: 'aar'
+     compile files('libs/SMSSDK-3.1.0.jar')
+     compile files('libs/MobCommons-2017.1213.1552.jar')
+      compile files('libs/MobTools-2017.1213.1552.jar')
     compile 'com.zxy.android:tiny:0.1.0'
     //信鸽jar
     compile 'com.tencent.xinge:xinge:3.2.0-release'
@@ -99,7 +94,8 @@ dependencies {
     compile 'com.tencent.wup:wup:1.0.0.E-release'
     //mid包
     compile 'com.tencent.mid:mid:4.0.0-release'
-
     compile 'com.daimajia.numberprogressbar:library:1.4@aar'
     compile 'com.android.support:multidex:1.0.1 //dependencies'
+    compile files('libs/MobCommons-2017.1213.1552.jar')
+    compile files('libs/MobTools-2017.1213.1552.jar')
 }

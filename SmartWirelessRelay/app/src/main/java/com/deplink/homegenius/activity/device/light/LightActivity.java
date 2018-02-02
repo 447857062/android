@@ -130,8 +130,8 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     private void initDatas() {
         textview_title.setText("智能灯泡");
         textview_edit.setText("编辑");
-        mSmartLightManager = SmartLightManager.getInstance();
         Perfence.setContext(this);
+        mSmartLightManager = SmartLightManager.getInstance();
         mSmartLightManager.InitSmartLightManager(this);
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
