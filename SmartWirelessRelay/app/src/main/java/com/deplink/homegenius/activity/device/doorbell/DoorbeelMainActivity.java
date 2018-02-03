@@ -102,8 +102,6 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         if (clickedResult != null) { // 判断是否来自信鸽的打开方式
             String  customContent= clickedResult.getCustomContent();
             isStartFromExperience=false;
-
-
             Log.i(TAG,"customContent="+customContent);
             Gson gson = new Gson();
             pushMessage = gson.fromJson(customContent, PushMessage.class);

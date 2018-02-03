@@ -31,9 +31,9 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -227,7 +227,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                 if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                     mDeviceManager.deleteSmartDevice();
                 }
-                DialogThreeBounce.hideLoading();
                 mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
             }
 
@@ -323,23 +322,28 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                 if (isStartFromExperience) {
                     onBackPressed();
                 } else {
-                    if (isLogin) {
-                        String lightnameChange = edittext_input_devie_name.getText().toString();
-                        if (lightnameChange.equals("")) {
-                            ToastSingleShow.showText(this, "请输入设备名称");
-                            return;
-                        }
-                        if (lightnameChange.equals(lightName)) {
-                            onBackPressed();
+                    if(NetUtil.isNetAvailable(this)){
+                        if (isLogin) {
+                            String lightnameChange = edittext_input_devie_name.getText().toString();
+                            if (lightnameChange.equals("")) {
+                                ToastSingleShow.showText(this, "请输入设备名称");
+                                return;
+                            }
+                            if (lightnameChange.equals(lightName)) {
+                                onBackPressed();
+                            } else {
+                                action = "alertname";
+                                lightName = lightnameChange;
+                                deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
+                                mDeviceManager.alertDeviceHttp(deviceUid, null, lightName, null);
+                            }
                         } else {
-                            action = "alertname";
-                            lightName = lightnameChange;
-                            deviceUid = mSmartLightManager.getCurrentSelectLight().getUid();
-                            mDeviceManager.alertDeviceHttp(deviceUid, null, lightName, null);
+                            LightEditActivity.this.finish();
                         }
-                    } else {
-                        LightEditActivity.this.finish();
+                    }else{
+                        ToastSingleShow.showText(this, "网络连接不可用");
                     }
+
                 }
 
                 break;
@@ -357,7 +361,6 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                     public void onSureBtnClicked() {
                         if (!isStartFromExperience) {
                             if (isLogin) {
-                                DialogThreeBounce.showLoading(LightEditActivity.this);
                                 mDeviceManager.deleteDeviceHttp();
                             } else {
                                 ToastSingleShow.showText(LightEditActivity.this, "用户未登录");

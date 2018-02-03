@@ -32,10 +32,12 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -275,9 +277,13 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                     @Override
                     public void onSureBtnClicked() {
                         if (!isStartFromExperience) {
-                            if (isLogin) {
-                                DialogThreeBounce.showLoading(EditSmartLockActivity.this);
-                                mDeviceManager.deleteDeviceHttp();
+                            if(NetUtil.isNetAvailable(EditSmartLockActivity.this)){
+                                if (isLogin) {
+                                    DialogThreeBounce.showLoading(EditSmartLockActivity.this);
+                                    mDeviceManager.deleteDeviceHttp();
+                                }
+                            }else{
+                                ToastSingleShow.showText(EditSmartLockActivity.this, "网络连接不可用");
                             }
                         } else {
                             startActivity(new Intent(EditSmartLockActivity.this, ExperienceDevicesActivity.class));

@@ -119,11 +119,12 @@ public class DeviceManager implements LocalConnecteListener {
      * 查询设备列表
      */
     public void queryDeviceList() {
-        Log.i(TAG, "本地接口查询设备列表 mLocalConnectmanager.isLocalconnectAvailable():"
+        Log.i(TAG, "本地接口可用 :"
                 + mLocalConnectmanager.isLocalconnectAvailable() +
-                "mRemoteConnectManager.isRemoteConnectAvailable():" + mRemoteConnectManager.isRemoteConnectAvailable()
+                "远程接口可用:" + mRemoteConnectManager.isRemoteConnectAvailable()
         );
         if (mLocalConnectmanager.isLocalconnectAvailable()) {
+            Log.i(TAG,"本地接口查询设备列表");
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("QUERY");
             queryCmd.setMethod("DevList");
@@ -137,9 +138,10 @@ public class DeviceManager implements LocalConnecteListener {
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        } else if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+        } else  {
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
+            Log.i(TAG,"远程接口查询设备列表");
             if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 mHomeGenius.queryDeviceList(device.getTopic(), uuid);
@@ -157,7 +159,6 @@ public class DeviceManager implements LocalConnecteListener {
         RestfulToolsHomeGeniusString.getSingleton().getDeviceInfo(userName, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
                     ArrayList<Deviceprops> list = ParseUtil.jsonToArrayList(response.body(), Deviceprops.class);
@@ -186,7 +187,6 @@ public class DeviceManager implements LocalConnecteListener {
         RestfulToolsHomeGenius.getSingleton().addDevice(userName, device, new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.errorBody() != null) {
                     try {
@@ -212,7 +212,6 @@ public class DeviceManager implements LocalConnecteListener {
                     ToastSingleShow.showText(mContext, "没有授权,请让第一次添加此设备的用户给你授权");
                 }
             }
-
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage());
@@ -229,7 +228,6 @@ public class DeviceManager implements LocalConnecteListener {
         RestfulToolsHomeGenius.getSingleton().addVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.errorBody() != null) {
                     try {
@@ -270,7 +268,6 @@ public class DeviceManager implements LocalConnecteListener {
         RestfulToolsHomeGenius.getSingleton().deleteDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
@@ -310,7 +307,6 @@ public class DeviceManager implements LocalConnecteListener {
         RestfulToolsHomeGenius.getSingleton().alertDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.errorBody() != null) {
                     try {
@@ -345,7 +341,6 @@ public class DeviceManager implements LocalConnecteListener {
         RestfulToolsHomeGeniusString.getSingleton().readDeviceInfo(userName, uid, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
                     Log.i(TAG, "" + response.body());
@@ -388,7 +383,6 @@ public class DeviceManager implements LocalConnecteListener {
         mSmartDevList.clear();
         mSmartDevList.addAll(DataSupport.findAll(SmartDev.class));
     }
-
     /**
      * 查询wifi列表
      * 返回:{ "OP": "REPORT", "Method": "WIFIRELAY", "SSIDList": [ ] }
@@ -410,14 +404,14 @@ public class DeviceManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.queryWifiList(device.getTopic(), uuid);
                 }
-            }
+
         }
     }
 
@@ -454,11 +448,11 @@ public class DeviceManager implements LocalConnecteListener {
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        } else if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+        } else {
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
             Log.i(TAG, "device.getTopic()=" + device.getTopic());
-            if (device.getTopic() != null && !device.getTopic().equals("")) {
+            if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                 mHomeGenius.bindSmartDevList(device.getTopic(), uuid, smartDevice);
             }
         }

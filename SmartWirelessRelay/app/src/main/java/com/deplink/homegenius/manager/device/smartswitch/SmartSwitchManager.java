@@ -132,14 +132,13 @@ public class SmartSwitchManager implements LocalConnecteListener{
                 }
             });
         }else{
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG,"device.getTopic()="+device.getTopic());
                 if(device.getTopic()!=null && !device.getTopic().equals("")){
                     mHomeGenius.setSwitchCommand(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
                 }
-            }
+
         }
     }
     public void querySwitchStatus(String cmd) {
@@ -160,14 +159,17 @@ public class SmartSwitchManager implements LocalConnecteListener{
                 }
             });
         }else{
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG,"device.getTopic()="+device.getTopic());
-                if(device.getTopic()!=null && !device.getTopic().equals("")){
-                    mHomeGenius.querySwitchStatus(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
+                if(device!=null){
+                    Log.i(TAG,"device.getTopic()="+device.getTopic());
+                    if(device.getTopic()!=null && !device.getTopic().equals("")){
+                        mHomeGenius.querySwitchStatus(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
+                    }
                 }
-            }
+
+
         }
 
     }

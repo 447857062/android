@@ -219,7 +219,7 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                 switch (action){
                     case LOGOUT:
                         Log.i(TAG, "退出登录失败");
-                        ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败");
+                     //   ToastSingleShow.showText(PersonalCenterActivity.this, "退出登录失败");
                         break;
                 }
 
@@ -344,6 +344,9 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                         @Override
                         public void onSureBtnClicked() {
                             manager.logout();
+                            Perfence.setPerfence(AppConstant.USER_LOGIN,false);
+                            Perfence.setPerfence(Perfence.USER_PASSWORD,"");//重置登录密码
+                            startActivity(new Intent(PersonalCenterActivity.this, LoginActivity.class));
 
                         }
                     });

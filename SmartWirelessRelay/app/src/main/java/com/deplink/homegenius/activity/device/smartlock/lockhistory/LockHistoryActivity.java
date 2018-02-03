@@ -29,7 +29,6 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.DateUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -139,23 +138,22 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             @Override
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
-                Gson gson=new Gson();
+                Gson gson = new Gson();
                 OpResult type = gson.fromJson(result, OpResult.class);
-                Log.i(TAG,"门锁管理器查询结果返回:"+result);
+                Log.i(TAG, "门锁管理器查询结果返回:" + result);
                 if (type != null && type.getOP().equalsIgnoreCase("REPORT") &&
-                        (type.getMethod().equalsIgnoreCase("SMART_LOCK")|| type.getMethod().equalsIgnoreCase("SmartLock"))) {
-
+                        (type.getMethod().equalsIgnoreCase("SMART_LOCK") || type.getMethod().equalsIgnoreCase("SmartLock"))) {
                     switch (type.getCommand()) {
                         case SmartLockConstant.CMD.QUERY:
-                            int RecondNum=type.getRecordNum();
+                            int RecondNum = type.getRecordNum();
                             if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                                 Message msg = Message.obtain();
                                 msg.what = MSG_GET_HISRECORD;
                                 mHandler.sendMessageDelayed(msg, 2000);
                                 if (mRecordList.size() == 0) {
-                                    mSmartLockManager.queryLockHistory(true, RecondNum,userId);
+                                    mSmartLockManager.queryLockHistory(true, RecondNum, userId);
                                 } else {
-                                    mSmartLockManager.queryLockHistory(true, 5,userId);
+                                    mSmartLockManager.queryLockHistory(true, 5, userId);
                                 }
                             } else {
                                 if (isLogin) {
@@ -163,15 +161,20 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                                     msg.what = MSG_GET_HISRECORD;
                                     mHandler.sendMessageDelayed(msg, 2000);
                                     if (mRecordList.size() == 0) {
-                                        mSmartLockManager.queryLockHistory(false, RecondNum,userId);
+                                        mSmartLockManager.queryLockHistory(false, RecondNum, userId);
                                     } else {
-                                        mSmartLockManager.queryLockHistory(false, 5,userId);
+                                        mSmartLockManager.queryLockHistory(false, 5, userId);
                                     }
-
                                 } else {
                                     Toast.makeText(LockHistoryActivity.this, "未登录,并且本地网关也不可用", Toast.LENGTH_SHORT).show();
                                 }
                             }
+                            break;
+                        case "HisRecord":
+                            Message msg = Message.obtain();
+                            msg.obj = result;
+                            msg.what = MSG_GET_HISTORYRECORD;
+                            mHandler.sendMessage(msg);
                             break;
                     }
                 }
@@ -198,12 +201,13 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         imageview_no_lockhostory = findViewById(R.id.imageview_no_lockhostory);
 
     }
+
     private String userId;
 
     @Override
     protected void onResume() {
         super.onResume();
-        userId=Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
+        userId = Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
         mSmartLockManager = SmartLockManager.getInstance();
         mSmartLockManager.InitSmartLockManager(this);
         mSmartLockManager.addSmartLockListener(this);
@@ -230,8 +234,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             mRecordList.add(temp);
         } else {
             mSmartLockManager.queryLockStatu();
-            DialogThreeBounce.showLoading(this);
-            mHandler.sendEmptyMessageDelayed(MSG_GET_HISRECORD,2000);
+            mHandler.sendEmptyMessageDelayed(MSG_GET_HISRECORD, 2000);
         }
     }
 
@@ -261,12 +264,11 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                         } else {
                             String findindex = "" + insertIndex;
                             Record findIndexRecord = DataSupport.where("recordIndex = ?", findindex).findFirst(Record.class);
-                            if(findIndexRecord!=null){
+                            if (findIndexRecord != null) {
                                 findIndexRecord.setTime(aDeviceList.getRecord().get(i).getTime());
                                 findIndexRecord.setUserID(aDeviceList.getRecord().get(i).getUserID());
                                 findIndexRecord.saveFast();
                             }
-
                         }
                     }
                     if (mRecordList.size() < recordNumTotal) {
@@ -275,7 +277,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                         //先移除再添加
                         sortRecords(mRecordList);
                         for (int i = 0; i < aDeviceList.getRecord().size(); i++) {
-                            mRecordList.remove(i);
+                            if (mRecordList.size() > i) {
+                                mRecordList.remove(i);
+                            }
                         }
                         for (int i = 0; i < aDeviceList.getRecord().size(); i++) {
                             mRecordList.add(aDeviceList.getRecord().get(i));
@@ -292,16 +296,15 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     imageview_no_lockhostory.setVisibility(View.GONE);
                     Log.i(TAG, "mRecordListId=" + mRecordListId.size());
                     recordAdapter.notifyDataSetChanged();
-                    DialogThreeBounce.hideLoading();
                     break;
                 case MSG_RETURN_ERROR:
-                        new AlertDialog
-                                .Builder(LockHistoryActivity.this)
-                                .setTitle("错误")
-                                .setNegativeButton("确定", null)
-                                .setIcon(android.R.drawable.ic_menu_agenda)
-                                .setMessage(str)
-                                .show();
+                    new AlertDialog
+                            .Builder(LockHistoryActivity.this)
+                            .setTitle("错误")
+                            .setNegativeButton("确定", null)
+                            .setIcon(android.R.drawable.ic_menu_agenda)
+                            .setMessage(str)
+                            .show();
 
                     break;
                 case MSG_GET_HISRECORD:
@@ -309,7 +312,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                         imageview_no_lockhostory.setVisibility(View.VISIBLE);
                         textview_empty_record.setVisibility(View.VISIBLE);
                     }
-                    DialogThreeBounce.hideLoading();
                     break;
             }
         }
@@ -367,15 +369,18 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
 
     @Override
     public void responseLockStatu(int RecondNum, int LockStatus) {
+        if(RecondNum>100){
+            RecondNum=100;
+        }
         recordNumTotal = RecondNum;
         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
             Message msg = Message.obtain();
             msg.what = MSG_GET_HISRECORD;
             mHandler.sendMessageDelayed(msg, 2000);
             if (mRecordList.size() == 0) {
-                mSmartLockManager.queryLockHistory(true, RecondNum,userId);
+                mSmartLockManager.queryLockHistory(true, RecondNum, userId);
             } else {
-                mSmartLockManager.queryLockHistory(true, 5,userId);
+                mSmartLockManager.queryLockHistory(true, 5, userId);
             }
         } else {
             if (isLogin) {
@@ -383,9 +388,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 msg.what = MSG_GET_HISRECORD;
                 mHandler.sendMessageDelayed(msg, 2000);
                 if (mRecordList.size() == 0) {
-                    mSmartLockManager.queryLockHistory(false, RecondNum,userId);
+                    mSmartLockManager.queryLockHistory(false, RecondNum, userId);
                 } else {
-                    mSmartLockManager.queryLockHistory(false, 5,userId);
+                    mSmartLockManager.queryLockHistory(false, 5, userId);
                 }
 
             } else {
@@ -398,8 +403,6 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     public void responseUserIdInfo(UserIdInfo userIdInfo) {
 
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

@@ -19,7 +19,6 @@ import com.deplink.homegenius.manager.connect.remote.HomeGenius;
 import com.deplink.homegenius.manager.connect.remote.RemoteConnectManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.homegenius.Deviceprops;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
@@ -163,17 +162,15 @@ public class GetwayManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.setWifiRelay(device.getTopic(), uuid, paramas);
                 }
 
-            } else {
-                ToastSingleShow.showText(mContext, "本地网关不可用,远程网关也不可用");
-            }
+
         }
     }
 
@@ -203,14 +200,14 @@ public class GetwayManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                if (device!=null &&  device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.bindGetwayDevice(device.getTopic(), uuid, deviceUid);
                 }
-            }
+
         }
     }
 
@@ -244,15 +241,15 @@ public class GetwayManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.deleteGetwayDevice(currentSelectGetwayDevice, device.getTopic(), uuid);
                 }
 
-            }
+
         }
     }
 

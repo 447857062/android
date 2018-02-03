@@ -26,6 +26,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
@@ -342,17 +343,19 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-                        DialogThreeBounce.showLoading(EditActivity.this);
                         if(isStartFromExperience){
                             startActivity(new Intent(EditActivity.this, ExperienceDevicesActivity.class));
                         }else{
-                            if (isLogin) {
-                                mDeviceManager.deleteDeviceHttp();
-                            } else {
-                                ToastSingleShow.showText(EditActivity.this, "未登录,登录后操作");
+                            if(NetUtil.isNetAvailable(EditActivity.this)){
+                                if (isLogin) {
+                                    mDeviceManager.deleteDeviceHttp();
+                                } else {
+                                    ToastSingleShow.showText(EditActivity.this, "未登录,登录后操作");
+                                }
+                            }else{
+                                ToastSingleShow.showText(EditActivity.this, "网络连接不可用");
                             }
                         }
-
                     }
                 });
                 deleteDialog.show();

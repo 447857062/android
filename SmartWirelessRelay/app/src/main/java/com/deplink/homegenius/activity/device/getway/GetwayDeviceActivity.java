@@ -27,6 +27,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.room.RoomManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
@@ -202,22 +203,27 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.button_delete_device:
                 //删除设备
-                deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
-                    @Override
-                    public void onSureBtnClicked() {
-                        if (isStartFromExperience) {
-                            Toast.makeText(GetwayDeviceActivity.this, "删除网关设备成功", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(GetwayDeviceActivity.this, ExperienceDevicesActivity.class));
-                        } else {
-                            if (isUserLogin) {
-                                mGetwayManager.deleteDeviceHttp();
+                if(NetUtil.isNetAvailable(this)){
+                    deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+                        @Override
+                        public void onSureBtnClicked() {
+                            if (isStartFromExperience) {
+                                Toast.makeText(GetwayDeviceActivity.this, "删除网关设备成功", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(GetwayDeviceActivity.this, ExperienceDevicesActivity.class));
                             } else {
-                                ToastSingleShow.showText(GetwayDeviceActivity.this, "未登录,登录后才能操作");
+                                if (isUserLogin) {
+                                    mGetwayManager.deleteDeviceHttp();
+                                } else {
+                                    ToastSingleShow.showText(GetwayDeviceActivity.this, "未登录,登录后才能操作");
+                                }
                             }
                         }
-                    }
-                });
-                deleteDialog.show();
+                    });
+                    deleteDialog.show();
+                }else{
+                    ToastSingleShow.showText(GetwayDeviceActivity.this, "网络未连接");
+                }
+
                 break;
             case R.id.layout_config_wifi_getway:
                 Intent inent = new Intent(this, ScanWifiListActivity.class);

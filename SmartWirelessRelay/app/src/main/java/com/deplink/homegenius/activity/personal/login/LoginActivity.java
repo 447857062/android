@@ -142,30 +142,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                                 }
                             });
                             XGPushManager.enableService(LoginActivity.this,true);
-                           /* XGCustomPushNotificationBuilder build = new XGCustomPushNotificationBuilder();
-                            build.setSound(
-                                    RingtoneManager.getActualDefaultRingtoneUri(
-                                            getApplicationContext(), RingtoneManager.TYPE_ALARM))
-                                    .setDefaults(Notification.DEFAULT_VIBRATE) // 振动
-                                    .setFlags(Notification.FLAG_NO_CLEAR); // 是否可清除
-                            // 设置自定义通知layout,通知背景等可以在layout里设置
-                            build.setLayoutId(R.layout.notification);
-                            // 设置自定义通知内容id
-                            build.setLayoutTextId(R.id.content);
-                            // 设置自定义通知标题id
-                            build.setLayoutTitleId(R.id.title);
-                            // 设置自定义通知图片资源
-                            build.setLayoutIconDrawableId(R.drawable.equipmentbackground);
-                            // 设置状态栏的通知小图标
-                            build.setIcon(R.drawable.arror_setting);
-                            // 设置时间id
-                            build.setLayoutTimeId(R.id.time);
-                            // 若不设定以上自定义layout，又想简单指定通知栏图片资源
-                            build.setNotificationLargeIcon(R.drawable.addicon);
-                            // 客户端保存build_id
-                            XGPushManager.setPushNotificationBuilder(LoginActivity.this, 4095, build);
-                            XGLocalMessage localMessage = new XGLocalMessage();
-                            XGPushManager.addLocalNotification(LoginActivity.this, localMessage);*/
                         }
                         break;
                     default:
@@ -185,8 +161,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                 switch (action) {
                     case LOGIN:
                         Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-                        DialogLoading.hideLoading();
-                        ToastSingleShow.showText(LoginActivity.this, throwable.getMessage());
                         break;
                 }
             }
@@ -263,7 +237,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                     Toast.makeText(this, "密码位数6-20", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                DialogLoading.showLoading(this);
                 manager.login(phoneNumber, password);
                 break;
             case R.id.textview_forget_password:

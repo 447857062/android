@@ -217,14 +217,14 @@ public class RemoteControlManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.study(mSelectRemoteControlDevice, device.getTopic(), uuid);
                 }
-            }
+
         }
     }
     public void stopStudy() {
@@ -244,15 +244,14 @@ public class RemoteControlManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.stopStudy(mSelectRemoteControlDevice, device.getTopic(), uuid);
                 }
             }
-        }
+
     }
     public void queryStatu() {
         Log.i(TAG, "查询锁设备状态");
@@ -273,14 +272,17 @@ public class RemoteControlManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
-                    mHomeGenius.queryRemoteControlStatu(mSelectRemoteControlDevice, device.getTopic(), uuid);
+                if(device!=null){
+                    Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                    if (device.getTopic() != null && !device.getTopic().equals("")) {
+                        mHomeGenius.queryRemoteControlStatu(mSelectRemoteControlDevice, device.getTopic(), uuid);
+                    }
                 }
-            }
+
+
         }
     }
 
@@ -308,14 +310,14 @@ public class RemoteControlManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 if (device.getTopic() != null && !device.getTopic().equals("")) {
                     mHomeGenius.sendData(mSelectRemoteControlDevice, device.getTopic(), uuid,data);
                 }
-            }
+
         }
     }
     public void deleteVirtualDeviceHttp() {
@@ -331,7 +333,6 @@ public class RemoteControlManager implements LocalConnecteListener {
         RestfulToolsHomeGenius.getSingleton().deleteVirtualDevice(userName, uid, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
                     Log.i(TAG, "" + response.body().toString());
@@ -358,7 +359,6 @@ public class RemoteControlManager implements LocalConnecteListener {
         RestfulToolsHomeGeniusString.getSingleton().readVirtualDevices(userName, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
                     ArrayList<DeviceOperationResponse> list = ParseUtil.jsonToArrayList(response.body(), DeviceOperationResponse.class);
@@ -402,7 +402,6 @@ public class RemoteControlManager implements LocalConnecteListener {
         RestfulToolsHomeGenius.getSingleton().alertVirtualDevice(userName, device, new Callback<DeviceOperationResponse>() {
             @Override
             public void onResponse(Call<DeviceOperationResponse> call, Response<DeviceOperationResponse> response) {
-                Log.i(TAG, "" + response.code());
                 Log.i(TAG, "" + response.message());
                 if (response.errorBody() != null) {
                     try {
@@ -468,24 +467,17 @@ public class RemoteControlManager implements LocalConnecteListener {
     }
 
     public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
-        Log.i(TAG, "更新智能设备所在的网关=start");
         mSelectRemoteControlDevice.setGetwayDevice(getwayDevice);
-        boolean saveResult = mSelectRemoteControlDevice.save();
-        Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
-        return saveResult;
+        return mSelectRemoteControlDevice.save();
     }
 
     public int deleteCurrentSelectDevice() {
-        int affectcolumn = DataSupport.deleteAll(SmartDev.class, "Uid=?", mSelectRemoteControlDevice.getUid());
-        Log.i(TAG, "删除一个智能设备，删除影响的行数=" + affectcolumn);
-        return affectcolumn;
+        return DataSupport.deleteAll(SmartDev.class, "Uid=?", mSelectRemoteControlDevice.getUid());
     }
 
     public boolean saveCurrentSelectDeviceName(String name) {
         mSelectRemoteControlDevice.setName(name);
-        boolean result = mSelectRemoteControlDevice.save();
-        Log.i(TAG, "修改名称=" + result);
-        return result;
+        return mSelectRemoteControlDevice.save();
     }
 
     /**

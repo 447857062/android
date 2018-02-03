@@ -30,6 +30,7 @@ import com.deplink.homegenius.activity.device.remoteControl.airContorl.add.Airco
 import com.deplink.homegenius.activity.device.remoteControl.topBox.AddTopBoxActivity;
 import com.deplink.homegenius.activity.device.remoteControl.tv.AddTvDeviceActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
+import com.deplink.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.DeviceTypeConstant;
 import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
@@ -301,15 +302,15 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     return;
                 }
                 if (deviceTypeHttp == null) {
-                    switch (deviceType){
+                    switch (deviceType) {
                         case DeviceTypeConstant.TYPE.TYPE_MENLING:
                             //SMART_BELL
                             SmartDev doorbeelDev = new SmartDev();
                             doorbeelDev.setUid(addDeviceUid);
                             doorbeelDev.setType(DeviceTypeConstant.TYPE.TYPE_MENLING);
-                            deviceName=edittext_add_device_input_name.getText().toString();
-                            if(deviceName.equalsIgnoreCase("")){
-                                deviceName="智能门铃";
+                            deviceName = edittext_add_device_input_name.getText().toString();
+                            if (deviceName.equalsIgnoreCase("")) {
+                                deviceName = "智能门铃";
                             }
                             doorbeelDev.setStatus("在线");
                             doorbeelDev.setName(deviceName);
@@ -337,35 +338,41 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         //TODO 扫网关
                         //如果有可用的网关
                         deviceName = edittext_add_device_input_name.getText().toString();
-                        if(deviceName==null || deviceName.equalsIgnoreCase("")){
+                        if (deviceName == null || deviceName.equalsIgnoreCase("")) {
                             deviceName = "中继器";
                         }
                         mGetwayManager.addDBGetwayDevice(deviceName, addDeviceUid, topic);
                         mGetwayManager.updateGetwayDeviceInWhatRoom(currentSelectedRoom, addDeviceUid);
                         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                             mGetwayManager.bindDevice(addDeviceUid);
-                        } else {
-                            //提示连接
-                            mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
-                                @Override
-                                public void onSureBtnClicked() {
-                                    //TODO 拿到mac地址后提示用户连接这个wifi,这里跳转到wifi连接去
-                                }
-                            });
-                            mConfigGetwayDialog.setCancelBtnClickListener(new ConfigGetwayDialog.onCancelBtnClickListener() {
-                                @Override
-                                public void onCancelClick() {
-                                    mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
-                                }
-                            });
-                            mConfigGetwayDialog.show();
                         }
+                        final String mac=responseBody.getMac();
+                        Log.i(TAG,"添加中继器,mac地址是:"+mac);
+                        //提示连接
+                        //TODO 拿到mac地址后提示用户连接这个wifi,这里跳转到wifi连接去
+                      //  ToastSingleShow.showText(AddDeviceNameActivity.this, "请连接中继器的wifi,名称是:"+"A6-XXXX"+"或者是RE-XXXX"+mac+"然后配置WiFi网络");
+                        mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
+                            @Override
+                            public void onSureBtnClicked() {
+                                Intent intent = new Intent(AddDeviceNameActivity.this, ScanWifiListActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+                        });
+                        mConfigGetwayDialog.setCancelBtnClickListener(new ConfigGetwayDialog.onCancelBtnClickListener() {
+                            @Override
+                            public void onCancelClick() {
+                                mHandler.sendEmptyMessage(MSG_BIND_DEVICE_RESPONSE);
+                            }
+                        });
+                        mConfigGetwayDialog.show();
+
 
                     } else if (deviceTypeHttp.equalsIgnoreCase("LKRT")) {
                         //去掉重名的路由器
                         deviceName = edittext_add_device_input_name.getText().toString();
-                        if(deviceName==null || deviceName.equalsIgnoreCase("")){
-                            deviceName="路由器";
+                        if (deviceName == null || deviceName.equalsIgnoreCase("")) {
+                            deviceName = "路由器";
                         }
                         SmartDev currentAddRouter = new SmartDev();
                         currentAddRouter.setName(deviceName);
@@ -376,12 +383,12 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         router.setSmartDev(currentAddRouter);
                         router.setSign_seed(responseBody.getSign_seed());
                         router.setSignature(responseBody.getSignature());
-                        if(responseBody.getChannels().getPrimary()!=null){
+                        if (responseBody.getChannels().getPrimary() != null) {
                             router.setChannels(responseBody.getChannels().getPrimary().getSub());
                             router.setReceveChannels(responseBody.getChannels().getPrimary().getPub());
                             router.save();
                         }
-                        if(responseBody.getChannels().getSecondary()!=null){
+                        if (responseBody.getChannels().getSecondary() != null) {
                             router.setChannels(responseBody.getChannels().getSecondary().getSub());
                             router.setReceveChannels(responseBody.getChannels().getSecondary().getPub());
                             router.save();
@@ -935,8 +942,8 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     }
 
     private void addDoorBeelDevice(DeviceAddBody deviceAddBody) {
-        if(!NetUtil.isNetAvailable(this)){
-            ToastSingleShow.showText(this,"网络连接不可用,请重新连接上网络");
+        if (!NetUtil.isNetAvailable(this)) {
+            ToastSingleShow.showText(this, "网络连接不可用,请重新连接上网络");
             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
         }
         deviceAddBody.setDevice_name(deviceName);
@@ -1008,7 +1015,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
      * @param deviceAddBody
      */
     private void addGatwayDevice(DeviceAddBody deviceAddBody) {
-        deviceName=edittext_add_device_input_name.getText().toString();
+        deviceName = edittext_add_device_input_name.getText().toString();
         if (deviceName.equals("")) {
             deviceName = "中继器/路由器";
         }
@@ -1017,9 +1024,9 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         if (mRoomManager.getCurrentSelectedRoom() != null) {
             deviceAddBody.setRoom_uid(mRoomManager.getCurrentSelectedRoom().getUid());
         }
-        if(StringValidatorUtil.judgeContainsStr(currentAddDevice)){
+        if (StringValidatorUtil.judgeContainsStr(currentAddDevice)) {
             deviceAddBody.setMac(currentAddDevice);
-        }else{
+        } else {
             deviceAddBody.setSn(currentAddDevice);
         }
 

@@ -259,11 +259,19 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                         if (response.code() == 200) {
                             JsonObject jsonObjectGson = response.body();
                             Gson gson = new Gson();
+                            Log.i(TAG,"weatherObject="+jsonObjectGson.toString());
                             HeWeather6 weatherObject = gson.fromJson(jsonObjectGson.toString(), HeWeather6.class);
                             Message message = new Message();
                             message.what = MSG_SHOW_PM25_TEXT;
-                            message.obj = weatherObject.getInfoList().get(0).getAir_now_city().getPm25();
-                            mHandler.sendMessage(message);
+                            try {
+                                //{"HeWeather6":[{"status":"no more requests"}]}
+                                if(!weatherObject.getInfoList().get(0).getStatus().equalsIgnoreCase("no more requests")){
+                                    message.obj = weatherObject.getInfoList().get(0).getAir_now_city().getPm25();
+                                    mHandler.sendMessage(message);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     @Override
@@ -289,8 +297,11 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                             HeWeather6 weatherObject = gson.fromJson(jsonObjectGson.toString(), HeWeather6.class);
                             Message message = new Message();
                             message.what = MSG_SHOW_WEATHER_TEXT;
-                            message.obj = weatherObject.getInfoList().get(0).getNow().getTmp();
-                            mHandler.sendMessage(message);
+                            if(! weatherObject.getInfoList().get(0).getStatus().equalsIgnoreCase("no more requests")){
+                                message.obj = weatherObject.getInfoList().get(0).getNow().getTmp();
+                                mHandler.sendMessage(message);
+                            }
+
                         }
                     }
                     @Override

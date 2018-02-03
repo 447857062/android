@@ -22,6 +22,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
@@ -294,11 +295,16 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
                     @Override
                     public void onSureBtnClicked() {
                         if (!isStartFromExperience) {
-                            if (isUserLogin) {
-                                mRemoteControlManager.deleteVirtualDeviceHttp();
-                            } else {
-                                ToastSingleShow.showText(EditRemoteDevicesActivity.this, "未登录,登录后才能删除设备");
+                            if(NetUtil.isNetAvailable(EditRemoteDevicesActivity.this)){
+                                if (isUserLogin) {
+                                    mRemoteControlManager.deleteVirtualDeviceHttp();
+                                } else {
+                                    ToastSingleShow.showText(EditRemoteDevicesActivity.this, "未登录,登录后才能删除设备");
+                                }
+                            }else{
+                                ToastSingleShow.showText(EditRemoteDevicesActivity.this, "网络连接不可用");
                             }
+
 
                         } else {
                             startActivity(new Intent(EditRemoteDevicesActivity.this, ExperienceDevicesActivity.class));

@@ -17,11 +17,14 @@ import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.light.SmartLightListener;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -84,7 +87,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                 if (isStartFromExperience) {
                     button_switch_light.setBackgroundResource(R.drawable.lightyellowlight);
                     float alpha = (float) (lightColorProgress / 200.0);
-                  //  button_switch_light.setAlpha(alpha);
                     imageview_switch_bg.setAlpha(alpha);
                 }
             }
@@ -126,7 +128,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
             }
         });
     }
-
     private void initDatas() {
         textview_title.setText("智能灯泡");
         textview_edit.setText("编辑");
@@ -337,12 +338,21 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                         layout_brightness_control.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    if (switchStatus) {
-                        switchStatus = false;
-                        mSmartLightManager.setSmartLightSwitch("close");
-                    } else {
-                        switchStatus = true;
-                        mSmartLightManager.setSmartLightSwitch("open");
+                    if(NetUtil.isNetAvailable(this)){
+                        if(!isUserLogin && !LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                            ToastSingleShow.showText(this,"本地连接不可用,需要登录后才能操作");
+                        }else{
+                            if (switchStatus) {
+                                switchStatus = false;
+                                mSmartLightManager.setSmartLightSwitch("close");
+                            } else {
+                                switchStatus = true;
+                                mSmartLightManager.setSmartLightSwitch("open");
+                            }
+                        }
+                    }
+                    else{
+                        ToastSingleShow.showText(this,"网络连接不正常");
                     }
                 }
                 break;
@@ -407,7 +417,6 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
             }
         }
     };
-
     @Override
     public void responseSetResult(String result) {
         Log.i(TAG, "responseSetResult=" + result);

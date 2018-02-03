@@ -13,10 +13,13 @@ import android.widget.TextView;
 import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.manager.connect.local.tcp.LocalConnectmanager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchListener;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
+import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -143,10 +146,6 @@ public class SwitchThreeActivity extends Activity implements View.OnClickListene
                 if (mOpResult.getOP().equalsIgnoreCase("REPORT")&& mOpResult.getMethod().equalsIgnoreCase("SmartWallSwitch")) {
                     String  mSwitchStatus=mOpResult.getSwitchStatus();
                     String[] sourceStrArray = mSwitchStatus.split(" ",4);
-                    Log.i(TAG,"sourceStrArray[0]"+sourceStrArray[0]);
-                    Log.i(TAG,"sourceStrArray[1]"+sourceStrArray[1]);
-                    Log.i(TAG,"sourceStrArray[2]"+sourceStrArray[2]);
-                    Log.i(TAG,"sourceStrArray[3]"+sourceStrArray[3]);
                     if(sourceStrArray[0].equals("01")){
                         switch_one_open=true;
                     }else if(sourceStrArray[0].equals("02")){
@@ -242,11 +241,21 @@ public class SwitchThreeActivity extends Activity implements View.OnClickListene
                 onBackPressed();
                 break;
             case R.id.button_all_switch:
-                if (switch_one_open||switch_two_open||switch_three_open) {
-                    mSmartSwitchManager.setSwitchCommand("close_all");
-                } else {
-                    mSmartSwitchManager.setSwitchCommand("open_all");
+                if(NetUtil.isNetAvailable(this)){
+                    if(!isUserLogin && !LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                        ToastSingleShow.showText(this,"本地连接不可用,需要登录后才能操作");
+                    }else{
+                        if (switch_one_open||switch_two_open||switch_three_open) {
+                            mSmartSwitchManager.setSwitchCommand("close_all");
+                        } else {
+                            mSmartSwitchManager.setSwitchCommand("open_all");
+                        }
+                    }
                 }
+                else{
+                    ToastSingleShow.showText(this,"网络连接不正常");
+                }
+
                 break;
             case R.id.textview_edit:
                 Intent intent = new Intent(this, EditActivity.class);
@@ -254,27 +263,57 @@ public class SwitchThreeActivity extends Activity implements View.OnClickListene
                 startActivity(intent);
                 break;
             case R.id.button_switch_left:
-                Log.i(TAG, "switch_one_open=" + switch_one_open);
-                if (switch_one_open) {
-                    mSmartSwitchManager.setSwitchCommand("close1");
-                } else {
-                    mSmartSwitchManager.setSwitchCommand("open1");
+                if(NetUtil.isNetAvailable(this)){
+                    if(!isUserLogin && !LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                        ToastSingleShow.showText(this,"本地连接不可用,需要登录后才能操作");
+                    }else{
+                        Log.i(TAG, "switch_one_open=" + switch_one_open);
+                        if (switch_one_open) {
+                            mSmartSwitchManager.setSwitchCommand("close1");
+                        } else {
+                            mSmartSwitchManager.setSwitchCommand("open1");
+                        }
+                    }
                 }
-                break;
-            case R.id.button_switch_middle:
-                if (switch_two_open) {
-                    mSmartSwitchManager.setSwitchCommand("close2");
-                } else {
-                    mSmartSwitchManager.setSwitchCommand("open2");
+                else{
+                    ToastSingleShow.showText(this,"网络连接不正常");
                 }
 
                 break;
-            case R.id.button_switch_right:
-                if (switch_three_open) {
-                    mSmartSwitchManager.setSwitchCommand("close3");
-                } else {
-                    mSmartSwitchManager.setSwitchCommand("open3");
+            case R.id.button_switch_middle:
+                if(NetUtil.isNetAvailable(this)){
+                    if(!isUserLogin && !LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                        ToastSingleShow.showText(this,"本地连接不可用,需要登录后才能操作");
+                    }else{
+                        if (switch_two_open) {
+                            mSmartSwitchManager.setSwitchCommand("close2");
+                        } else {
+                            mSmartSwitchManager.setSwitchCommand("open2");
+                        }
+                    }
                 }
+                else{
+                    ToastSingleShow.showText(this,"网络连接不正常");
+                }
+
+
+                break;
+            case R.id.button_switch_right:
+                if(NetUtil.isNetAvailable(this)){
+                    if(!isUserLogin && !LocalConnectmanager.getInstance().isLocalconnectAvailable()){
+                        ToastSingleShow.showText(this,"本地连接不可用,需要登录后才能操作");
+                    }else{
+                        if (switch_three_open) {
+                            mSmartSwitchManager.setSwitchCommand("close3");
+                        } else {
+                            mSmartSwitchManager.setSwitchCommand("open3");
+                        }
+                    }
+                }
+                else{
+                    ToastSingleShow.showText(this,"网络连接不正常");
+                }
+
 
         }
     }
@@ -286,9 +325,6 @@ public class SwitchThreeActivity extends Activity implements View.OnClickListene
         OpResult mOpResult = gson.fromJson(result, OpResult.class);
         String  mSwitchStatus=mOpResult.getSwitchStatus();
         String[] sourceStrArray = mSwitchStatus.split(" ",3);
-        Log.i(TAG,"sourceStrArray[0]"+sourceStrArray[0]);
-        Log.i(TAG,"sourceStrArray[1]"+sourceStrArray[1]);
-        Log.i(TAG,"sourceStrArray[2]"+sourceStrArray[2]);
         if(sourceStrArray[0].equals("01")){
             switch_one_open=true;
         }else if(sourceStrArray[0].equals("02")){

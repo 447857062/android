@@ -136,16 +136,16 @@ public class SmartLightManager implements LocalConnecteListener {
                 }
             });
         }else{
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
 
-                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                if(device!=null && device.getTopic()!=null && !device.getTopic().equals("")){
                     Log.i(TAG,"device.getTopic()="+device.getTopic());
                     mHomeGenius.setSmartLightSwitch(currentSelectLight,device.getTopic(),uuid,cmd);
                 }
             }
-        }
+
 
     }
 
@@ -168,15 +168,15 @@ public class SmartLightManager implements LocalConnecteListener {
                 }
             });
         }else{
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
 
-                if(device.getTopic()!=null && !device.getTopic().equals("")){
+                if(device!=null && device.getTopic()!=null && !device.getTopic().equals("")){
                     Log.i(TAG,"device.getTopic()="+device.getTopic());
                     mHomeGenius.setSmartLightParamas(currentSelectLight,device.getTopic(),uuid,cmd,yellow,white);
                 }
-            }
+
         }
     }
 
@@ -198,15 +198,18 @@ public class SmartLightManager implements LocalConnecteListener {
                 }
             });
         }else{
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
-                if(device.getTopic()!=null && !device.getTopic().equals("")){
-                    Log.i(TAG,"device.getTopic()="+device.getTopic());
-                    mHomeGenius.queryLightStatus(currentSelectLight,device.getTopic(),uuid);
+                if(device!=null){
+                    if(device.getTopic()!=null && !device.getTopic().equals("")){
+                        Log.i(TAG,"device.getTopic()="+device.getTopic());
+                        mHomeGenius.queryLightStatus(currentSelectLight,device.getTopic(),uuid);
+                    }
                 }
+
             }
-        }
+
     }
     public boolean addDBSwitchDevice(QrcodeSmartDevice device,String addDeviceUid) {
         //查询设备

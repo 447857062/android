@@ -13,4 +13,11 @@ public class AirNowCity {
     public void setPm25(String pm25) {
         this.pm25 = pm25;
     }
+
+    @Override
+    public String toString() {
+        return "AirNowCity{" +
+                "pm25='" + pm25 + '\'' +
+                '}';
+    }
 }

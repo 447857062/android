@@ -335,14 +335,17 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if (mRemoteConnectManager.isRemoteConnectAvailable()) {
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device.getTopic() != null && !device.getTopic().equals("")) {
-                    mHomeGenius.queryLockStatu(currentSelectLock, device.getTopic(), uuid);
+                if(device!=null){
+                    Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                    if (device.getTopic() != null && !device.getTopic().equals("")) {
+                        mHomeGenius.queryLockStatu(currentSelectLock, device.getTopic(), uuid);
+                    }
                 }
-            }
+
         }
     }
 
@@ -391,14 +394,15 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
             });
         } else {
-            if(mRemoteConnectManager.isRemoteConnectAvailable()){
+
                 String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
                 GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    Log.i(TAG,"远程锁操作命令="+cmd);
                     mHomeGenius.setSmartLockParmars(currentSelectLock, device.getTopic(), uuid, cmd, userId, managePasswd, authPwd, limitedTime);
                 }
-            }
+
         }
     }
 

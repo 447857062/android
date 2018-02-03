@@ -34,7 +34,7 @@ public class RemoteConnectManager {
         if(bindGatways==null){
             bindGatways=new ArrayList<>();
             bindGatways=DataSupport.findAll(GatwayDevice.class);
-            isRemoteConnectAvailable=bindGatways.size()>0?true:false;
         }
+        isRemoteConnectAvailable=bindGatways.size()>0?true:false;
     }
 }

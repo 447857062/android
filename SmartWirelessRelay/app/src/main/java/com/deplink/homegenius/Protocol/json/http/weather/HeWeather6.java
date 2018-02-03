@@ -14,4 +14,11 @@ public class HeWeather6 {
     public void setInfoList(List<WeatherInfo> infoList) {
         this.HeWeather6 = infoList;
     }
+
+    @Override
+    public String toString() {
+        return "HeWeather6{" +
+                "HeWeather6=" + HeWeather6 +
+                '}';
+    }
 }
