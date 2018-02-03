@@ -17,7 +17,9 @@ public class RestfulToolsWeather {
     private static final String TAG="RestfulToolsWeather";
     private volatile static RestfulToolsWeather singleton;
     private volatile static RestfulServerWeather apiService;
-    private static final String APIKEY ="884fce7c4f484fcab3b32fec1447f01f";
+   // private static final String APIKEY ="884fce7c4f484fcab3b32fec1447f01f";
+    private static final String APIKEY ="230fce30ce304b1ea5d964d5b854212d";
+
     /**
      * 假设: Retrofit是线程安全的
      */
