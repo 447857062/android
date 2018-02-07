@@ -22,8 +22,6 @@ public class WifiListAdapter extends BaseAdapter {
     private static final String TAG = "WifiListAdapter";
     private Context mContext;
     private List<SSIDList> mData;
-    //链接参数
-    private String crypt = "";
     private String encryption = "";
 
     private int quality = 0;
@@ -62,10 +60,10 @@ public class WifiListAdapter extends BaseAdapter {
         if (convertView == null) {
             vh = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.listitem_wireless_relay, null);
-            vh.tv = (TextView) convertView.findViewById(R.id.list_text_show_name);
-            vh.image = (ImageView) convertView.findViewById(R.id.iamge_item);
-            vh.encryption_type = (TextView) convertView.findViewById(R.id.encryption_type);
-            vh.iamge_item_jiami = (ImageView) convertView.findViewById(R.id.iamge_item_jiami);
+            vh.tv = convertView.findViewById(R.id.list_text_show_name);
+            vh.image = convertView.findViewById(R.id.iamge_item);
+            vh.encryption_type = convertView.findViewById(R.id.encryption_type);
+            vh.iamge_item_jiami = convertView.findViewById(R.id.iamge_item_jiami);
             convertView.setTag(vh);
         } else {
             vh = (ViewHolder) convertView.getTag();
@@ -73,7 +71,6 @@ public class WifiListAdapter extends BaseAdapter {
         encryption=mData.get(position).getEncryption();
         if(mData.get(position).getQuality().contains("/")){
             quality=Integer.parseInt(mData.get(position).getQuality().substring(0,mData.get(position).getQuality().indexOf("/")));
-            Log.i(TAG,"quality="+quality);
         }
         //wifi信号图片
         if (!encryption.equalsIgnoreCase("none")) {
@@ -90,9 +87,6 @@ public class WifiListAdapter extends BaseAdapter {
         vh.encryption_type.setText(mData.get(position).getEncryption());
         return convertView;
     }
-
-
-
     private static class ViewHolder {
         TextView tv;
         TextView encryption_type;

@@ -374,13 +374,14 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         manager.removeEventCallback(ec);
         manager.onDestroy();
     }
-
-
-
     private void initDatas() {
         Intent bindIntent = new Intent(SmartHomeMainActivity.this, LocalConnectService.class);
         startService(bindIntent);
-        bindService(bindIntent, connection, BIND_AUTO_CREATE);
+        try {
+            bindService(bindIntent, connection, BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initManager();
         mAdapter = new HomepageGridViewAdapter(SmartHomeMainActivity.this, mRoomList);
         mRoomSelectTypeChangedAdapter = new HomepageRoomShowTypeChangedViewAdapter(this, mRoomList);

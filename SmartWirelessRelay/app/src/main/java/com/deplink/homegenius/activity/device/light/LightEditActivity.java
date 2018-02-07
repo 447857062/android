@@ -21,6 +21,7 @@ import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
@@ -84,6 +85,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
      */
     private boolean isOnActivityResult;
     private Room changeRoom;
+    private RelativeLayout layout_device_share;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +112,8 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                 edittext_input_devie_name.setText(lightName);
                 edittext_input_devie_name.setSelection(lightName.length());
             }
-            SmartDev smartDev = DataSupport.where("Uid=?", mSmartLightManager.getCurrentSelectLight().getUid()).findFirst(SmartDev.class, true);
+            deviceUid= mSmartLightManager.getCurrentSelectLight().getUid();
+            SmartDev smartDev = DataSupport.where("Uid=?",deviceUid).findFirst(SmartDev.class, true);
             if (!isOnActivityResult) {
                 if (mSmartLightManager.getCurrentSelectLight().getRooms().size() == 1) {
                     textview_select_room_name.setText(smartDev.getRooms().get(0).getRoomName());
@@ -148,6 +151,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
         button_delete_device.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
         layout_getway.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -288,6 +292,7 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
         layout_getway = findViewById(R.id.layout_getway);
         listview_select_getway = findViewById(R.id.listview_select_getway);
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
+        layout_device_share = findViewById(R.id.layout_device_share);
     }
 
 
@@ -343,8 +348,19 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                     }else{
                         ToastSingleShow.showText(this, "网络连接不可用");
                     }
-
                 }
+                break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
+
 
                 break;
             case R.id.layout_select_room:

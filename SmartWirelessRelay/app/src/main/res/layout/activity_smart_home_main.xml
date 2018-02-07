@@ -271,7 +271,6 @@
                         android:alpha="1"
                         android:background="@drawable/homepage_halfrectangle_top_background"
                         android:paddingLeft="@dimen/layout_content_margin_left_right">
-
                         <ImageView
 
                             android:id="@+id/imageview_experience_center"

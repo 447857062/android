@@ -116,6 +116,7 @@
     <dimen name="ridus22">22dp</dimen>
     <dimen name="ridus2">2dp</dimen>
     <dimen name="ridus_8">8dp</dimen>
+    <dimen name="ridus_10">10dp</dimen>
     <dimen name="addrouter_button_ridus">16dp</dimen>
     <dimen name="router_wifirelay_connect_button_ridus">15dp</dimen>
     <dimen name="room_name_margin_right_arror">15dp</dimen>

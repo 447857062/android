@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.reactivex.Observer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,20 +76,6 @@ public class DoorbeelManager {
             this.mDeviceListenerList.remove(listener);
         }
     }
-    public void getDoorbeelAtRooms(Observer observer) {
-        cachedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                SmartDev dev = DataSupport.where("Uid = ?", currentSelectedDoorbeel.getUid()).findFirst(SmartDev.class, true);
-                final List<Room> rooms = dev.getRooms();
-
-                Log.i(TAG, "所在房间=" + rooms.size());
-            }
-        });
-
-
-    }
-
     public static synchronized DoorbeelManager getInstance() {
         if (instance == null) {
             instance = new DoorbeelManager();

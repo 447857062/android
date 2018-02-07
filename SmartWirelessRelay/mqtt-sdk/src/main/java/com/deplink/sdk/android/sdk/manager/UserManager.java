@@ -360,6 +360,7 @@ public class UserManager implements MqttListener {
                 code = response.code();
                 String error = "";
                 if (code == 200) {
+                    Log.i(TAG,"获取用户头像放到头像bitmap中:"+username);
                     userImages.put(username, response.body());
                     mSDKCoordinator.notifyGetImageSuccess(SDKAction.GETIMAGE, response.body());
                     return;

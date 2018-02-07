@@ -8,12 +8,16 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
@@ -87,7 +91,18 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
                 break;
         }
     }
+    private void showInputmothed() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+                           public void run() {
 
+                               InputMethodManager inputManager =
+                                       (InputMethodManager) edittext_input_password.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                               inputManager.showSoftInput(edittext_input_password, 0);
+                           }
+                       },
+                500);
+    }
 
     public interface onSureBtnClickListener {
          void onSureBtnClicked(String password);
@@ -96,6 +111,7 @@ public class WifiRelayInputDialog extends Dialog implements View.OnClickListener
     @Override
     public void show() {
         super.show();
+        showInputmothed();
     }
 
     public void setSureBtnClickListener(onSureBtnClickListener mOnSureBtnClickListener) {

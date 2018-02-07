@@ -253,7 +253,7 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
                 }
                 this.newPassword = newPassword;
                 verifycode = edittext_verification_code.getText().toString().trim();
-                if (verifycode.length() < 4) {
+                if (verifycode.length() < 6) {
                     ToastSingleShow.showText(this, "验证码位数不对");
                     return;
                 }

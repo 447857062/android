@@ -93,6 +93,8 @@ final class DecodeHandler extends Handler {
         } finally {
             multiFormatReader.reset();
         }
+
+        //条码都只有mac地址才可以
         boolean trueDevice=true;
         if(rawResult != null && !rawResult.getText().contains("{")){
             if( rawResult.getText().length()!=12){

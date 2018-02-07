@@ -346,11 +346,10 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         if (LocalConnectmanager.getInstance().isLocalconnectAvailable()) {
                             mGetwayManager.bindDevice(addDeviceUid);
                         }
-                        final String mac=responseBody.getMac();
+                         String mac=responseBody.getMac();
                         Log.i(TAG,"添加中继器,mac地址是:"+mac);
                         //提示连接
                         //TODO 拿到mac地址后提示用户连接这个wifi,这里跳转到wifi连接去
-                      //  ToastSingleShow.showText(AddDeviceNameActivity.this, "请连接中继器的wifi,名称是:"+"A6-XXXX"+"或者是RE-XXXX"+mac+"然后配置WiFi网络");
                         mConfigGetwayDialog.setSureBtnClickListener(new ConfigGetwayDialog.onSureBtnClickListener() {
                             @Override
                             public void onSureBtnClicked() {
@@ -573,7 +572,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                 } else if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)) {
                     // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                     SmartDev addDevice = new SmartDev();
-                    addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
+                    addDevice.setType(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
                     addDevice.setUid(addDeviceUid);
                     addDevice.setName(deviceName);
                     addDevice.setRooms(currentSelectRemotecontrol.getRooms());
@@ -643,7 +642,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             }
         };
     }
-
     private void initMqttCallback() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         connectLostDialog = new DeleteDeviceDialog(AddDeviceNameActivity.this);
@@ -805,12 +803,9 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     @Override
     public void responseDeleteDeviceHttpResult(DeviceOperationResponse result) {
     }
-
     @Override
     public void responseSetWifirelayResult(int result) {
-
     }
-
     private boolean isSmartDeviceAddSuccess(DeviceList aDeviceList) {
         boolean result = false;
         for (int i = 0; i < aDeviceList.getSmartDev().size(); i++) {
@@ -1029,7 +1024,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
         } else {
             deviceAddBody.setSn(currentAddDevice);
         }
-
         mDeviceManager.addDeviceHttp(deviceAddBody);
     }
 

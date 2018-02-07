@@ -53,49 +53,24 @@
         android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <FrameLayout
-        android:layout_alignParentBottom="true"
-        android:layout_width="@dimen/last_next_step_layout_width"
-        android:layout_height="@dimen/last_next_step_layout_height"
-        android:layout_centerHorizontal="true"
+    <RelativeLayout
+        android:id="@+id/layout_reload_wifilist"
+        android:layout_width="match_parent"
         android:layout_marginBottom="60dp"
-        >
+        android:layout_height="@dimen/wifirelay_reload_wifilist_background_height"
+        android:layout_alignParentBottom="true">
 
-        <ImageView
-            android:id="@+id/image_last_next_step"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/last_or_next_step" />
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal">
-
-            <Button
-                android:id="@+id/button_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@null"
-                android:text="取消"
-                android:textColor="@color/white"
-                android:textSize="@dimen/last_next_step_text_size"  />
-
-            <Button
-                android:background="@null"
-                android:id="@+id/button_update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/last_next_step_margin"
-                android:layout_toEndOf="@+id/button_cancel"
-                android:layout_toRightOf="@+id/button_cancel"
-                android:text="升级"
-                android:textColor="@color/white"
-                android:textSize="@dimen/last_next_step_text_size" />
-        </RelativeLayout>
-    </FrameLayout>
+        <Button
+            android:id="@+id/button_update"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_item_content_height"
+            android:layout_centerHorizontal="true"
+            android:text="升级"
+            android:layout_marginLeft="@dimen/input_layout_marginleft_right"
+            android:layout_marginRight="@dimen/input_layout_marginleft_right"
+            android:layout_marginTop="@dimen/wifirelay_reload_wifilist_button_margintop"
+            android:background="@drawable/button_wifi_reload"
+            android:gravity="center_horizontal|center_vertical"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 </RelativeLayout>

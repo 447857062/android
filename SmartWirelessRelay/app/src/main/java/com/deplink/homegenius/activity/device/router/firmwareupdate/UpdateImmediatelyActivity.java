@@ -16,7 +16,6 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
@@ -33,7 +32,6 @@ import retrofit2.Response;
 
 public class UpdateImmediatelyActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "UpdateImmediately";
-    private Button button_cancel;
     private Button button_update;
     private SDKManager manager;
     private EventCallback ec;
@@ -72,7 +70,6 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
             public void onSuccess(SDKAction action) {
 
             }
-
             @Override
             public void deviceOpSuccess(String op, String deviceKey) {
                 super.deviceOpSuccess(op, deviceKey);
@@ -99,7 +96,6 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
-
                 connectLostDialog.show();
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
@@ -153,16 +149,13 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
                             });
                         } else {
                             Log.i(TAG, "版本升级信息为空");
-                          //  notifySuccess(OP_LOAD_UPGRADEINFONULL);
                         }
                         break;
                 }
             }
             @Override
             public void onFailure(Call<DeviceUpgradeRes> call, Throwable t) {
-                String error = "读取设备升级信息名称失败";
                 Log.i(TAG, "读取设备升级信息名称失败 " + t.getMessage());
-             //   notifyFailure(OP_LOAD_UPGRADEINFO, error);
             }
         });
     }
@@ -177,12 +170,10 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        button_cancel.setOnClickListener(this);
         button_update.setOnClickListener(this);
     }
 
     private void initViews() {
-        button_cancel = findViewById(R.id.button_cancel);
         button_update = findViewById(R.id.button_update);
         textview_title= findViewById(R.id.textview_title);
         image_back= findViewById(R.id.image_back);
@@ -197,16 +188,11 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
             case R.id.image_back:
                 onBackPressed();
                 break;
-
-            case R.id.button_cancel:
-                onBackPressed();
-                break;
             case R.id.button_update:
-                MakeSureDialog dialog = new MakeSureDialog(this);
-                dialog.setSureBtnClickListener(new MakeSureDialog.onSureBtnClickListener() {
+                DeleteDeviceDialog dialog = new DeleteDeviceDialog(this);
+                dialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override
                     public void onSureBtnClicked() {
-
                             if(channels!=null){
                                 mHomeGenius.startUpgrade(deviceUpgradeInfo,channels);
                                 startActivity(new Intent(UpdateImmediatelyActivity.this, UpdateStatusActivity.class));
@@ -215,8 +201,8 @@ public class UpdateImmediatelyActivity extends Activity implements View.OnClickL
                     }
                 });
                 dialog.show();
-                dialog.setTitleText("确定进行固件升级");
-
+                dialog.setTitleText("固件升级");
+                dialog.setContentText("确定进行固件升级?");
                 break;
         }
     }

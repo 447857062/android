@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layout_root"
     android:background="@drawable/equipmentbackground"
     tools:context="com.deplink.homegenius.activity.device.DevicesActivity">
 
@@ -56,27 +56,36 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/layout_top_bar_item_text_size" />
 
-            <ImageView
+            <FrameLayout
                 android:id="@+id/imageview_add_device"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/addicon" />
+                android:layout_centerVertical="true">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:src="@drawable/addicon" />
+            </FrameLayout>
+
         </RelativeLayout>
     </RelativeLayout>
-        <ScrollView
-            android:id="@+id/layout_empty_view_scroll"
-            android:layout_below="@+id/layout_title"
-            android:layout_above="@+id/layout_buttom_bar"
+
+    <ScrollView
+        android:id="@+id/layout_empty_view_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_buttom_bar"
+        android:layout_below="@+id/layout_title">
+
+        <ImageView
+            android:id="@+id/imageview_empty_device"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/imageview_empty_device"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/equipmentemptystate" />
-        </ScrollView>
+            android:layout_height="wrap_content"
+            android:background="@drawable/equipmentemptystate" />
+    </ScrollView>
+
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/listview_devies"
         android:layout_width="match_parent"
@@ -88,6 +97,7 @@
         android:dividerHeight="@dimen/device_item_divider_height"
         android:listSelector="@color/transparent"
         android:scrollbars="none" />
+
     <RelativeLayout
         android:id="@+id/layout_buttom_bar"
         android:layout_width="match_parent"

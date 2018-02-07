@@ -10,15 +10,15 @@ package com.deplink.sdk.android.sdk.homegenius;
  * @website http://www.atool.org/json2javabean.php
  */
 public class ShareDeviceBody {
-    private String device_uid;
+    private int assuper;
     private String user_name;
 
-    public String getDevice_uid() {
-        return device_uid;
+    public int getAssuper() {
+        return assuper;
     }
 
-    public void setDevice_uid(String device_uid) {
-        this.device_uid = device_uid;
+    public void setAssuper(int assuper) {
+        this.assuper = assuper;
     }
 
     public String getUser_name() {
@@ -32,7 +32,7 @@ public class ShareDeviceBody {
     @Override
     public String toString() {
         return "ShareDeviceBody{" +
-                "device_uid='" + device_uid + '\'' +
+                "assuper='" + assuper + '\'' +
                 ", user_name='" + user_name + '\'' +
                 '}';
     }

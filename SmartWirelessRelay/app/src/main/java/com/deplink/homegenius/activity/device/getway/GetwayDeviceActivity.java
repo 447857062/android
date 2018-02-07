@@ -16,6 +16,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
@@ -68,6 +69,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
     private String deviceUid;
     private Room room;
     private String action;
+    private RelativeLayout layout_device_share;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,8 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 }
                 action = "";
             }
+
+
         };
         if (isStartFromExperience) {
             edittext_input_devie_name.setText("家里的网关");
@@ -170,6 +174,8 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         layout_select_room.setOnClickListener(this);
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
+
     }
 
     private void initViews() {
@@ -181,14 +187,21 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
         textview_title = findViewById(R.id.textview_title);
         textview_edit = findViewById(R.id.textview_edit);
+        layout_device_share = findViewById(R.id.layout_device_share);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        isStartFromExperience = mDeviceManager.isStartFromExperience();
         manager.addEventCallback(ec);
         mDeviceManager.addDeviceListener(mDeviceListener);
-        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        if (!isStartFromExperience) {
+            deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
+
+        }
     }
 
     @Override
@@ -203,7 +216,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.button_delete_device:
                 //删除设备
-                if(NetUtil.isNetAvailable(this)){
+                if (NetUtil.isNetAvailable(this)) {
                     deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                         @Override
                         public void onSureBtnClicked() {
@@ -220,7 +233,7 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                         }
                     });
                     deleteDialog.show();
-                }else{
+                } else {
                     ToastSingleShow.showText(GetwayDeviceActivity.this, "网络未连接");
                 }
 
@@ -229,6 +242,17 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 Intent inent = new Intent(this, ScanWifiListActivity.class);
                 inent.putExtra("isShowSkipOption", false);
                 startActivity(inent);
+                break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
                 break;
             case R.id.layout_select_room:
                 if (isStartFromExperience) {
@@ -248,23 +272,22 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.textview_edit:
                 if (isStartFromExperience) {
-                    if(mDeviceManager.isStartFromHomePage()){
-                        startActivity(new Intent(this,SmartHomeMainActivity.class));
-                    }else{
-                        startActivity(new Intent(this,ExperienceDevicesActivity.class));
+                    if (mDeviceManager.isStartFromHomePage()) {
+                        startActivity(new Intent(this, SmartHomeMainActivity.class));
+                    } else {
+                        startActivity(new Intent(this, ExperienceDevicesActivity.class));
                     }
                 } else {
                     if (isUserLogin) {
                         inputDeviceName = edittext_input_devie_name.getText().toString();
                         if (!inputDeviceName.equals(currentSelectDeviceName)) {
-                            String deviceUid = mGetwayManager.getCurrentSelectGetwayDevice().getUid();
                             mDeviceManager.alertDeviceHttp(deviceUid, null, inputDeviceName, null);
                             action = "alertname";
-                        }else{
+                        } else {
                             onBackPressed();
                         }
                     } else {
-                       onBackPressed();
+                        onBackPressed();
                     }
                 }
                 break;

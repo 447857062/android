@@ -19,6 +19,7 @@ package com.deplink.homegenius.util.qrcode;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.deplink.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
@@ -26,8 +27,6 @@ import com.google.zxing.ResultPointCallback;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
-
-import com.deplink.homegenius.util.qrcode.qrcodecapture.CaptureActivity;
 
 final class DecodeThread extends Thread {
 
@@ -46,7 +45,7 @@ final class DecodeThread extends Thread {
     this.activity = activity;
     handlerInitLatch = new CountDownLatch(1);
 
-    hints = new Hashtable<DecodeHintType, Object>(3);
+    hints = new Hashtable<>(3);
 
 //    // The prefs can't change while the thread is running, so pick them up once here.
 //    if (decodeFormats == null || decodeFormats.isEmpty()) {

@@ -197,13 +197,11 @@ public class DeviceManager implements MqttListener {
             String msgFormat = null;
             Gson gson = new Gson();
             Content content = gson.fromJson(xmlStr, Content.class);
-            String op = "";
-            String method = "";
+            String op;
+            String method;
             op = content.getOP();
             method = content.getMethod();
-            if ("NOTIFY".equalsIgnoreCase(op) && "DEVICE".equalsIgnoreCase(method)) {
-                msgFormat = XML_FMT_NOTIFY_DEVICE;
-            } else if ("IMAGE".equalsIgnoreCase(op) && "UPGRADE".equalsIgnoreCase(method)) {
+           if ("IMAGE".equalsIgnoreCase(op) && "UPGRADE".equalsIgnoreCase(method)) {
                 msgFormat = XML_FMT_IMAGE_UPGRADE;
             }
             processMqttMsg(message);
@@ -257,9 +255,9 @@ public class DeviceManager implements MqttListener {
 
     private void processMqttMsg(MqttMessage message) {
         String jsonString = new String(message.getPayload());
+        Log.i(TAG,"processMqttMsg:"+jsonString);
         mSDKCoordinator.notifyHomeGeniusResult(jsonString);
     }
-
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         Log.i(TAG, "deliveryComplete");

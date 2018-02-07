@@ -18,6 +18,8 @@
         android:layout_below="@+id/image_show_logo"
         android:id="@+id/textview_updateing"
         android:layout_marginTop="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:textColor="@color/room_type_text"
         android:textSize="15dp"
         android:layout_centerHorizontal="true"

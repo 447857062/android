@@ -3,7 +3,6 @@ package com.deplink.sdk.android.sdk.rest;
 
 import android.util.Log;
 
-import com.deplink.sdk.android.sdk.homegenius.ShareDeviceBody;
 import com.deplink.sdk.android.sdk.rest.ConverterFactory.StringConvertFactory;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 
@@ -89,23 +88,7 @@ public class RestfulToolsHomeGeniusString {
         }
         return call;
     }
-    public Call<String> shareDevice(String username, String device_uid, Callback<String> cll) {
-        if (null == username) {
-            if (cll != null) {
-                cll.onFailure(null, new Throwable(errMsg));
-            }
-            return null;
-        }
-        ShareDeviceBody body=new ShareDeviceBody();
-        body.setDevice_uid(device_uid);
-        body.setUser_name(username);
-        Log.i(TAG, "shareDevice:" + username);
-        Call<String> call = apiService.shareDevice(username, body,RestfulTools.getSingleton().getToken());
-        if (cll != null) {
-            call.enqueue(cll);
-        }
-        return call;
-    }
+
     public Call<String> getDeviceShareInfo(String username, String device_uid, Callback<String> cll) {
         if (null == username) {
             if (cll != null) {

@@ -25,6 +25,7 @@ import com.deplink.homegenius.Protocol.packet.ellisdk.Handler_UiThread;
 import com.deplink.homegenius.Protocol.packet.ellisdk.WIFIData;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.device.doorbell.add.WifipasswordInputActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
@@ -85,7 +86,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     private SmartLockManager mSmartLockManager;
     private String selectLockName;
     private SmartDev bindlock;
-
+    private RelativeLayout layout_device_share;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,6 +159,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
 
     private void initEvents() {
         button_delete_device.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
         image_back.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
         layout_room_select.setOnClickListener(this);
@@ -317,6 +319,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         listview_select_lock = findViewById(R.id.listview_select_lock);
         layout_lock_select = findViewById(R.id.layout_lock_select);
         imageview_lock_arror_right = findViewById(R.id.imageview_lock_arror_right);
+        layout_device_share = findViewById(R.id.layout_device_share);
     }
 
     private boolean isOnActivityResult;
@@ -389,6 +392,18 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                     layout_lock_list.setVisibility(View.VISIBLE);
                     imageview_lock_arror_right.setImageResource(R.drawable.nextdirectionicon);
                 }
+                break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
+
                 break;
         }
     }

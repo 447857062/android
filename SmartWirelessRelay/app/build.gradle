@@ -16,8 +16,8 @@ android {
         ]
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 100
-        versionName '1.0.0'
+        versionCode 101
+        versionName '1.0.1'
         // Enabling multidex support.
         multiDexEnabled true
     }
@@ -84,9 +84,9 @@ dependencies {
     compile project(':pullToRefresh')
     compile files('libs/BaiduLBS_Android.jar')
     //compile name: 'SMSSDK-2.1.1', ext: 'aar'
-     compile files('libs/SMSSDK-3.1.0.jar')
-     compile files('libs/MobCommons-2017.1213.1552.jar')
-      compile files('libs/MobTools-2017.1213.1552.jar')
+    compile files('libs/SMSSDK-3.1.0.jar')
+    compile files('libs/MobCommons-2017.1213.1552.jar')
+    compile files('libs/MobTools-2017.1213.1552.jar')
     compile 'com.zxy.android:tiny:0.1.0'
     //信鸽jar
     compile 'com.tencent.xinge:xinge:3.2.0-release'

@@ -19,6 +19,7 @@ import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
 import com.google.gson.Gson;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
+
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Administrator on 2017/12/7.
  */
-public class SmartSwitchManager implements LocalConnecteListener{
+public class SmartSwitchManager implements LocalConnecteListener {
     private static final String TAG = "SmartSwitchManager";
     /**
      * 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
@@ -51,19 +52,23 @@ public class SmartSwitchManager implements LocalConnecteListener{
     public SmartDev getCurrentSelectSmartDevice() {
         return currentSelectSmartDevice;
     }
+
     private List<SmartSwitchListener> mSmartSwitchListenerList;
     private RemoteConnectManager mRemoteConnectManager;
     private HomeGenius mHomeGenius;
+
     public void addSmartSwitchListener(SmartSwitchListener listener) {
         if (listener != null && !mSmartSwitchListenerList.contains(listener)) {
             this.mSmartSwitchListenerList.add(listener);
         }
     }
+
     public void removeSmartSwitchListener(SmartSwitchListener listener) {
         if (listener != null && mSmartSwitchListenerList.contains(listener)) {
             this.mSmartSwitchListenerList.remove(listener);
         }
     }
+
     public void setCurrentSelectSmartDevice(SmartDev currentSelectSmartDevice) {
         this.currentSelectSmartDevice = currentSelectSmartDevice;
     }
@@ -74,15 +79,16 @@ public class SmartSwitchManager implements LocalConnecteListener{
         }
         return instance;
     }
+
     /**
      * 初始化本地连接管理器
      */
     public void InitSmartSwitchManager(Context context) {
         this.mContext = context;
-        this.mSmartSwitchListenerList=new ArrayList<>();
+        this.mSmartSwitchListenerList = new ArrayList<>();
         if (mLocalConnectmanager == null) {
             mLocalConnectmanager = LocalConnectmanager.getInstance();
-            String uuid= Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             mLocalConnectmanager.InitLocalConnectManager(context, uuid);
         }
         if (mRemoteConnectManager == null) {
@@ -95,26 +101,27 @@ public class SmartSwitchManager implements LocalConnecteListener{
         }
         mLocalConnectmanager.addLocalConnectListener(this);
         packet = new GeneralPacket(mContext);
-        if(cachedThreadPool==null){
+        if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
         }
         //数据库查询操作
-        if(mSmartSwitchDevList==null){
+        if (mSmartSwitchDevList == null) {
             cachedThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     mSmartSwitchDevList = new ArrayList<>();
                     mSmartSwitchDevList.clear();
-                    mSmartSwitchDevList.addAll( DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_SWITCH).find(SmartDev.class)  );
+                    mSmartSwitchDevList.addAll(DataSupport.where("Type = ?", DeviceTypeConstant.TYPE.TYPE_SWITCH).find(SmartDev.class));
                 }
             });
         }
     }
+
     /**
      *
      */
     public void setSwitchCommand(String cmd) {
-        if(mLocalConnectmanager.isLocalconnectAvailable()){
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("SET");
             queryCmd.setMethod("SmartWallSwitch");
@@ -131,18 +138,25 @@ public class SmartSwitchManager implements LocalConnecteListener{
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        }else{
-                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG,"device.getTopic()="+device.getTopic());
-                if(device.getTopic()!=null && !device.getTopic().equals("")){
-                    mHomeGenius.setSwitchCommand(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
-                }
+        } else {
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            GatwayDevice device = currentSelectSmartDevice.getGetwayDevice();
+            if (device == null) {
+                device= DataSupport.where("Status = ?", "在线").findFirst(GatwayDevice.class);
+            }
+            if(device==null){
+                device= DataSupport.findFirst(GatwayDevice.class);
+            }
+            Log.i(TAG, "device.getTopic()=" + device.getTopic());
+            if (device.getTopic() != null && !device.getTopic().equals("")) {
+                mHomeGenius.setSwitchCommand(currentSelectSmartDevice, device.getTopic(), uuid, cmd);
+            }
 
         }
     }
+
     public void querySwitchStatus(String cmd) {
-        if(mLocalConnectmanager.isLocalconnectAvailable()){
+        if (mLocalConnectmanager.isLocalconnectAvailable()) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("SET");
             queryCmd.setMethod("SmartWallSwitch");
@@ -158,28 +172,36 @@ public class SmartSwitchManager implements LocalConnecteListener{
                     mLocalConnectmanager.getOut(packet.data);
                 }
             });
-        }else{
-
-                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-                GatwayDevice device=DataSupport.findFirst(GatwayDevice.class);
-                if(device!=null){
-                    Log.i(TAG,"device.getTopic()="+device.getTopic());
-                    if(device.getTopic()!=null && !device.getTopic().equals("")){
-                        mHomeGenius.querySwitchStatus(currentSelectSmartDevice,device.getTopic(),uuid,cmd);
-                    }
+        } else {
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            GatwayDevice device = currentSelectSmartDevice.getGetwayDevice();
+            if (device == null) {
+                device= DataSupport.where("Status = ?", "在线").findFirst(GatwayDevice.class);
+            }
+            if(device==null){
+                device= DataSupport.findFirst(GatwayDevice.class);
+            }
+            if (device != null) {
+                Log.i(TAG, "device.getTopic()=" + device.getTopic());
+                if (device.getTopic() != null && !device.getTopic().equals("")) {
+                    mHomeGenius.querySwitchStatus(currentSelectSmartDevice, device.getTopic(), uuid, cmd);
                 }
+            }
 
 
         }
 
     }
+
     public boolean updateSmartDeviceGetway(GatwayDevice getwayDevice) {
         Log.i(TAG, "更新智能设备所在的网关=start");
         currentSelectSmartDevice.setGetwayDevice(getwayDevice);
+        currentSelectSmartDevice.setGetwayDeviceUid(getwayDevice.getUid());
         boolean saveResult = currentSelectSmartDevice.saveFast();
         Log.i(TAG, "更新智能设备所在的网关=" + saveResult);
         return saveResult;
     }
+
     /**
      * 添加开关时指定当前添加开关的类型
      */
@@ -204,9 +226,10 @@ public class SmartSwitchManager implements LocalConnecteListener{
     public void setCurrentAddSwitchSubType(String currentAddSwitchSubType) {
         this.currentAddSwitchSubType = currentAddSwitchSubType;
     }
-    public boolean addDBSwitchDevice(QrcodeSmartDevice device,String uid) {
+
+    public boolean addDBSwitchDevice(QrcodeSmartDevice device, String uid) {
         //查询设备
-        Log.i(TAG,"当前添加的开关子类型"+currentAddSwitchSubType);
+        Log.i(TAG, "当前添加的开关子类型" + currentAddSwitchSubType);
         SmartDev smartDev = DataSupport.where("Uid=?", device.getAd()).findFirst(SmartDev.class);
         if (smartDev == null) {
             smartDev = new SmartDev();
@@ -224,10 +247,11 @@ public class SmartSwitchManager implements LocalConnecteListener{
         Log.i(TAG, "数据库中已存在相同设备，不必要添加");
         return false;
     }
+
     /**
      * 更新设备所在房间
      */
-    public void updateSmartDeviceInWhatRoom(Room room ,String deviceUid,String deviceName) {
+    public void updateSmartDeviceInWhatRoom(Room room, String deviceUid, String deviceName) {
         Log.i(TAG, "更新智能设备所在的房间=start" + "room=" + (room != null));
         //保存所在的房间
         //查询设备
@@ -254,6 +278,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
         smartDev.setName(deviceName);
         return smartDev.save();
     }
+
     /**
      * 删除数据库中的一个智能设备
      */
@@ -275,7 +300,7 @@ public class SmartSwitchManager implements LocalConnecteListener{
 
     @Override
     public void OnGetSetresult(String setResult) {
-        Log.i(TAG,"开关控制结果返回="+setResult);
+        Log.i(TAG, "开关控制结果返回=" + setResult);
         for (int i = 0; i < mSmartSwitchListenerList.size(); i++) {
             mSmartSwitchListenerList.get(i).responseResult(setResult);
         }

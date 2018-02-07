@@ -58,8 +58,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="Mob-AppKey" android:value="2414a79b72e76"/>
-        <meta-data android:name="Mob-AppSecret" android:value="4e0c474b46d51bf67eb858cf9447f684"/>
+        <meta-data
+            android:name="Mob-AppKey"
+            android:value="2414a79b72e76" />
+        <meta-data
+            android:name="Mob-AppSecret"
+            android:value="4e0c474b46d51bf67eb858cf9447f684" />
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="UNM3ippSYuEo7Zn0xtxrfuhHUlaQK00r" />
@@ -356,7 +360,12 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.deplink.homegenius.activity.device.doorbell.DoorbellLargeImage"></activity>
+        <activity
+            android:name="com.deplink.homegenius.activity.device.doorbell.DoorbellLargeImage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.deplink.homegenius.activity.device.ShareDeviceActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

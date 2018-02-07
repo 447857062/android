@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alpha="1"
+    android:background="@drawable/radius8_bg_white_layout_background">
+
+    <TextView
+        android:id="@+id/textview_unbind_device_type"
+        android:text="分享设备"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/layout_room_content_margin_top"
+        android:textColor="@color/huise"
+        android:textSize="@dimen/layout_top_bar_item_text_size" />
+
+    <RelativeLayout
+        android:id="@+id/layout_input_password_out"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_item_content_height"
+        android:layout_centerVertical="true"
+        android:layout_below="@+id/textview_unbind_device_type"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right">
+
+        <RelativeLayout
+            android:id="@+id/layout_input_password_inner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/textview_input_password_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="用户名："
+                android:textColor="@color/room_type_text"
+                android:textSize="@dimen/text_size_small" />
+
+            <EditText
+                android:id="@+id/edittext_input_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/textview_input_password_left"
+                android:background="@null"
+                android:hint="输入想分享此设备的用户名"
+                android:singleLine="true"
+                android:textColor="@color/huise"
+                android:textSize="@dimen/text_size_small" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/huise" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/layout_input_password_out"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/router_wifirelay_connectdialogs_button_height"
+        android:layout_marginLeft="@dimen/layout_content_margin_left_right"
+        android:layout_marginRight="@dimen/layout_content_margin_left_right">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="@dimen/router_wifirelay_connectdialogs_button_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/wifirelay_connect_button_ng_bg"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="取消"
+            android:textColor="@color/title_blue_bg"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_width="@dimen/router_wifirelay_connectdialogs_button_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/wifirelay_connect_button_yes_bg"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="确认"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

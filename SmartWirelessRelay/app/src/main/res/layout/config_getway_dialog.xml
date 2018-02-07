@@ -22,9 +22,8 @@
         android:paddingRight="5dp"
         android:textColor="@color/room_type_text"
         android:textSize="@dimen/text_size_small"
-        android:text="中继器插上电,然后连接中继器的wifi,中继器的wifi,名称是A6-XXXX,或者是RE-XXXX,连接上中继器的wifi后点击重新扫描"
+        android:text="中继器插上电,然后连接中继器的WiFi,中继器的WiFi名称是A6-XXXX,或者是RE-XXXX,连接上中继器的WiFi后点击重新扫描"
         android:gravity="left|center_vertical"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <View

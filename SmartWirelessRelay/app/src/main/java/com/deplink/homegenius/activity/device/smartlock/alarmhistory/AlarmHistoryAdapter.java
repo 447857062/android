@@ -82,7 +82,6 @@ public class AlarmHistoryAdapter extends BaseAdapter{
         vh.textview_data_hour_minute_second.setText(hourMinuteSecond);
         return convertView;
     }
-
     private static class ViewHolder{
         TextView textview_userid;
         TextView textview_data_year_mouth_day;

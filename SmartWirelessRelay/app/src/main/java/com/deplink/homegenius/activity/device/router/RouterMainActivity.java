@@ -362,7 +362,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                     super.connectionLost(throwable);
                     mConnectedDevices.clear();
                     mAdapter.notifyDataSetChanged();
-
                     isUserLogin = false;
                     Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                     connectLostDialog.show();

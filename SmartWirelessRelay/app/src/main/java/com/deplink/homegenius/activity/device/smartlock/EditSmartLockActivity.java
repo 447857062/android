@@ -22,6 +22,7 @@ import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
@@ -82,7 +83,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     private SDKManager manager;
     private EventCallback ec;
     private DeleteDeviceDialog connectLostDialog;
-
+    private RelativeLayout layout_device_share;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +99,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         button_delete_device.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
         layout_getway.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -249,6 +251,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         layout_getway = findViewById(R.id.layout_getway);
         listview_select_getway = findViewById(R.id.listview_select_getway);
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
+        layout_device_share = findViewById(R.id.layout_device_share);
     }
 
     @Override
@@ -270,6 +273,18 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 intent.putExtra("addDeviceSelectRoom", true);
                 startActivity(intent);
                 mSmartLockManager.setEditSmartLock(true);
+                break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
+
                 break;
             case R.id.button_delete_device:
                 //删除设备
@@ -322,6 +337,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 Log.i(TAG, "lockName=" + lockName + "lockName.length()=" + lockName.length());
                 edittext_input_devie_name.setSelection(lockName.length());
             }
+            deviceUid=mSmartLockManager.getCurrentSelectLock().getUid();
             String roomname = getIntent().getStringExtra("roomName");
             if (roomname != null) {
                 textview_select_room_name.setText(roomname);

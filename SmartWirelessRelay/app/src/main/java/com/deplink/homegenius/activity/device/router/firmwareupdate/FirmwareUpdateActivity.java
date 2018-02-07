@@ -129,6 +129,7 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
             }
         };
     }
+    private String currentVersion;
     private void parseDeviceReport(String xmlStr) {
         String op = "";
         String method;
@@ -143,7 +144,8 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
             if (method.equalsIgnoreCase("PERFORMANCE")) {
                 PERFORMANCE performance = gson.fromJson(xmlStr, PERFORMANCE.class);
                 Log.i(TAG, "performance=" + performance.toString());
-                textview_version_code.setText("当前版本:" + performance.getDevice().getFWVersion());
+                currentVersion= performance.getDevice().getFWVersion();
+                textview_version_code.setText("当前版本:" +currentVersion);
             }
         }
     }
@@ -226,9 +228,9 @@ public class FirmwareUpdateActivity extends Activity implements View.OnClickList
                     case 200:
                         Log.i(TAG, "retrieveUpgradeInfo=" + response.body().toString() + "response.message()=" + response.message());
                         if (null != response.body().getUpgrade_info()) {
-                            Log.i(TAG, "已获取版本升级信息");
                             DeviceUpgradeInfo info = (response.body().getUpgrade_info());
-                            if (info.getUpgrade_state().equalsIgnoreCase("ready")) {
+                            Log.i(TAG, "已获取版本升级信息"+info.toString());
+                            if (!info.getVersion().equalsIgnoreCase(currentVersion)) {
                                 textview_show_can_update.setText("立即升级");
                                 canEnterUpdate = true;
                             } else {

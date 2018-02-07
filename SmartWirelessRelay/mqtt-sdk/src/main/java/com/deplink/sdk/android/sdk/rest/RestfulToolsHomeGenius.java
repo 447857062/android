@@ -115,24 +115,34 @@ public class RestfulToolsHomeGenius {
         }
         return call;
     }
-    public Call<DeviceOperationResponse> cancelDeviceShare(String username, String  device_uid, Callback<DeviceOperationResponse> cll) {
+    public Call<DeviceOperationResponse> cancelDeviceShare(String username,int shareid, String  device_uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
             if (cll != null) {
                 cll.onFailure(null, new Throwable(errMsg));
             }
             return null;
         }
-        ShareDeviceBody body=new ShareDeviceBody();
-        body.setUser_name(username);
-        body.setDevice_uid(device_uid);
         Log.i(TAG, "cancelDeviceShare:" + username);
-        Call<DeviceOperationResponse> call = apiService.cancelDeviceShare(username, body, RestfulTools.getSingleton().getToken());
+        Call<DeviceOperationResponse> call = apiService.cancelDeviceShare(username,  shareid, RestfulTools.getSingleton().getToken());
         if (cll != null) {
             call.enqueue(cll);
         }
         return call;
     }
-
+    public Call<DeviceOperationResponse> shareDevice(String username, String device_uid,ShareDeviceBody body, Callback<DeviceOperationResponse> cll) {
+        if (null == username) {
+            if (cll != null) {
+                cll.onFailure(null, new Throwable(errMsg));
+            }
+            return null;
+        }
+        Log.i(TAG, "shareDevice:" + username);
+        Call<DeviceOperationResponse> call = apiService.shareDevice(username,device_uid, body,RestfulTools.getSingleton().getToken());
+        if (cll != null) {
+            call.enqueue(cll);
+        }
+        return call;
+    }
     public Call<DeviceOperationResponse> deleteDevice(String username, String uid, Callback<DeviceOperationResponse> cll) {
         if (null == username) {
             if (cll != null) {

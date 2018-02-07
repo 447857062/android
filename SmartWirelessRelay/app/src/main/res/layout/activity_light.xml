@@ -33,7 +33,7 @@
                 android:layout_height="221dp"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/radius110_bg_white_background"
+                android:background="@drawable/ovel_110_bg"
                 android:scaleType="centerInside" />
 
             <ImageView
@@ -58,6 +58,7 @@
 
         <RelativeLayout
             android:id="@+id/layout_lightcolor_control"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/layout_brightness_control"
@@ -101,6 +102,7 @@
 
         <RelativeLayout
             android:id="@+id/layout_brightness_control"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

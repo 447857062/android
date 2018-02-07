@@ -20,6 +20,7 @@ import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
@@ -81,7 +82,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private Room room;
     private GatwayDevice selectedGatway;
     private String action;
-
+    private RelativeLayout layout_device_share;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -212,6 +213,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         textview_edit.setOnClickListener(this);
         layout_select_room.setOnClickListener(this);
         button_delete_device.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
     }
 
 
@@ -230,7 +232,8 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         deviceName = edittext_input_devie_name.getText().toString();
         if (!isStartFromExperience) {
             if (!isOnActivityResult) {
-                SmartDev smartDev = DataSupport.where("Uid=?", mRemoteControlManager.getmSelectRemoteControlDevice().getUid()).findFirst(SmartDev.class, true);
+                deviceUid=mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+                SmartDev smartDev = DataSupport.where("Uid=?", deviceUid).findFirst(SmartDev.class, true);
                 if (smartDev.getRooms() == null) {
                     textview_select_room_name.setText("全部");
                 } else {
@@ -283,6 +286,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
         listview_select_getway = findViewById(R.id.listview_select_getway);
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
         edittext_input_devie_name = findViewById(R.id.edittext_input_devie_name);
+        layout_device_share = findViewById(R.id.layout_device_share);
     }
     @Override
     public void onClick(View v) {
@@ -311,6 +315,19 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
             case R.id.image_back:
                 onBackPressed();
                 break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
+
+                break;
+
             case R.id.button_delete_device:
                 deleteDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
                     @Override

@@ -16,6 +16,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.device.router.firmwareupdate.FirmwareUpdateActivity;
 import com.deplink.homegenius.activity.device.router.lan.LanSettingActivity;
 import com.deplink.homegenius.activity.device.router.qos.QosSettingActivity;
@@ -84,7 +85,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
     private HomeGenius mHomeGenius;
     private String channels;
     private boolean isStartFromExperience;
-
+    private RelativeLayout layout_device_share;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +116,7 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
             mDeviceManager.addDeviceListener(mDeviceListener);
             isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
             channels = mRouterManager.getCurrentSelectedRouter().getRouter().getChannels();
+            deviceUid=mRouterManager.getCurrentSelectedRouter().getUid();
         } else {
             if(textview_route_name_2.getText().toString().equalsIgnoreCase("")){
                 textview_route_name_2.setText("体验路由器");
@@ -233,9 +235,11 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         layout_update_out.setOnClickListener(this);
         layout_reboot_out.setOnClickListener(this);
         buttton_delete_router.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
     }
 
     private void initViews() {
+        layout_device_share = findViewById(R.id.layout_device_share);
         deleteDialog = new DeleteDeviceDialog(this);
         rebootDialog = new DeleteDeviceDialog(this);
         textview_title = findViewById(R.id.textview_title);
@@ -264,6 +268,18 @@ public class RouterSettingActivity extends Activity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
+
                 break;
             case R.id.layout_router_name_out:
                 startActivity(new Intent(this, RouterNameUpdateActivity.class));

@@ -110,7 +110,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                 DialogThreeBounce.hideLoading();
 
             }
-        }, 3000);
+        }, 1500);
         mDatas.clear();
         if (isStartFromExperience) {
             mDatas.clear();
@@ -202,11 +202,13 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
                 Gson gson = new Gson();
+                Log.i(TAG,"notifyHomeGeniusResponse"+result);
                 OpResult wifiListResult = gson.fromJson(result, OpResult.class);
                 if (wifiListResult.getOP().equalsIgnoreCase("REPORT") && wifiListResult.getMethod().equalsIgnoreCase("WIFIRELAY")) {
                     Message msg = Message.obtain();
                     msg.what = MSG_GET_WIFILIST;
                     msg.obj = wifiListResult.getSSIDList();
+                    Log.i(TAG,"wifi列表长度:"+wifiListResult.getSSIDList().size());
                     mHandler.sendMessage(msg);
                 }else if(wifiListResult.getOP().equalsIgnoreCase("REPORT")&& wifiListResult.getMethod().equalsIgnoreCase("WIFI")){
                     if(wifiListResult.getResult()!=-1){
@@ -270,7 +272,6 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
 
     }
     private WifiRelayInputDialog wifiRelayDialog;
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final AP_CLIENT setCmd = new AP_CLIENT();
@@ -307,8 +308,6 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                 wifiRelayDialog.setTitleText(setApCliSsid);
             }
         }
-
-
     }
 
     @Override

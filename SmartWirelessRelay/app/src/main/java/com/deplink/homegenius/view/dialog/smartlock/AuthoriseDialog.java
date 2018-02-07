@@ -109,7 +109,6 @@ public class AuthoriseDialog extends Dialog implements View.OnClickListener, Tex
 
     private void initEvents() {
         edt_pwd.setSecurityEditCompleListener(new SecurityPasswordEditText.SecurityEditCompleListener() {
-
             @Override
             public void onNumCompleted(String num) {
                 Log.i(TAG, "输入密码是num=" + num);

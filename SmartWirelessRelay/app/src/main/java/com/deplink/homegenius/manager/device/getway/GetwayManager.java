@@ -162,13 +162,18 @@ public class GetwayManager implements LocalConnecteListener {
                 }
             });
         } else {
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            if (currentSelectGetwayDevice == null) {
+                currentSelectGetwayDevice = DataSupport.where("Status = ?", "在线").findFirst(GatwayDevice.class);
+            }
+            if (currentSelectGetwayDevice == null) {
+                currentSelectGetwayDevice = DataSupport.findFirst(GatwayDevice.class);
+            }
 
-                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
-                    mHomeGenius.setWifiRelay(device.getTopic(), uuid, paramas);
-                }
+            if (currentSelectGetwayDevice != null && currentSelectGetwayDevice.getTopic() != null && !currentSelectGetwayDevice.getTopic().equals("")) {
+                Log.i(TAG, "device.getTopic()=" + currentSelectGetwayDevice.getTopic());
+                mHomeGenius.setWifiRelay(currentSelectGetwayDevice.getTopic(), uuid, paramas);
+            }
 
 
         }
@@ -201,12 +206,18 @@ public class GetwayManager implements LocalConnecteListener {
             });
         } else {
 
-                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device!=null &&  device.getTopic() != null && !device.getTopic().equals("")) {
-                    mHomeGenius.bindGetwayDevice(device.getTopic(), uuid, deviceUid);
-                }
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            if (currentSelectGetwayDevice == null) {
+                currentSelectGetwayDevice = DataSupport.where("Status = ?", "在线").findFirst(GatwayDevice.class);
+            }
+            if (currentSelectGetwayDevice == null) {
+                currentSelectGetwayDevice = DataSupport.findFirst(GatwayDevice.class);
+            }
+
+            if (currentSelectGetwayDevice != null && currentSelectGetwayDevice.getTopic() != null && !currentSelectGetwayDevice.getTopic().equals("")) {
+                Log.i(TAG, "device.getTopic()=" + currentSelectGetwayDevice.getTopic());
+                mHomeGenius.bindGetwayDevice(currentSelectGetwayDevice.getTopic(), uuid, deviceUid);
+            }
 
         }
     }
@@ -242,12 +253,18 @@ public class GetwayManager implements LocalConnecteListener {
             });
         } else {
 
-                String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
-                GatwayDevice device = DataSupport.findFirst(GatwayDevice.class);
-                Log.i(TAG, "device.getTopic()=" + device.getTopic());
-                if (device!=null && device.getTopic() != null && !device.getTopic().equals("")) {
-                    mHomeGenius.deleteGetwayDevice(currentSelectGetwayDevice, device.getTopic(), uuid);
-                }
+            String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
+            if (currentSelectGetwayDevice == null) {
+                currentSelectGetwayDevice = DataSupport.where("Status = ?", "在线").findFirst(GatwayDevice.class);
+            }
+            if (currentSelectGetwayDevice == null) {
+                currentSelectGetwayDevice = DataSupport.findFirst(GatwayDevice.class);
+            }
+
+            if (currentSelectGetwayDevice != null && currentSelectGetwayDevice.getTopic() != null && !currentSelectGetwayDevice.getTopic().equals("")) {
+                Log.i(TAG, "device.getTopic()=" + currentSelectGetwayDevice.getTopic());
+                mHomeGenius.deleteGetwayDevice(currentSelectGetwayDevice, currentSelectGetwayDevice.getTopic(), uuid);
+            }
 
 
         }

@@ -1,8 +1,8 @@
 package com.deplink.sdk.android.sdk.rest;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
-import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.rest.ConverterFactory.PngConvertFactory;
 import com.deplink.sdk.android.sdk.utlis.SslUtil;
 
@@ -45,16 +45,20 @@ public class RestfulToolsPng {
                 "NkX8gffeUmw2VqA/7adjNLdZg3Zs8rJncgz9ooXcpdXL/+tbuQ==\n" +
                 "-----END CERTIFICATE-----";
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor.Level level= HttpLoggingInterceptor.Level.BODY;
+        //新建log拦截器
+        HttpLoggingInterceptor loggingInterceptor=new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                Log.d("OkHttpClient","OkHttpMessage:"+message);
+            }
+        });
+        loggingInterceptor.setLevel(level);
+        clientBuilder.addInterceptor(loggingInterceptor);
         clientBuilder.connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)
                 .readTimeout(20 * 1000, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(SslUtil.getSocketFactory(ca));
-        if (DeplinkSDK.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            clientBuilder.addInterceptor(interceptor);
-        }
         OkHttpClient okClient = clientBuilder.build();
-
         builder.client(okClient);
         Retrofit retrofit = builder.build();
         apiService = retrofit.create(RestfulServer.class);

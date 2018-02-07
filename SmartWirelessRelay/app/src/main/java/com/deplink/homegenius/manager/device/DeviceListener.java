@@ -44,6 +44,15 @@ public abstract class DeviceListener {
     public  void responseGetDeviceInfoHttpResult(String result){
 
     };
+    public  void responseGetDeviceShareInfo(String result){
+
+    };
+    public  void responseDeviceShareResult(DeviceOperationResponse result){
+
+    };
+    public  void responseCancelDeviceShare(DeviceOperationResponse result){
+
+    };
     public  void responseQueryHttpResult(List<Deviceprops>devices){
 
     };

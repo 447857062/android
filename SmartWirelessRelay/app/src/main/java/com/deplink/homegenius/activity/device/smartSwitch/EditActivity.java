@@ -17,6 +17,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.AddDeviceActivity;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.device.ShareDeviceActivity;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
 import com.deplink.homegenius.activity.personal.experienceCenter.ExperienceDevicesActivity;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
@@ -79,7 +80,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
     private EventCallback ec;
     private DeleteDeviceDialog connectLostDialog;
     private GatwayDevice selectedGatway;
-
+    private RelativeLayout layout_device_share;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +96,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
         layout_select_room.setOnClickListener(this);
         layout_getway_select.setOnClickListener(this);
         textview_edit.setOnClickListener(this);
+        layout_device_share.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -246,6 +248,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
                 }
             }
             if( mSmartSwitchManager.getCurrentSelectSmartDevice()!=null){
+                deviceUid=mSmartSwitchManager.getCurrentSelectSmartDevice().getUid();
                 GatwayDevice temp = mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDevice();
                 if (temp == null) {
                     GatwayDevice localDbGatwayDevice = DataSupport.where("uid=?", mSmartSwitchManager.getCurrentSelectSmartDevice().getGetwayDeviceUid()).findFirst(GatwayDevice.class);
@@ -284,6 +287,7 @@ public class EditActivity extends Activity implements View.OnClickListener {
         textview_select_getway_name = findViewById(R.id.textview_select_getway_name);
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
         textview_edit = findViewById(R.id.textview_edit);
+        layout_device_share = findViewById(R.id.layout_device_share);
     }
 
 
@@ -303,13 +307,23 @@ public class EditActivity extends Activity implements View.OnClickListener {
             textview_select_room_name.setText(roomName);
         }
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_back:
                 onBackPressed();
+                break;
+            case R.id.layout_device_share:
+                Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
+                if(isStartFromExperience){
+                    startActivity(inentShareDevice);
+                }else{
+                    if (deviceUid != null) {
+                        inentShareDevice.putExtra("deviceuid", deviceUid);
+                        startActivity(inentShareDevice);
+                    }
+                }
+
                 break;
             case R.id.textview_edit:
                 if (isStartFromExperience) {

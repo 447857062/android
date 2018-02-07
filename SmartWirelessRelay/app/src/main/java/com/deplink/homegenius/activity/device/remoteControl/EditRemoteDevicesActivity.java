@@ -193,6 +193,10 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
         manager.addEventCallback(ec);
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        if(!isStartFromExperience){
+            deviceUid=mRemoteControlManager.getmSelectRemoteControlDevice().getUid();
+        }
+
     }
 
     @Override
@@ -257,8 +261,6 @@ public class EditRemoteDevicesActivity extends Activity implements View.OnClickL
         listview_select_remotecontrol = findViewById(R.id.listview_select_remotecontrol);
         edittext_add_device_input_name = findViewById(R.id.edittext_add_device_input_name);
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

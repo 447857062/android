@@ -132,10 +132,8 @@
                 android:layout_height="wrap_content"
                 android:divider="@color/transparent"
                 android:dividerHeight="@dimen/list_item_textview_margin_top">
-
             </ListView>
         </RelativeLayout>
-
         <TextView
             android:id="@+id/button_delete_device"
             android:layout_width="match_parent"

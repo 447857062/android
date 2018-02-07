@@ -287,7 +287,7 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
                     Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
                 }
                 verifycode = edittext_verification_code.getText().toString().trim();
-                if (verifycode.length() < 4) {
+                if (verifycode.length() < 6) {
                     ToastSingleShow.showText(this, "需要校验的验证码错误");
                     return;
                 }
