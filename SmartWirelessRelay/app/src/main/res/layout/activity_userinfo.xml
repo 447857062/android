@@ -79,7 +79,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/imageview_nickname_arrorright"
                 android:gravity="center_vertical"
-                android:text="Clamdown"
+                android:text=""
                 android:textColor="@color/huise"
                 android:textSize="@dimen/text_size_small" />
 

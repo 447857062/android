@@ -265,7 +265,6 @@ public class RemoteControlManager implements LocalConnecteListener {
                 }
             });
         } else {
-
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             GatwayDevice device = mSelectRemoteControlDevice.getGetwayDevice();
             if (device == null) {
@@ -358,13 +357,14 @@ public class RemoteControlManager implements LocalConnecteListener {
      */
     public void queryVirtualDeviceList() {
         String userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        Log.i(TAG, "查询虚拟设备:" + userName);
         if (userName.equals("")) {
             return;
         }
         RestfulToolsHomeGeniusString.getSingleton().readVirtualDevices(userName, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i(TAG, "" + response.message());
+                Log.i(TAG, "查询虚拟设备返回:" + response.message());
                 if (response.code() == 200) {
                     ArrayList<DeviceOperationResponse> list = ParseUtil.jsonToArrayList(response.body(), DeviceOperationResponse.class);
                     for (int i = 0; i < list.size(); i++) {

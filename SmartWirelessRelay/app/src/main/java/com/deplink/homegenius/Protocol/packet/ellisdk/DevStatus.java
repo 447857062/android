@@ -348,21 +348,6 @@ public class DevStatus {
         return newDevs;
     }
 
-
-  /*  public static void dealWiFiSsidListPacket(BasicPacket packet) {
-        UnpackWiFiList cell = new UnpackWiFiList();
-        cell.OnRecvData(packet);
-        if (cell.ssid != null) {
-            for (int i = 0; i < ssids.size(); i++) {
-                if (cell.ssid.equals(ssids.get(i)))
-                    return;
-            }
-            ssids.add(cell.ssid);
-        }
-
-    }*/
-
-
     public List getDevWiFiListWithMac(long mac, byte type, byte ver) {
         ssids.clear();
         OneDev dev = DevStatus.getOneDev(mac);

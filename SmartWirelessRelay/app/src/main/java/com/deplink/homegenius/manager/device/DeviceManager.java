@@ -151,7 +151,7 @@ public class DeviceManager implements LocalConnecteListener {
             if(device==null){
                 device=DataSupport.findFirst(GatwayDevice.class);
             }
-            Log.i(TAG, "远程接口查询设备列表");
+            Log.i(TAG, "远程接口查询设备列表"+"topic"+device.getTopic());
             if (device != null && device.getTopic() != null && !device.getTopic().equals("")) {
                 Log.i(TAG, "device.getTopic()=" + device.getTopic());
                 mHomeGenius.queryDeviceList(device.getTopic(), uuid);

@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -54,6 +55,7 @@ public class ShareDeviceActivity extends Activity implements View.OnClickListene
     private String deviceuid;
     private ShareDeviceListAdapter mAdapter;
     private List<UserShareInfo> userInfos;
+    private FrameLayout image_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class ShareDeviceActivity extends Activity implements View.OnClickListene
     }
     private void initEvents() {
         textview_edit.setOnClickListener(this);
+        image_back.setOnClickListener(this);
         listview_share_user.setAdapter(mAdapter);
         listview_share_user.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -336,6 +339,7 @@ public class ShareDeviceActivity extends Activity implements View.OnClickListene
         textview_title = findViewById(R.id.textview_title);
         textview_edit = findViewById(R.id.textview_edit);
         listview_share_user = findViewById(R.id.listview_share_user);
+        image_back = findViewById(R.id.image_back);
     }
 
     private DialogWithInput dialogWithInput;
@@ -381,6 +385,9 @@ public class ShareDeviceActivity extends Activity implements View.OnClickListene
                     ToastSingleShow.showText(ShareDeviceActivity.this,"自己不是管理员,无法分享此设备");
                 }
 
+                break;
+            case R.id.image_back:
+                onBackPressed();
                 break;
         }
     }
