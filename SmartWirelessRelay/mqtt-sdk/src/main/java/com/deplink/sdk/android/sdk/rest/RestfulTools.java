@@ -50,7 +50,6 @@ public class RestfulTools {
 
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl("https://api.deplink.net")
                 .addConverterFactory(GsonConverterFactory.create());
-
         String ca = "-----BEGIN CERTIFICATE-----\n" +
                 "MIICMTCCAZoCCQCBJHhUa4Yq3jANBgkqhkiG9w0BAQsFADBdMQswCQYDVQQGEwJD\n" +
                 "TjETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0\n" +
