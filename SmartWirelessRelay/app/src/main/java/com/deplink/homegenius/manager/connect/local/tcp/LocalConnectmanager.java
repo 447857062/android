@@ -363,7 +363,6 @@ public class LocalConnectmanager extends Binder implements UdpManagerGetIPLinten
                         System.out.println("received:" + "length=" + length + "received devlist:" + str);
                         str = new String(buf, AppConstant.BASICLEGTH, length);
                         for (int i = 0; i < mLocalConnecteListener.size(); i++) {
-                            Log.i(TAG, "mLocalConnecteListener=" + mLocalConnecteListener.get(i).toString());
                             mLocalConnecteListener.get(i).OnGetQueryresult(str);
                         }
                         break;

@@ -54,6 +54,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.manager.device.light.SmartLightListener;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
@@ -82,13 +83,15 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class DevicesActivity extends Activity implements View.OnClickListener, GetwayListener, EllE_Listener {
+public class DevicesActivity extends Activity implements View.OnClickListener, GetwayListener, EllE_Listener,SmartLightListener {
     private static final String TAG = "DevicesActivity";
     //底部一排导航栏
     private LinearLayout layout_home_page;
@@ -160,7 +163,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private boolean isSubscribe = false;
     private SmartDev currentSwitchDev;
     private SmartDev currentLightDev;
+    private SmartDev currentLockDev;
     private SmartDev currentRemotecontrolDev;
+    private SmartDev currentSmartDoorBell;
     private String lastSwitchState;
     private String lastremoteControlState;
     private String lastRouterStatu;
@@ -199,6 +204,23 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
+                            //排序,先处理网关设备
+                            Collections.sort(devices, new Comparator<Deviceprops>() {
+                                @Override
+                                public int compare(Deviceprops o1, Deviceprops o2) {
+                                    //compareTo就是比较两个值，如果前者大于后者，返回1，等于返回0，小于返回-1
+                                    if (o1.getDevice_type() .equalsIgnoreCase(o2.getDevice_type()) ) {
+                                        return 0;
+                                    }
+                                    if (o1.getDevice_type().equalsIgnoreCase("LKSGW")&& !o2.getDevice_type().equalsIgnoreCase("LKSGW")) {
+                                        return -1;
+                                    }
+                                    if (!o1.getDevice_type().equalsIgnoreCase("LKSGW")&& o2.getDevice_type().equalsIgnoreCase("LKSGW")) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                }
+                            });
                             updateDeviceOnlineStatu(devices);
                         }
                     });
@@ -215,9 +237,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         }
     }
 
+    /**
+     * 更新智能设备的在线离线状态,不包含虚拟遥控器
+     * @param devices
+     */
     private void updateDeviceOnlineStatu(List<Deviceprops> devices) {
         Log.i(TAG, "最后的网关状态=" + lastGetwayStatu);
-        SmartDev currentDev;
         for (int i = 0; i < devices.size(); i++) {
             switch (devices.get(i).getDevice_type()) {
                 case "LKRT":
@@ -274,18 +299,17 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     //break;
                 case "SmartWallSwitch4":
                     currentSwitchDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
-                    if (currentSwitchDev != null) {
                         mSmartSwitchManager.setCurrentSelectSmartDevice(currentSwitchDev);
                         mSmartSwitchManager.querySwitchStatus("query");
                         mDeviceManager.queryDeviceList();
-                        if (!gatwayAvailable()) {
+                        if (!gatwayAvailable() ) {
                             if(lastSwitchState!=null && lastSwitchState.equalsIgnoreCase("在线")){
                                 lastSwitchState = "离线";
                                 currentSwitchDev.setStatus("离线");
                                 currentSwitchDev.saveFast();
                             }
                         }
-                    }
+
                     break;
                 case "IRMOTE_V2":
                     currentRemotecontrolDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
@@ -305,7 +329,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                             lastremoteControlState = "离线";
                         }
                         if (lastremoteControlState.equalsIgnoreCase("在线")) {
-                            if (!gatwayAvailable()) {
+                            if (!gatwayAvailable() ) {
                                 lastremoteControlState = "离线";
                                 currentRemotecontrolDev.setStatus("离线");
                                 currentRemotecontrolDev.saveFast();
@@ -314,42 +338,42 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     }
                     break;
                 case "SMART_LOCK":
-                    currentDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
-                    if (currentDev != null) {
-                        mSmartLockManager.setCurrentSelectLock(currentDev);
+                    currentLockDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
+                    if (currentLockDev != null) {
+                        mSmartLockManager.setCurrentSelectLock(currentLockDev);
                         mSmartLockManager.queryLockStatu();
                         mDeviceManager.queryDeviceList();
                         if (!gatwayAvailable()) {
-                            currentDev.setStatus("离线");
-                            currentDev.saveFast();
+                            currentLockDev.setStatus("离线");
+                            currentLockDev.saveFast();
                         }
                     }
                     break;
                 case "YWLIGHTCONTROL":
-                    currentDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
-                    if (currentDev != null) {
-                        mSmartLightManager.setCurrentSelectLight(currentDev);
+                    currentLightDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
+                    if (currentLightDev != null) {
+                        mSmartLightManager.setCurrentSelectLight(currentLightDev);
                         mSmartLightManager.queryLightStatus();
                         mDeviceManager.queryDeviceList();
                         if (!gatwayAvailable()) {
-                            currentDev.setStatus("离线");
-                            currentDev.saveFast();
+                            currentLightDev.setStatus("离线");
+                            currentLightDev.saveFast();
                         }
                     }
                     break;
                 case "SMART_BELL":
-                    currentDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
-                    if (currentDev != null) {
-                        if(seachedDoorbellmac!=null && seachedDoorbellmac.equalsIgnoreCase(currentDev.getMac())){
-                            currentDev.setStatus("在线");
+                    currentSmartDoorBell = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
+                    if (currentSmartDoorBell != null) {
+                        if(seachedDoorbellmac!=null && seachedDoorbellmac.equalsIgnoreCase(currentSmartDoorBell.getMac())){
+                            currentSmartDoorBell.setStatus("在线");
                             lastDoorbellStatu="在线";
-                            currentDev.saveFast();
+                            currentSmartDoorBell.saveFast();
                             ellESDK.stopSearchDevs();
                         }else{
                             if(lastDoorbellStatu!=null && lastDoorbellStatu.equalsIgnoreCase("在线")){
                                 lastDoorbellStatu="离线";
-                                currentDev.setStatus("离线");
-                                currentDev.saveFast();
+                                currentSmartDoorBell.setStatus("离线");
+                                currentSmartDoorBell.saveFast();
                             }
                         }
                     }
@@ -384,6 +408,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         super.onResume();
         manager.addEventCallback(ec);
         mDeviceManager.addDeviceListener(mDeviceListener);
+        mSmartLightManager.addSmartLightListener(this);
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
         setButtomBarImageResource();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
@@ -401,6 +426,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
     }
 
+    /**
+     * 刷新列表
+     */
     private void notifyDeviceListView() {
         datasTop.clear();
         datasBottom.clear();
@@ -436,8 +464,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         stopTimer();
         isSubscribe = false;
         manager.removeEventCallback(ec);
+        refreshCountGetway=0;
         mDeviceManager.removeDeviceListener(mDeviceListener);
         mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
+        mSmartLightManager.removeSmartLightListener(this);
     }
 
     private void initDatas() {
@@ -544,78 +574,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             @Override
             public void responseQueryHttpResult(List<Deviceprops> devices) {
                 super.responseQueryHttpResult(devices);
-                //保存设备列表
-                List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
-                for (int i = 0; i < devices.size(); i++) {
-                    boolean addToDb = true;
-                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")
-                            ) {
-                        addToDb = false;
-                    } else {
-                        for (int j = 0; j < dbSmartDev.size(); j++) {
-                            if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
-                                addToDb = false;
-                            }
-                        }
-                    }
-                    if (addToDb) {
-                        saveSmartDeviceToSqlite(devices, i);
-                    }
-                }
-                //本地数据库中有,http返回没有(设备在其他地方删除了,在这个设备需要同步服务器的)
-                for (int j = 0; j < dbSmartDev.size(); j++) {
-                    boolean deleteDevice = true;
-                    for (int i = 0; i < devices.size(); i++) {
-                        if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
-                            deleteDevice = false;
-                        }
-                    }
-                    if (
-                            dbSmartDev.get(j).getType().equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
-                                    dbSmartDev.get(j).getType().equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
-                                    dbSmartDev.get(j).getType().equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
-                            ) {
-                        deleteDevice = false;
-                    }
-                    if (deleteDevice) {
-                        Log.i(TAG, "删除设备" + dbSmartDev.get(j).getUid());
-                        DataSupport.deleteAll(SmartDev.class, "Uid = ? ", dbSmartDev.get(j).getUid());
-                    }
-                }
-                List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
-                for (int i = 0; i < devices.size(); i++) {
-                    boolean addToDb = true;
-                    if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
-                        for (int j = 0; j < dbGetwayDev.size(); j++) {
-                            if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
-                                addToDb = false;
-                            }
-                        }
-                    } else {
-                        addToDb = false;
-                    }
-                    if (addToDb) {
-                        saveGetwayDeviceToSqlite(devices, i);
-                    }
-                }
-                //本地数据库中有,http返回没有(设备在其他地方删除了,在这个设备需要同步服务器的)
-                for (int j = 0; j < dbGetwayDev.size(); j++) {
-                    boolean deleteDevice = true;
-                    for (int i = 0; i < devices.size(); i++) {
-                        if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
-                            if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
-                                deleteDevice = false;
-                            }
-                        } else {
-                            deleteDevice = false;
-                        }
-                    }
-                    if (deleteDevice) {
-                        DataSupport.deleteAll(GatwayDevice.class, "Uid = ? ", dbGetwayDev.get(j).getUid());
-                    }
-                }
-                mHandler.sendEmptyMessage(MSG_GET_DEVS_HTTPS);
-                startTimer(devices);
+                Message message=Message.obtain();
+                message.obj=devices;
+                message.what=MSG_GET_DEVS_HTTPS;
+                mHandler.sendMessage(message);
+
             }
         };
         mRemoteControlListener = new RemoteControlListener() {
@@ -663,6 +626,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     if (getwayDevices != null) {
                         ContentValues values = new ContentValues();
                         values.put("Status", "在线");
+                        Log.i(TAG,"网关设备在线");
                         DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
                     }
                 } else {
@@ -688,7 +652,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                     values.put("Status", "在线");
                                     DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
                                 }
-                            } else if (content.getMethod().equalsIgnoreCase("SmartWallSwitch")) {
+                            }
+                            else if (content.getMethod().equalsIgnoreCase("SmartWallSwitch")) {
                                 if (lastSwitchState != null && lastSwitchState.equalsIgnoreCase("离线")) {
                                     lastSwitchState = "在线";
                                     currentSwitchDev.setStatus("在线");
@@ -701,7 +666,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                     values.put("Status", "在线");
                                     DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
                                 }
-                            } else if (content.getMethod().equalsIgnoreCase("PERFORMANCE")) {
+                            }
+                            else if (content.getMethod().equalsIgnoreCase("PERFORMANCE")) {
                                 refreshCount = 0;
                                 if (lastRouterStatu == null) {
                                     lastRouterStatu = "离线";
@@ -1060,6 +1026,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         dev.saveFast();
     }
 
+    /**
+     * 保存虚拟设备
+     * @param devices
+     * @param i
+     */
     private void saveVirtualDeviceToSqlite(List<DeviceOperationResponse> devices, int i) {
         SmartDev dev = DataSupport.where("Uid=?", devices.get(i).getUid()).findFirst(SmartDev.class);
         if (dev == null) {
@@ -1112,9 +1083,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            final String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_UPDATE_LOCAL_DEVS:
+                    final String str = (String) msg.obj;
                     Log.i(TAG, "设备列表=" + str);
                     List<GatwayDevice> tempDevice = new ArrayList<>();
                     List<SmartDev> tempSmartDevice = new ArrayList<>();
@@ -1182,6 +1153,78 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     }
                     break;
                 case MSG_GET_DEVS_HTTPS:
+                    List<Deviceprops> devices= (List<Deviceprops>) msg.obj;
+                    //保存设备列表
+                    List<SmartDev> dbSmartDev = mDeviceManager.findAllSmartDevice();
+                    for (int i = 0; i < devices.size(); i++) {
+                        boolean addToDb = true;
+                        if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")
+                                ) {
+                            addToDb = false;
+                        } else {
+                            for (int j = 0; j < dbSmartDev.size(); j++) {
+                                if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                    addToDb = false;
+                                }
+                            }
+                        }
+                        if (addToDb) {
+                            saveSmartDeviceToSqlite(devices, i);
+                        }
+                    }
+                    //本地数据库中有,http返回没有(设备在其他地方删除了,在这个设备需要同步服务器的)
+                    for (int j = 0; j < dbSmartDev.size(); j++) {
+                        boolean deleteDevice = true;
+                        for (int i = 0; i < devices.size(); i++) {
+                            if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                deleteDevice = false;
+                            }
+                        }
+                        if (
+                                dbSmartDev.get(j).getType().equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL) ||
+                                        dbSmartDev.get(j).getType().equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL) ||
+                                        dbSmartDev.get(j).getType().equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)
+                                ) {
+                            deleteDevice = false;
+                        }
+                        if (deleteDevice) {
+                            Log.i(TAG, "删除设备" + dbSmartDev.get(j).getUid());
+                            DataSupport.deleteAll(SmartDev.class, "Uid = ? ", dbSmartDev.get(j).getUid());
+                        }
+                    }
+                    List<GatwayDevice> dbGetwayDev = GetwayManager.getInstance().getAllGetwayDevice();
+                    for (int i = 0; i < devices.size(); i++) {
+                        boolean addToDb = true;
+                        if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                            for (int j = 0; j < dbGetwayDev.size(); j++) {
+                                if (dbGetwayDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                    addToDb = false;
+                                }
+                            }
+                        } else {
+                            addToDb = false;
+                        }
+                        if (addToDb) {
+                            saveGetwayDeviceToSqlite(devices, i);
+                        }
+                    }
+                    //本地数据库中有,http返回没有(设备在其他地方删除了,在这个设备需要同步服务器的)
+                    for (int j = 0; j < dbGetwayDev.size(); j++) {
+                        boolean deleteDevice = true;
+                        for (int i = 0; i < devices.size(); i++) {
+                            if (devices.get(i).getDevice_type().equalsIgnoreCase("LKSGW")) {
+                                if (dbSmartDev.get(j).getUid().equals(devices.get(i).getUid())) {
+                                    deleteDevice = false;
+                                }
+                            } else {
+                                deleteDevice = false;
+                            }
+                        }
+                        if (deleteDevice) {
+                            DataSupport.deleteAll(GatwayDevice.class, "Uid = ? ", dbGetwayDev.get(j).getUid());
+                        }
+                    }
+                    startTimer(devices);
                     setListviewDatas();
                     //如果网关不可用,就需要在这里查询虚拟设备.网关可用在本地查询后再查询虚拟设备
                     if (lastGetwayStatu.equalsIgnoreCase("离线")) {
@@ -1397,5 +1440,25 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         seachedDoorbellmac = DataExchange.byteArrayToHexString(DataExchange.longToEightByte(mac));
         seachedDoorbellmac = seachedDoorbellmac.replaceAll("0x", "").trim();
         seachedDoorbellmac = seachedDoorbellmac.replaceAll(" ", "-");
+    }
+
+    @Override
+    public void responseSetResult(String result) {
+        Log.i(TAG,"智能灯泡设置结果result="+result);
+        //网关远程收到消息就在线了
+        refreshCountGetway = 0;
+        if (getwayDevices != null) {
+            ContentValues values = new ContentValues();
+            values.put("Status", "在线");
+            Log.i(TAG,"网关设备在线");
+            DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
+        }
+        if (lastLightStatu != null && lastLightStatu.equalsIgnoreCase("离线")) {
+            lastLightStatu = "在线";
+            if (currentLightDev != null) {
+                currentLightDev.setStatus("在线");
+                currentLightDev.saveFast();
+            }
+        }
     }
 }

@@ -344,7 +344,7 @@
                     <com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuListView
                         android:id="@+id/listview_device_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:divider="@null" />
 
 
@@ -383,13 +383,12 @@
                     <com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuListView
                         android:id="@+id/listview_black_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:divider="@null" />
                 </FrameLayout>
 
             </FrameLayout>
         </ScrollView>
     </com.deplink.homegenius.view.scrollview.ScrollViewLinearLayout>
-
 
 </RelativeLayout>

@@ -12,9 +12,12 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -525,7 +528,6 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
         textview_upload_speed.setText("" + String.format(getResources().getString(R.string.rate_format), uprate));
         textview_download_speend.setText("" + String.format(getResources().getString(R.string.rate_format), downrate));
     }
-
     private void initEvents() {
         image_back.setOnClickListener(this);
         frame_setting.setOnClickListener(this);
