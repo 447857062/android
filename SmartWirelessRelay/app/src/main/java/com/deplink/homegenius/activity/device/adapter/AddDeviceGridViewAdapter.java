@@ -45,9 +45,6 @@ public class AddDeviceGridViewAdapter extends BaseAdapter {
                 viewHolder.imageview_room_type = convertView
                         .findViewById(R.id.imageview_room_type);
             }
-
-
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

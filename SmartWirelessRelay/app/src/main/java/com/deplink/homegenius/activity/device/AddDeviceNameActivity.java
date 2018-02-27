@@ -230,17 +230,17 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             case DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL:
                 textview_title.setText("智能空调遥控器");
                 edittext_add_device_input_name.setText("智能空调遥控器");
-                edittext_add_device_input_name.setSelection(6);
+                edittext_add_device_input_name.setSelection(7);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL:
                 textview_title.setText("智能电视遥控器");
                 edittext_add_device_input_name.setText("智能电视遥控器");
-                edittext_add_device_input_name.setSelection(6);
+                edittext_add_device_input_name.setSelection(7);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:
                 textview_title.setText("智能机顶盒遥控");
                 edittext_add_device_input_name.setText("智能机顶盒遥控");
-                edittext_add_device_input_name.setSelection(6);
+                edittext_add_device_input_name.setSelection(7);
                 break;
             case DeviceTypeConstant.TYPE.TYPE_SWITCH:
                 textview_title.setText("智能开关");
@@ -296,6 +296,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                 Log.i(TAG, responseBody.toString());
                 addDeviceUid = responseBody.getUid();
                 String deviceTypeHttp = responseBody.getDevice_type();
+                Log.i(TAG,"deviceTypeHttp="+deviceTypeHttp);
                 SmartDev dbSmartDev = DataSupport.where("Uid = ?", addDeviceUid).findFirst(SmartDev.class);
                 if (dbSmartDev != null) {
                     ToastSingleShow.showText(AddDeviceNameActivity.this, "已添加过设备:" + dbSmartDev.getName() + "与待添加设备冲突,添加失败");
@@ -403,86 +404,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                                 mHandler.sendMessage(msg);
                             }
                         }
-                    } else if (deviceTypeHttp.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL)) {
-                        // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
-                        SmartDev addDevice = new SmartDev();
-                        addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
-                        addDevice.setUid(addDeviceUid);
-                        addDevice.setName(deviceName);
-                        addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
-                        addDevice.setMac(currentSelectRemotecontrol.getMac());
-                        Log.i(TAG, "currentSelectedRoom:" + (currentSelectedRoom != null));
-                        boolean addresult = RemoteControlManager.getInstance().addDeviceDbLocal(addDevice, currentSelectedRoom);
-                        if (addresult) {
-                            configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
-                                @Override
-                                public void onSureBtnClicked() {
-                                    RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
-                                    startActivity(new Intent(AddDeviceNameActivity.this, AirconditionChooseBandActivity.class));
-                                }
-                            });
-                            configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
-                                @Override
-                                public void onCancelBtnClicked() {
-                                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
-                                }
-                            });
-                            configRemoteControlDialog.show();
-
-                        }
-                    } else if (deviceTypeHttp.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)) {
-                        // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
-                        SmartDev addDevice = new SmartDev();
-                        addDevice = new SmartDev();
-                        addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
-                        addDevice.setUid(addDeviceUid);
-                        addDevice.setName(deviceName);
-                        addDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
-                        addDevice.setMac(currentSelectRemotecontrol.getMac());
-                        Log.i(TAG, "currentSelectedRoom:" + (currentSelectedRoom != null));
-                        boolean addresult = RemoteControlManager.getInstance().addDeviceDbLocal(addDevice, currentSelectedRoom);
-                        if (addresult) {
-                            configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
-                                @Override
-                                public void onSureBtnClicked() {
-                                    RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
-                                    startActivity(new Intent(AddDeviceNameActivity.this, AirconditionChooseBandActivity.class));
-                                }
-                            });
-                            configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
-                                @Override
-                                public void onCancelBtnClicked() {
-                                    startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
-                                }
-                            });
-                            configRemoteControlDialog.show();
-
-                        }
-                    } else if (deviceTypeHttp.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)) {
-                        // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
-                        SmartDev tvBoxDevice = new SmartDev();
-                        tvBoxDevice.setType(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
-                        tvBoxDevice.setUid(addDeviceUid);
-                        tvBoxDevice.setName(deviceName);
-                        tvBoxDevice.setRemotecontrolUid(currentSelectRemotecontrol.getUid());
-                        tvBoxDevice.setMac(currentSelectRemotecontrol.getMac().toLowerCase());
-                        boolean addTvBoxresult = RemoteControlManager.getInstance().addDeviceDbLocal(tvBoxDevice, currentSelectedRoom);
-                        if (addTvBoxresult) {
-                            configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
-                                @Override
-                                public void onSureBtnClicked() {
-                                    RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
-                                    startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
-                                }
-                            });
-                            configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
-                                @Override
-                                public void onCancelBtnClicked() {
-                                    startActivity(new Intent(AddDeviceNameActivity.this, AddTopBoxActivity.class));
-                                }
-                            });
-                            configRemoteControlDialog.show();
-                        }
                     } else if (deviceTypeHttp.equalsIgnoreCase("SMART_BELL")) {
                         //SMART_BELL
                         SmartDev doorbeelDev = new SmartDev();
@@ -544,7 +465,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                 addDeviceUid = deviceOperationResponse.getUid();
                 if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL)) {
                     // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
-                    SmartDev addDevice = new SmartDev();
+                    final SmartDev addDevice = new SmartDev();
                     addDevice.setType(DeviceTypeConstant.TYPE.TYPE_AIR_REMOTECONTROL);
                     addDevice.setUid(addDeviceUid);
                     addDevice.setName(deviceName);
@@ -557,6 +478,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
                             @Override
                             public void onSureBtnClicked() {
+                                RemoteControlManager.getInstance().setmSelectRemoteControlDevice(addDevice);
                                 RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
                                 startActivity(new Intent(AddDeviceNameActivity.this, AirconditionChooseBandActivity.class));
                             }
@@ -571,7 +493,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     }
                 } else if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL)) {
                     // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
-                    SmartDev addDevice = new SmartDev();
+                    final SmartDev addDevice = new SmartDev();
                     addDevice.setType(DeviceTypeConstant.TYPE.TYPE_TV_REMOTECONTROL);
                     addDevice.setUid(addDeviceUid);
                     addDevice.setName(deviceName);
@@ -584,8 +506,9 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
                             @Override
                             public void onSureBtnClicked() {
+                                RemoteControlManager.getInstance().setmSelectRemoteControlDevice(addDevice);
                                 RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
-                                startActivity(new Intent(AddDeviceNameActivity.this, AirconditionChooseBandActivity.class));
+                                startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
                             }
                         });
                         configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
@@ -598,7 +521,7 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
 
                     }
                 } else if (deviceType.equalsIgnoreCase(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL)) {
-                    SmartDev addDevice = new SmartDev();
+                    final SmartDev addDevice = new SmartDev();
                     // 绑定智能遥控,现在智能单个添加，这个不扫码的虚拟设备需要给他一个识别码
                     SmartDev tvBoxDevice = new SmartDev();
                     tvBoxDevice.setType(DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL);
@@ -612,14 +535,15 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                         configRemoteControlDialog.setSureBtnClickListener(new ConfigRemoteControlDialog.onSureBtnClickListener() {
                             @Override
                             public void onSureBtnClicked() {
+                                RemoteControlManager.getInstance().setmSelectRemoteControlDevice(addDevice);
                                 RemoteControlManager.getInstance().setCurrentActionIsAddactionQuickLearn(true);
-                                startActivity(new Intent(AddDeviceNameActivity.this, AddTvDeviceActivity.class));
+                                startActivity(new Intent(AddDeviceNameActivity.this, AddTopBoxActivity.class));
                             }
                         });
                         configRemoteControlDialog.setmOnCancelBtnClickListener(new ConfigRemoteControlDialog.onCancelBtnClickListener() {
                             @Override
                             public void onCancelBtnClicked() {
-                                startActivity(new Intent(AddDeviceNameActivity.this, AddTopBoxActivity.class));
+                                startActivity(new Intent(AddDeviceNameActivity.this, DevicesActivity.class));
                             }
                         });
                         configRemoteControlDialog.show();
@@ -675,7 +599,6 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
             @Override
             public void connectionLost(Throwable throwable) {
                 super.connectionLost(throwable);
-
                 isUserLogin = false;
                 Perfence.setPerfence(AppConstant.USER_LOGIN, false);
                 connectLostDialog.show();

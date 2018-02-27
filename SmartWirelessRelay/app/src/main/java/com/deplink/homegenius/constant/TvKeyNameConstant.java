@@ -28,5 +28,7 @@ public class TvKeyNameConstant {
         int KEYNAME_NUMBER_7 = 207;
         int KEYNAME_NUMBER_8 = 208;
         int KEYNAME_NUMBER_9 = 209;
+        int KEYNAME_NUMBER_ = 210;
+        int KEYNAME_NUMBER_AVTV = 211;
     }
 }

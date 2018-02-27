@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.adapter.GetwaySelectListAdapter;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
@@ -119,11 +120,12 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         super.onPause();
         mRoomManager.removeRoomListener(mRoomListener);
     }
-
+    private boolean isUserLogin;
     @Override
     protected void onResume() {
         super.onResume();
         userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         mRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
         Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
         textview_room_name.setText(mRoomName);
@@ -152,7 +154,7 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
                     ToastSingleShow.showText(this, "无可用网络连接,请检查网络");
                     return;
                 }
-                if (userName.equals("")) {
+                if (! isUserLogin) {
                     ToastSingleShow.showText(this, "用户未登录");
                     return;
                 }

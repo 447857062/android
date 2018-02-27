@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -130,6 +131,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
         super.onPause();
         manager.removeEventCallback(ec);
         mRoomManager.removeRoomListener(mRoomListener);
+        Log.i(TAG,"isUserLogin="+isUserLogin+"isRoomOrdinalNumberChanged="+isRoomOrdinalNumberChanged);
         if (isUserLogin) {
             if (isRoomOrdinalNumberChanged) {
                 if (NetUtil.isNetAvailable(this)) {
@@ -160,6 +162,7 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         initButtomBar();
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         manager.addEventCallback(ec);
         mRoomManager.addRoomListener(mRoomListener);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);

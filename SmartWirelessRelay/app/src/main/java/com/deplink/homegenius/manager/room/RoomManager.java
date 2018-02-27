@@ -368,7 +368,7 @@ public class RoomManager {
             //如果对象是持久化的，执行save操作就相当于更新这条数据，如：
             //如果一个对象是没有持久化的，执行save操作相当于新增一条数据
             mRooms.get(i).save();
-            Log.i(TAG, "房间" + mRooms.get(i).getRoomName() + "sortnum=" + i);
+            Log.i(TAG, "updateRoomsOrdinalNumber 房间" + mRooms.get(i).getRoomName() + "sortnum=" + i);
             updateRoomNameHttp(mRooms.get(i).getUid(), mRooms.get(i).getRoomName(), i);
         }
     }

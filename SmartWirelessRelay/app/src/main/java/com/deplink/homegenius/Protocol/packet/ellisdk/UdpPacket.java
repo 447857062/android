@@ -72,6 +72,9 @@ public class UdpPacket implements OnRecvListener {
         if (listener != null)
             listener = null;
         sendNetPakcetList.clear();
+        if(netUdp!=null){
+            netUdp.stopServer();
+        }
     }
 
     public void restart() {

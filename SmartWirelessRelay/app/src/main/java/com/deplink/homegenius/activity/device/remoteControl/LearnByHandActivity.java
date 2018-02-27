@@ -929,6 +929,30 @@ public class LearnByHandActivity extends Activity implements View.OnClickListene
                                 }
                             });
                             break;
+                        case TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_:
+                            mTvKeyCode.setData_key_9(codeData);
+                            mTvKeyCode.save();
+                            mTvKeyLearnStatu.setKey_number_left(true);
+                            mTvKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键-/--已学习");
+                                }
+                            });
+                            break;
+                        case TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_AVTV:
+                            mTvKeyCode.setData_key_avtv(codeData);
+                            mTvKeyCode.save();
+                            mTvKeyLearnStatu.setKey_number_9(true);
+                            mTvKeyLearnStatu.saveFast();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastSingleShow.showText(LearnByHandActivity.this,"按键AV/TV已学习");
+                                }
+                            });
+                            break;
                     }
                     break;
                 case DeviceTypeConstant.TYPE.TYPE_TVBOX_REMOTECONTROL:

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -13,21 +14,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deplink.homegenius.Protocol.json.http.QueryBandResponse;
+import com.deplink.homegenius.activity.device.remoteControl.RemoteControlQuickLearnActivity;
 import com.deplink.homegenius.manager.connect.remote.https.RestfulTools;
+import com.deplink.homegenius.view.edittext.ClearEditText;
+import com.deplink.homegenius.view.listview.sortlistview.CharacterParser;
+import com.deplink.homegenius.view.listview.sortlistview.PinyinComparator;
+import com.deplink.homegenius.view.listview.sortlistview.SideBar;
 import com.deplink.homegenius.view.listview.sortlistview.SortAdapter;
+import com.deplink.homegenius.view.listview.sortlistview.SortModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.device.remoteControl.RemoteControlQuickLearnActivity;
-import com.deplink.homegenius.view.edittext.ClearEditText;
-import com.deplink.homegenius.view.listview.sortlistview.CharacterParser;
-import com.deplink.homegenius.view.listview.sortlistview.PinyinComparator;
-import com.deplink.homegenius.view.listview.sortlistview.SideBar;
-import com.deplink.homegenius.view.listview.sortlistview.SortModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -128,6 +128,7 @@ public class AddTvDeviceActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i(TAG,"添加tv onItemClick");
         Intent intent=new Intent(AddTvDeviceActivity.this,RemoteControlQuickLearnActivity.class);
         intent.putExtra("bandname",SourceDateList.get(position).getName());
         intent.putExtra("type","TV");

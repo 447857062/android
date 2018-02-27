@@ -201,6 +201,7 @@ public class DevStatus {
         ssids.clear();
         searchCount = 0;
         newDevs.clear();
+        close();
     }
 
     public List<String> getSSIDs() {

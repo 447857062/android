@@ -58,6 +58,8 @@ public class TvKeyLearnStatu extends DataSupport implements Serializable{
         key_number_7=true;
         key_number_8=true;
         key_number_9=true;
+        key_number_avtv=true;
+        key_number_left=true;
     }
     /**
      * 当前code绑定的智能设备UID

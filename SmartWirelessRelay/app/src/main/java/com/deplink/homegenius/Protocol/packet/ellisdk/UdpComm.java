@@ -56,7 +56,6 @@ public class UdpComm {
             Log.e(TAG, "sendData:" + DataExchange.byteArrayToHexString(temp));
             udp.send(packet);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return true;
@@ -87,10 +86,7 @@ public class UdpComm {
                 recvThread.start();
                 isRun = true;
                 return 1;
-
-
             } catch (SocketException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 return -1;
             }
@@ -133,7 +129,6 @@ public class UdpComm {
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             super.run();
             byte[] data = new byte[10240];
             isRun = true;
@@ -154,19 +149,15 @@ public class UdpComm {
                         listener.OnRecvData(basicPacket);
                     }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 try {
                     sleep(1);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
             udp = null;
         }
     }
-
-
 }

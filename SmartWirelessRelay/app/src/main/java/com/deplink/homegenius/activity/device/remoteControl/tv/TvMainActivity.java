@@ -913,6 +913,46 @@ public class TvMainActivity extends Activity implements View.OnClickListener {
                 }
 
                 break;
+            case R.id.imageview_number_:
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_);
+                    intent = new Intent(this, LearnByHandActivity.class);
+                    startActivity(intent);
+                } else {
+                    if (key_number_left) {
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_left());
+                        }
+
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
+                }
+
+                break;
+            case R.id.imageview_number_av_tv:
+                if (isLearnByHand) {
+                    mRemoteControlManager.setCurrentLearnByHandKeyName(TvKeyNameConstant.KEYNAME.KEYNAME_NUMBER_AVTV);
+                    intent = new Intent(this, LearnByHandActivity.class);
+                    startActivity(intent);
+                } else {
+                    if (key_number_avtv) {
+                        if(!isStartFromExperience){
+                            if (mTvKeyCode == null) {
+                                return;
+                            }
+                            mRemoteControlManager.sendData(mTvKeyCode.getData_key_avtv());
+                        }
+
+                    } else {
+                        mKeynotlearnDialog.show();
+                    }
+                }
+
+                break;
             case R.id.image_back:
                 onBackPressed();
                 break;

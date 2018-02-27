@@ -87,6 +87,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
     private String selectLockName;
     private SmartDev bindlock;
     private RelativeLayout layout_device_share;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +116,13 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 edittext_add_device_input_name.setSelection(devicename.length());
             }
             deviceUid = mDoorbeelManager.getCurrentSelectedDoorbeel().getUid();
+            if (mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid() != null) {
+                bindlock = DataSupport.where("Uid=?", mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()).findFirst(SmartDev.class, true);
+                textview_select_lock_name.setText(bindlock.getName());
+            }else{
+                Log.i(TAG,"绑定的门锁uid是:"+mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid());
+            }
+
             ellESDK.startSearchDevs();
             Handler_Background.execute(new Runnable() {
                 @Override
@@ -173,13 +181,13 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 textview_select_lock_name.setText(selectLockName);
                 layout_lock_list.setVisibility(View.GONE);
                 if (mDoorbeelManager.getCurrentSelectedDoorbeel() != null) {
-                    mDoorbeelManager.getCurrentSelectedDoorbeel().setBindLockUid(mLockList.get(position).getBindLockUid());
+                    Log.i(TAG,"mLockList.get(position).getBindLockUid()="+mLockList.get(position).getUid());
+                    mDoorbeelManager.getCurrentSelectedDoorbeel().setBindLockUid(mLockList.get(position).getUid());
                     mDoorbeelManager.getCurrentSelectedDoorbeel().saveFast();
                 }
             }
         });
     }
-
     private void initMqtt() {
         DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
         manager = DeplinkSDK.getSDKManager();
@@ -262,12 +270,6 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
         mLockList = new ArrayList<>();
         mLockList.addAll(mSmartLockManager.getAllLock());
         lockSelectListAdapter = new LockSelectListAdapter(this, mLockList);
-
-        if (!isStartFromExperience) {
-            if (mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid() != null) {
-                bindlock = DataSupport.where("Uid=?", mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid()).findFirst(SmartDev.class, true);
-            }
-        }
         initMqtt();
     }
 
@@ -290,7 +292,7 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 case MSG_ALERT_DEVICENAME_RESULT:
                     Log.i(TAG, "修改设备名称 handler msg");
                     mDoorbeelManager.updateDoorbeelName(devicename);
-                     intent = new Intent(EditDoorbellActivity.this, DoorbeelMainActivity.class);
+                    intent = new Intent(EditDoorbellActivity.this, DoorbeelMainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     break;
@@ -395,9 +397,9 @@ public class EditDoorbellActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.layout_device_share:
                 Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);
-                if(isStartFromExperience){
+                if (isStartFromExperience) {
                     startActivity(inentShareDevice);
-                }else{
+                } else {
                     if (deviceUid != null) {
                         inentShareDevice.putExtra("deviceuid", deviceUid);
                         startActivity(inentShareDevice);
