@@ -257,8 +257,9 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 String lockuid = mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid();
                 lockDevice = DataSupport.where("Uid=?", lockuid).findFirst(SmartDev.class, true);
             }
-            Log.i(TAG,"lockDevice="+lockDevice.toString());
+
             if (lockDevice != null && (lockDevice.getStatus().equalsIgnoreCase("在线")|| lockDevice.getStatus().equalsIgnoreCase("ON"))) {
+                Log.i(TAG,"lockDevice="+lockDevice.toString());
                 button_opendoor.setBackgroundResource(R.drawable.radius22_bg_button_background);
             } else {
                 button_opendoor.setBackgroundResource(R.drawable.radius22_bg_6c_background);
