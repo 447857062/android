@@ -47,6 +47,7 @@ import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.StringValidatorUtil;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.ConfigGetwayDialog;
 import com.deplink.homegenius.view.dialog.ConfigRemoteControlDialog;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
@@ -653,10 +654,9 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
     private static final int MSG_BIND_DEVICE_RESPONSE = 105;
     public static final int MSG_ADD_ROUTER_SUCCESS = 106;
     private Intent deviceIntent;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_ADD_DEVICE_RESULT:
                     mHandler.sendEmptyMessageDelayed(MSG_FINISH_ACTIVITY, 1500);
@@ -681,8 +681,10 @@ public class AddDeviceNameActivity extends Activity implements View.OnClickListe
                     Toast.makeText(AddDeviceNameActivity.this, "添加路由器成功", Toast.LENGTH_SHORT).show();
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 
     @Override
     protected void onResume() {

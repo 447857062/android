@@ -22,6 +22,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.util.ParseUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.StringValidatorUtil;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.DialogWithInput;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -247,10 +248,9 @@ public class ShareDeviceActivity extends Activity implements View.OnClickListene
 
     private static final int MSG_SHOW_SHARE_OPTION_RESULT = 100;
     private static final int MSG_SHOW_CANCEL_SHARE_RESULT = 101;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             DeviceOperationResponse result = (DeviceOperationResponse) msg.obj;
             switch (msg.what) {
                 case MSG_SHOW_SHARE_OPTION_RESULT:
@@ -282,8 +282,10 @@ public class ShareDeviceActivity extends Activity implements View.OnClickListene
                     }
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
     private HashMap<String, Bitmap> userImage;
     private String action;
 

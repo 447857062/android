@@ -16,6 +16,7 @@ import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -194,15 +195,16 @@ public class RouterNameUpdateActivity extends Activity implements View.OnClickLi
     }
 
     private static final int MSG_UPDATE_NAME_FAIL = 100;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_UPDATE_NAME_FAIL:
                     Toast.makeText(RouterNameUpdateActivity.this, "更新路由器名称失败", Toast.LENGTH_SHORT).show();
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 }

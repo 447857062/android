@@ -8,16 +8,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +30,7 @@ import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureWithInputDialog;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenu;
@@ -105,7 +104,14 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
     private Timer refreshTimer = null;
     private TimerTask refreshTask = null;
     private float Yoffset = 0;
-    private Handler mHandler = new Handler();
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
     private TextView textview_show_blacklist_device_result;
     private RelativeLayout layout_no_blacklist;
     private RelativeLayout layout_no_connected_device;

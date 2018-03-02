@@ -27,6 +27,7 @@ import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -190,10 +191,9 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
     private static final int MSG_ADD_ROOM_FAILED = 100;
     private static final int MSG_ADD_ROOM_SUCCESS = 101;
     private static final int MSG_SHOW_CONNECT_LOST=102;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_ADD_ROOM_FAILED:
                     Toast.makeText(AddRommActivity.this, "添加房间失败，已存在同名房间", Toast.LENGTH_LONG).show();
@@ -215,10 +215,10 @@ public class AddRommActivity extends Activity implements View.OnClickListener {
                     connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
                     break;
             }
-
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     protected void onResume() {
         super.onResume();

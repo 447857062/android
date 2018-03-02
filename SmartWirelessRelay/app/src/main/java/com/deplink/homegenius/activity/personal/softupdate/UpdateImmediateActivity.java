@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.APKVersionCodeUtils;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -123,7 +125,14 @@ public class UpdateImmediateActivity extends Activity implements View.OnClickLis
     private String version;
     private String desc;
     private int size;
-    private Handler mHandler = new Handler();
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 
     @Override
     protected void onResume() {

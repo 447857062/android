@@ -25,7 +25,6 @@ public class DevStatus {
     public static DevList devs;
     static Timer timer;
     static InetAddress regServerIP;
-    static boolean couldSearch;
     public static List<OneDev> newDevs;
     public static List<String> ssids;
     public static int searchCount;
@@ -45,9 +44,9 @@ public class DevStatus {
     }
 
     class timerTimeoutTask extends TimerTask {
-
         @Override
         public void run() {
+            Log.d(TAG, "搜索设备中，timerTimeoutTask");
             timerTimeout();
         }
     }
@@ -94,7 +93,6 @@ public class DevStatus {
     }
 
     public static void dealDataBackPacket(final BasicPacket packet) {
-        if (couldSearch) {
             boolean find = false;
             for (int i = 0; i < newDevs.size(); i++) {
                 OneDev xdev = newDevs.get(i);
@@ -103,6 +101,7 @@ public class DevStatus {
                     break;
                 }
             }
+            Log.i(TAG,"find="+find);
             if (!find) {
                 OneDev xdev = new OneDev(packet.mac, packet.type, packet.ver);
                 newDevs.add(xdev);
@@ -115,7 +114,7 @@ public class DevStatus {
                     }
                 }, 150);
             }
-        }
+
         OneDev dev = devs.getOneDev(packet.mac);
         if (dev != null) {
             if (packet.isLocal) {
@@ -124,17 +123,12 @@ public class DevStatus {
                 dev.freshRemoteTime(packet.createTime);
             }
         }
-
-
     }
-
     public int delDevFromCommWithMac(long mac) {
         return devs.delDevFromCommWithMac(mac);
     }
-
     public void wifiCheckHandler() {
         long curtiem = PublicMethod.getTimeMs();
-        if (!couldSearch) {
             for (int i = 0; i < devs.devs.size(); i++) {
                 OneDev dev = devs.devs.get(i);
                 if (dev != null && (dev.getDevStatus(curtiem) != OneDev.ConnTypeLocal) && dev.remoteIP != null) {   //连接方式不等于本地的时候，就需要去远端查询
@@ -143,18 +137,17 @@ public class DevStatus {
                     udp.writeNet(packet);
                 }
             }
-        } else {
-            Log.d(TAG, "搜索设备中，不会查询远端设备");
-        }
-        GeneralPacket packet = null;
+
+        GeneralPacket packet;
         try {
             //发送一个局域网查询包
+            Log.i(TAG, "搜索设备中，发送一个局域网查询包");
             packet = new GeneralPacket(InetAddress.getByName("255.255.255.255"), EllESDK_DEF.LocalConPort, mContext);
+            packet.packCheckPacketWithMac(0, (byte) 0, (byte) 0, true, 0, null);
+            udp.writeNet(packet);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        packet.packCheckPacketWithMac(0, (byte) 0, (byte) 0, true, 0, null);
-        udp.writeNet(packet);
     }
 
     public void mobileCheckHandler() {
@@ -169,8 +162,8 @@ public class DevStatus {
     }
 
     public void open() {
+        Log.i(TAG, "搜索设备中，open");
         curNetWork = PublicMethod.checkConnectionState(mContext);
-        couldSearch = false;
         newDevs = new ArrayList<>();
         ssids = new ArrayList<>();
         devs = new DevList();
@@ -188,7 +181,7 @@ public class DevStatus {
 
 
     public void startSearch() {
-        couldSearch = true;
+
         ssids.clear();
         newDevs.clear();
         searchCount = 0;
@@ -197,7 +190,7 @@ public class DevStatus {
 
 
     public void stopSearch() {
-        couldSearch = false;
+
         ssids.clear();
         searchCount = 0;
         newDevs.clear();

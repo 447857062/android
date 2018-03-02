@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public class EllESDK {//
-
+    private static final String TAG = "EllESDK";
     private static EllE_Listener elleListener;
 
     private DevStatus devStatus;
@@ -22,15 +22,12 @@ public class EllESDK {//
 
     private EllESDK() {
     }
-
     public static synchronized EllESDK getInstance() {
         if (instance == null) {
             instance = new EllESDK();
         }
         return instance;
     }
-
-
     //初始化SDK
     public int InitEllESDK(Context context, EllE_Listener listener) {
         //发送任务队列
@@ -54,7 +51,13 @@ public class EllESDK {//
     }
 
     public int startSearchDevs() {
+        Log.i(TAG, "startSearchDevs");
+        //启动状态查询任务
+        //if (devStatus != null) {
+        devStatus.close();
         devStatus.startSearch();
+        devStatus.open();
+        // }
         return 0;
     }
 
@@ -71,6 +74,7 @@ public class EllESDK {//
     public int setDevWiFiConfigWithMac(long mac, byte type, byte ver, WIFIData wifiData) {
         return devStatus.setDevWiFiConfigWithMac(mac, type, ver, wifiData);
     }
+
     //设置设备的WiFi参数 -- 阻塞方式 -- 外部调用建议使用线程
     public WIFIData getDevWiFiConfigWithMac(long mac, byte type, byte ver) {
         return devStatus.getDevWiFiConfigWithMac(mac, type, ver);
@@ -80,8 +84,6 @@ public class EllESDK {//
     public int addDevToCommWithMac(long mac, byte type, byte ver) {
         return devStatus.addDevWithMac(mac, type, ver);
     }
-
-
     //内部用
     public static void findDeviceWithMac(long mac, byte type, byte ver) {
         elleListener.searchDevCBS(mac, type, ver);

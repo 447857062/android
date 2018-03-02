@@ -28,6 +28,7 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.DateUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -241,10 +242,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private static final int MSG_GET_HISTORYRECORD = 0x01;
     private static final int MSG_RETURN_ERROR = 0x02;
     private static final int MSG_GET_HISRECORD = 0x03;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             String str = (String) msg.obj;
             switch (msg.what) {
                 case MSG_GET_HISTORYRECORD:
@@ -314,9 +314,10 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     }
                     break;
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     /**
      * 按照序号排序
      */

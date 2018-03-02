@@ -58,6 +58,7 @@ import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.scrollview.NonScrollableListView;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -144,10 +145,9 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     private static final int MSG_INIT_LOCATIONSERVICE = 104;
     private static final int MSG_GET_DEVS_HTTPS = 105;
     private static final int MSG_GET_VIRTUAL_DEVS_HTTPS = 106;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_GET_ROOM:
                     mDeviceManager.queryDeviceListHttp();
@@ -208,11 +208,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
                     mRoomSelectTypeChangedAdapter.notifyDataSetChanged();
                     break;
             }
+            return true;
         }
     };
-
-
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {

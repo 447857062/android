@@ -3,7 +3,6 @@ package com.deplink.homegenius.activity.device.router.connectType;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -292,7 +291,6 @@ public class StaticConnectActivity extends Activity implements View.OnClickListe
      * 检查使用本地接口的本地路由器连接情况
      */
     private boolean isConnectLocalRouter = false;
-    private Handler mHandler = new Handler();
     private Runnable connectStatus = new Runnable() {
         @Override
         public void run() {

@@ -24,6 +24,7 @@ import com.deplink.homegenius.manager.room.RoomListener;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.gridview.DragGridView;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -61,10 +62,9 @@ public class RoomActivity extends Activity implements View.OnClickListener {
     private EventCallback ec;
     private boolean isUserLogin;
     private DeleteDeviceDialog connectLostDialog;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_UPDATE_ROOM:
                     mRooms.clear();
@@ -72,9 +72,10 @@ public class RoomActivity extends Activity implements View.OnClickListener {
                     mRoomsAdapter.notifyDataSetChanged();
                     break;
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

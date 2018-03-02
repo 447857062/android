@@ -24,6 +24,7 @@ import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -208,14 +209,14 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
         layout_eye.setOnClickListener(this);
 
     }
-    private Handler mhandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
+        public boolean handleMessage(Message msg) {
             ToastSingleShow.showText(ForgetPasswordActivity.this, (String) msg.obj);
+            return true;
         }
     };
+    private Handler mhandler = new WeakRefHandler(mCallback);
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
         buton_get_verification_code = findViewById(R.id.buton_get_verification_code);

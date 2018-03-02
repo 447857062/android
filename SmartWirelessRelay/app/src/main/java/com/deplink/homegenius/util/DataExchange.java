@@ -5,7 +5,6 @@ package com.deplink.homegenius.util;
  */
 
 public class DataExchange {
-
     public static boolean compareData(byte[] src, byte[] dest) {
         if (src.length != dest.length)
             return false;

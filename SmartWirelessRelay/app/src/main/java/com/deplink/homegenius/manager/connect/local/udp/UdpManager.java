@@ -10,11 +10,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.deplink.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import com.deplink.homegenius.manager.connect.local.udp.packet.UdpPacket;
-import com.deplink.homegenius.manager.connect.local.udp.interfaces.OnGetIpListener;
 import com.deplink.homegenius.util.IPV4Util;
 import com.deplink.homegenius.util.NetUtil;
+import com.deplink.homegenius.util.WeakRefHandler;
 
 /**
  * Created by Administrator on 2017/11/7.
@@ -86,10 +87,9 @@ public class UdpManager implements OnGetIpListener {
      * 无论有没有探测到网关，探测时间都设置为10秒
      */
     private static final int MSG_STOP_CHECK_GETWAY_DELAY = 10000;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_STOP_CHECK_GETWAY:
                     udpPacket.stop();
@@ -97,9 +97,10 @@ public class UdpManager implements OnGetIpListener {
                     break;
 
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     public void registerNetBroadcast(Context conext) {
         //注册网络状态监听
         IntentFilter filter = new IntentFilter();

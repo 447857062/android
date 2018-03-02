@@ -34,6 +34,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.util.DataExchange;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 
 import org.litepal.crud.DataSupport;
@@ -79,10 +80,9 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
     private static final int MSG_SHOW_GET_TV_CODE = 102;
     private static final int MSG_SHOW_GET_IPTV_CODE = 103;
     private int testCodeNumber;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             QueryTestCodeResponse code;
             switch (msg.what) {
                 case MSG_SHOW_GET_KT_CODE:
@@ -252,10 +252,10 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
                     break;
 
             }
-
-
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
     private int controlId;
     private String brandId;
     private List<TestCode> testCodes;
@@ -400,8 +400,8 @@ public class RemoteControlQuickLearnActivity extends Activity implements View.On
         boolean gatwayAvailable = false;
         List<GatwayDevice> allGatways = DataSupport.findAll(GatwayDevice.class);
         for (int j = 0; j < allGatways.size(); j++) {
-            if (allGatways.get(j).getStatus().equalsIgnoreCase("在线")
-                    || (allGatways.get(j).getStatus().equalsIgnoreCase("ON"))) {
+            if (allGatways.get(j).getStatus()!=null &&  (allGatways.get(j).getStatus().equalsIgnoreCase("在线")
+                    || (allGatways.get(j).getStatus().equalsIgnoreCase("ON")))) {
                 gatwayAvailable = true;
             }
         }

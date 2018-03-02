@@ -90,9 +90,6 @@ public class Room extends DataSupport implements Serializable{
                 "roomName='" + roomName + '\'' +
                 ", uid='" + uid + '\'' +
                 ", roomOrdinalNumber=" + roomOrdinalNumber +
-                ", roomType='" + roomType + '\'' +
-                ", mDevices=" + mDevices +
-                ", mGetwayDevices=" + mGetwayDevices +
-                '}';
+                ", roomType='" + roomType +"}";
     }
 }

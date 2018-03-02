@@ -23,6 +23,7 @@ import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.StringValidatorUtil;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -70,14 +71,14 @@ public class RegistActivity extends Activity implements View.OnClickListener, Vi
         initDatas();
         initEvents();
     }
-
-    private Handler mhandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             ToastSingleShow.showText(RegistActivity.this, (String) msg.obj);
+            return true;
         }
     };
+    private Handler mhandler = new WeakRefHandler(mCallback);
     String verifycode;
     String phoneNumber;
     String password;

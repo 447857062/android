@@ -63,7 +63,6 @@ public class PublicMethod {
     public static int checkConnectionState(Context ctx) {
         ConnectivityManager mConnectivity = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         TelephonyManager mTelephony = (TelephonyManager) ctx.getSystemService(TELEPHONY_SERVICE);
-
     /* 检查有没有网络 */
         NetworkInfo info = mConnectivity.getActiveNetworkInfo();
         if (info == null || !mConnectivity.getBackgroundDataSetting()) {
@@ -92,7 +91,6 @@ public class PublicMethod {
 
     public static String getLocalIP(Context ctx) {
         if (NetStatusUtil.isWiFiActive(ctx)) {
-
             return PublicMethod.getIPAddress(ctx);
         }
         return null;

@@ -24,6 +24,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.keyboard.KeyboardUtil;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -41,7 +42,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     private EditText etPwdOne, etPwdTwo, etPwdThree, etPwdFour, etPwdText;
     private EditText etPwdFive_setLockPwd, etPwdSix_setLockPwd;
     private KeyboardUtil kbUtil;
-    private Handler mHandler;
     private ImageView switch_remond_managerpassword;
     private boolean isStartFromExperience;
     private RelativeLayout layout_save_password;
@@ -132,7 +132,6 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
         etPwdFour.setInputType(InputType.TYPE_NULL);
         etPwdFive_setLockPwd.setInputType(InputType.TYPE_NULL);
         etPwdSix_setLockPwd.setInputType(InputType.TYPE_NULL);
-        MyHandle();
         connectLostDialog = new DeleteDeviceDialog(SetLockPwdActivity.this);
         connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
             @Override
@@ -222,51 +221,50 @@ public class SetLockPwdActivity extends Activity implements KeyboardUtil.CancelL
     private static final int MSG_TOAST = 1;
     private static final int MSG_SHOW_TOAST = 2;
     private String currentPassword;
-
-    public void MyHandle() {
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case MSG_TOAST:
-                        if (etPwdFour.getText() != null
-                                && etPwdFour.getText().toString().length() >= 1) {
-                            String strReapt = etPwdText.getText().toString();
-                            //TODO 查询管理密码 ，就是使用输入的密码开门，如果返回密码错误，就是错误
-                            currentPassword = strReapt;
-                            if (isStartFromExperience) {
-                                Toast.makeText(SetLockPwdActivity.this, "开门成功", Toast.LENGTH_SHORT).show();
-                                SetLockPwdActivity.this.finish();
-                            } else {
-                                //做延时处理,没有反应就隐藏界面
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        SetLockPwdActivity.this.finish();
-                                    }
-                                },3000);
-                                String userId= Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
-                                mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, userId, strReapt, null, null);
-                            }
-                            etPwdOne.setText("");
-                            etPwdTwo.setText("");
-                            etPwdThree.setText("");
-                            etPwdFour.setText("");
-                            etPwdFive_setLockPwd.setText("");
-                            etPwdSix_setLockPwd.setText("");
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_TOAST:
+                    if (etPwdFour.getText() != null
+                            && etPwdFour.getText().toString().length() >= 1) {
+                        String strReapt = etPwdText.getText().toString();
+                        //TODO 查询管理密码 ，就是使用输入的密码开门，如果返回密码错误，就是错误
+                        currentPassword = strReapt;
+                        if (isStartFromExperience) {
+                            Toast.makeText(SetLockPwdActivity.this, "开门成功", Toast.LENGTH_SHORT).show();
+                            SetLockPwdActivity.this.finish();
+                        } else {
+                            //做延时处理,没有反应就隐藏界面
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    SetLockPwdActivity.this.finish();
+                                }
+                            },3000);
+                            String userId= Perfence.getPerfence(AppConstant.PERFENCE_LOCK_SELF_USERID);
+                            mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, userId, strReapt, null, null);
                         }
-                        break;
-                    case MSG_SHOW_TOAST:
-                        Toast.makeText(SetLockPwdActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
-                        SetLockPwdActivity.this.finish();
-                        break;
-                    default:
-                        break;
-                }
+                        etPwdOne.setText("");
+                        etPwdTwo.setText("");
+                        etPwdThree.setText("");
+                        etPwdFour.setText("");
+                        etPwdFive_setLockPwd.setText("");
+                        etPwdSix_setLockPwd.setText("");
+                    }
+                    break;
+                case MSG_SHOW_TOAST:
+                    Toast.makeText(SetLockPwdActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                    SetLockPwdActivity.this.finish();
+                    break;
+                default:
+                    break;
             }
-        };
-    }
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
+
 
     @Override
     public void onCancelClick() {

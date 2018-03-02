@@ -35,6 +35,7 @@ import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.edittext.ClearEditText;
@@ -374,10 +375,9 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
     }
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
                     mDeviceManager.deleteDBSmartDevice(mDeviceManager.getCurrentSelectSmartDevice().getUid());
@@ -390,6 +390,8 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                     Toast.makeText(EditSmartLockActivity.this, "删除设备失败", Toast.LENGTH_SHORT).show();
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 }

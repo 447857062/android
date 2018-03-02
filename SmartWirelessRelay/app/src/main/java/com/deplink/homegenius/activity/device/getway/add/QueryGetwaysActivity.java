@@ -14,16 +14,16 @@ import android.widget.Toast;
 
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.activity.device.DevicesActivity;
+import com.deplink.homegenius.activity.personal.wifi.ScanWifiListActivity;
 import com.deplink.homegenius.manager.connect.local.udp.UdpManager;
 import com.deplink.homegenius.manager.connect.local.udp.interfaces.UdpManagerGetIPLintener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.util.WeakRefHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-
-import com.deplink.homegenius.activity.personal.wifi.ScanWifiListActivity;
 
 /**
  * 获取所有的网关
@@ -53,10 +53,10 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     }
 
     private void initViews() {
-        textview_cancel = (Button) findViewById(R.id.textview_cancel);
+        textview_cancel = findViewById(R.id.textview_cancel);
 
-        textview_title = (TextView) findViewById(R.id.textview_title);
-        image_back = (FrameLayout) findViewById(R.id.image_back);
+        textview_title = findViewById(R.id.textview_title);
+        image_back = findViewById(R.id.image_back);
     }
 
     private void initDatas() {
@@ -93,10 +93,9 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
     }
 
     private List<GatwayDevice> mDevices;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_CHECK_GETWAY_OK:
                     GatwayDevice device = new GatwayDevice();
@@ -108,9 +107,10 @@ public class QueryGetwaysActivity extends Activity implements View.OnClickListen
                     startActivity(intent);
                     break;
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     public void onGetLocalConnectIp(String ipAddress, String uid) {
         Log.i(TAG, "检查网关，获取到IP地址=" + ipAddress);

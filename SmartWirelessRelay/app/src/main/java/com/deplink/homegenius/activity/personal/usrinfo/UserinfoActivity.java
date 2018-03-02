@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.util.bitmap.BitmapHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.PictureSelectDialog;
@@ -245,7 +247,14 @@ public class UserinfoActivity extends Activity implements View.OnClickListener {
      */
     private static final int CAMERA_CODE = 1;
     private static final int CROP_CODE = 3;
-    private Handler mHandler = new Handler();
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 
     @Override
     public void onClick(View v) {

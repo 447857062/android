@@ -34,6 +34,7 @@ import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -299,10 +300,9 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
 
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
                     mDeviceManager.deleteDBSmartDevice(mDeviceManager.getCurrentSelectSmartDevice().getUid());
@@ -314,9 +314,10 @@ public class LightEditActivity extends Activity implements View.OnClickListener 
                     Toast.makeText(LightEditActivity.this, "删除设备失败", Toast.LENGTH_SHORT).show();
                     break;
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

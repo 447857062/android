@@ -30,6 +30,7 @@ import com.deplink.homegenius.manager.device.getway.GetwayManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.edittext.ClearEditText;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -296,10 +297,9 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_ALERT_DEVICENAME_RESULT = 101;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_HANDLE_DELETE_DEVICE_RESULT:
                     Log.i(TAG, "删除getway设备uid " + mGetwayManager.getCurrentSelectGetwayDevice().getUid());
@@ -313,8 +313,11 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
                     startActivity(new Intent(GetwayDeviceActivity.this, DevicesActivity.class));
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
+
 
 
     @Override

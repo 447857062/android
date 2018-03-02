@@ -17,6 +17,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -59,11 +60,11 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
         super.onPause();
         manager.removeEventCallback(ec);
     }
+
     private static final int MSG_HANDLER_UPDATE=100;
-    private Handler mHandler=new Handler(){
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what){
                 case MSG_HANDLER_UPDATE:
                     String result= (String) msg.obj;
@@ -102,8 +103,10 @@ public class UpdateStatusActivity extends Activity implements View.OnClickListen
                     }
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
     private void initDatas() {
         textview_title.setText("固件升级");
         mRouterManager=RouterManager.getInstance();

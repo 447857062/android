@@ -1,9 +1,12 @@
 package com.deplink.homegenius.activity.device.doorbell;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,20 +15,33 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
 import com.deplink.homegenius.Protocol.json.device.lock.UserIdPairs;
+import com.deplink.homegenius.activity.personal.login.LoginActivity;
 import com.deplink.homegenius.broadcast.PushMessage;
+import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.constant.SmartLockConstant;
+import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorBellListener;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
+import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.util.bitmap.BitmapHandler;
+import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.doorbeel.Doorbeel_menu_Dialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.sdk.android.sdk.DeplinkSDK;
+import com.deplink.sdk.android.sdk.EventCallback;
+import com.deplink.sdk.android.sdk.SDKAction;
+import com.deplink.sdk.android.sdk.json.PERFORMANCE;
+import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
 
@@ -47,7 +63,10 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
     private SmartLockManager mSmartLockManager;
     private ImageView imageview_visitor;
     private RelativeLayout layout_no_vistor;
-
+    private SDKManager manager;
+    private EventCallback ec;
+    private DeviceListener mDeviceListener;
+    private DeleteDeviceDialog connectLostDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,19 +101,129 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 imageview_visitor.setBackgroundDrawable(bbb);
             }
         };
-
+        initMqttCallback();
     }
+    private boolean isUserLogin;
+    private void initMqttCallback() {
+        DeplinkSDK.initSDK(getApplicationContext(), Perfence.SDK_APP_KEY);
+        connectLostDialog = new DeleteDeviceDialog(DoorbeelMainActivity.this);
+        connectLostDialog.setSureBtnClickListener(new DeleteDeviceDialog.onSureBtnClickListener() {
+            @Override
+            public void onSureBtnClicked() {
+                startActivity(new Intent(DoorbeelMainActivity.this, LoginActivity.class));
+            }
+        });
+        manager = DeplinkSDK.getSDKManager();
+        ec = new EventCallback() {
+            @Override
+            public void onSuccess(SDKAction action) {
+            }
 
+            @Override
+            public void onBindSuccess(SDKAction action, String devicekey) {
+            }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                Gson gson = new Gson();
+                PERFORMANCE content = null;
+                try {
+                    content = gson.fromJson(result, PERFORMANCE.class);
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+                if (content != null) {
+                    if (content.getOP() != null && content.getOP().equalsIgnoreCase("REPORT")) {
+                        if (content.getMethod().equalsIgnoreCase("SmartLock")) {
+                            OpResult type = gson.fromJson(result, OpResult.class);
+                            if (type != null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
+                                switch (type.getCommand()) {
+                                    case SmartLockConstant.CMD.OPEN:
+                                        switch (type.getResult()) {
+                                            case SmartLockConstant.OPENLOCK.TIMEOUT:
+                                                result = "开锁超时";
+                                                break;
+                                            case SmartLockConstant.OPENLOCK.SUCCESS:
+                                                result = "开锁成功";
+                                                break;
+                                            case SmartLockConstant.OPENLOCK.PASSWORDERROR:
+                                                result = "密码错误";
+                                                break;
+                                            case SmartLockConstant.OPENLOCK.FAIL:
+                                                result = "开锁失败";
+                                                break;
+                                        }
+                                        break;
+                                    case SmartLockConstant.CMD.ONCE:
+                                    case SmartLockConstant.CMD.PERMANENT:
+                                    case SmartLockConstant.CMD.TIMELIMIT:
+                                        switch (type.getResult()) {
+                                            case SmartLockConstant.AUTH.TIMEOUT:
+                                                result = "录入超时";
+                                                break;
+                                            case SmartLockConstant.AUTH.SUCCESS:
+                                                result = "录入成功";
+                                                break;
+                                            case SmartLockConstant.AUTH.PASSWORDERROR:
+                                                result = "密码错误";
+                                                break;
+                                            case SmartLockConstant.AUTH.FAIL:
+                                                result = "录入失败";
+                                                break;
+                                            case SmartLockConstant.AUTH.FORBADE:
+                                                result = "禁止操作";
+                                                break;
+                                        }
+                                        break;
+
+                                }
+                                if(result!=null){
+                                    Message msg=Message.obtain();
+                                    msg.what=MSG_SHOW_OPENLOCK_RESULT;
+                                    msg.obj=result;
+                                    mHandler.sendMessage(msg);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void deviceOpSuccess(String op, String deviceKey) {
+                super.deviceOpSuccess(op, deviceKey);
+            }
+
+            @Override
+            public void onFailure(SDKAction action, Throwable throwable) {
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+                super.connectionLost(throwable);
+                isUserLogin = false;
+                Perfence.setPerfence(AppConstant.USER_LOGIN, false);
+                connectLostDialog.show();
+                connectLostDialog.setTitleText("账号异地登录");
+                connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
+            }
+        };
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
+        isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         if(mDoorbeelManager!=null){
             mDoorbeelManager = DoorbeelManager.getInstance();
             mDoorbeelManager.InitDoorbeelManager(this);
         }
         if(mDoorBellListener!=null){
             mDoorbeelManager.addDeviceListener(mDoorBellListener);
+        }
+        if(mSmartLockManager!=null){
+            mSmartLockManager.addSmartLockListener(this);
         }
         isStartFromExperience = DeviceManager.getInstance().isStartFromExperience();
         XGPushClickedResult clickedResult = XGPushManager.onActivityStarted(this);
@@ -128,7 +257,8 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 String lockuid = mDoorbeelManager.getCurrentSelectedDoorbeel().getBindLockUid();
                 lockDevice = DataSupport.where("Uid=?", lockuid).findFirst(SmartDev.class, true);
             }
-            if (lockDevice != null && lockDevice.getStatus().equalsIgnoreCase("在线")) {
+            Log.i(TAG,"lockDevice="+lockDevice.toString());
+            if (lockDevice != null && (lockDevice.getStatus().equalsIgnoreCase("在线")|| lockDevice.getStatus().equalsIgnoreCase("ON"))) {
                 button_opendoor.setBackgroundResource(R.drawable.radius22_bg_button_background);
             } else {
                 button_opendoor.setBackgroundResource(R.drawable.radius22_bg_6c_background);
@@ -145,6 +275,7 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         imageview_visitor.setVisibility(View.GONE);
         layout_no_vistor.setVisibility(View.VISIBLE);
         mDoorbeelManager.removeDeviceListener(mDoorBellListener);
+        mSmartLockManager.removeSmartLockListener(this);
     }
 
     private void initViews() {
@@ -176,8 +307,10 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 if (isStartFromExperience) {
                     ToastSingleShow.showText(this, "门锁已开");
                 } else {
+                    Log.i(TAG,"lockDevice="+lockDevice.toString()+"selfUserId="+selfUserId);
                     if (lockDevice != null && selfUserId != null) {
-                        savedManagePassword = mSmartLockManager.getCurrentSelectLock().getLockPassword();
+                        savedManagePassword = lockDevice.getLockPassword();
+                        mSmartLockManager.setCurrentSelectLock(lockDevice);
                         mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, selfUserId, savedManagePassword, null, null);
                     }
                 }
@@ -185,7 +318,19 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
 
         }
     }
-
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch(msg.what){
+                case MSG_SHOW_OPENLOCK_RESULT:
+                    ToastSingleShow.showText(DoorbeelMainActivity.this,""+msg.obj);
+                    break;
+            }
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
+    private static final int MSG_SHOW_OPENLOCK_RESULT=100;
     @Override
     public void responseQueryResult(String result) {
 
@@ -193,7 +338,12 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
 
     @Override
     public void responseSetResult(String result) {
-
+        Message msg=Message.obtain();
+        msg.what=MSG_SHOW_OPENLOCK_RESULT;
+        if(result!=null){
+            msg.obj=result;
+            mHandler.sendMessage(msg);
+        }
     }
 
     @Override
@@ -208,6 +358,7 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
 
     @Override
     public void responseUserIdInfo(UserIdInfo userIdInfo) {
+        Log.i(TAG,"userIdInfo="+userIdInfo.toString());
         List<UserIdPairs> mUserIdPairs = userIdInfo.getAlluser();
         for (int i = 0; i < mUserIdPairs.size(); i++) {
             UserIdPairs tempUserIdPair = DataSupport.where("userid = ?", mUserIdPairs.get(i).getUserid()).findFirst(UserIdPairs.class);

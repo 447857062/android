@@ -28,6 +28,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.smartlock.AuthoriseDialog;
 import com.deplink.homegenius.view.dialog.smartlock.LockdeviceClearRecordDialog;
@@ -411,10 +412,9 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
     private static final int MSG_SHOW_TOAST = 1;
     private static final int MSG_SHOW_NOTSAVE_PASSWORD_DIALOG = 2;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_SHOW_TOAST:
                     Toast.makeText(SmartLockActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
@@ -423,9 +423,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                     Toast.makeText(SmartLockActivity.this, "密码不保存", Toast.LENGTH_SHORT).show();
                     break;
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     public void onGetDialogAuthtTypeTime(String authType, String password, String limitTime) {
         Log.i(TAG, "authType=" + authType);

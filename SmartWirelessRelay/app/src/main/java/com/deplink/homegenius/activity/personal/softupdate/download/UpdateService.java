@@ -15,6 +15,7 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -24,7 +25,7 @@ import android.util.Log;
 import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.util.MD5;
 import com.deplink.homegenius.util.Perfence;
-import com.deplink.homegenius.view.toast.ToastSingleShow;
+import com.deplink.homegenius.util.WeakRefHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -291,8 +292,14 @@ public class UpdateService extends Service {
             }
         }
     }
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
 
-    private Handler mHandler = new Handler();
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 
     private void success(String path) {
         String md5String = MD5.md5sum(path);

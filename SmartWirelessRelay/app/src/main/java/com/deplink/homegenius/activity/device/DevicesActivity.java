@@ -21,6 +21,7 @@ import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
+import com.deplink.homegenius.Protocol.json.device.lock.UserIdInfo;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.Protocol.json.qrcode.QrcodeSmartDevice;
 import com.deplink.homegenius.Protocol.packet.ellisdk.BasicPacket;
@@ -60,11 +61,13 @@ import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlListener;
 import com.deplink.homegenius.manager.device.remoteControl.RemoteControlManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
+import com.deplink.homegenius.manager.device.smartlock.SmartLockListener;
 import com.deplink.homegenius.manager.device.smartlock.SmartLockManager;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.manager.room.RoomManager;
 import com.deplink.homegenius.util.DataExchange;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.devices.DeviceAtRoomDialog;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -92,7 +95,7 @@ import java.util.TimerTask;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 
-public class DevicesActivity extends Activity implements View.OnClickListener, GetwayListener, EllE_Listener, SmartLightListener {
+public class DevicesActivity extends Activity implements View.OnClickListener, GetwayListener, EllE_Listener, SmartLightListener, SmartLockListener {
     private static final String TAG = "DevicesActivity";
     //底部一排导航栏
     private LinearLayout layout_home_page;
@@ -369,10 +372,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     if (currentSmartDoorBell != null) {
                         Log.i(TAG, "seachedDoorbellmac=" + seachedDoorbellmac);
                         if (seachedDoorbellmac != null && seachedDoorbellmac.equalsIgnoreCase(currentSmartDoorBell.getMac())) {
-                                currentSmartDoorBell.setStatus("在线");
-                                lastDoorbellStatu = "在线";
-                                currentSmartDoorBell.saveFast();
-                                ellESDK.stopSearchDevs();
+                            currentSmartDoorBell.setStatus("在线");
+                            lastDoorbellStatu = "在线";
+                            currentSmartDoorBell.saveFast();
+                            ellESDK.stopSearchDevs();
 
                         } else {
                             lastDoorbellStatu = "离线";
@@ -396,8 +399,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         boolean gatwayAvailable = false;
         List<GatwayDevice> allGatways = DataSupport.findAll(GatwayDevice.class);
         for (int j = 0; j < allGatways.size(); j++) {
-            if (allGatways.get(j).getStatus().equalsIgnoreCase("在线")
-                    || (allGatways.get(j).getStatus().equalsIgnoreCase("ON"))) {
+            if (allGatways.get(j).getStatus()!=null && (allGatways.get(j).getStatus().equalsIgnoreCase("在线")
+                    || (allGatways.get(j).getStatus().equalsIgnoreCase("ON")))) {
                 gatwayAvailable = true;
             }
         }
@@ -415,9 +418,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         mDeviceManager.addDeviceListener(mDeviceListener);
         mSmartLightManager.addSmartLightListener(this);
         mRemoteControlManager.addRemoteControlListener(mRemoteControlListener);
+        mSmartLockManager.addSmartLockListener(this);
         setButtomBarImageResource();
         currentTime = System.currentTimeMillis();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        Log.i(TAG,"isUserLogin="+isUserLogin);
         if (isUserLogin) {
             mDeviceManager.queryDeviceListHttp();
             mRoomManager.queryRooms();
@@ -463,7 +468,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         imageview_rooms.setImageResource(R.drawable.nochecktheroom);
         imageview_personal_center.setImageResource(R.drawable.nocheckthemine);
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -472,6 +476,7 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         manager.removeEventCallback(ec);
         refreshCountGetway = 0;
         mDeviceManager.removeDeviceListener(mDeviceListener);
+        mSmartLockManager.removeSmartLockListener(this);
         mRemoteControlManager.removeRemoteControlListener(mRemoteControlListener);
         mSmartLightManager.removeSmartLightListener(this);
         ellESDK.stopSearchDevs();
@@ -664,6 +669,28 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                 currentSwitchDev.setStatus("在线");
                                 currentSwitchDev.saveFast();
 
+                                //网关远程收到消息就在线了
+                                refreshCountGetway = 0;
+                                if (getwayDevices != null) {
+                                    ContentValues values = new ContentValues();
+                                    values.put("Status", "在线");
+                                    DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
+                                }
+                            } else if (content.getMethod().equalsIgnoreCase("YWLIGHTCONTROL")) {
+
+                                lastLightStatu = "在线";
+                                currentLightDev.setStatus("在线");
+                                currentLightDev.saveFast();
+                                //网关远程收到消息就在线了
+                                refreshCountGetway = 0;
+                                if (getwayDevices != null) {
+                                    ContentValues values = new ContentValues();
+                                    values.put("Status", "在线");
+                                    DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
+                                }
+                            } else if (content.getMethod().equalsIgnoreCase("SMART_LOCK")) {
+                                currentLockDev.setStatus("在线");
+                                currentLockDev.saveFast();
                                 //网关远程收到消息就在线了
                                 refreshCountGetway = 0;
                                 if (getwayDevices != null) {
@@ -1084,10 +1111,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     private static final int MSG_GET_DEVS_HTTPS = 0x02;
     private static final int MSG_DOORBELL_STATUS_CHECK = 0x03;
     private static final long MSG_DOORBELL_STATUS_CHECK_TIMEOUT = 5000;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_UPDATE_LOCAL_DEVS:
                     final String str = (String) msg.obj;
@@ -1239,8 +1265,10 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     break;
 
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
 
 
     private void parseLocalReturnDeviceList(String str, List<GatwayDevice> tempDevice, List<SmartDev> tempSmartDevice) {
@@ -1378,7 +1406,12 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
 
     @Override
     public void onRecvEllEPacket(BasicPacket packet) {
-        Log.i(TAG, "onRecvEllEPacket" + packet.toString());
+        Log.i(TAG, "onRecvEllEPacket" + packet.toString()+packet.mac);
+        seachedDoorbellmac = DataExchange.byteArrayToHexString(DataExchange.longToEightByte(packet.mac));
+        seachedDoorbellmac = seachedDoorbellmac.replaceAll("0x", "").trim();
+        seachedDoorbellmac = seachedDoorbellmac.replaceAll(" ", "-");
+        Log.i(TAG, "onRecvEllEPacket" + seachedDoorbellmac);
+
     }
 
     private String seachedDoorbellmac;
@@ -1394,6 +1427,11 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
     }
 
     @Override
+    public void responseQueryResult(String result) {
+
+    }
+
+    @Override
     public void responseSetResult(String result) {
         Log.i(TAG, "智能灯泡设置结果result=" + result);
         //网关远程收到消息就在线了
@@ -1404,12 +1442,35 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
             Log.i(TAG, "网关设备在线");
             DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
         }
-        if (lastLightStatu != null && lastLightStatu.equalsIgnoreCase("离线")) {
-            lastLightStatu = "在线";
-            if (currentLightDev != null) {
-                currentLightDev.setStatus("在线");
-                currentLightDev.saveFast();
-            }
+        lastLightStatu = "在线";
+        if (currentLightDev != null) {
+            currentLightDev.setStatus("在线");
+            currentLightDev.saveFast();
         }
+    }
+
+    @Override
+    public void responseBind(String result) {
+
+    }
+
+    @Override
+    public void responseLockStatu(int RecondNum, int LockStatus) {
+        refreshCountGetway = 0;
+        if (getwayDevices != null) {
+            ContentValues values = new ContentValues();
+            values.put("Status", "在线");
+            DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
+        }
+        Log.i(TAG,"responseLockStatu"+(currentLockDev != null));
+        if (currentLockDev != null) {
+            currentLockDev.setStatus("在线");
+            currentLockDev.saveFast();
+        }
+    }
+
+    @Override
+    public void responseUserIdInfo(UserIdInfo userIdInfo) {
+
     }
 }

@@ -1,6 +1,5 @@
 package com.deplink.homegenius.activity.device.router.wifi;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.router.RouterManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.MakeSureDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
@@ -357,15 +357,12 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
         textview_edit = findViewById(R.id.textview_edit);
     }
 
-
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_LOCAL_OP_RETURN_OK:
-                   ToastSingleShow.showText(WifiSetting24.this,"已重启路由器");
+                    ToastSingleShow.showText(WifiSetting24.this,"已重启路由器");
                     Log.i(TAG, "路由器本地设置成功，重启步骤");
                     RestfulToolsRouter.getSingleton(WifiSetting24.this).rebootRouter(new retrofit2.Callback<String>() {
                         @Override
@@ -382,9 +379,10 @@ public class WifiSetting24 extends Activity implements View.OnClickListener{
                     break;
 
             }
+            return true;
         }
     };
-
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

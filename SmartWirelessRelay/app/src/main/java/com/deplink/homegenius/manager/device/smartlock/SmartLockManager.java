@@ -7,7 +7,6 @@ import android.util.Log;
 import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.QueryOptions;
 import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.Protocol.json.device.DeviceList;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
 import com.deplink.homegenius.Protocol.json.device.lock.Record;
@@ -325,7 +324,7 @@ public class SmartLockManager implements LocalConnecteListener {
     }
 
     public void queryLockStatu() {
-        Log.i(TAG, "查询锁设备状态");
+        Log.i(TAG, "查询锁设备状态"+mLocalConnectmanager.isLocalconnectAvailable());
         if (mLocalConnectmanager.isLocalconnectAvailable()) {
             QueryOptions queryCmd = new QueryOptions();
             queryCmd.setOP("SET");
@@ -343,7 +342,6 @@ public class SmartLockManager implements LocalConnecteListener {
                 }
             });
         } else {
-
             String uuid = Perfence.getPerfence(AppConstant.PERFENCE_BIND_APP_UUID);
             GatwayDevice device = currentSelectLock.getGetwayDevice();
             if (device == null) {
@@ -435,11 +433,6 @@ public class SmartLockManager implements LocalConnecteListener {
     @Override
     public void OnGetQueryresult(String result) {
         Gson gson = new Gson();
-        if (result.contains("DevList")) {
-            DeviceList aDeviceList = gson.fromJson(result, DeviceList.class);
-            if (aDeviceList.getSmartDev() != null && aDeviceList.getSmartDev().size() > 0) {
-            }
-        }
         //SmartLock-HisRecord"
         if (result.contains("HisRecord")) {
             for (int i = 0; i < mSmartLockListenerList.size(); i++) {

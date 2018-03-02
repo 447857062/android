@@ -92,9 +92,6 @@ public class AddDoorbellTipsActivity extends Activity implements View.OnClickLis
 
     String account;
     String password;
-
-
-
     @Override
     public void onRecvEllEPacket(BasicPacket packet) {
 

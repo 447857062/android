@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +21,7 @@ import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.doorbeel.DoorBellListener;
 import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenu;
@@ -206,7 +208,15 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     }
 
     private float Yoffset = 0;
-    private Handler mHandler = new Handler();
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
+
     /**
      * 竖向滑动这么多距离就开始刷新
      */

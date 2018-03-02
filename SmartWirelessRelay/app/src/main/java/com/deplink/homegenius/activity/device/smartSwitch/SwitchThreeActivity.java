@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchListener;
 import com.deplink.homegenius.manager.device.smartswitch.SmartSwitchManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -318,7 +320,15 @@ public class SwitchThreeActivity extends Activity implements View.OnClickListene
         }
     }
 
-    private Handler mHandler = new Handler();
+    private Handler.Callback mCallback = new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            return true;
+        }
+    };
+    private Handler mHandler = new WeakRefHandler(mCallback);
+
     @Override
     public void responseResult(String result) {
         Gson gson = new Gson();

@@ -16,8 +16,8 @@ android {
         ]
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 101
-        versionName '1.0.1'
+        versionCode 102
+        versionName '1.0.2'
         // Enabling multidex support.
         multiDexEnabled true
     }
@@ -95,7 +95,8 @@ dependencies {
     //mid包
     compile 'com.tencent.mid:mid:4.0.0-release'
     compile 'com.daimajia.numberprogressbar:library:1.4@aar'
-    compile 'com.android.support:multidex:1.0.1'//dependencies
+    compile 'com.android.support:multidex:1.0.1'
+    //dependencies
     compile files('libs/MobCommons-2017.1213.1552.jar')
     compile files('libs/MobTools-2017.1213.1552.jar')
 }

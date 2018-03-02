@@ -29,6 +29,7 @@ import com.deplink.homegenius.constant.AppConstant;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.util.APKVersionCodeUtils;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.ConfirmDialog;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.imageview.CircleImageView;
@@ -233,10 +234,9 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
         };
     }
     private static final int MSG_SHOW_CONNECT_LOST=100;
-    private Handler mHandler=new Handler(){
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what){
                 case MSG_SHOW_CONNECT_LOST:
                     Perfence.setPerfence(AppConstant.USER_LOGIN, false);
@@ -246,8 +246,10 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
                     connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
     private void saveToSDCard(Bitmap bitmap) {
         String path = this.getFilesDir().getAbsolutePath();
         path = path + File.separator + "userIcon" + "userIcon.png";

@@ -23,6 +23,7 @@ import com.deplink.homegenius.manager.device.light.SmartLightListener;
 import com.deplink.homegenius.manager.device.light.SmartLightManager;
 import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
+import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
@@ -363,10 +364,9 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
     }
 
     private static final int MSG_GET_LIGHT_RESULT = 100;
-    private Handler mHandler = new Handler() {
+    private Handler.Callback mCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_GET_LIGHT_RESULT:
                     QueryOptions resultObj = (QueryOptions) msg.obj;
@@ -415,8 +415,10 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                     isOnResume = false;
                     break;
             }
+            return true;
         }
     };
+    private Handler mHandler = new WeakRefHandler(mCallback);
     @Override
     public void responseSetResult(String result) {
         Log.i(TAG, "responseSetResult=" + result);
