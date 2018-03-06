@@ -175,34 +175,42 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
                     mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
                     switch (mOpResult.getCommand()) {
                         case "close1":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关一已关闭");
                             switch_one_open = false;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                             break;
                         case "close2":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关二已关闭");
                             switch_two_open = false;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
                             break;
                         case "close3":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关三已关闭");
                             switch_three_open = false;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
                             break;
                         case "close4":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关四已关闭");
                             switch_four_open = false;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
                             break;
                         case "open1":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关一已开启");
                             switch_one_open = true;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                             break;
                         case "open2":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关二已开启");
                             switch_two_open = true;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
                             break;
                         case "open3":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关三已开启");
                             switch_three_open = true;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
                             break;
                         case "open4":
+                            ToastSingleShow.showText(SwitchFourActivity.this,"开关四已开启");
                             switch_four_open = true;
                             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
                             break;
@@ -211,6 +219,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
                         @Override
                         public void run() {
                             setSwitchImageviewBackground();
+                            mSmartSwitchManager.getCurrentSelectSmartDevice().setStatus("在线");
                             mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
                         }
                     });
@@ -399,34 +408,42 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
             mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
         switch (mOpResult.getCommand()) {
             case "close1":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关一已关闭");
                 switch_one_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                 break;
             case "close2":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关二已关闭");
                 switch_two_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
                 break;
             case "close3":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关三已关闭");
                 switch_three_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
                 break;
             case "close4":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关四已关闭");
                 switch_four_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
                 break;
             case "open1":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关一已开启");
                 switch_one_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                 break;
             case "open2":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关二已开启");
                 switch_two_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
                 break;
             case "open3":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关三已开启");
                 switch_three_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_three_open(switch_three_open);
                 break;
             case "open4":
+                ToastSingleShow.showText(SwitchFourActivity.this,"开关四已开启");
                 switch_four_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_four_open(switch_four_open);
                 break;
@@ -435,6 +452,7 @@ public class SwitchFourActivity extends Activity implements View.OnClickListener
             @Override
             public void run() {
                 setSwitchImageviewBackground();
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setStatus("在线");
                 mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
             }
         });

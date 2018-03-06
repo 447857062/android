@@ -314,7 +314,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     currentSwitchDev = DataSupport.where("Uid = ?", devices.get(i).getUid()).findFirst(SmartDev.class, true);
                     mSmartSwitchManager.setCurrentSelectSmartDevice(currentSwitchDev);
                     mSmartSwitchManager.querySwitchStatus("query");
-                    mDeviceManager.queryDeviceList();
                     if (!gatwayAvailable()) {
                         if (lastSwitchState != null && lastSwitchState.equalsIgnoreCase("在线")) {
                             lastSwitchState = "离线";
@@ -328,7 +327,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     if (currentRemotecontrolDev != null) {
                         mRemoteControlManager.setmSelectRemoteControlDevice(currentRemotecontrolDev);
                         mRemoteControlManager.queryStatu();
-                        mDeviceManager.queryDeviceList();
                         if (lastremoteControlState == null) {
                             lastremoteControlState = "离线";
                         }
@@ -346,7 +344,6 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     if (currentLockDev != null) {
                         mSmartLockManager.setCurrentSelectLock(currentLockDev);
                         mSmartLockManager.queryLockStatu();
-                        mDeviceManager.queryDeviceList();
                         if (!gatwayAvailable()) {
                             currentLockDev.setStatus("离线");
                             Log.i(TAG, "358 设置离线");
@@ -359,10 +356,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                     if (currentLightDev != null) {
                         mSmartLightManager.setCurrentSelectLight(currentLightDev);
                         mSmartLightManager.queryLightStatus();
-                        mDeviceManager.queryDeviceList();
                         if (!gatwayAvailable()) {
                             currentLightDev.setStatus("离线");
-                            Log.i(TAG, "371 设置离线");
                             currentLightDev.saveFast();
                         }
                     }
@@ -664,11 +659,9 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
                                     DataSupport.updateAll(GatwayDevice.class, values, "Uid=?", getwayDevices.getUid());
                                 }
                             } else if (content.getMethod().equalsIgnoreCase("SmartWallSwitch")) {
-
                                 lastSwitchState = "在线";
                                 currentSwitchDev.setStatus("在线");
                                 currentSwitchDev.saveFast();
-
                                 //网关远程收到消息就在线了
                                 refreshCountGetway = 0;
                                 if (getwayDevices != null) {
@@ -966,6 +959,8 @@ public class DevicesActivity extends Activity implements View.OnClickListener, G
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
         if (room != null) {
             rooms.add(room);
+        }else{
+            rooms.addAll(DataSupport.findAll(Room.class));
         }
         dev.setRoomList(rooms);
         boolean success = dev.save();

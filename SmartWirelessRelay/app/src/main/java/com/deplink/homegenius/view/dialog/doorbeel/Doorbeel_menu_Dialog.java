@@ -75,11 +75,12 @@ public class Doorbeel_menu_Dialog extends Dialog implements View.OnClickListener
             case R.id.textview_edit:
                 this.dismiss();
              mContext.startActivity(new Intent(mContext, EditDoorbellActivity.class));
-
                 break;
             case R.id.textview_record:
                 this.dismiss();
-                mContext.startActivity(new Intent(mContext, VistorHistoryActivity.class));
+                Intent intent=new Intent(mContext, VistorHistoryActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
                 break;
         }
     }

@@ -19,7 +19,7 @@ public class CharSetUtil {
         Pattern p = Pattern.compile("\\\\u([0-9a-fA-F]{4})");
         Matcher m = p.matcher( str );
         int start = 0 ;
-        int start2 = 0 ;
+        int start2;
         StringBuffer sb = new StringBuffer();
         while( m.find( start ) ) {
             start2 = m.start() ;

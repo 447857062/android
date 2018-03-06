@@ -173,7 +173,10 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                         mSmartLockManager.updateSmartDeviceInWhatRoom(changeRoom, deviceUid);
                         break;
                     case "alertname":
-
+                        Intent intentBack = new Intent(EditSmartLockActivity.this, SmartLockActivity.class);
+                        intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mSmartLockManager.updateSmartDeviceName(devcienameChange);
+                        startActivity(intentBack);
                         break;
                     case "alertgetway":
                         boolean savegetwayResult = mSmartLockManager.updateSmartDeviceGetway(selectedGatway);
@@ -254,7 +257,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         imageview_getway_arror_right = findViewById(R.id.imageview_getway_arror_right);
         layout_device_share = findViewById(R.id.layout_device_share);
     }
-
+    private String devcienameChange;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -264,9 +267,25 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 if (isStartFromExperience) {
                     startActivity(intentBack);
                 } else {
-                    String devciename = edittext_input_devie_name.getText().toString();
-                    mSmartLockManager.updateSmartDeviceName(devciename);
-                    startActivity(intentBack);
+                    if(NetUtil.isNetAvailable(this)){
+                        if (isLogin) {
+                            action="alertname";
+                             devcienameChange = edittext_input_devie_name.getText().toString();
+                            if (devcienameChange.equals(lockName)) {
+                                onBackPressed();
+                            } else {
+                                if(deviceUid!=null){
+                                    mDeviceManager.alertDeviceHttp(deviceUid, null, devcienameChange, null);
+                                }
+                            }
+                        }else{
+                            EditSmartLockActivity.this.finish();
+                        }
+
+                    }else{
+                        ToastSingleShow.showText(this, "网络连接不可用");
+                    }
+
                 }
                 break;
             case R.id.layout_select_room:
@@ -323,7 +342,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
                 break;
         }
     }
-
+    private String lockName;
     @Override
     protected void onResume() {
         super.onResume();
@@ -332,7 +351,7 @@ public class EditSmartLockActivity extends Activity implements View.OnClickListe
         if (isStartFromExperience) {
 
         } else {
-            String lockName = mSmartLockManager.getCurrentSelectLock().getName();
+             lockName = mSmartLockManager.getCurrentSelectLock().getName();
             if (lockName != null) {
                 edittext_input_devie_name.setText(lockName);
                 Log.i(TAG, "lockName=" + lockName + "lockName.length()=" + lockName.length());

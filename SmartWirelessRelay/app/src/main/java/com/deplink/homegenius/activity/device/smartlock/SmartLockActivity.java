@@ -161,6 +161,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                                     break;
                             }
                             break;
+                        case SmartLockConstant.CMD.QUERY:
+                            Log.i(TAG,"门锁状态type="+type.getResult());
+                            Message msg=Message.obtain();
+                            msg.arg1=type.getResult();
+                            msg.what=MSG_UPDATE_DEVICE_STATU;
+                            mHandler.sendMessage(msg);
+
+
+
+                            break;
                     }
                     Message msg = Message.obtain();
                     msg.what = MSG_SHOW_TOAST;
@@ -390,6 +400,10 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
         Log.i(TAG,"返回门锁状态结果="+LockStatus);
         //状态不一致需要更新
        //LockStatus 锁的打开状态
+        Message msg=Message.obtain();
+        msg.arg1=LockStatus;
+        msg.what=MSG_UPDATE_DEVICE_STATU;
+        mHandler.sendMessage(msg);
     }
 
     @Override
@@ -412,6 +426,7 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
 
     private static final int MSG_SHOW_TOAST = 1;
     private static final int MSG_SHOW_NOTSAVE_PASSWORD_DIALOG = 2;
+    private static final int MSG_UPDATE_DEVICE_STATU = 3;
     private Handler.Callback mCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -421,6 +436,16 @@ public class SmartLockActivity extends Activity implements View.OnClickListener,
                     break;
                 case MSG_SHOW_NOTSAVE_PASSWORD_DIALOG:
                     Toast.makeText(SmartLockActivity.this, "密码不保存", Toast.LENGTH_SHORT).show();
+                    break;
+                case MSG_UPDATE_DEVICE_STATU:
+                    Log.i(TAG,"MSG_UPDATE_DEVICE_STATU");
+                    if(msg.arg1!=-1){
+                        mSmartLockManager.getCurrentSelectLock().setStatus("在线");
+                        mSmartLockManager.getCurrentSelectLock().saveFast();
+                    }else{
+                        mSmartLockManager.getCurrentSelectLock().setStatus("离线");
+                        mSmartLockManager.getCurrentSelectLock().saveFast();
+                    }
                     break;
             }
             return true;

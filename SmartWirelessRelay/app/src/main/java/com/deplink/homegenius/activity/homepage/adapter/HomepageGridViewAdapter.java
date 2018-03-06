@@ -8,11 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deplink.homegenius.Protocol.json.Room;
+import com.deplink.homegenius.constant.RoomConstant;
+
 import java.util.List;
 
 import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
-import com.deplink.homegenius.Protocol.json.Room;
-import com.deplink.homegenius.constant.RoomConstant;
 /*
 *
  * Created by Administrator on 2017/11/11.
@@ -33,9 +34,9 @@ public class HomepageGridViewAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.homepage_room_item, null);
-            viewHolder.textview_room_item = (TextView) convertView
+            viewHolder.textview_room_item = convertView
                     .findViewById(R.id.textview_room_item);
-            viewHolder.imageview_room_type = (ImageView) convertView
+            viewHolder.imageview_room_type = convertView
                     .findViewById(R.id.imageview_room_type);
             convertView.setTag(viewHolder);
         } else {
@@ -46,31 +47,19 @@ public class HomepageGridViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-/*
-     * 功能：获得当前选项的ID
-     *
-     * @see android.widget.Adapter#getItemId(int)
-   */
+
 
     @Override
     public long getItemId(int position) {
         return position;
     }
-/*
-     * 功能：获得当前选项
-     *
-     * @see android.widget.Adapter#getItem(int)
- */
+
 
     @Override
     public Object getItem(int position) {
         return position;
     }
-/*
-     * 获得数量
-     *
-     * @see android.widget.Adapter#getCount()
-  */
+
 
     @Override
     public int getCount() {

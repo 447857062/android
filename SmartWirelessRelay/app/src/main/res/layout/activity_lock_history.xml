@@ -17,11 +17,13 @@
             android:layout_marginLeft="@dimen/layout_content_margin_left_right"
             android:layout_marginRight="@dimen/layout_content_margin_left_right"
             android:layout_marginTop="@dimen/title_bar_content_margin_top">
+
             <FrameLayout
-                android:layout_alignParentLeft="true"
-                android:layout_width="48dp"
                 android:id="@+id/image_back"
-                android:layout_height="match_parent">
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
                 <ImageView
 
                     android:layout_width="wrap_content"
@@ -63,26 +65,27 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_title"
         android:background="@color/white_background">
+
         <ImageView
             android:id="@+id/imageview_no_lockhostory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:visibility="gone"
             android:background="@drawable/lockrecord"
-            >
+            android:visibility="gone">
 
         </ImageView>
+
         <TextView
-            android:layout_below="@+id/imageview_no_lockhostory"
             android:id="@+id/textview_empty_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/imageview_no_lockhostory"
             android:layout_centerVertical="true"
             android:gravity="center_horizontal|center_vertical"
             android:text="未查询到开锁记录"
             android:visibility="gone" />
-        
+
         <ListView
             android:id="@+id/list_lock_histroy"
             android:layout_width="match_parent"
@@ -92,4 +95,17 @@
             android:scrollbars="none" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/textview_get_record_ing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_title"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="正在获取开锁记录..."
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/room_type_text"
+        android:background="@color/white_background">
+
+    </TextView>
 </RelativeLayout>

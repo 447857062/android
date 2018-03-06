@@ -49,6 +49,14 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        if(position==listTop.size()-1){
+            viewHolder.view_line.setVisibility(View.INVISIBLE);
+            viewHolder.layout_root.setBackgroundResource(R.drawable.halfrectangle_buttom_button_background);
+        }else{
+            viewHolder.layout_root.setBackgroundResource(R.drawable.button_delete_background);
+            viewHolder.view_line.setVisibility(View.VISIBLE);
+        }
         viewHolder.textview_room_item.setText(listTop.get(position).getRoomName());
         //网关设备加智能设备
         int devicesSize=listTop.get(position).getmDevices().size()+listTop.get(position).getmGetwayDevices().size();
@@ -59,42 +67,20 @@ public class HomepageRoomShowTypeChangedViewAdapter extends BaseAdapter {
         }
         viewHolder.device_number.setText(""+devicesSize);
         setRoomTypeImageResource(position, viewHolder);
-        if(position==listTop.size()-1){
-            viewHolder.view_line.setVisibility(View.INVISIBLE);
-            viewHolder.layout_root.setBackgroundResource(R.drawable.halfrectangle_buttom_button_background);
-        }else{
-            viewHolder.layout_root.setBackgroundResource(R.drawable.button_delete_background);
-            viewHolder.view_line.setVisibility(View.VISIBLE);
-        }
         return convertView;
     }
 
-/*
-     * 功能：获得当前选项的ID
-     *
-     * @see android.widget.Adapter#getItemId(int)
-   */
+
 
     @Override
     public long getItemId(int position) {
-        //System.out.println("getItemId = " + position);
         return position;
     }
-/*
-     * 功能：获得当前选项
-     *
-     * @see android.widget.Adapter#getItem(int)
- */
 
     @Override
     public Object getItem(int position) {
         return position;
     }
-/*
-     * 获得数量
-     *
-     * @see android.widget.Adapter#getCount()
-  */
 
     @Override
     public int getCount() {

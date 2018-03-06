@@ -109,21 +109,21 @@ public class PersonalCenterActivity extends Activity implements View.OnClickList
             button_logout.setText("退出登录");
             String userName=Perfence.getPerfence(Perfence.PERFENCE_PHONE);
             manager.getUserInfo(userName);
-            manager.queryAppUpdateInfo(Perfence.SDK_APP_KEY, APKVersionCodeUtils.getVerName(this));
-            if( manager.getAppUpdateInfo()!=null){
-                String version = manager.getAppUpdateInfo().getVersion();
-                int oldVersion=Integer.valueOf(APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).replace(".",""));
-                int newVersion=Integer.valueOf(version.replace(".",""));
-                isAppUpdate = !APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).equals(version) && (newVersion > oldVersion);
-            }else{
-                isAppUpdate = false;
-                textview_update_now.setText("已是最新版本");
-            }
-            textview_current_version.setText("当前版本:"+APKVersionCodeUtils.getVerName(this));
+
         }else{
             button_logout.setText("登录");
         }
-
+        manager.queryAppUpdateInfo(Perfence.SDK_APP_KEY, APKVersionCodeUtils.getVerName(this));
+        if( manager.getAppUpdateInfo()!=null){
+            String version = manager.getAppUpdateInfo().getVersion();
+            int oldVersion=Integer.valueOf(APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).replace(".",""));
+            int newVersion=Integer.valueOf(version.replace(".",""));
+            isAppUpdate = !APKVersionCodeUtils.getVerName(PersonalCenterActivity.this).equals(version) && (newVersion > oldVersion);
+        }else{
+            isAppUpdate = false;
+            textview_update_now.setText("已是最新版本");
+        }
+        textview_current_version.setText("当前版本:"+APKVersionCodeUtils.getVerName(this));
     }
     private void setLocalImage(CircleImageView user_head_portrait) {
         boolean isSdCardExist = Environment.getExternalStorageState().equals(

@@ -87,7 +87,6 @@ import retrofit2.Response;
  */
 public class SmartHomeMainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "SmartHomeMainActivity";
-    private LinearLayout layout_home_page;
     private LinearLayout layout_devices;
     private LinearLayout layout_rooms;
     private LinearLayout layout_personal_center;
@@ -555,8 +554,10 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
         Room room = DataSupport.where("Uid=?", devices.get(i).getRoom_uid()).findFirst(Room.class);
         if(room!=null){
             Log.i(TAG, "添加中继器房间是:" + room.toString());
+            rooms.add(room);
+        }else{
+            rooms.addAll(DataSupport.findAll(Room.class));
         }
-        rooms.add(room);
         dev.setRoomList(rooms);
         boolean success = dev.save();
         Log.i(TAG, "保存设备:" + success + "deviceName=" + deviceName);
@@ -711,7 +712,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
 
     private void initEvents() {
         AppManager.getAppManager().addActivity(this);
-        layout_home_page.setOnClickListener(this);
         layout_experience_center_top.setOnClickListener(this);
         layout_devices.setOnClickListener(this);
         layout_rooms.setOnClickListener(this);
@@ -733,7 +733,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     }
 
     private void initViews() {
-        layout_home_page = findViewById(R.id.layout_home_page);
         layout_devices = findViewById(R.id.layout_devices);
         layout_rooms = findViewById(R.id.layout_rooms);
         layout_personal_center = findViewById(R.id.layout_personal_center);
@@ -790,9 +789,6 @@ public class SmartHomeMainActivity extends Activity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_home_page:
-
-                break;
             case R.id.layout_experience_center_top:
                 DeviceManager.getInstance().setExperCenterStartFromHomePage(true);
                 startActivity(new Intent(this, ExperienceDevicesActivity.class));

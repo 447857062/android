@@ -175,6 +175,7 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
                         @Override
                         public void run() {
                             setSwitchImageviewBackground();
+                            mSmartSwitchManager.getCurrentSelectSmartDevice().setStatus("在线");
                             mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
                         }
                     });
@@ -307,19 +308,23 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
         mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
         switch (mOpResult.getCommand()) {
             case "close1":
+                ToastSingleShow.showText(SwitchTwoActivity.this,"开关一已关闭");
                 switch_one_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                 break;
             case "close2":
+                ToastSingleShow.showText(SwitchTwoActivity.this,"开关二已关闭");
                 switch_two_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
                 break;
 
             case "open1":
+                ToastSingleShow.showText(SwitchTwoActivity.this,"开关一已开启");
                 switch_one_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                 break;
             case "open2":
+                ToastSingleShow.showText(SwitchTwoActivity.this,"开关二已开启");
                 switch_two_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_two_open(switch_two_open);
                 break;
@@ -329,6 +334,7 @@ public class SwitchTwoActivity extends Activity implements View.OnClickListener,
             @Override
             public void run() {
                 setSwitchImageviewBackground();
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setStatus("在线");
                 mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
             }
         });

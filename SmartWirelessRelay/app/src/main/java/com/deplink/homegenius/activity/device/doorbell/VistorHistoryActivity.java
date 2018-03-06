@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -23,7 +22,6 @@ import com.deplink.homegenius.manager.device.doorbeel.DoorbeelManager;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenu;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuCreator;
 import com.deplink.homegenius.view.listview.swipemenulistview.SwipeMenuItem;
@@ -36,6 +34,8 @@ import com.deplink.sdk.android.sdk.json.homegenius.DoorBellItem;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,13 +56,12 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private RelativeLayout layout_no_visitor;
     private Timer refreshTimer = null;
     private TimerTask refreshTask = null;
-    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 10000;
+    private static final int TIME_DIFFERENCE_BETWEEN_MESSAGE_INTERVALS = 60000;
     private SDKManager manager;
     private EventCallback ec;
     private boolean isUserLogin;
     private DeleteDeviceDialog connectLostDialog;
-    private TextView textview_edit;
-
+    private TextView textview_visitor_loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +81,6 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             refreshTimer = null;
         }
     }
-
     private void startTimer() {
         if (refreshTimer == null) {
             refreshTimer = new Timer();
@@ -115,7 +113,12 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
         manager.addEventCallback(ec);
         if (!isStartFromExperience) {
             if (isUserLogin) {
-                startTimer();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startTimer();
+                    }
+                },500);
             } else {
                 ToastSingleShow.showText(this, "未登录");
             }
@@ -134,8 +137,6 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
 
     private void initEvents() {
         image_back.setOnClickListener(this);
-        textview_edit.setOnClickListener(this);
-        textview_edit.setVisibility(View.GONE);
         if (!isStartFromExperience) {
             listview_vistor_list.setAdapter(mAdapter);
             SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -184,43 +185,27 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             });
             //下拉刷星
             listview_vistor_list.setOnItemClickListener(deviceItemClickListener);
-            listview_vistor_list.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            Yoffset = event.getY();
-                        case MotionEvent.ACTION_MOVE:
-                            if (event.getY() - Yoffset > HEIGHT_MARK_TO_REFRESH) {
-                                DialogThreeBounce.showLoading(VistorHistoryActivity.this);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        DialogThreeBounce.hideLoading();
-                                    }
-                                }, 2000);
-                            }
-                    }
-                    return false;
-                }
-            });
+
         }
     }
-
-    private float Yoffset = 0;
     private Handler.Callback mCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            switch (msg.what){
+                case MSG_TOAST_DELETE_RECORD_RESULT:
+                    if((boolean) msg.obj){
+                        ToastSingleShow.showText(VistorHistoryActivity.this,"删除访客记录成功");
+                    }else{
+                        ToastSingleShow.showText(VistorHistoryActivity.this,"删除访客记录失败");
+                    }
 
+                    break;
+            }
             return true;
         }
     };
+    public static final int MSG_TOAST_DELETE_RECORD_RESULT=100;
     private Handler mHandler = new WeakRefHandler(mCallback);
-
-    /**
-     * 竖向滑动这么多距离就开始刷新
-     */
-    public static final int HEIGHT_MARK_TO_REFRESH = 250;
     private AdapterView.OnItemClickListener deviceItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -229,8 +214,6 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             startActivity(intent);
         }
     };
-    private int count;
-
     private void initDatas() {
         textview_title.setText("访客记录");
         mDoorbeelManager = DoorbeelManager.getInstance();
@@ -242,9 +225,26 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
             public void responseVisitorListResult(List<DoorBellItem> list) {
                 super.responseVisitorListResult(list);
                 if (list != null) {
+                    Collections.sort(list, new Comparator<DoorBellItem>() {
+                        @Override
+                        public int compare(DoorBellItem o1, DoorBellItem o2) {
+                            //compareTo就是比较两个值，如果前者大于后者，返回1，等于返回0，小于返回-1
+                            if (o1.getTimestamp() == o2.getTimestamp()) {
+                                return 0;
+                            }
+                            if (o1.getTimestamp() > o2.getTimestamp()) {
+                                return -1;
+                            }
+                            if (o1.getTimestamp() < o2.getTimestamp()) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
                     visitorList.clear();
                     visitorList.addAll(list);
                     visitorListImage.clear();
+
                     for (int i = 0; i < visitorList.size(); i++) {
                         mDoorbeelManager.getDoorbellVistorImage(list.get(i).getFile(), i);
                     }
@@ -262,9 +262,17 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
                 if (count < visitorList.size()) {
                     visitorListImage.add(bitmap);
                 }
-
+                textview_visitor_loading.setVisibility(View.GONE);
                 mAdapter.notifyDataSetChanged();
 
+            }
+            @Override
+            public void responseDeleteRecordHistory(boolean success) {
+                super.responseDeleteRecordHistory(success);
+                Message msg=Message.obtain();
+                msg.what=MSG_TOAST_DELETE_RECORD_RESULT;
+                msg.obj=success;
+                mHandler.sendMessage(msg);
             }
         };
         mAdapter = new VisitorListAdapter(this, visitorList, visitorListImage);
@@ -314,20 +322,15 @@ public class VistorHistoryActivity extends Activity implements View.OnClickListe
     private void initViews() {
         textview_title = findViewById(R.id.textview_title);
         image_back = findViewById(R.id.image_back);
-        textview_edit = findViewById(R.id.textview_edit);
         listview_vistor_list = findViewById(R.id.listview_vistor_list);
         layout_no_visitor = findViewById(R.id.layout_no_visitor);
+        textview_visitor_loading = findViewById(R.id.textview_visitor_loading);
     }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_back:
                 onBackPressed();
-                break;
-            case R.id.textview_edit:
-                //TODO 清除所有的记录
-
                 break;
         }
     }

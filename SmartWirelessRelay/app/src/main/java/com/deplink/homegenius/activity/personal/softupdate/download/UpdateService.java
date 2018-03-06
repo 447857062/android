@@ -100,7 +100,6 @@ public class UpdateService extends Service {
     private NotificationManager manager;
     private int notifyId;
     private String appName;
-    private LocalBroadcastManager localBroadcastManager;
     private Intent localIntent;
     private DownloadApk downloadApkTask;
 
@@ -240,7 +239,6 @@ public class UpdateService extends Service {
         if (!isSendBroadcast) {
             return;
         }
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localIntent = new Intent(ACTION);
     }
 
@@ -288,6 +286,7 @@ public class UpdateService extends Service {
             manager.notify(notifyId, builder.build());
             sendLocalBroadcast(UPDATE_PROGRESS_STATUS, progress);
             if (updateProgressListener != null) {
+                Log.i(TAG,"下载进度="+progress);
                 updateProgressListener.update(progress);
             }
         }
@@ -304,7 +303,6 @@ public class UpdateService extends Service {
     private void success(String path) {
         String md5String = MD5.md5sum(path);
         String md5Queryedvalue = Perfence.getPerfence(AppConstant.MD5VALUE);
-
         Log.i(TAG, "md5String=" + md5String + "md5Queryedvalue=" + md5Queryedvalue);
         if (md5String != null) {
           //  if (md5String.equalsIgnoreCase(md5Queryedvalue)) {
@@ -421,12 +419,13 @@ public class UpdateService extends Service {
                 byte buffer[] = new byte[4096];
 
                 int readSize = 0;
-                int currentSize = 0;
+                long currentSize = 0;
 
                 while ((readSize = is.read(buffer)) > 0) {
                     fos.write(buffer, 0, readSize);
                     currentSize += readSize;
-                    publishProgress((currentSize * 100 / updateTotalSize));
+                    Log.i(TAG,"publishProgress:currentSize"+currentSize );
+                    publishProgress((int)(currentSize * 100 / updateTotalSize));
                 }
                 // download success
             } catch (Exception e) {
@@ -457,9 +456,9 @@ public class UpdateService extends Service {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            if (DEBUG) {
+
                 Log.d(TAG, "current progress is " + values[0]);
-            }
+
             UpdateService service = updateServiceWeakReference.get();
             if (service != null) {
                 service.update(values[0]);

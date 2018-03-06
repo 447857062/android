@@ -308,11 +308,13 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 if (isStartFromExperience) {
                     ToastSingleShow.showText(this, "门锁已开");
                 } else {
-                    Log.i(TAG,"lockDevice="+lockDevice.toString()+"selfUserId="+selfUserId);
                     if (lockDevice != null && selfUserId != null) {
+                        Log.i(TAG,"lockDevice="+lockDevice.toString()+"selfUserId="+selfUserId);
                         savedManagePassword = lockDevice.getLockPassword();
                         mSmartLockManager.setCurrentSelectLock(lockDevice);
                         mSmartLockManager.setSmartLockParmars(SmartLockConstant.OPEN_LOCK, selfUserId, savedManagePassword, null, null);
+                    }else{
+                        ToastSingleShow.showText(this,"未绑定门锁,无法开门");
                     }
                 }
                 break;

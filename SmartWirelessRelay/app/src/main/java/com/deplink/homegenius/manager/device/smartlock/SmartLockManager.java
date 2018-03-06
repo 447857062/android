@@ -447,7 +447,7 @@ public class SmartLockManager implements LocalConnecteListener {
             switch (type.getCommand()) {
                 case SmartLockConstant.CMD.QUERY:
                     for (int i = 0; i < mSmartLockListenerList.size(); i++) {
-                        mSmartLockListenerList.get(i).responseLockStatu(type.getRecordNum(), type.getLockStatus());
+                        mSmartLockListenerList.get(i).responseLockStatu(type.getRecordNum(), type.getResult());
                     }
                     break;
             }

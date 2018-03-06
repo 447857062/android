@@ -37,6 +37,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
+        <TextView
+            android:id="@+id/textview_visitor_loading"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/room_type_text"
+            android:background="@color/white_background"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="访客记录加载中..."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </FrameLayout>
 
 

@@ -22,11 +22,11 @@ import com.deplink.homegenius.manager.device.DeviceListener;
 import com.deplink.homegenius.manager.device.DeviceManager;
 import com.deplink.homegenius.manager.device.getway.GetwayListener;
 import com.deplink.homegenius.manager.device.getway.GetwayManager;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.WeakRefHandler;
 import com.deplink.homegenius.view.dialog.DeleteDeviceDialog;
 import com.deplink.homegenius.view.dialog.WifiRelayInputDialog;
-import com.deplink.homegenius.view.dialog.loadingdialog.DialogThreeBounce;
 import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
@@ -60,7 +60,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
     private EventCallback ec;
     private DeleteDeviceDialog connectLostDialog;
     private DeviceListener mDeviceListener;
-
+    private TextView textview_wifilist_no;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +84,7 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
         textview_edit = findViewById(R.id.textview_edit);
         image_back = findViewById(R.id.image_back);
         textview_reload_wifilist = findViewById(R.id.textview_reload_wifilist);
+        textview_wifilist_no = findViewById(R.id.textview_wifilist_no);
     }
 
     @Override
@@ -103,15 +104,6 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
     }
 
     private void queryWifiRelayList() {
-        DialogThreeBounce.showLoading(this);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "mDatas.size()=" + mDatas.size());
-                DialogThreeBounce.hideLoading();
-
-            }
-        }, 1500);
         mDatas.clear();
         if (isStartFromExperience) {
             mDatas.clear();
@@ -198,7 +190,6 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
-
             @Override
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
@@ -238,6 +229,13 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_GET_WIFILIST:
+                    //更新一下中继器的在线离线状态,这里如果接受到数据证明是在线状态
+                    String statu=mGetwayManager.getCurrentSelectGetwayDevice().getStatus();
+                    if(statu==null || statu.equalsIgnoreCase("离线")){
+                        mGetwayManager.getCurrentSelectGetwayDevice().setStatus("在线");
+                        mGetwayManager.getCurrentSelectGetwayDevice().saveFast();
+                    }
+                    textview_wifilist_no.setVisibility(View.GONE);
                     mDatas.clear();
                     mDatas.addAll((Collection<? extends SSIDList>) msg.obj);
                     mWifiListAdapter.notifyDataSetChanged();
@@ -293,20 +291,25 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
             wifiRelayDialog.show();
             wifiRelayDialog.setTitleText(setApCliSsid);
         } else {
-            if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
-                setCmd.setApCliWPAPSK("");
-                mGetwayManager.setWifiRelay(setCmd);
-            } else {
-                wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
-                    @Override
-                    public void onSureBtnClicked(String password) {
-                        setCmd.setApCliWPAPSK(password);
-                        mGetwayManager.setWifiRelay(setCmd);
-                    }
-                });
-                wifiRelayDialog.show();
-                wifiRelayDialog.setTitleText(setApCliSsid);
+            if(NetUtil.isNetAvailable(ScanWifiListActivity.this)){
+                if (mDatas.get(position).getEncryption().equalsIgnoreCase("none")) {
+                    setCmd.setApCliWPAPSK("");
+                    mGetwayManager.setWifiRelay(setCmd);
+                } else {
+                    wifiRelayDialog.setSureBtnClickListener(new WifiRelayInputDialog.onSureBtnClickListener() {
+                        @Override
+                        public void onSureBtnClicked(String password) {
+                            setCmd.setApCliWPAPSK(password);
+                            mGetwayManager.setWifiRelay(setCmd);
+                        }
+                    });
+                    wifiRelayDialog.show();
+                    wifiRelayDialog.setTitleText(setApCliSsid);
+                }
+            }else{
+                ToastSingleShow.showText(ScanWifiListActivity.this,"无可用的网络连接");
             }
+
         }
     }
 
@@ -317,7 +320,12 @@ public class ScanWifiListActivity extends Activity implements AdapterView.OnItem
                 onBackPressed();
                 break;
             case R.id.textview_reload_wifilist:
-                queryWifiRelayList();
+                if(NetUtil.isNetAvailable(this)){
+                    queryWifiRelayList();
+                }else{
+                    ToastSingleShow.showText(this,"无可用的网络连接");
+                }
+
                 break;
             case R.id.textview_edit:
 

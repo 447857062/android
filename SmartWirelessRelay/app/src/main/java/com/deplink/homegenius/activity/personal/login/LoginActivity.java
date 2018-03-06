@@ -23,6 +23,7 @@ import com.deplink.homegenius.Protocol.json.device.lock.Record;
 import com.deplink.homegenius.Protocol.json.device.router.Router;
 import com.deplink.homegenius.activity.homepage.SmartHomeMainActivity;
 import com.deplink.homegenius.constant.AppConstant;
+import com.deplink.homegenius.util.NetUtil;
 import com.deplink.homegenius.util.Perfence;
 import com.deplink.homegenius.util.StringValidatorUtil;
 import com.deplink.homegenius.view.dialog.loadingdialog.DialogLoading;
@@ -237,7 +238,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                     Toast.makeText(this, "密码位数6-20", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                manager.login(phoneNumber, password);
+                if(NetUtil.isNetAvailable(this)){
+                    manager.login(phoneNumber, password);
+                }else{
+                    ToastSingleShow.showText(this,"网络连接不可用");
+                }
+
                 break;
             case R.id.textview_forget_password:
                 startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));

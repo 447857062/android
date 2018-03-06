@@ -154,7 +154,7 @@
             android:layout_height="match_parent">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
                 <!--水平滚动的房间-->
                 <RelativeLayout
                     android:id="@+id/layout_room_top"
@@ -213,14 +213,6 @@
                     android:layout_marginRight="@dimen/layout_content_margin_left_right"
                     android:alpha="0.9"
                     android:background="@drawable/homepage_halfrectangle_buttom_background">
-                    <com.deplink.homegenius.view.scrollview.NonScrollableListView
-                        android:id="@+id/layout_roomselect_changed_ype"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:divider="@null"
-                        android:listSelector="@color/transparent"
-                        android:visibility="gone">
-                    </com.deplink.homegenius.view.scrollview.NonScrollableListView>
                     <HorizontalScrollView
                         android:id="@+id/layout_roomselect_normal"
                         android:layout_width="match_parent"
@@ -253,6 +245,16 @@
                                 android:numColumns="auto_fit" />
                         </LinearLayout>
                     </HorizontalScrollView>
+                    <com.deplink.homegenius.view.scrollview.NonScrollableListView
+                        android:id="@+id/layout_roomselect_changed_ype"
+                        android:layout_width="match_parent"
+                        android:background="@color/transparent"
+                        android:layout_height="match_parent"
+                        android:divider="@null"
+                        android:listSelector="@color/transparent"
+                        android:visibility="gone">
+                    </com.deplink.homegenius.view.scrollview.NonScrollableListView>
+
                 </RelativeLayout>
 
                 <RelativeLayout

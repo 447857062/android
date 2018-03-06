@@ -396,6 +396,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                         layout_brightness_control.setVisibility(View.VISIBLE);
                         if (currentSelectLight != null) {
                             currentSelectLight.setLightIsOpen(1);
+                            currentSelectLight.setStatus("在线");
                             currentSelectLight.saveFast();
                         }
                     } else if (resultObj.getOpen() == 2) {
@@ -409,6 +410,7 @@ public class LightActivity extends Activity implements View.OnClickListener, Sma
                             currentSelectLight.setLightIsOpen(2);
                             currentSelectLight.setWhiteValue(resultObj.getWhite());
                             currentSelectLight.setYellowValue(resultObj.getYellow());
+                            currentSelectLight.setStatus("在线");
                             currentSelectLight.saveFast();
                         }
                     }

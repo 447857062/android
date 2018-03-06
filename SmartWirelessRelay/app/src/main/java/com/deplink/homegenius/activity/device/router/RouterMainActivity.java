@@ -479,14 +479,22 @@ public class RouterMainActivity extends Activity implements View.OnClickListener
                 performance = gson.fromJson(xmlStr, PERFORMANCE.class);
                 Log.i(TAG, "performance=" + performance.toString());
                 updateDevice(performance);
-                mRouterManager.getCurrentSelectedRouter().setStatus("在线");
-                ContentValues values = new ContentValues();
-                values.put("Status", "在线");
-                DataSupport.updateAll(SmartDev.class, values, "Uid=?", mRouterManager.getCurrentSelectedRouter().getUid());
+                SmartDev routerDevices = DataSupport.where("Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid() ).findFirst(SmartDev.class, true);
+                if(routerDevices!=null){
+                    routerDevices.setStatus("在线");
+                    routerDevices.saveFast();
+                }
                 updatePerformance();
             }
         } else if (op.equalsIgnoreCase("DEVICES")) {
             if (method.equalsIgnoreCase("REPORT")) {
+                SmartDev routerDevices = DataSupport.where("Uid = ?", mRouterManager.getCurrentSelectedRouter().getUid() ).findFirst(SmartDev.class, true);
+                Log.i(TAG,"routerDevices!=null"+(routerDevices!=null));
+               if(routerDevices!=null){
+                   routerDevices.setStatus("在线");
+                   routerDevices.saveFast();
+               }
+
                 mDevicesOnlineRoot = gson.fromJson(xmlStr, DevicesOnlineRoot.class);
                 mConnectedDevices.clear();
                 mConnectedDevices.addAll(mDevicesOnlineRoot.getDevicesOnline());

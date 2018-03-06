@@ -52,9 +52,7 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener,
         initDatas();
         initEvents();
     }
-
     private boolean isStartFromExperience;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -149,6 +147,7 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener,
                         @Override
                         public void run() {
                             setSwitchImageviewBackground();
+                            mSmartSwitchManager.getCurrentSelectSmartDevice().setStatus("在线");
                             mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
                         }
                     });
@@ -249,10 +248,12 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener,
         mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
         switch (mOpResult.getCommand()) {
             case "close1":
+                ToastSingleShow.showText(SwitchOneActivity.this,"开关已关闭");
                 switch_one_open = false;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                 break;
             case "open1":
+                ToastSingleShow.showText(SwitchOneActivity.this,"开关已开启");
                 switch_one_open = true;
                 mSmartSwitchManager.getCurrentSelectSmartDevice().setSwitch_one_open(switch_one_open);
                 break;
@@ -261,6 +262,7 @@ public class SwitchOneActivity extends Activity implements View.OnClickListener,
             @Override
             public void run() {
                 setSwitchImageviewBackground();
+                mSmartSwitchManager.getCurrentSelectSmartDevice().setStatus("在线");
                 mSmartSwitchManager.getCurrentSelectSmartDevice().saveFast();
             }
         });

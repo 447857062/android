@@ -17,4 +17,7 @@ public abstract class DoorBellListener {
     public  void responseVisitorImage(Bitmap bitmap,int count){
 
     };
+    public  void responseDeleteRecordHistory(boolean success){
+
+    };
 }

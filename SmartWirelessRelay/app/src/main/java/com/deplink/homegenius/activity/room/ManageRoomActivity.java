@@ -124,7 +124,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        userName = Perfence.getPerfence(Perfence.PERFENCE_PHONE);
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
         mRoomName = mRoomManager.getCurrentSelectedRoom().getRoomName();
         Log.i(TAG, "当前编辑的房间名称= " + mRoomName);
@@ -137,8 +136,6 @@ public class ManageRoomActivity extends Activity implements View.OnClickListener
         }
         mRoomManager.addRoomListener(mRoomListener);
     }
-
-    private String userName;
 
     @Override
     public void onClick(View v) {

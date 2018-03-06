@@ -47,9 +47,9 @@ public class GridViewRommTypeAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.roomtype_item, null);
-            viewHolder.textview_room_item = (TextView) convertView
+            viewHolder.textview_room_item = convertView
                     .findViewById(R.id.textview_room_item);
-            viewHolder.imageview_room_type = (ImageView) convertView
+            viewHolder.imageview_room_type = convertView
                     .findViewById(R.id.imageview_room_type);
             convertView.setTag(viewHolder);
         } else {

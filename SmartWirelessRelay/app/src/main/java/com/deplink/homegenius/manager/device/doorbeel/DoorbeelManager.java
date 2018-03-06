@@ -15,7 +15,6 @@ import com.deplink.sdk.android.sdk.json.homegenius.DoorBellItem;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGenius;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsHomeGeniusString;
 import com.deplink.sdk.android.sdk.rest.RestfulToolsPng;
-import com.google.gson.Gson;
 
 import org.litepal.crud.DataSupport;
 
@@ -152,27 +151,20 @@ public class DoorbeelManager {
         RestfulToolsHomeGeniusString.getSingleton().readDoorBeelVistorInfo(userName, uid, new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i(TAG, "" + response.code());
-                Log.i(TAG, "" + response.message());
                 if (response.code() == 200) {
+                    Log.i(TAG, "" + response.message());
                     Log.i(TAG, "" + response.body());
                     for (int i = 0; i < mDeviceListenerList.size(); i++) {
-                        Gson gson=new Gson();
-                        if(response.body().startsWith("{")){
-
-                        }else{
-
+                        if(!response.body().startsWith("{")){
                             List<DoorBellItem>list=  ParseUtil.jsonToArrayList(response.body(),DoorBellItem.class);
                             mDeviceListenerList.get(i).responseVisitorListResult(list);
                         }
-
-
-
                     }
                 }else{
-                    Log.i(TAG, "" + response.body());
+
                     if(response.errorBody()!=null){
                         try {
+                            Log.i(TAG, "" + response.body());
                             Log.i(TAG, "" + response.errorBody().string());
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -242,9 +234,19 @@ public class DoorbeelManager {
                         e.printStackTrace();
                     }
                 }
-                Log.i(TAG,""+response.code());
-                if(response.code()==200){
 
+                if(response.code()==200){
+                    for (int i = 0; i < mDeviceListenerList.size(); i++) {
+                        Log.i(TAG,"deleteDoorBellVisitor");
+                        DeviceOperationResponse responseBody=response.body();
+                        boolean success;
+                       if(responseBody.getStatus()!=null && responseBody.getStatus().equalsIgnoreCase("OK")){
+                           mDeviceListenerList.get(i).responseDeleteRecordHistory(true);
+                       }else{
+                           mDeviceListenerList.get(i).responseDeleteRecordHistory(false);
+                       }
+
+                    }
                 }
             }
 
@@ -267,7 +269,6 @@ public class DoorbeelManager {
      * @param uid
      */
     public boolean updateDeviceInWhatRoom(Room room, String uid) {
-        Log.i(TAG, "更新智能门铃设备所在的房间=start");
         //保存所在的房间
         //查询设备
         SmartDev smartDev = DataSupport.where("Uid=?", uid).findFirst(SmartDev.class, true);
@@ -283,7 +284,6 @@ public class DoorbeelManager {
         if(getCurrentSelectedDoorbeel()!=null){
             getCurrentSelectedDoorbeel().setRooms(rooms);
         }
-        Log.i(TAG, "更新智能门铃设备所在的房间=" + saveResult);
         return saveResult;
     }
 

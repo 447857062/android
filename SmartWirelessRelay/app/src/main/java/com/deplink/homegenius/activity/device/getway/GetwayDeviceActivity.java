@@ -240,9 +240,14 @@ public class GetwayDeviceActivity extends Activity implements View.OnClickListen
 
                 break;
             case R.id.layout_config_wifi_getway:
-                Intent inent = new Intent(this, ScanWifiListActivity.class);
-                inent.putExtra("isShowSkipOption", false);
-                startActivity(inent);
+                if(NetUtil.isNetAvailable(this)){
+                    Intent inent = new Intent(this, ScanWifiListActivity.class);
+                    inent.putExtra("isShowSkipOption", false);
+                    startActivity(inent);
+                }else{
+                    ToastSingleShow.showText(this,"无可用的网络连接");
+                }
+
                 break;
             case R.id.layout_device_share:
                 Intent inentShareDevice = new Intent(this, ShareDeviceActivity.class);

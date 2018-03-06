@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deplink.homegenius.Protocol.json.OpResult;
 import com.deplink.homegenius.Protocol.json.Room;
 import com.deplink.homegenius.Protocol.json.device.SmartDev;
 import com.deplink.homegenius.Protocol.json.device.getway.GatwayDevice;
@@ -42,6 +43,8 @@ import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
 import com.deplink.sdk.android.sdk.homegenius.DeviceOperationResponse;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import org.litepal.crud.DataSupport;
 
@@ -162,6 +165,13 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 connectLostDialog.setTitleText("账号异地登录");
                 connectLostDialog.setContentText("当前账号已在其它设备上登录,是否重新登录");
             }
+
+            @Override
+            public void notifyHomeGeniusResponse(String result) {
+                super.notifyHomeGeniusResponse(result);
+                updateDeviceStatu(result);
+
+            }
         };
         mDeviceListener = new DeviceListener() {
             @Override
@@ -205,7 +215,33 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                 DialogThreeBounce.hideLoading();
                 mHandler.sendEmptyMessage(MSG_HANDLE_DELETE_DEVICE_RESULT);
             }
+
+            @Override
+            public void responseQueryResult(String result) {
+                super.responseQueryResult(result);
+                updateDeviceStatu(result);
+            }
         };
+    }
+
+    private void updateDeviceStatu(String result) {
+        Gson gson = new Gson();
+        OpResult content = null;
+        try {
+            content = gson.fromJson(result, OpResult.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+        if (content != null) {
+            if (content.getOP() != null && content.getOP().equalsIgnoreCase("REPORT")) {
+                if (content.getMethod().equalsIgnoreCase("IrmoteV2") ) {
+                    Message msg=Message.obtain();
+                    msg.what=MSG_UPDATE_DEVICE_STATU;
+                    msg.arg1=content.getResult();
+                    mHandler.sendMessage(msg);
+                }
+            }
+        }
     }
 
     private void initEvents() {
@@ -391,6 +427,7 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
     private static final int REQUEST_CODE_SELECT_DEVICE_IN_WHAT_ROOM = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_RESULT = 100;
     private static final int MSG_HANDLE_DELETE_DEVICE_FAILED = 101;
+    private static final int MSG_UPDATE_DEVICE_STATU = 102;
     private Handler.Callback mCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -403,6 +440,18 @@ public class RemoteControlActivity extends Activity implements View.OnClickListe
                     break;
                 case MSG_HANDLE_DELETE_DEVICE_FAILED:
                     Toast.makeText(RemoteControlActivity.this, "删除设备失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case MSG_UPDATE_DEVICE_STATU:
+                    if(mRemoteControlManager.getmSelectRemoteControlDevice()!=null){
+                        if(msg.arg1!=-1){
+                            mRemoteControlManager.getmSelectRemoteControlDevice().setStatus("在线");
+                            mRemoteControlManager.getmSelectRemoteControlDevice().saveFast();
+                        }else{
+                            mRemoteControlManager.getmSelectRemoteControlDevice().setStatus("离线");
+                            mRemoteControlManager.getmSelectRemoteControlDevice().saveFast();
+                        }
+
+                    }
                     break;
             }
             return true;

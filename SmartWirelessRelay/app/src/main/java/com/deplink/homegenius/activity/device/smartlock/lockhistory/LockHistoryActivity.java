@@ -67,7 +67,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
     private DeleteDeviceDialog connectLostDialog;
     private DeviceManager mDeviceManager;
     private ArrayList<String> mRecordListId;
-
+    private TextView textview_get_record_ing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,7 +175,9 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                             Message msg = Message.obtain();
                             msg.obj = result;
                             msg.what = MSG_GET_HISTORYRECORD;
-                            mHandler.sendMessage(msg);
+                            if(!isStartFromExperience){
+                                mHandler.sendMessage(msg);
+                            }
                             break;
                     }
                 }
@@ -200,6 +202,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
         textview_empty_record = findViewById(R.id.textview_empty_record);
         image_back = findViewById(R.id.image_back);
         imageview_no_lockhostory = findViewById(R.id.imageview_no_lockhostory);
+        textview_get_record_ing = findViewById(R.id.textview_get_record_ing);
 
     }
 
@@ -233,6 +236,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
             temp.setTime("2017-11-26 12:35:23");
             temp.setUserID("004");
             mRecordList.add(temp);
+            textview_get_record_ing.setVisibility(View.GONE);
         } else {
             mSmartLockManager.queryLockStatu();
             mHandler.sendEmptyMessageDelayed(MSG_GET_HISRECORD, 2000);
@@ -250,6 +254,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                 case MSG_GET_HISTORYRECORD:
                     Gson gson = new Gson();
                     LockHistorys aDeviceList = gson.fromJson(str, LockHistorys.class);
+                    textview_get_record_ing.setVisibility(View.GONE);
                     Log.i(TAG, "历史记录长度=" + aDeviceList.getRecord().size());
                     int index = DataSupport.count(Record.class);
                     for (int i = 0; i < aDeviceList.getRecord().size(); i++) {
@@ -311,6 +316,7 @@ public class LockHistoryActivity extends Activity implements SmartLockListener, 
                     if (mRecordList.size() == 0) {
                         imageview_no_lockhostory.setVisibility(View.VISIBLE);
                         textview_empty_record.setVisibility(View.VISIBLE);
+                        textview_get_record_ing.setVisibility(View.GONE);
                     }
                     break;
             }

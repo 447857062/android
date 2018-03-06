@@ -167,28 +167,24 @@ public class RoomManager {
                         Log.i(TAG, "" + response.body());
                         ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list = ParseUtil.jsonToArrayList(response.body(), com.deplink.sdk.android.sdk.homegenius.Room.class);
                         Room temp;
+                        Log.i(TAG, "服务器上面房间有=" + list.size());
+                        syncLocalRoom(list);
                         for (int i = 0; i < list.size(); i++) {
+                            Log.i(TAG,"添加到数据库中的房间名称0:"+CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
                             temp = new Room();
                             boolean addToDb = true;
-                            mRooms = DataSupport.findAll(Room.class);
                             for (int j = 0; j < mRooms.size(); j++) {
-                                if (list.get(i).getRoom_type().equalsIgnoreCase(mRooms.get(j).getRoomType())) {
-                                    if (mRooms.get(j).getUid() == null || mRooms.get(j).getUid().equals("")) {
-                                        mRooms.get(j).setUid(list.get(i).getUid());
-                                        mRooms.get(j).setRoomOrdinalNumber(list.get(i).getSort_num());
-                                        mRooms.get(j).setRoomName(list.get(i).getRoom_name());
-                                        mRooms.get(j).saveFast();
-                                    }
-                                }
+                                saveDefaultRoom(list, i, j);
                                 if (list.get(i).getUid().equalsIgnoreCase(mRooms.get(j).getUid())) {
                                     addToDb = false;
                                 }
                             }
                             if (addToDb) {
                                 //如果数据库中有就更新
+                                Log.i(TAG,"添加到数据库中的房间名称:"+CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
                                 if (CharSetUtil.decodeUnicode(list.get(i).getRoom_name()) != null) {
                                     Room room =
-                                            DataSupport.where("roomName = ?", CharSetUtil.decodeUnicode(list.get(i).getRoom_name())).findFirst(Room.class);
+                                            DataSupport.where("uid = ?", list.get(i).getUid()).findFirst(Room.class);
                                     if (room != null) {
                                         room.setRoomOrdinalNumber(i);
                                         room.setRoomType(CharSetUtil.decodeUnicode(list.get(i).getRoom_type()));
@@ -237,6 +233,44 @@ public class RoomManager {
         });
     }
 
+    private void saveDefaultRoom(ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list, int i, int j) {
+        if (CharSetUtil.decodeUnicode(list.get(i).getRoom_type()).equalsIgnoreCase(mRooms.get(j).getRoomType())) {
+            if (mRooms.get(j).getUid() == null || mRooms.get(j).getUid().equals("")) {
+                mRooms.get(j).setUid(list.get(i).getUid());
+                mRooms.get(j).setRoomOrdinalNumber(list.get(i).getSort_num());
+                mRooms.get(j).setRoomName(CharSetUtil.decodeUnicode(list.get(i).getRoom_name()));
+                mRooms.get(j).saveFast();
+            }
+        }
+    }
+
+    /**
+     *  删除本地数据库中有,但是服务器没有,并且本地数据库中有但是没有房间uid的不能删除,默认的有3个房间
+     * @param list
+     */
+    private void syncLocalRoom(ArrayList<com.deplink.sdk.android.sdk.homegenius.Room> list) {
+        mRooms = DataSupport.findAll(Room.class);
+        for (int i = 0; i < mRooms.size(); i++) {
+            boolean deleteDBRoom = true;
+            if (mRooms.get(i).getUid() != null) {
+                for (int j = 0; j < list.size(); j++) {
+                    if (list.get(j).getRoom_name().equals(mRooms.get(i).getRoomName())) {
+                        deleteDBRoom = false;
+                    }
+                }
+            } else {
+                deleteDBRoom = false;
+            }
+            if(mRooms.get(i).getRoomName()==null || mRooms.get(i).getRoomName().equals("")){
+                deleteDBRoom=true;
+            }
+            if (deleteDBRoom) {
+                Log.i(TAG,"删除房间"+mRooms.get(i).toString());
+                mRooms.get(i).delete();
+            }
+        }
+    }
+
     /**
      * 添加房间
      */
@@ -281,7 +315,6 @@ public class RoomManager {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
@@ -310,7 +343,6 @@ public class RoomManager {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<DeviceOperationResponse> call, Throwable t) {
                 Log.i(TAG, "" + t.getMessage() + t.toString());
@@ -397,23 +429,6 @@ public class RoomManager {
     }
 
     /**
-     * 根据房间排序号查询房间
-     *
-     * @param roomIndex
-     * @return
-     */
-    public Room findRoom(int roomIndex) {
-        Room room = DataSupport.find(Room.class, roomIndex);
-        if (room != null) {
-            Log.i(TAG, "查找房间 :" + room.toString());
-        } else {
-            Log.i(TAG, "查找房间 : 未找到");
-        }
-
-        return room;
-    }
-
-    /**
      * 按照房间名字插叙房间
      * 关联表中数据是无法查到的，因为LitePal默认的模式就是懒查询，当然这也是推荐的查询方式。
      * 那么，如果你真的非常想要一次性将关联表中的数据也一起查询出来，当然也是可以的，
@@ -430,16 +445,6 @@ public class RoomManager {
             room = rooms.get(0);
             Log.i(TAG, "根据名字查询房间,查到房间" + room.toString());
         }
-        return room;
-    }
-
-    public Room findRoomByType(String typeName, boolean queryRelativeTable) {
-        List<Room> rooms = DataSupport.where("roomType = ?", typeName).find(Room.class, queryRelativeTable);
-        Room room = null;
-        if (rooms.size() > 0) {
-            room = rooms.get(0);
-        }
-        Log.i(TAG, "根据类型查询房间,查到房间" + room.toString());
         return room;
     }
 
@@ -487,18 +492,6 @@ public class RoomManager {
             mRooms.add(temp);
         }
         return sortRooms();
-    }
-
-    /**
-     * 按照房间排序删除房间
-     * 序号是唯一的，不为空
-     */
-    public int deleteRoom(int roomOrdinalNumber) {
-        int optionResult;
-        optionResult = DataSupport.delete(Room.class, roomOrdinalNumber);
-        queryRooms();
-        Log.i(TAG, "按照房间排序删除房间=" + optionResult);
-        return optionResult;
     }
 
     private Room tempAddRoom;
