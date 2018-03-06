@@ -66,7 +66,7 @@ import deplink.com.smartwirelessrelay.homegenius.EllESDK.R;
 /**
  * 查看智能设备列表的界面
  */
-public class DeviceNumberActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class DeviceNumberActivity extends Activity implements View.OnClickListener{
     private static final String TAG="DeviceNumberActivity";
     private FrameLayout image_back;
     private TextView textview_edit;
@@ -134,8 +134,8 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
             @Override
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
+                Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
                 if (result.contains("DevList")) {
-                    Log.i(TAG, "设备列表界面收到回调的mqtt消息=" + result);
                     if (getwayDevices != null) {
                         ContentValues values = new ContentValues();
                         values.put("Status", "在线");
@@ -278,7 +278,6 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                           mSmartLightManager.queryLightStatus();
                           if (!gatwayAvailable()) {
                               currentLightDev.setStatus("离线");
-                              Log.i(TAG, "371 设置离线");
                               currentLightDev.saveFast();
                           }
                       }
@@ -331,6 +330,8 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
     }
 
     private void updateListview() {
+        //更新房间关联的设备,设备状态更新了
+        currentRoom=DataSupport.where("Uid = ?" ,currentRoom.getUid()).findFirst(Room.class, true);
         datasTop.clear();
         datasBottom.clear();
         datasTop.addAll(currentRoom.getmGetwayDevices());
@@ -533,8 +534,5 @@ public class DeviceNumberActivity extends Activity implements View.OnClickListen
                 break;
         }
     }
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-    }
 }

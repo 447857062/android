@@ -38,7 +38,6 @@ import com.deplink.homegenius.view.toast.ToastSingleShow;
 import com.deplink.sdk.android.sdk.DeplinkSDK;
 import com.deplink.sdk.android.sdk.EventCallback;
 import com.deplink.sdk.android.sdk.SDKAction;
-import com.deplink.sdk.android.sdk.json.PERFORMANCE;
 import com.deplink.sdk.android.sdk.manager.SDKManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -87,6 +86,8 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
 
     private void initDatas() {
         textview_title.setText("智能门铃");
+        mDeviceManager = DeviceManager.getInstance();
+        mDeviceManager.InitDeviceManager(this);
         mDoorbeelManager = DoorbeelManager.getInstance();
         mDoorbeelManager.InitDoorbeelManager(this);
         mSmartLockManager = SmartLockManager.getInstance();
@@ -100,6 +101,15 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
                 BitmapDrawable bbb = new BitmapDrawable(BitmapHandler.toRoundCorner(bitmap, 30));
                 imageview_visitor.setBackgroundDrawable(bbb);
             }
+        };
+        mDeviceListener = new DeviceListener() {
+            @Override
+            public void responseQueryResult(String result) {
+                super.responseQueryResult(result);
+                    Log.i(TAG, "本地接口接收到设备列表:" + result);
+                parseOpenDoorXml(result);
+                }
+
         };
         initMqttCallback();
     }
@@ -126,68 +136,8 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
             @Override
             public void notifyHomeGeniusResponse(String result) {
                 super.notifyHomeGeniusResponse(result);
-                Gson gson = new Gson();
-                PERFORMANCE content = null;
-                try {
-                    content = gson.fromJson(result, PERFORMANCE.class);
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
-                }
-                if (content != null) {
-                    if (content.getOP() != null && content.getOP().equalsIgnoreCase("REPORT")) {
-                        if (content.getMethod().equalsIgnoreCase("SmartLock")) {
-                            OpResult type = gson.fromJson(result, OpResult.class);
-                            if (type != null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
-                                switch (type.getCommand()) {
-                                    case SmartLockConstant.CMD.OPEN:
-                                        switch (type.getResult()) {
-                                            case SmartLockConstant.OPENLOCK.TIMEOUT:
-                                                result = "开锁超时";
-                                                break;
-                                            case SmartLockConstant.OPENLOCK.SUCCESS:
-                                                result = "开锁成功";
-                                                break;
-                                            case SmartLockConstant.OPENLOCK.PASSWORDERROR:
-                                                result = "密码错误";
-                                                break;
-                                            case SmartLockConstant.OPENLOCK.FAIL:
-                                                result = "开锁失败";
-                                                break;
-                                        }
-                                        break;
-                                    case SmartLockConstant.CMD.ONCE:
-                                    case SmartLockConstant.CMD.PERMANENT:
-                                    case SmartLockConstant.CMD.TIMELIMIT:
-                                        switch (type.getResult()) {
-                                            case SmartLockConstant.AUTH.TIMEOUT:
-                                                result = "录入超时";
-                                                break;
-                                            case SmartLockConstant.AUTH.SUCCESS:
-                                                result = "录入成功";
-                                                break;
-                                            case SmartLockConstant.AUTH.PASSWORDERROR:
-                                                result = "密码错误";
-                                                break;
-                                            case SmartLockConstant.AUTH.FAIL:
-                                                result = "录入失败";
-                                                break;
-                                            case SmartLockConstant.AUTH.FORBADE:
-                                                result = "禁止操作";
-                                                break;
-                                        }
-                                        break;
-
-                                }
-                                if(result!=null){
-                                    Message msg=Message.obtain();
-                                    msg.what=MSG_SHOW_OPENLOCK_RESULT;
-                                    msg.obj=result;
-                                    mHandler.sendMessage(msg);
-                                }
-                            }
-                        }
-                    }
-                }
+                Log.i(TAG,"门铃界面门锁设置返回"+result);
+                parseOpenDoorXml(result);
             }
 
             @Override
@@ -211,10 +161,55 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
         };
     }
 
+    private void parseOpenDoorXml(String result) {
+        Gson gson = new Gson();
+        OpResult content = null;
+        try {
+            content = gson.fromJson(result, OpResult.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+        if (content != null) {
+            if (content.getOP() != null && content.getOP().equalsIgnoreCase("REPORT")) {
+                if (content.getMethod().equalsIgnoreCase("SmartLock")) {
+                    OpResult type = gson.fromJson(result, OpResult.class);
+                    if (type != null && type.getOP().equals("REPORT") && type.getMethod().equals("SmartLock")) {
+                        switch (type.getCommand()) {
+                            case SmartLockConstant.CMD.OPEN:
+                                switch (type.getResult()) {
+                                    case SmartLockConstant.OPENLOCK.TIMEOUT:
+                                        result = "开锁超时";
+                                        break;
+                                    case SmartLockConstant.OPENLOCK.SUCCESS:
+                                        result = "开锁成功";
+                                        break;
+                                    case SmartLockConstant.OPENLOCK.PASSWORDERROR:
+                                        result = "密码错误";
+                                        break;
+                                    case SmartLockConstant.OPENLOCK.FAIL:
+                                        result = "开锁失败";
+                                        break;
+                                }
+                                break;
+                        }
+                        if(result!=null){
+                            Message msg=Message.obtain();
+                            msg.what=MSG_SHOW_OPENLOCK_RESULT;
+                            msg.obj=result;
+                            mHandler.sendMessage(msg);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         isUserLogin = Perfence.getBooleanPerfence(AppConstant.USER_LOGIN);
+        manager.addEventCallback(ec);
+        mDeviceManager.addDeviceListener(mDeviceListener);
         if(mDoorbeelManager!=null){
             mDoorbeelManager = DoorbeelManager.getInstance();
             mDoorbeelManager.InitDoorbeelManager(this);
@@ -270,9 +265,12 @@ public class DoorbeelMainActivity extends Activity implements View.OnClickListen
 
     }
     private PushMessage pushMessage;
+    private DeviceManager mDeviceManager;
     @Override
     protected void onPause() {
         super.onPause();
+        manager.removeEventCallback(ec);
+        mDeviceManager.removeDeviceListener(mDeviceListener);
         imageview_visitor.setVisibility(View.GONE);
         layout_no_vistor.setVisibility(View.VISIBLE);
         mDoorbeelManager.removeDeviceListener(mDoorBellListener);
